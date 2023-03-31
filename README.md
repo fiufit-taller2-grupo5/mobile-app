@@ -5,7 +5,6 @@ React native app for fitness tracking
 To get started, you will need to install the following:
 - [Node.js](https://nodejs.org/en/)
 - [Yarn](https://yarnpkg.com/en/docs/install)
-- [Expo](https://expo.io/learn)
 
 ## Running the App
 To run the app, you will need to run the following commands:
