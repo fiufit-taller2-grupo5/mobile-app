@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
-import { Container, Heading, Flex, Image, Link, Input, Button, Text, Icon, Stack, Pressable, NativeBaseProvider, extendTheme, VStack, HStack } from "native-base";
+import { View, Heading, Image, Link, Input, Button, Text, Icon, Pressable, NativeBaseProvider, extendTheme, VStack, HStack } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useState } from 'react';
@@ -40,7 +40,7 @@ export default function LoginScreen({ navigation } : any) {
   }, [user, loading]);
 
   return <NativeBaseProvider theme={ theme }>
-    <Stack space={ 10 } w="100%" alignItems="center" style={ styles.stack }>
+    <VStack space={ 6 } alignItems="center" style={ styles.stack }>
       <Heading style={ styles.heading }>Ingresa tus datos</Heading>
       <VStack space={10} alignItems="center">
         <Input
@@ -61,7 +61,7 @@ export default function LoginScreen({ navigation } : any) {
           </Pressable>} placeholder="Contraseña"
         />
       </VStack>
-      <Flex top="-40%" h="12" w="sm" alignItems="center">
+      <View style={{ height: 50, width: "100%", alignItems: "center" }}>
         <Button
           style={ styles.button }
           onPress={ () => {logInWithEmailAndPassword(email, password)} }
@@ -69,28 +69,28 @@ export default function LoginScreen({ navigation } : any) {
         >
           Iniciar sesión
         </Button>
-    </Flex>
-    </Stack>
-    <VStack space={8} top="15%">
-      <Text style={ styles.registerTextOption }>O iniciar sesión con</Text>
-      <TouchableOpacity onPress={ () => {} }>
-        <Image
-          style={ styles.googleImage }
-          source={ require('../../assets/images/logos_google-icon.png') }
-          alt='google'
-        />
-      </TouchableOpacity>
+      </View>
+      <VStack space={8} alignItems="center">
+        <Text style={ styles.registerTextOption }>O iniciar sesión con</Text>
+        <TouchableOpacity onPress={ () => {} }>
+          <Image
+            style={ styles.googleImage }
+            source={ require('../../assets/images/logos_google-icon.png') }
+            alt='google'
+          />
+        </TouchableOpacity>
+      </VStack>
+      <HStack space={2} top="10%">
+        <Text style={ styles.moveToRegister }>No tienes una cuenta?</Text>
+        <Link
+          style={ styles.link }
+          onPress={ () => {navigation.navigate('RegisterScreen')} }
+          _text={{ color: "#BC2666" }}
+        >
+          Registrarse
+        </Link>
+      </HStack>
     </VStack>
-    <HStack space={2} left="10%" top="50%">
-      <Text style={ styles.moveToRegister }>No tienes una cuenta?</Text>
-      <Link
-        style={ styles.link }
-        onPress={ () => {navigation.navigate('RegisterScreen')} }
-        _text={{ color: "#BC2666" }}
-      >
-        Registrarse
-      </Link>
-    </HStack>
   </NativeBaseProvider>;
 }
 
@@ -98,14 +98,14 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     textAlign: 'center',
-    width: "60%",
-    left: "2.3%",
-    top: "35%",
+    height: "-10%",
+    width: "80%",
+    top: "-20%",
     borderRadius: 30
   },
   heading: {
     flex: 0,
-    left: '1%',
+    left: '0%',
     top: '-10%',
     fontFamily: 'Roboto',
     fontStyle: 'normal',
@@ -116,7 +116,6 @@ const styles = StyleSheet.create({
   },
   googleImage: {
     top: "0%",
-    left: "47%",
     right: "0%",
     bottom: "0%",
   },
@@ -129,7 +128,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    top: '20%',
+    top: '25%',
   },
   registerTextOption: {
     top: '0%',
