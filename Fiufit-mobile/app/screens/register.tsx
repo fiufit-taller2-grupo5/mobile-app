@@ -2,7 +2,9 @@ import * as React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import { Container, Flex, Heading, Stack, Input, Image, Icon, Button, Link, Text, NativeBaseProvider, extendTheme, Pressable } from 'native-base';
 import { MaterialIcons } from "@expo/vector-icons";
-
+import { useState } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth, registerWithEmailAndPassword } from '../../firebase';
 
 export default function RegisterScreen({ navigation } : any) {
   const theme = extendTheme({
@@ -25,7 +27,18 @@ export default function RegisterScreen({ navigation } : any) {
     }
   });
 
-  const [show, setShow] = React.useState(false);
+  const [show, setShow] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [user, loading, error] = useAuthState(auth);
+  React.useEffect(() => {
+      if (loading) {
+        // maybe trigger a loading screen
+        return;
+      }
+      if (user) navigation.navigate('HomeScreen');
+  }, [user, loading]);
 
   return <NativeBaseProvider theme={theme}>
     <Container>
@@ -36,12 +49,21 @@ export default function RegisterScreen({ navigation } : any) {
     alignItems="center"
     style={styles.stack}
     >
-      <Input w={{ base: "80%", md: "30%"}} h="15%" variant="underlined" placeholder="Nombre completo" />
-      <Input w={{ base: "80%", md: "30%"}} h="15%" variant="underlined" placeholder="Email" />
+      <Input w={{ base: "80%", md: "30%"}} 
+      h="15%" 
+      variant="underlined"
+      onChangeText={(name) => setName(name)}
+      placeholder="Nombre completo" />
+      <Input w={{ base: "80%", md: "30%"}} 
+      h="15%" 
+      variant="underlined" 
+      placeholder="Email" 
+      onChangeText={(email) => setEmail(email)}/>
       <Input w={{base: "80%", md: "25%"}}
       h="15%"
       type={show ? "text" : "password"}
       variant="underlined"
+      onChangeText={(password) => setPassword(password)}
       InputRightElement={<Pressable onPress={() => setShow(!show)}>
       <Icon as={<MaterialIcons name={show ? "visibility" : "visibility-off"} />}
       size={5} mr="2" color="muted.400" />
@@ -50,7 +72,7 @@ export default function RegisterScreen({ navigation } : any) {
     <Flex h="12" alignItems="center">
       <Button
       style={styles.button}
-      onPress={() => {navigation.navigate('HomeScreen')}}
+      onPress={() => {registerWithEmailAndPassword(name, email, password)}}
       _text={{color: "#FFFFFF", fontSize: "20px", fontWeight: "bold"}}>Registrarse</Button>
     </Flex>
     <Text style={styles.loginTextOption} >O registrarse con</Text>
