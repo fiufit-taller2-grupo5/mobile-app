@@ -17,28 +17,27 @@ export default function App() {
     Montserrat: require('./assets/fonts/Montserrat-Regular.ttf'),
   });
   if (!fontsLoaded) { return null; }
+
   return (
     <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator 
-        initialRouteName="WelcomeScreen"
-        screenOptions={{
-          headerShown: false
-        }}
+          initialRouteName="WelcomeScreen"
+          screenOptions={{ headerShown: false }}
         >
           <Stack.Screen
             name="WelcomeScreen"
-            component={WelcomeScreen}
+            component={ WelcomeScreen }
           />
           <Stack.Screen
             name="RegisterScreen"
-            component={RegisterScreen} />
+            component={ RegisterScreen } />
           <Stack.Screen
             name="LoginScreen"
-            component={LoginScreen} />
+            component={ LoginScreen } />
           <Stack.Screen
             name="HomeScreen"
-            component={HomeScreen} />
+            component={ HomeScreen } />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
