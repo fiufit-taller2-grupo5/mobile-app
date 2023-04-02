@@ -33,7 +33,7 @@ export default function WelcomeScreen({navigation} : NativeStackScreenProps<any,
 
   return <SafeAreaProvider>
     <NativeBaseProvider theme={theme}>
-      <VStack space={4} alignItems="center">
+      <VStack space={16} alignItems="center">
         <Text style={[styles.text, styles.heading1]} variant="heading1"> DESAFIA </Text>
         <HStack space={ 2 } justifyContent="center">
           <Text style={[styles.text, styles.heading2]} variant="heading2" > TUS </Text>
@@ -45,7 +45,7 @@ export default function WelcomeScreen({navigation} : NativeStackScreenProps<any,
               Realizá un seguimiento de tus entrenamientos, obtén mejores resultados y sé la mejor versión de ti mismo.
             </Text>
           </Flex>
-            <Center style={{top:"15%"}}>
+            <Center style={{top:"-10%"}}>
               <AspectRatio
                 w="100%" 
                 ratio={16 / 9}
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '35%',
     height: '8%',
-    top: '118%',
+    bottom: '0%',
     borderRadius: 50,
   },
   firstButton: {
@@ -100,10 +100,6 @@ const styles = StyleSheet.create({
   secondButton: {
     left: '55%',
   },
-  textBox: {
-    textAlign: 'center',
-    flexDirection: 'row',
-  },
   text: {
     fontFamily: 'BebasNeue',
     fontStyle: 'normal',
@@ -111,20 +107,20 @@ const styles = StyleSheet.create({
   },
   heading1: {
     left: '-10%',
-    top: '20%',
+    top: '15%',
     fontSize: 100,
     lineHeight: 120,
   },
   heading2: {
     left: '30%',
-    top: '25%',
+    top: '10%',
     bottom: '68.24%',
     fontSize: 77,
     lineHeight: 92,
   },
   heading3: {
-    top: '23%',
     left: '5%',
+    top: '8%',
     fontSize: 88,
     lineHeight: 106,
   },
@@ -132,7 +128,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignSelf: 'center',
     fontFamily: 'Roboto',
-    top: '70%',
+    top: '-10%',
     fontSize: 20,
     lineHeight: 30,
     letterSpacing: -0.01,

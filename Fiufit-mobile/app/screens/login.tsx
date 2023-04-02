@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
-import { Container, Heading, Flex, Image, Link, Input, Button, Text, Icon, Stack, Pressable, NativeBaseProvider, extendTheme } from "native-base";
+import { Container, Heading, Flex, Image, Link, Input, Button, Text, Icon, Stack, Pressable, NativeBaseProvider, extendTheme, VStack, HStack } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useState } from 'react';
@@ -40,58 +40,65 @@ export default function LoginScreen({ navigation } : any) {
   }, [user, loading]);
 
   return <NativeBaseProvider theme={ theme }>
-    <Stack space={ 3 } w="100%" alignItems="center" style={ styles.stack }>
+    <Stack space={ 10 } w="100%" alignItems="center" style={ styles.stack }>
       <Heading style={ styles.heading }>Ingresa tus datos</Heading>
-      <Input
-        w={{ base: "80%", md: "30%" }} 
-        h="15%" 
-        variant="underlined" 
-        placeholder="Email" 
-        onChangeText={ (email) => setEmail(email) }
-      />
-      <Input w={{ base: "80%", md: "25%" }}
-        h="15%"
-        type={ show ? "text" : "password" }
-        variant="underlined"
-        onChangeText={ (password) => setPassword(password) }
-        InputRightElement={<Pressable onPress={ () => setShow(!show) }>
-        <Icon as={<MaterialIcons name={ show ? "visibility" : "visibility-off" } />}
-        size={ 5 } mr="2" color="muted.400" />
-        </Pressable>} placeholder="Contraseña"
-      />
-    </Stack>
-    <Flex h="12" alignItems="center">
-      <Button
-        style={ styles.button }
-        onPress={ () => {logInWithEmailAndPassword(email, password)} }
-        _text={{ color: "#FFFFFF", fontSize: "20px", fontWeight: "bold" }}
-      >
-        Iniciar sesión
-      </Button>
+      <VStack space={10} alignItems="center">
+        <Input
+          w={{ base: "80%", md: "30%" }} 
+          h="15%" 
+          variant="underlined" 
+          placeholder="Email" 
+          onChangeText={ (email) => setEmail(email) }
+        />
+        <Input w={{ base: "80%", md: "25%" }}
+          h="15%"
+          type={ show ? "text" : "password" }
+          variant="underlined"
+          onChangeText={ (password) => setPassword(password) }
+          InputRightElement={<Pressable onPress={ () => setShow(!show) }>
+          <Icon as={<MaterialIcons name={ show ? "visibility" : "visibility-off" } />}
+          size={ 5 } mr="2" color="muted.400" />
+          </Pressable>} placeholder="Contraseña"
+        />
+      </VStack>
+      <Flex top="-40%" h="12" w="sm" alignItems="center">
+        <Button
+          style={ styles.button }
+          onPress={ () => {logInWithEmailAndPassword(email, password)} }
+          _text={{ color: "#FFFFFF", fontSize: "20px", fontWeight: "bold" }}
+        >
+          Iniciar sesión
+        </Button>
     </Flex>
-    <Text style={ styles.registerTextOption }>O iniciar sesión con</Text>
-    <TouchableOpacity onPress={ () => {} }>
-      <Image
-        style={ styles.googleImage }
-        source={ require('../../assets/images/logos_google-icon.png') }
-        alt='google'
-      />
-    </TouchableOpacity>
-    <Text style={ styles.moveToRegister }>No tienes una cuenta?</Text>
-    <Link
-      style={ styles.link }
-      onPress={ () => {navigation.navigate('RegisterScreen')} }
-      _text={{ color: "#BC2666" }}
-    >
-      Registrarse
-    </Link>
+    </Stack>
+    <VStack space={8} top="15%">
+      <Text style={ styles.registerTextOption }>O iniciar sesión con</Text>
+      <TouchableOpacity onPress={ () => {} }>
+        <Image
+          style={ styles.googleImage }
+          source={ require('../../assets/images/logos_google-icon.png') }
+          alt='google'
+        />
+      </TouchableOpacity>
+    </VStack>
+    <HStack space={2} left="10%" top="50%">
+      <Text style={ styles.moveToRegister }>No tienes una cuenta?</Text>
+      <Link
+        style={ styles.link }
+        onPress={ () => {navigation.navigate('RegisterScreen')} }
+        _text={{ color: "#BC2666" }}
+      >
+        Registrarse
+      </Link>
+    </HStack>
   </NativeBaseProvider>;
 }
 
 const styles = StyleSheet.create({
   button: {
     flex: 1,
-    width: "90%",
+    textAlign: 'center',
+    width: "60%",
     left: "2.3%",
     top: "35%",
     borderRadius: 30
@@ -99,7 +106,7 @@ const styles = StyleSheet.create({
   heading: {
     flex: 0,
     left: '1%',
-    top: '-20%',
+    top: '-10%',
     fontFamily: 'Roboto',
     fontStyle: 'normal',
     fontWeight: '800',
@@ -108,14 +115,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   googleImage: {
-    top: "1300%",
+    top: "0%",
     left: "47%",
     right: "0%",
     bottom: "0%",
   },
   link: {
-    top: "81.35%",
-    left: "27%",
+    top: "50%",
+    left: "0%",
   },
   stack: {
     display: 'flex',
@@ -125,7 +132,7 @@ const styles = StyleSheet.create({
     top: '20%',
   },
   registerTextOption: {
-    top: '26.5%',
+    top: '0%',
     fontFamily: 'Montserrat',
     fontStyle: 'normal',
     fontWeight: '500',
@@ -136,7 +143,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   moveToRegister: {
-    top: '40%',
-    left: '20%',
+    top: '2.8%',
+    left: '0%',
   }
 });
