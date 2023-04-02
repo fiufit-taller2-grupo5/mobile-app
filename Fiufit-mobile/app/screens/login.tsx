@@ -70,7 +70,7 @@ export default function LoginScreen({ navigation } : any) {
           Iniciar sesión
         </Button>
       </View>
-      <VStack space={8} alignItems="center">
+      <VStack space={ 8 } alignItems="center">
         <Text style={ styles.registerTextOption }>O iniciar sesión con</Text>
         <TouchableOpacity onPress={ () => {} }>
           <Image
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    top: '25%',
+    top: '20%',
   },
   registerTextOption: {
     top: '0%',
