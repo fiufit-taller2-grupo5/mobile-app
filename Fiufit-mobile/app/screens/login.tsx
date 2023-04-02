@@ -42,7 +42,7 @@ export default function LoginScreen({ navigation } : any) {
   return <NativeBaseProvider theme={ theme }>
     <VStack space={ 6 } alignItems="center" style={ styles.stack }>
       <Heading style={ styles.heading }>Ingresa tus datos</Heading>
-      <VStack space={10} alignItems="center">
+      <VStack space={ 10 } alignItems="center">
         <Input
           w={{ base: "80%", md: "30%" }} 
           h="15%" 

@@ -33,19 +33,21 @@ export default function WelcomeScreen({navigation} : NativeStackScreenProps<any,
 
   return <SafeAreaProvider>
     <NativeBaseProvider theme={theme}>
-      <VStack space={16} alignItems="center">
-        <Text style={[styles.text, styles.heading1]} variant="heading1"> DESAFIA </Text>
-        <HStack space={ 2 } justifyContent="center">
-          <Text style={[styles.text, styles.heading2]} variant="heading2" > TUS </Text>
-          <Text style={[styles.text, styles.heading3]} variant="heading3"> LIMITES </Text>
-        </HStack>
+      <VStack space={6} alignItems="center" height={"full"}>
+        <VStack space={2} alignItems="center">
+          <Text style={[styles.text, styles.heading1]} variant="heading1"> DESAFIA </Text>
+          <HStack space={ 2 } justifyContent="center">
+            <Text style={[styles.text, styles.heading2]} variant="heading2" > TUS </Text>
+            <Text style={[styles.text, styles.heading3]} variant="heading3"> LIMITES </Text>
+          </HStack>
+        </VStack>
         <Center>
           <Flex width="xs">
             <Text style={[styles.text, styles.paragraph]} variant="paragraph">
               Realizá un seguimiento de tus entrenamientos, obtén mejores resultados y sé la mejor versión de ti mismo.
             </Text>
           </Flex>
-            <Center style={{top:"-10%"}}>
+            <Center style={{top:"10%"}}>
               <AspectRatio
                 w="100%" 
                 ratio={16 / 9}
@@ -91,7 +93,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '35%',
     height: '8%',
-    bottom: '0%',
+    bottom: '8%',
     borderRadius: 50,
   },
   firstButton: {
@@ -107,20 +109,20 @@ const styles = StyleSheet.create({
   },
   heading1: {
     left: '-10%',
-    top: '15%',
+    top: '50%',
     fontSize: 100,
     lineHeight: 120,
   },
   heading2: {
     left: '30%',
-    top: '10%',
+    top: '20%',
     bottom: '68.24%',
     fontSize: 77,
     lineHeight: 92,
   },
   heading3: {
     left: '5%',
-    top: '8%',
+    top: '18%',
     fontSize: 88,
     lineHeight: 106,
   },
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignSelf: 'center',
     fontFamily: 'Roboto',
-    top: '-10%',
+    top: '50%',
     fontSize: 20,
     lineHeight: 30,
     letterSpacing: -0.01,
