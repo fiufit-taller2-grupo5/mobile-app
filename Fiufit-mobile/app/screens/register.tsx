@@ -40,53 +40,62 @@ export default function RegisterScreen({ navigation } : any) {
       if (user) navigation.navigate('HomeScreen');
   }, [user, loading]);
 
-  return <NativeBaseProvider theme={theme}>
-    <Container>
-      <Heading style={styles.heading} >Crear una cuenta</Heading>
-    </Container>
+  return <NativeBaseProvider theme={ theme }>
     <Stack
-    space={4} w="100%"
-    alignItems="center"
-    style={styles.stack}
+      space={ 4 } w="100%"
+      alignItems="center"
+      style={ styles.stack }
     >
-      <Input w={{ base: "80%", md: "30%"}} 
-      h="15%" 
-      variant="underlined"
-      onChangeText={(name) => setName(name)}
-      placeholder="Nombre completo" />
-      <Input w={{ base: "80%", md: "30%"}} 
-      h="15%" 
-      variant="underlined" 
-      placeholder="Email" 
-      onChangeText={(email) => setEmail(email)}/>
-      <Input w={{base: "80%", md: "25%"}}
-      h="15%"
-      type={show ? "text" : "password"}
-      variant="underlined"
-      onChangeText={(password) => setPassword(password)}
-      InputRightElement={<Pressable onPress={() => setShow(!show)}>
-      <Icon as={<MaterialIcons name={show ? "visibility" : "visibility-off"} />}
-      size={5} mr="2" color="muted.400" />
-      </Pressable>} placeholder="Contraseña" />
+      <Heading style={ styles.heading }>Crear una cuenta</Heading>
+      <Input
+        w={{ base: "80%", md: "30%" }} 
+        h="15%" 
+        variant="underlined"
+        onChangeText={ (name) => setName(name) }
+        placeholder="Nombre completo"
+      />
+      <Input
+        w={{ base: "80%", md: "30%" }} 
+        h="15%" 
+        variant="underlined" 
+        placeholder="Email" 
+        onChangeText={ (email) => setEmail(email) }
+      />
+      <Input
+        w={{ base: "80%", md: "25%" }}
+        h="15%"
+        type={ show ? "text" : "password" }
+        variant="underlined"
+        onChangeText={ (password) => setPassword(password) }
+        InputRightElement={<Pressable onPress={ () => setShow(!show) }>
+        <Icon as={<MaterialIcons name={show ? "visibility" : "visibility-off"} />}
+        size={5} mr="2" color="muted.400" />
+        </Pressable>} placeholder="Contraseña"
+      />
     </Stack>
     <Flex h="12" alignItems="center">
       <Button
-      style={styles.button}
-      onPress={() => {registerWithEmailAndPassword(name, email, password)}}
-      _text={{color: "#FFFFFF", fontSize: "20px", fontWeight: "bold"}}>Registrarse</Button>
+        style={ styles.button }
+        onPress={() => { registerWithEmailAndPassword(name, email, password) }}
+        _text={{ color: "#FFFFFF", fontSize: "20px", fontWeight: "bold" }}
+      >
+        Registrarse
+      </Button>
     </Flex>
-    <Text style={styles.loginTextOption} >O registrarse con</Text>
+    <Text style={ styles.loginTextOption } >O registrarse con</Text>
     <TouchableOpacity onPress={() => {}}>
         <Image
-        style={styles.googleImage}
-        source={require('../../assets/images/logos_google-icon.png')}
-        alt='google'/>
+          style={ styles.googleImage }
+          source={ require('../../assets/images/logos_google-icon.png') }
+          alt='google'
+        />
     </TouchableOpacity>
-    <Text style={styles.moveToLogin} >No tienes una cuenta?</Text>
+    <Text style={ styles.moveToLogin }>No tienes una cuenta?</Text>
     <Link
-    style={styles.link}
-    onPress={() => {navigation.navigate('LoginScreen')}} 
-    _text={{color: "#BC2666"}}>
+      style={styles.link}
+      onPress={() => { navigation.navigate('LoginScreen') }} 
+      _text={{ color: "#BC2666" }}
+    >
         Iniciar sesión
     </Link>
   </NativeBaseProvider>;
@@ -102,8 +111,8 @@ const styles = StyleSheet.create({
   },
   heading: {
     flex: 0,
-    left: '27%',
-    top: '450%',
+    left: '1%',
+    top: '-20%',
     fontFamily: 'Roboto',
     fontStyle: 'normal',
     fontWeight: '800',
