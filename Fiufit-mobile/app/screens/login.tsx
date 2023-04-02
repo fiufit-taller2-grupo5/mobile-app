@@ -40,16 +40,13 @@ export default function LoginScreen({ navigation } : any) {
     }, [user, loading]);
 
     return <NativeBaseProvider theme={theme}>
-        <Container>
+        <Stack space={3} w="100%" alignItems="center" style={styles.stack}>
             <Heading style={styles.heading}>Ingresa tus datos</Heading>
-        </Container>
-        <Stack space={4} w="100%" alignItems="center" style={styles.stack}>
             <Input w={{ base: "80%", md: "30%"}} 
             h="15%" 
             variant="underlined" 
             placeholder="Email" 
             onChangeText={(email) => setEmail(email)}/>
-
             <Input w={{base: "80%", md: "25%"}}
             h="15%"
             type={show ? "text" : "password"}
@@ -95,8 +92,8 @@ const styles = StyleSheet.create({
     },
     heading: {
         flex: 0,
-        left: '25%',
-        top: '450%',
+        left: '1%',
+        top: '-20%',
         fontFamily: 'Roboto',
         fontStyle: 'normal',
         fontWeight: '800',
