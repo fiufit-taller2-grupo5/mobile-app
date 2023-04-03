@@ -40,9 +40,14 @@ export default function LoginScreen({ navigation } : any) {
   }, [user, loading]);
 
   return <NativeBaseProvider theme={ theme }>
-    <VStack space={ 6 } alignItems="center" style={ styles.stack }>
+    <VStack
+      space={6}
+      alignItems="center"
+      style={styles.stack}
+      height={"full"}
+    >
       <Heading style={ styles.heading }>Ingresa tus datos</Heading>
-      <VStack space={ 10 } alignItems="center">
+      <VStack space={10} alignItems="center" top={"5%"}>
         <Input
           w={{ base: "80%", md: "30%" }} 
           h="15%" 
@@ -106,7 +111,7 @@ const styles = StyleSheet.create({
   heading: {
     flex: 0,
     left: '0%',
-    top: '-10%',
+    top: '0%',
     fontFamily: 'Roboto',
     fontStyle: 'normal',
     fontWeight: '800',
@@ -117,7 +122,6 @@ const styles = StyleSheet.create({
   googleImage: {
     top: "0%",
     right: "0%",
-    bottom: "0%",
   },
   link: {
     top: "50%",
@@ -128,7 +132,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    top: '20%',
   },
   registerTextOption: {
     top: '0%',
