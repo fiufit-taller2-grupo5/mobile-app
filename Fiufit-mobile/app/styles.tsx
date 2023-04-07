@@ -17,7 +17,7 @@ export const welcomeStyles = StyleSheet.create({
   horizontalStack: {
     display: 'flex',
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    // flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',

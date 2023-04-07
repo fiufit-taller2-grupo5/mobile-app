@@ -33,7 +33,6 @@ export default function LoginScreen({ navigation } : any) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [user, loading, error] = useAuthState(auth);
-
   React.useEffect(() => {
     if (loading) {
       // maybe trigger a loading screen
