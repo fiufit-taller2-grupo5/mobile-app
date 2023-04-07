@@ -11,13 +11,11 @@ export const welcomeStyles = StyleSheet.create({
   verticalStack: {
     display: 'flex',
     flexDirection: 'column',
-    flexWrap: 'wrap',
     justifyContent: 'center',
   },
   horizontalStack: {
     display: 'flex',
     flexDirection: 'row',
-    flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
@@ -47,7 +45,6 @@ export const welcomeStyles = StyleSheet.create({
   },
   heading2: {
     left: '30%',
-    bottom: '68.24%',
     fontSize: 77,
     lineHeight: 92,
   },

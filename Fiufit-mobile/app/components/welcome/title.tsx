@@ -10,6 +10,7 @@ export default function Title() {
       > DESAFIA </Text>
       <HStack
         space={2}
+        width="full"
         style={[welcomeStyles.horizontalStack, welcomeStyles.titleHorizontalStack]}
       >
         <Text
