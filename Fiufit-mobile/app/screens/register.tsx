@@ -63,7 +63,7 @@ export default function RegisterScreen({ navigation } : any) {
         password={password}
         setPassword={setPassword}
       />
-      <SubmitButton name={name} email={email} password={password}/>
+      <SubmitButton navigation={navigation} name={name} email={email} password={password}/>
       <GoogleRegister/>
       <MoveToLogin
         navigation={navigation}

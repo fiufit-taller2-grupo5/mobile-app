@@ -15,11 +15,11 @@ export default function MoveToRegister(props: Props) {
       <Text style={loginAndRegisterStyles.moveToRegister}>No tienes una cuenta?</Text>
       <Link
         style={[loginAndRegisterStyles.link, loginAndRegisterStyles.loginLink]}
-        onPress={ () => {
+        onPress={() => {
           navigation.navigate('RegisterScreen');
           setEmail("");
           setPassword("");
-        } }
+        }}
         _text={{color: "#BC2666"}}
       >
         Registrarse

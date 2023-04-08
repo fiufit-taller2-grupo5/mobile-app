@@ -59,7 +59,7 @@ export default function LoginScreen({ navigation } : any) {
         password={password}
         setPassword={setPassword}
       />
-      <SubmitButton email={email} password={password} />
+      <SubmitButton email={email} password={password} navigation={navigation}/>
       <GoogleLogin />
       <MoveToRegister
         navigation={navigation}

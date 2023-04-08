@@ -76,8 +76,13 @@ export const loginAndRegisterStyles = StyleSheet.create({
     textAlign: "center",
     height: "-10%",
     width: "80%",
-    top: "-20%",
     borderRadius: 30
+  },
+  loginAndRegisterButton: {
+    top: "-10%",
+  },
+  extraInfoButton: {
+    top: "-15%",
   },
   heading: {
     flex: 0,
@@ -95,6 +100,9 @@ export const loginAndRegisterStyles = StyleSheet.create({
   loginHeading: {
     top: '0%',
   },
+  extraInfoHeading: {
+    top: '10%',
+  },
   googleImage: {
     top: "0%",
     right: "0%",
@@ -108,6 +116,9 @@ export const loginAndRegisterStyles = StyleSheet.create({
   },
   loginLink: {
     top: "50%",
+  },
+  extraInfoLink: {
+    top: "-10%",
   },
   googleTextOption: {
     top: '0%',

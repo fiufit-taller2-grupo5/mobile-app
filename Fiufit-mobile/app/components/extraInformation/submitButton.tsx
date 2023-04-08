@@ -1,28 +1,30 @@
 import { View, Button } from "native-base";
 import { loginAndRegisterStyles } from "../../styles";
-import { logInWithEmailAndPassword } from '../../../firebase';
 
 
 interface Props {
   navigation: any;
-  email: string;
-  password: string;
+  location: string;
+  age: string;
+  weight: string;
+  height: string;
+  interests: string;
 }
 
 export default function SubmitButton(props: Props) {
-  const { navigation, email, password } = props;
+  const { navigation, location, age, weight, height, interests } = props;
 
   return (
     <View style={{height: 50, width: "100%", alignItems: "center"}}>
       <Button
-        style={[loginAndRegisterStyles.button, loginAndRegisterStyles.loginAndRegisterButton]}
+        style={[loginAndRegisterStyles.button, loginAndRegisterStyles.extraInfoButton]}
         onPress={() => {
-          logInWithEmailAndPassword(email, password);
+          console.log("pass the extra information to backend");
           navigation.navigate('HomeScreen');
         }}
         _text={{color: "#FFFFFF", fontSize: "20px", fontWeight: "bold"}}
       >
-        Iniciar sesión
+        Continuar
       </Button>
     </View>
   );
