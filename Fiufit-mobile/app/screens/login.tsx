@@ -8,6 +8,7 @@ import LoginForm from '../components/login/loginForm';
 import SubmitButton from '../components/login/submitButton';
 import GoogleLogin from '../components/login/googleLogin';
 import MoveToRegister from '../components/login/moveToRegister';
+import { AuthError } from 'expo-auth-session';
 
 export default function LoginScreen({ navigation } : any) {
   const theme = extendTheme({
@@ -39,7 +40,17 @@ export default function LoginScreen({ navigation } : any) {
       return;
     }
     if (user) navigation.navigate('HomeScreen');
+
+    if (error) {
+      console.log(error);
+      return;
+    }
   }, [user, loading]);
+
+  const cleanFields = () => {
+    setEmail("");
+    setPassword("");
+  }
 
   return <NativeBaseProvider theme={theme}>
     <VStack
@@ -59,7 +70,7 @@ export default function LoginScreen({ navigation } : any) {
         password={password}
         setPassword={setPassword}
       />
-      <SubmitButton email={email} password={password} navigation={navigation}/>
+      <SubmitButton email={email} password={password} navigation={navigation} clearFields={cleanFields}/>
       <GoogleLogin />
       <MoveToRegister
         navigation={navigation}

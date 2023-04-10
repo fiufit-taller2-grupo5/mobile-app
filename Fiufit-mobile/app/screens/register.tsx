@@ -43,6 +43,12 @@ export default function RegisterScreen({ navigation } : any) {
       if (user) navigation.navigate('HomeScreen');
   }, [user, loading]);
 
+  const clearFields = () => {
+    setName("");
+    setEmail("");
+    setPassword("");
+  }
+
   return <NativeBaseProvider theme={ theme }>
     <VStack
       space={2}
@@ -63,7 +69,7 @@ export default function RegisterScreen({ navigation } : any) {
         password={password}
         setPassword={setPassword}
       />
-      <SubmitButton navigation={navigation} name={name} email={email} password={password}/>
+      <SubmitButton navigation={navigation} name={name} email={email} password={password} clearFields={clearFields}/>
       <GoogleRegister/>
       <MoveToLogin
         navigation={navigation}

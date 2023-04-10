@@ -7,6 +7,7 @@ interface Props {
   navigation: any;
   email: string;
   password: string;
+  clearFields: () => void;
 }
 
 export default function SubmitButton(props: Props) {
@@ -17,7 +18,11 @@ export default function SubmitButton(props: Props) {
       <Button
         style={[loginAndRegisterStyles.button, loginAndRegisterStyles.loginAndRegisterButton]}
         onPress={() => {
-          logInWithEmailAndPassword(email, password);
+          const isError = logInWithEmailAndPassword(email, password);
+          if (!isError) {
+            props.clearFields();
+            return;
+          }
           navigation.navigate('HomeScreen');
         }}
         _text={{color: "#FFFFFF", fontSize: "20px", fontWeight: "bold"}}
