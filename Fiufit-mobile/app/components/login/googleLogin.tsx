@@ -21,11 +21,11 @@ export default function GoogleLogin() {
     projectNameForProxy: '@expo/fiufit-mobile'
   });
 
-
+  // TODO: add the case in which the user logs in with google withouth having an account on the app
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    expoClientId: "423504146626-vdsffal07p46s5s52v0o0l2826rsro0f.apps.googleusercontent.com", // for use with @gabsem/fiufit-mobile
-    // expoClientId: "423504146626-fot1vrq5r4285qo64vlh6s6gd9adanag.apps.googleusercontent.com", // for use with @expo/fiufit-mobile
-    // redirectUri // for use with @expo/fiufit-mobile
+    // expoClientId: "423504146626-vdsffal07p46s5s52v0o0l2826rsro0f.apps.googleusercontent.com", // for use with @gabsem/fiufit-mobile
+    clientId: "423504146626-fot1vrq5r4285qo64vlh6s6gd9adanag.apps.googleusercontent.com", // for use with @expo/fiufit-mobile
+    redirectUri: redirectUri, // for use with @expo/fiufit-mobile
     androidClientId:
       "423504146626-e1u34lh849tjf769p9ppkok8jc84q4cj.apps.googleusercontent.com",
     webClientId:

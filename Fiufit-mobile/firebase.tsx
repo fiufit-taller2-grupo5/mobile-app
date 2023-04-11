@@ -16,6 +16,12 @@ import {
   addDoc
 } from "firebase/firestore";
 
+
+type userInfo = {
+  name?: string;
+  uid: string;
+}
+
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -48,7 +54,7 @@ const logInWithEmailAndPassword = async (email : string , password : string ): P
     const uid = user.uid;
     user.getIdToken()
       .then((idToken) => {
-        sendIdTokenToBackend(idToken);
+        sendIdTokenToBackend({uid}, idToken);
       })
       .catch((error) => {
         alert(error.message);
@@ -72,7 +78,7 @@ const registerWithEmailAndPassword =
       });
       user.getIdToken()
         .then((idToken) => {
-          sendIdTokenToBackend(idToken);
+          sendIdTokenToBackend({name: name, uid: user.uid}, idToken);
         })
         .catch((error) => {
           alert(error.message);
@@ -128,9 +134,53 @@ const getErrorMessage = (error: AuthError) : string => {
   }
 }
 
-const sendIdTokenToBackend = async (idToken: string) => {
-  // TODO: Send token to your backend via HTTPS
-  // ...
+const sendIdTokenToBackend = async (data : userInfo, idToken: string) => {
+  // get de prueba
+  try {
+    const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "connection": "keep-alive",
+        "Authorization": "Bearer " + idToken,
+      },
+    });
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data);
+    } else {
+      alert("Error al iniciar sesión");
+      console.error(response);
+    }
+  } catch (err:any) {
+    console.error(err);
+    alert(err.message);
+  }
+  // post
+  try {
+    const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "Authorization": "Bearer " + idToken,
+      },
+      body: JSON.stringify(data),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data);
+    } else {
+      alert("Error al iniciar sesión");
+      console.error(response.json());
+    }
+  } catch (err:any) {
+    console.error(err);
+    alert(err.message);
+  }
 }
 
 export {
