@@ -26,7 +26,7 @@ const firebaseConfig = {
   messagingSenderId: "423504146626",
   appId: "1:423504146626:web:6a2efab8c617ea5965cb5b",
   measurementId: "G-260WD4NMWQ"
-  };
+};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -41,45 +41,49 @@ const getCauseFromErrorMessage = (s:string) : string => {
   return s.split("/")[1].split(")")[0];
 }
 
-const logInWithEmailAndPassword = (email : string , password : string ): void | Error => {
-  signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
-    // Signed in
+const logInWithEmailAndPassword = async (email : string , password : string ): Promise<string | void> => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     const uid = user.uid;
-    const email = user.email;
-    user.getIdToken().then((idToken) => {
-      sendIdTokenToBackend(idToken);
-    }).catch((error) => {
-      alert(error.message);
-    });
-  })
-  .catch((error) => {handleLoginError(error);});
-};
-
-const registerWithEmailAndPassword = (name : string, email : string, password : string) : void | Error => {
-  if (name === "") {
-    alert("Please enter a name");
-    return;
+    user.getIdToken()
+      .then((idToken) => {
+        sendIdTokenToBackend(idToken);
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
   }
-  createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
-    // Signed in
-    const user = userCredential.user;
-    addDoc(collection(db, "users"), {
-      uid: user.uid,
-      name,
-      authProvider: "local",
-      email: user.email,
-    }).catch((error) => {alert(error.message);});
-    user.getIdToken().then((idToken) => {
-      sendIdTokenToBackend(idToken);
-    }).catch((error) => {
-      alert(error.message);
-    });
-  })
-  .catch((error) => {handleLoginError(error);});
-  
+  catch (error: any) {
+    return getErrorMessage(error);
+  }
 };
 
+const registerWithEmailAndPassword =
+  async (name : string, email : string, password : string) : Promise<void | string> => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      await addDoc(collection(db, "users"), {
+        uid: user.uid,
+        name,
+        authProvider: "local",
+        email: user.email,
+      });
+      user.getIdToken()
+        .then((idToken) => {
+          sendIdTokenToBackend(idToken);
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    }
+    catch (error: any) {
+      return getErrorMessage(error);
+    }
+};
+
+// TODO: handle errors to show to user
 const sendPasswordReset = async (email : string) => {
   try {
     await sendPasswordResetEmail(auth, email);
@@ -90,42 +94,37 @@ const sendPasswordReset = async (email : string) => {
   }
 };
 
+// TODO: handle errors to show to user
 const logout = async () => {
-    try {
-        await signOut(auth);
-    } catch (err:any) {
-        console.error(err);
-        alert(err.message);
-    }
+  try {
+      await signOut(auth);
+  } catch (err:any) {
+      console.error(err);
+      alert(err.message);
+  }
 };
 
-const handleLoginError = (error: AuthError) => {
+const getErrorMessage = (error: AuthError) : string => {
   switch (getCauseFromErrorMessage(error.code)) {
     case "invalid-email":
-      alert("Correo inválido");
-      break;
+      return "Correo inválido";
     case "user-disabled":
-      alert("Usuario deshabilitado");
-      break;
+      return "Usuario deshabilitado";
     case "user-not-found":
-      alert("Usuario no encontrado");
-      break;
+      return "Usuario no encontrado";
     case "wrong-password":
-      alert("Contraseña incorrecta");
-      break;
+      return "Contraseña incorrecta";
     case "weak-password":
-      alert("La contraseña debe ser de al menos 6 caracteres");
-      break;
+      return "La contraseña debe ser de al menos 6 caracteres";
+    case "missing-email":
+      return "Por favor ingrese un correo"
     case "missing-password":
-      alert("Por favor ingrese una contraseña");
-      break;
+      return "Por favor ingrese una contraseña";
     case "email-already-in-use":
-      alert("El correo ya está en uso");
-      break;
+      return "El correo ya está en uso";
     default:
       console.error(error);
-      alert("Error desconocido");
-      break;
+      return "Error desconocido"
   }
 }
 
@@ -135,10 +134,10 @@ const sendIdTokenToBackend = async (idToken: string) => {
 }
 
 export {
-    auth,
-    db,
-    logInWithEmailAndPassword,
-    registerWithEmailAndPassword,
-    sendPasswordReset,
-    logout,
-  };
+  auth,
+  db,
+  logInWithEmailAndPassword,
+  registerWithEmailAndPassword,
+  sendPasswordReset,
+  logout,
+};

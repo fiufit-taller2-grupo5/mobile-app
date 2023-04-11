@@ -8,7 +8,9 @@ import LoginForm from '../components/login/loginForm';
 import SubmitButton from '../components/login/submitButton';
 import GoogleLogin from '../components/login/googleLogin';
 import MoveToRegister from '../components/login/moveToRegister';
-import { AuthError } from 'expo-auth-session';
+import ErrorMessage from '../components/form/errorMessage';
+
+
 
 export default function LoginScreen({ navigation } : any) {
   const theme = extendTheme({
@@ -33,7 +35,9 @@ export default function LoginScreen({ navigation } : any) {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [user, loading, error] = useAuthState(auth);
+
   React.useEffect(() => {
     if (loading) {
       // maybe trigger a loading screen
@@ -59,6 +63,7 @@ export default function LoginScreen({ navigation } : any) {
       height={"full"}
       width={"full"}
     >
+      <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage}/>
       <Heading
         style={[loginAndRegisterStyles.heading, loginAndRegisterStyles.loginHeading]}
       >
@@ -70,12 +75,17 @@ export default function LoginScreen({ navigation } : any) {
         password={password}
         setPassword={setPassword}
       />
-      <SubmitButton email={email} password={password} navigation={navigation} clearFields={cleanFields}/>
+      <SubmitButton
+        email={email}
+        password={password}
+        navigation={navigation}
+        setErrorMessage={setErrorMessage}
+        clearFields={cleanFields}
+      />
       <GoogleLogin />
       <MoveToRegister
         navigation={navigation}
-        setEmail={setEmail}
-        setPassword={setPassword}
+        clearFields={cleanFields}
       />
     </VStack>
   </NativeBaseProvider>;

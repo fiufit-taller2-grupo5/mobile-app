@@ -4,15 +4,11 @@ import { loginAndRegisterStyles } from "../../styles";
 
 interface Props {
   navigation: any;
-  setLocation: (location: string) => void;
-  setAge: (age: string) => void;
-  setWeight: (weight: string) => void;
-  setHeight: (height: string) => void;
-  setInterests: (interests: string) => void;
+  clearFields: () => void;
 }
 
 export default function MoveToApp(props: Props) {
-  const { navigation, setLocation, setAge, setWeight, setHeight, setInterests } = props;
+  const { navigation, clearFields } = props;
 
   return (
     <Box alignItems="center">
@@ -21,11 +17,7 @@ export default function MoveToApp(props: Props) {
         isUnderlined={false}
         onPress={() => {
           navigation.navigate('HomeScreen');
-          setLocation("");
-          setAge("");
-          setWeight("");
-          setHeight("");
-          setInterests("");
+          clearFields();
         }}
         _text={{color: "#FF6060", fontSize: "20px", fontWeight: "medium"}}
       >

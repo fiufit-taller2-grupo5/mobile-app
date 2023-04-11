@@ -8,6 +8,8 @@ import RegisterForm from '../components/register/registerForm';
 import SubmitButton from '../components/register/submitButton';
 import GoogleRegister from '../components/register/googleRegister';
 import MoveToLogin from '../components/register/moveToLogin';
+import ErrorMessage from '../components/form/errorMessage';
+
 
 export default function RegisterScreen({ navigation } : any) {
   const theme = extendTheme({
@@ -33,6 +35,7 @@ export default function RegisterScreen({ navigation } : any) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [user, loading, error] = useAuthState(auth);
 
   React.useEffect(() => {
@@ -49,13 +52,14 @@ export default function RegisterScreen({ navigation } : any) {
     setPassword("");
   }
 
-  return <NativeBaseProvider theme={ theme }>
+  return <NativeBaseProvider theme={theme}>
     <VStack
       space={2}
       style={loginAndRegisterStyles.stack}
       height={"full"}
       width={"full"}
     >
+      <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage}/>
       <Heading
         style={[loginAndRegisterStyles.heading, loginAndRegisterStyles.registerHeading]}
       >
@@ -69,13 +73,18 @@ export default function RegisterScreen({ navigation } : any) {
         password={password}
         setPassword={setPassword}
       />
-      <SubmitButton navigation={navigation} name={name} email={email} password={password} clearFields={clearFields}/>
+      <SubmitButton
+        navigation={navigation}
+        name={name}
+        email={email}
+        password={password}
+        setErrorMessage={setErrorMessage}
+        clearFields={clearFields}
+      />
       <GoogleRegister/>
       <MoveToLogin
         navigation={navigation}
-        setName={setName}
-        setEmail={setEmail}
-        setPassword={setPassword}
+        clearFields={clearFields}
       />
     </VStack>
   </NativeBaseProvider>;

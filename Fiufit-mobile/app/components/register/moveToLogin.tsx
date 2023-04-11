@@ -4,13 +4,11 @@ import { loginAndRegisterStyles } from "../../styles";
 
 interface Props {
   navigation: any;
-  setName: (name: string) => void;
-  setEmail: (email: string) => void;
-  setPassword: (password: string) => void;
+  clearFields: () => void;
 }
 
 export default function MoveToLogin(props: Props) {
-  const { navigation, setName, setEmail, setPassword } = props;
+  const { navigation, clearFields } = props;
 
   return (
     <HStack space={2} top="10%">
@@ -19,9 +17,7 @@ export default function MoveToLogin(props: Props) {
         style={[loginAndRegisterStyles.link, loginAndRegisterStyles.registerLink]}
         onPress={() => {
           navigation.navigate('LoginScreen');
-          setName("");
-          setEmail("");
-          setPassword("");
+          clearFields();
         }} 
         _text={{color: "#BC2666"}}
       >

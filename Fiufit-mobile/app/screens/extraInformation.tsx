@@ -29,6 +29,14 @@ export default function ExtraInformationScreen({ navigation }: any) {
   const [height, setHeight] = useState("");
   const [interests, setInterests] = useState("");
 
+  const clearFields = () => {
+    setLocation("");
+    setAge("");
+    setWeight("");
+    setHeight("");
+    setInterests("");
+  }
+
   return <NativeBaseProvider theme={theme}>
     <VStack
       space={6}
@@ -63,11 +71,7 @@ export default function ExtraInformationScreen({ navigation }: any) {
       />
       <MoveToApp
         navigation={navigation}
-        setLocation={setLocation}
-        setAge={setAge}
-        setWeight={setWeight}
-        setHeight={setHeight}
-        setInterests={setInterests}
+        clearFields={clearFields}
       />
     </VStack>
   </NativeBaseProvider>;
