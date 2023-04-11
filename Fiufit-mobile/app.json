@@ -26,6 +26,11 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "scheme": "fiufit"
+    "scheme": "fiufit",
+    "extra": {
+      "eas": {
+        "projectId": "a9b48b8e-6904-4846-9385-e5b351c5f0a8"
+      }
+    }
   }
 }

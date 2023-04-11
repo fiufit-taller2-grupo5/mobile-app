@@ -1,4 +1,3 @@
-// Import the functions you need from the SDKs you need
 import { AuthError } from "expo-auth-session";
 import { initializeApp } from "firebase/app";
 import { 
@@ -10,20 +9,11 @@ import {
   signOut 
 } from "firebase/auth";
 
-import { 
-  getFirestore, 
-  collection, 
-  addDoc
-} from "firebase/firestore";
-
-
 type userInfo = {
   name?: string;
   uid: string;
 }
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyDoN3FOFeaLagniu1nAkyWTbb_4kO4kXBw",
   authDomain: "fiufit-93740.firebaseapp.com",
@@ -38,7 +28,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 auth.signOut();
-const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
 const getCauseFromErrorMessage = (s:string) : string => {
@@ -54,7 +43,7 @@ const logInWithEmailAndPassword = async (email : string , password : string ): P
     const uid = user.uid;
     user.getIdToken()
       .then((idToken) => {
-        sendIdTokenToBackend({uid}, idToken);
+        sendUserInfoToBackend({uid}, idToken);
       })
       .catch((error) => {
         alert(error.message);
@@ -70,15 +59,9 @@ const registerWithEmailAndPassword =
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      await addDoc(collection(db, "users"), {
-        uid: user.uid,
-        name,
-        authProvider: "local",
-        email: user.email,
-      });
       user.getIdToken()
         .then((idToken) => {
-          sendIdTokenToBackend({name: name, uid: user.uid}, idToken);
+          sendUserInfoToBackend({name: name, uid: user.uid}, idToken);
         })
         .catch((error) => {
           alert(error.message);
@@ -134,58 +117,60 @@ const getErrorMessage = (error: AuthError) : string => {
   }
 }
 
-const sendIdTokenToBackend = async (data : userInfo, idToken: string) => {
+const sendUserInfoToBackend = async (data : userInfo, idToken: string) => {
   // get de prueba
-  try {
-    const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + idToken,
-      },
-    });
-    if (response.ok) {
-      const data = await response.json();
-      console.log(data);
-    } else {
-      alert("Error al iniciar sesión");
-      console.error(response);
-    }
-  } catch (err:any) {
-    console.error(err);
-    alert(err.message);
-  }
+  // try {
+  //   const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "accept": "*/*",
+  //       "connection": "keep-alive",
+  //       "Authorization": "Bearer " + idToken,
+  //     },
+  //   });
+  //   if (response.ok) {
+  //     const data = await response.json();
+  //     console.log(data);
+  //   } else {
+  //     alert("Error al iniciar sesión");
+  //     console.error(response);
+  //   }
+  // } catch (err:any) {
+  //   console.error(err);
+  //   alert(err.message);
+  // }
+  
   // post
-  try {
-    const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + idToken,
-      },
-      body: JSON.stringify(data),
-    });
-    if (response.ok) {
-      const data = await response.json();
-      console.log(data);
-    } else {
-      alert("Error al iniciar sesión");
-      console.error(response.json());
-    }
-  } catch (err:any) {
-    console.error(err);
-    alert(err.message);
-  }
+  // try {
+  //   const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "accept": "*/*",
+  //       "accept-encoding": "gzip, deflate, br",
+  //       "connection": "keep-alive",
+  //       "Authorization": "Bearer " + idToken,
+  //     },
+  //     body: JSON.stringify(data),
+  //   });
+  //   if (response.ok) {
+  //     const data = await response.json();
+  //     console.log("BACKEND RESPONSE:", data);
+  //   } else {
+  //     alert("Error al iniciar sesión");
+  //     console.error(response.json());
+  //   }
+  // } catch (err:any) {
+  //   console.error(err);
+  //   alert(err.message);
+  // }
 }
 
 export {
+  userInfo,
+  sendUserInfoToBackend,
   auth,
-  db,
   logInWithEmailAndPassword,
   registerWithEmailAndPassword,
   sendPasswordReset,

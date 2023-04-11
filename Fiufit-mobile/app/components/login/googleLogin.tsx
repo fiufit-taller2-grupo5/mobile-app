@@ -1,44 +1,59 @@
 import { VStack, Text, Image } from "native-base";
 import { TouchableOpacity } from "react-native";
 import { loginAndRegisterStyles } from "../../styles";
+import { useEffect, useState } from "react";
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
+import { sendUserInfoToBackend, userInfo } from "../../../firebase";
+interface Props {
+  navigation: any;
+}
 
-import { makeRedirectUri } from "expo-auth-session";
-import * as Google from "expo-auth-session/providers/google";
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithCredential,
-} from "firebase/auth";
-import { Button } from "native-base";
-import { useEffect } from "react";
 
-// const REDIRECT_PARAMS = Constants.appOwnership === 'expo' ? EXPO_REDIRECT_PARAMS : NATIVE_REDIRECT_PARAMS;
-// const redirectUri = AuthSession.makeRedirectUri(REDIRECT_PARAMS);
+WebBrowser.maybeCompleteAuthSession();
 
-export default function GoogleLogin() {
-  const redirectUri = makeRedirectUri({
-    useProxy: true, 
-    projectNameForProxy: '@expo/fiufit-mobile'
-  });
-
+export default function GoogleLogin(props:Props) {
+  const [token, setToken] = useState("");
+  const [userId, setUserId] = useState("");
+  
   // TODO: add the case in which the user logs in with google withouth having an account on the app
-  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    // expoClientId: "423504146626-vdsffal07p46s5s52v0o0l2826rsro0f.apps.googleusercontent.com", // for use with @gabsem/fiufit-mobile
-    clientId: "423504146626-fot1vrq5r4285qo64vlh6s6gd9adanag.apps.googleusercontent.com", // for use with @expo/fiufit-mobile
-    redirectUri: redirectUri, // for use with @expo/fiufit-mobile
-    androidClientId:
-      "423504146626-e1u34lh849tjf769p9ppkok8jc84q4cj.apps.googleusercontent.com",
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    androidClientId: "423504146626-f2ricjcl5u5lsl410m9knpl3gn5l2civ.apps.googleusercontent.com", // created in dev build
     webClientId:
       "423504146626-mf53940m2vhk31teo1t5ek5q6kjvvc4c.apps.googleusercontent.com",
   });
 
   useEffect(() => {
-    if (response?.type === "success") {
-      const { id_token } = response.params;
-      const credential = GoogleAuthProvider.credential(id_token);
-      signInWithCredential(getAuth(), credential);
+    if (response?.type === "success" && response?.params?.access_token) {
+      // console.log("RESPONSE:",response.params);
+      setToken(response.params.access_token);
+      console.log("TOKEN:",token);
+      props.navigation.navigate('HomeScreen');
+    } else if (response?.type === "error") {
+      alert("Error: " + response.error);
     }
-  }, [response]);
+  }, [response, token]);
+
+  // get user info and send it to the backend
+  // useEffect(() => {
+  //   if (token) {
+  //     (async () => {
+  //       const userInfoResponse = await fetch(
+  //         `https://www.googleapis.com/userinfo/v2/me`,
+  //         {
+  //           method: "GET",
+  //           headers: {"Authorization": "Bearer " + token},
+  //         }
+  //       );
+  //       const userInfo = await userInfoResponse.json();
+  //       console.log("USER INFO:", userInfo);
+  //       setUserId(userInfo.id);
+  //       sendUserInfoToBackend({uid: userId }, token);
+  //     })();
+  //   }
+  // }, [token]);
+
+
 
   return (
     <VStack space={8} alignItems="center">

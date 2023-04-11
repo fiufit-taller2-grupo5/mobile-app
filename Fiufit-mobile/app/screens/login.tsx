@@ -82,7 +82,7 @@ export default function LoginScreen({ navigation } : any) {
         setErrorMessage={setErrorMessage}
         clearFields={cleanFields}
       />
-      <GoogleLogin />
+      <GoogleLogin navigation={ navigation }/>
       <MoveToRegister
         navigation={navigation}
         clearFields={cleanFields}
