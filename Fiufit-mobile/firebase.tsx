@@ -41,13 +41,12 @@ const logInWithEmailAndPassword = async (email : string , password : string ): P
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     const uid = user.uid;
-    user.getIdToken()
-      .then((idToken) => {
-        sendUserInfoToBackend({uid}, idToken);
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
+    try {
+      const idToken = await user.getIdToken();
+      sendUserInfoToBackend({uid}, idToken);
+    } catch (error: any) {
+      alert(error.message);
+    }
   }
   catch (error: any) {
     return getErrorMessage(error);
@@ -59,13 +58,12 @@ const registerWithEmailAndPassword =
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      user.getIdToken()
-        .then((idToken) => {
-          sendUserInfoToBackend({name: name, uid: user.uid}, idToken);
-        })
-        .catch((error) => {
-          alert(error.message);
-        });
+      try {
+        const idToken = await user.getIdToken();
+        sendUserInfoToBackend({name: name, uid: user.uid}, idToken);
+      } catch (error: any) {
+        alert(error.message);
+      }
     }
     catch (error: any) {
       return getErrorMessage(error);

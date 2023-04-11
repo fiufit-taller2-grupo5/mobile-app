@@ -67,7 +67,6 @@ export const loginAndRegisterStyles = StyleSheet.create({
   stack: {
     display: 'flex',
     flexDirection: 'column',
-    flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -82,7 +81,7 @@ export const loginAndRegisterStyles = StyleSheet.create({
     top: "-10%",
   },
   extraInfoButton: {
-    top: "-15%",
+    top: "30%",
   },
   heading: {
     flex: 0,
@@ -118,7 +117,7 @@ export const loginAndRegisterStyles = StyleSheet.create({
     top: "50%",
   },
   extraInfoLink: {
-    top: "-10%",
+    top: "35%",
   },
   googleTextOption: {
     top: '0%',
@@ -138,5 +137,20 @@ export const loginAndRegisterStyles = StyleSheet.create({
   moveToRegister: {
     top: '2.8%',
     left: '0%',
+  }
+});
+
+export const mapStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  map: {
+    width: '100%',
+    height: '100%',
+  },
+  button: {
+    bottom: "20%",
+    right: "-30%",
+    width: '30%',
   }
 });

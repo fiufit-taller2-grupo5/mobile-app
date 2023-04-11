@@ -20,11 +20,17 @@ export default function SubmitButton(props: Props) {
       <Button
         style={[loginAndRegisterStyles.button, loginAndRegisterStyles.loginAndRegisterButton]}
         onPress={async () => {
+          if (!name) {
+            setErrorMessage("Por favor ingresa tu nombre");
+            return;
+          };
           const errorMessage = await registerWithEmailAndPassword(name, email, password);
           if (!errorMessage) {
+            console.log("User registered successfully");
             clearFields();
-            navigation.navigate('extraInfo');
+            navigation.navigate('ExtraInfoScreen');
           } else {
+            console.log("Error registering user: ", errorMessage);
             setErrorMessage(errorMessage);
           }
         }}
