@@ -27,6 +27,7 @@ export default function GoogleLogin(props:Props) {
     if (response?.type === "success" && response?.params?.access_token) {
       // console.log("RESPONSE:",response.params);
       setToken(response.params.access_token);
+      console.log("response:",response);
       console.log("TOKEN:",token);
       props.navigation.navigate('HomeScreen');
     } else if (response?.type === "error") {

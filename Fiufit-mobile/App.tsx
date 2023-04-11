@@ -40,7 +40,7 @@ export default function App() {
           <Stack.Screen
             name="ExtraInfoScreen"
             component={ ExtraInformationScreen }
-            initialParams={{ latitude: -34.61315, longitude: -58.37723 }}/>
+            initialParams={{ latitude: -34.61315, longitude: -58.37723}}/>
           <Stack.Screen
             name="HomeScreen"
             component={ HomeScreen } />

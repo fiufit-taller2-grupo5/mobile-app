@@ -38,11 +38,6 @@ export default function ExtraInformationForm(props: Props) {
     route
   } = props;
 
-  if (route.params) {
-    setLatitude(route.params.latitude);
-    setLongitude(route.params.longitude);
-  }
-
   const onChange = (event: any, selectedDate: any) => {
     const currentDate = selectedDate;
     setDateOfBirth(currentDate);
@@ -58,7 +53,7 @@ export default function ExtraInformationForm(props: Props) {
 
   // TODO: use endpoint from backend
   const interestsData = ["Deportes", "Música", "Cine", "Arte", "Literatura", "Cocina", "Viajes", "Tecnología", "Otros"];
-
+  console.log("latitude:", latitude);
   return (
   <VStack space={6} alignItems="center" top={"10%"}>
     <HStack space={48}>
@@ -67,7 +62,8 @@ export default function ExtraInformationForm(props: Props) {
         isUnderlined={false}
         style={{top:"20%"}}
         onPress={() => {
-          navigation.navigate('MapScreen');
+          //navigation.navigate('MapScreen');
+          console.log("maps screen not implemented yet");
         }}
         _text={{color: "#FF6060"}}
       >
@@ -80,7 +76,7 @@ export default function ExtraInformationForm(props: Props) {
       <Text style={{color: "#9d9d9d", fontSize: 13}}>Longitud:</Text>
       <Text style={{color: "#9d9d9d", fontSize: 13}}>{longitude.toFixed(5)}</Text>
     </HStack>
-    <HStack space={24}>
+    <HStack space={8}>
       <Text style={{fontSize: 13, top:"2%"}}>Fecha de nacimiento</Text>
       <DateTimePicker value={dateOfBirth} onChange={onChange} style={{width:"25%"}}/>
     </HStack>

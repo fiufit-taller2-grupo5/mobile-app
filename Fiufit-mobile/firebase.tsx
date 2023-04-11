@@ -12,6 +12,16 @@ import {
 type userInfo = {
   name?: string;
   uid: string;
+  email: string;
+}
+
+type userDetails = {
+  userId?: string;
+  weight: number;
+  height: number;
+  birthDate: string;
+  latitude: number;
+  longitude: number;
 }
 
 const firebaseConfig = {
@@ -29,11 +39,21 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 auth.signOut();
 const provider = new GoogleAuthProvider();
+let internal_id = "";
 
 const getCauseFromErrorMessage = (s:string) : string => {
   // receives a string similar to "Firebase: Error (auth/invalid-email)." or "auth/invalid-email"
   // returns a string similar to "invalid-email"
   return s.split("/")[1].split(")")[0];
+}
+
+const getInternalIdFromResponse = (response: any) : string => {
+  // receives a response from the backend like "{"status": "User Jdjde with id 10 created"}"
+  // returns a string similar to "10"
+  console.log("internal id receiving response", response.status);
+  const res = response.status.split("with id ")[1].split(" ")[0];
+  console.log(res);
+  return res;
 }
 
 const logInWithEmailAndPassword = async (email : string , password : string ): Promise<string | void> => {
@@ -43,7 +63,7 @@ const logInWithEmailAndPassword = async (email : string , password : string ): P
     const uid = user.uid;
     try {
       const idToken = await user.getIdToken();
-      sendUserInfoToBackend({uid}, idToken);
+      // sendUserInfoToBackend({uid}, idToken);
     } catch (error: any) {
       alert(error.message);
     }
@@ -56,11 +76,14 @@ const logInWithEmailAndPassword = async (email : string , password : string ): P
 const registerWithEmailAndPassword =
   async (name : string, email : string, password : string) : Promise<void | string> => {
     try {
+      console.log("registering");
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+      console.log("registered user with id: " + user.uid);
       try {
         const idToken = await user.getIdToken();
-        sendUserInfoToBackend({name: name, uid: user.uid}, idToken);
+        console.log("register w email TOKEN:", idToken);
+        createUser({name: name, uid: user.uid, email:email}, idToken);
       } catch (error: any) {
         alert(error.message);
       }
@@ -140,32 +163,111 @@ const sendUserInfoToBackend = async (data : userInfo, idToken: string) => {
   // }
   
   // post
-  // try {
-  //   const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       "accept": "*/*",
-  //       "accept-encoding": "gzip, deflate, br",
-  //       "connection": "keep-alive",
-  //       "Authorization": "Bearer " + idToken,
-  //     },
-  //     body: JSON.stringify(data),
-  //   });
-  //   if (response.ok) {
-  //     const data = await response.json();
-  //     console.log("BACKEND RESPONSE:", data);
-  //   } else {
-  //     alert("Error al iniciar sesión");
-  //     console.error(response.json());
-  //   }
-  // } catch (err:any) {
-  //   console.error(err);
-  //   alert(err.message);
-  // }
+  try {
+    const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "Authorization": "Bearer " + idToken,
+      },
+      body: JSON.stringify(data),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      console.log("BACKEND RESPONSE:", data);
+    } else {
+      alert("Error al iniciar sesión");
+      console.error(response.json());
+    }
+  } catch (err:any) {
+    console.error(err);
+    alert(err.message);
+  }
+}
+
+const createUser = async (data : userInfo, idToken: string) => {
+  console.log("DATA:", data);
+  try {
+    const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "Authorization": "Bearer " + idToken,
+      },
+      body: JSON.stringify(data),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      internal_id = getInternalIdFromResponse(data);
+      console.log("BACKEND RESPONSE:", data);
+    } else {
+      alert("Error al iniciar sesión");
+      console.error(response.json());
+    }
+  } catch (err:any) {
+    console.error(err);
+    console.log(err.stack);
+    alert("CREATE USER ERROR" + err.message);
+  }
+}
+
+const updateUserDetails = async (data : userDetails) => {
+  data.userId = internal_id;
+  console.log("DATA:", data);
+  const newData = {
+    "userId": internal_id,
+    "weight": 80,
+    "height": 180,
+    "birthDate": null,
+    "latitude": 3.14,
+    "longitude": 10.1
+  }
+  try {
+    const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/" + internal_id + "/metadata";
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        // "dev": "a",
+        "Authorization": "Bearer " + await getIdToken(),
+      },
+      body: JSON.stringify(newData), // SENDIND MOCKED DATA
+    });
+    if (response.ok) {
+      const data = await response.json();
+      console.log("BACKEND RESPONSE:", data);
+    } else {
+      alert("Error al iniciar sesión");
+      console.error(response.json());
+    }
+  } catch (err:any) {
+    console.error(err);
+    alert("user details error:" + err.message);
+  }
+}
+
+const getIdToken = async () => {
+  const user = auth.currentUser;
+  if (user) {
+    const idToken = await user.getIdToken();
+    console.log("GETTING ID TOKEN:", idToken);
+    return idToken;
+  }
+  return null;
 }
 
 export {
+  createUser,
+  updateUserDetails,
   userInfo,
   sendUserInfoToBackend,
   auth,

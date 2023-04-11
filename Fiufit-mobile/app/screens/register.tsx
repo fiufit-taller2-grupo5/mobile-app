@@ -81,7 +81,7 @@ export default function RegisterScreen({ navigation } : any) {
         setErrorMessage={setErrorMessage}
         clearFields={clearFields}
       />
-      <GoogleRegister/>
+      <GoogleRegister navigation={navigation}/>
       <MoveToLogin
         navigation={navigation}
         clearFields={clearFields}

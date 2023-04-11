@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { View } from 'react-native';
 import { NativeBaseProvider, Button, extendTheme } from 'native-base';
 import { mapStyles } from "../styles";
@@ -48,6 +48,7 @@ export default function MapScreen(props: Props) {
     <NativeBaseProvider theme={theme}>
       <View style={mapStyles.container}>
         <MapView
+          provider={ PROVIDER_GOOGLE }
           style={mapStyles.map}
           region={region}
           onRegionChange={onRegionChange}

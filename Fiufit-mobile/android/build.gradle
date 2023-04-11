@@ -35,8 +35,8 @@ allprojects {
             url(new File(['node', '--print', "require.resolve('jsc-android/package.json')"].execute(null, rootDir).text.trim(), '../dist'))
         }
 
-        google()
         mavenCentral()
         maven { url 'https://www.jitpack.io' }
+        google()
     }
 }

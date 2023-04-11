@@ -1,5 +1,6 @@
 import { View, Button } from "native-base";
 import { loginAndRegisterStyles } from "../../styles";
+import { updateUserDetails } from "../../../firebase";
 
 
 interface Props {
@@ -21,6 +22,7 @@ export default function SubmitButton(props: Props) {
         style={[loginAndRegisterStyles.button, loginAndRegisterStyles.extraInfoButton]}
         onPress={() => {
           console.log("pass the extra information to backend y hacer chequeo de tipos");
+          updateUserDetails({latitude: latitude, longitude: longitude, birthDate: dateOfBirth.toString(), weight: weight, height: height})
           navigation.navigate('HomeScreen');
         }}
         _text={{color: "#FFFFFF", fontSize: "20px", fontWeight: "bold"}}
