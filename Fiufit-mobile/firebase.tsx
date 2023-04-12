@@ -176,8 +176,12 @@ const sendUserInfoToBackend = async (data : userInfo, idToken: string) => {
       body: JSON.stringify(data),
     });
     if (response.ok) {
-      const data = await response.json();
-      console.log("BACKEND RESPONSE:", data);
+      try {
+        const data = await response.json();
+        console.log("BACKEND RESPONSE:", data);
+      } catch (err: any) {
+        console.error(err);
+      }      
     } else {
       alert("Error al iniciar sesión");
       console.error(response.json());
@@ -203,9 +207,13 @@ const createUser = async (data : userInfo, idToken: string) => {
       body: JSON.stringify(data),
     });
     if (response.ok) {
-      const data = await response.json();
-      internal_id = getInternalIdFromResponse(data);
-      console.log("BACKEND RESPONSE:", data);
+      try {
+        const data = await response.json();
+        internal_id = getInternalIdFromResponse(data);
+        console.log("BACKEND RESPONSE:", data);
+      } catch (err: any) {
+        console.error(err);
+      }
     } else {
       alert("Error al iniciar sesión");
       console.error(response.json());
@@ -243,8 +251,12 @@ const updateUserDetails = async (data : userDetails) => {
       body: JSON.stringify(newData), // SENDIND MOCKED DATA
     });
     if (response.ok) {
-      const data = await response.json();
-      console.log("BACKEND RESPONSE:", data);
+      try {
+        const data = await response.json();
+        console.log("BACKEND RESPONSE:", data);
+      } catch (err : any) {
+        console.error(err);
+      }
     } else {
       alert("Error al iniciar sesión");
       console.error(response.json());
@@ -258,9 +270,14 @@ const updateUserDetails = async (data : userDetails) => {
 const getIdToken = async () => {
   const user = auth.currentUser;
   if (user) {
-    const idToken = await user.getIdToken();
-    console.log("GETTING ID TOKEN:", idToken);
-    return idToken;
+    try {
+      const idToken = await user.getIdToken();
+      console.log("GETTING ID TOKEN:", idToken);
+      return idToken;
+    } catch (err : any) {
+      console.error(err);
+      alert("Error al obtener token");
+    }
   }
   return null;
 }
