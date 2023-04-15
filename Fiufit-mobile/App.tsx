@@ -1,3 +1,4 @@
+import 'expo-dev-client';
 import * as React from 'react';
 import { useFonts } from 'expo-font';
 import { NavigationContainer } from '@react-navigation/native';
@@ -23,30 +24,30 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator 
+        <Stack.Navigator
           initialRouteName="WelcomeScreen"
           screenOptions={{ headerShown: false }}
         >
           <Stack.Screen
             name="WelcomeScreen"
-            component={ WelcomeScreen }
+            component={WelcomeScreen}
           />
           <Stack.Screen
             name="RegisterScreen"
-            component={ RegisterScreen } />
+            component={RegisterScreen} />
           <Stack.Screen
             name="LoginScreen"
-            component={ LoginScreen } />
+            component={LoginScreen} />
           <Stack.Screen
             name="ExtraInfoScreen"
-            component={ ExtraInformationScreen }
-            initialParams={{ latitude: -34.61315, longitude: -58.37723}}/>
+            component={ExtraInformationScreen}
+            initialParams={{ latitude: -34.61315, longitude: -58.37723 }} />
           <Stack.Screen
             name="HomeScreen"
-            component={ HomeScreen } />
+            component={HomeScreen} />
           <Stack.Screen
             name="MapScreen"
-            component={ MapScreen } />
+            component={MapScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
