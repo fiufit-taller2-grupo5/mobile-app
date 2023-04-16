@@ -12,13 +12,13 @@ interface Props {
 
 WebBrowser.maybeCompleteAuthSession();
 
-export default function GoogleLogin(props:Props) {
+export default function GoogleLogin(props: Props) {
   const [token, setToken] = useState("");
   const [userId, setUserId] = useState("");
-  
+
   // TODO: add the case in which the user logs in with google withouth having an account on the app
   const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: "423504146626-f2ricjcl5u5lsl410m9knpl3gn5l2civ.apps.googleusercontent.com", // created in dev build
+    androidClientId: "fiufit-93740", // created in dev build
     webClientId:
       "423504146626-mf53940m2vhk31teo1t5ek5q6kjvvc4c.apps.googleusercontent.com",
   });
@@ -27,8 +27,8 @@ export default function GoogleLogin(props:Props) {
     if (response?.type === "success" && response?.params?.access_token) {
       // console.log("RESPONSE:",response.params);
       setToken(response.params.access_token);
-      console.log("response:",response);
-      console.log("TOKEN:",token);
+      console.log("response:", response);
+      console.log("TOKEN:", token);
       props.navigation.navigate('HomeScreen');
     } else if (response?.type === "error") {
       alert("Error: " + response.error);
@@ -58,11 +58,11 @@ export default function GoogleLogin(props:Props) {
 
   return (
     <VStack space={8} alignItems="center">
-      <Text style={ loginAndRegisterStyles.googleTextOption }>O iniciar sesión con</Text>
-      <TouchableOpacity onPress={() => {promptAsync();}}>
+      <Text style={loginAndRegisterStyles.googleTextOption}>O iniciar sesión con</Text>
+      <TouchableOpacity onPress={() => { promptAsync(); }}>
         <Image
-          style={ loginAndRegisterStyles.googleImage }
-          source={ require('../../../assets/images/logos_google-icon.png') }
+          style={loginAndRegisterStyles.googleImage}
+          source={require('../../../assets/images/logos_google-icon.png')}
           alt='google'
         />
       </TouchableOpacity>

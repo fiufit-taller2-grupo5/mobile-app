@@ -191,7 +191,7 @@ const sendUserInfoToBackend = async (data: userInfo, idToken: string) => {
 }
 
 const createUser = async (data: userInfo, idToken: string) => {
-  console.log("DATA:", data);
+  console.log("DATA:", data, "token:", idToken);
   try {
     const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
       method: "POST",
