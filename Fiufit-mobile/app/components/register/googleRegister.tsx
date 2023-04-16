@@ -9,9 +9,7 @@ interface Props {
   navigation: any;
 }
 
-WebBrowser.maybeCompleteAuthSession();
-
-export default function GoogleRegister(props:Props) {
+export default function GoogleRegister(props: Props) {
   const [token, setToken] = useState("");
   const [userId, setUserId] = useState("");
   const [accessTok, setAccessTok] = useState("");
@@ -27,7 +25,7 @@ export default function GoogleRegister(props:Props) {
       // console.log("RESPONSE:",response.params);
       setAccessTok(response.params.access_token);
       setToken(response.params.id_token);
-      console.log("TOKEN:",token);
+      console.log("TOKEN:", token);
     } else if (response?.type === "error") {
       alert("Error: " + response.error);
     }
@@ -41,14 +39,14 @@ export default function GoogleRegister(props:Props) {
           `https://www.googleapis.com/userinfo/v2/me`,
           {
             method: "GET",
-            headers: {"Authorization": "Bearer " + accessTok},
+            headers: { "Authorization": "Bearer " + accessTok },
           }
         );
         const userInfo = await userInfoResponse.json();
         console.log("USER INFO:", userInfo);
         setUserId(userInfo.id);
-        
-        await createUser({name: userInfo.name, uid: userInfo.id, email:userInfo.email}, token);
+
+        await createUser({ name: userInfo.name, uid: userInfo.id, email: userInfo.email }, token);
         props.navigation.navigate('ExtraInfoScreen');
       })();
     }
@@ -56,14 +54,14 @@ export default function GoogleRegister(props:Props) {
 
 
   return (
-    <VStack space={ 8 } alignItems="center">
+    <VStack space={8} alignItems="center">
       <Text style={loginAndRegisterStyles.googleTextOption} >O registrarse con</Text>
-      <TouchableOpacity onPress={() => {promptAsync();}}>
-          <Image
-            style={ loginAndRegisterStyles.googleImage }
-            source={ require('../../../assets/images/logos_google-icon.png') }
-            alt='google'
-          />
+      <TouchableOpacity onPress={() => { promptAsync(); }}>
+        <Image
+          style={loginAndRegisterStyles.googleImage}
+          source={require('../../../assets/images/logos_google-icon.png')}
+          alt='google'
+        />
       </TouchableOpacity>
     </VStack>
   );

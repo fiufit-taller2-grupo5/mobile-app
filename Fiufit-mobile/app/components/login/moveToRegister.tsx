@@ -18,7 +18,7 @@ export default function MoveToRegister(props: Props) {
           navigation.navigate('RegisterScreen');
           clearFields();
         }}
-        _text={{color: "#BC2666"}}
+        _text={{ color: "#BC2666" }}
       >
         Registrarse
       </Link>

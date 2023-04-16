@@ -9,14 +9,13 @@ interface Props {
 
 export default function InputForm(props: Props) {
   const { placeholder, value, setValue } = props;
-  
+
   return (
     <Input
       value={value}
-      w={{base: "80%", md: "30%"}} 
-      h="12%" 
-      variant="underlined" 
-      placeholder={placeholder} 
+      w="80%"
+      variant="underlined"
+      placeholder={placeholder}
       onChangeText={(value) => setValue(value)}
     />
   );

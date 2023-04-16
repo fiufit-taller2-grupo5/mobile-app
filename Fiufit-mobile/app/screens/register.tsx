@@ -11,7 +11,7 @@ import MoveToLogin from '../components/register/moveToLogin';
 import ErrorMessage from '../components/form/errorMessage';
 
 
-export default function RegisterScreen({ navigation } : any) {
+export default function RegisterScreen({ navigation }: any) {
   const theme = extendTheme({
     components: {
       Text: {
@@ -20,13 +20,13 @@ export default function RegisterScreen({ navigation } : any) {
         }
       },
       Heading: {
-          defaultProps: {
-            color: '#FF6060',
-          }
+        defaultProps: {
+          color: '#FF6060',
+        }
       },
       Button: {
         defaultProps: {
-            background: "#FF6060",
+          background: "#FF6060",
         }
       }
     }
@@ -39,11 +39,11 @@ export default function RegisterScreen({ navigation } : any) {
   const [user, loading, error] = useAuthState(auth);
 
   React.useEffect(() => {
-      if (loading) {
-        // maybe trigger a loading screen
-        return;
-      }
-      if (user) navigation.navigate('HomeScreen');
+    if (loading) {
+      // maybe trigger a loading screen
+      return;
+    }
+    if (user) navigation.navigate('HomeScreen');
   }, [user, loading]);
 
   const clearFields = () => {
@@ -54,16 +54,16 @@ export default function RegisterScreen({ navigation } : any) {
 
   return <NativeBaseProvider theme={theme}>
     <VStack
-      space={2}
       style={loginAndRegisterStyles.stack}
       height={"full"}
       width={"full"}
     >
-      <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage}/>
+      {errorMessage && <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage} />}
       <Heading
-        style={[loginAndRegisterStyles.heading, loginAndRegisterStyles.registerHeading]}
+        marginTop={"30"}
+        marginBottom={"20"}
       >
-        Crear una cuenta
+        Ingresa tus datos
       </Heading>
       <RegisterForm
         name={name}
@@ -81,7 +81,7 @@ export default function RegisterScreen({ navigation } : any) {
         setErrorMessage={setErrorMessage}
         clearFields={clearFields}
       />
-      <GoogleRegister navigation={navigation}/>
+      <GoogleRegister navigation={navigation} />
       <MoveToLogin
         navigation={navigation}
         clearFields={clearFields}

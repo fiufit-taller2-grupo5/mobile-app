@@ -1,12 +1,11 @@
 import { AuthError } from "expo-auth-session";
 import { initializeApp } from "firebase/app";
-import { 
-  getAuth, 
-  GoogleAuthProvider, 
+import {
+  getAuth,
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword, 
-  sendPasswordResetEmail, 
-  signOut 
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signOut
 } from "firebase/auth";
 
 type userInfo = {
@@ -20,8 +19,8 @@ type userDetails = {
   weight: number;
   height: number;
   birthDate: string;
-  latitude: number;
-  longitude: number;
+  streetName: string;
+  streetNumber: number;
 }
 
 const firebaseConfig = {
@@ -38,16 +37,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 auth.signOut();
-const provider = new GoogleAuthProvider();
 let internal_id = "";
 
-const getCauseFromErrorMessage = (s:string) : string => {
+const getCauseFromErrorMessage = (s: string): string => {
   // receives a string similar to "Firebase: Error (auth/invalid-email)." or "auth/invalid-email"
   // returns a string similar to "invalid-email"
   return s.split("/")[1].split(")")[0];
 }
 
-const getInternalIdFromResponse = (response: any) : string => {
+const getInternalIdFromResponse = (response: any): string => {
   // receives a response from the backend like "{"status": "User Jdjde with id 10 created"}"
   // returns a string similar to "10"
   console.log("internal id receiving response", response.status);
@@ -56,7 +54,7 @@ const getInternalIdFromResponse = (response: any) : string => {
   return res;
 }
 
-const logInWithEmailAndPassword = async (email : string , password : string ): Promise<string | void> => {
+const logInWithEmailAndPassword = async (email: string, password: string): Promise<string | void> => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
@@ -74,7 +72,7 @@ const logInWithEmailAndPassword = async (email : string , password : string ): P
 };
 
 const registerWithEmailAndPassword =
-  async (name : string, email : string, password : string) : Promise<void | string> => {
+  async (name: string, email: string, password: string): Promise<void | string> => {
     try {
       console.log("registering");
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -83,7 +81,7 @@ const registerWithEmailAndPassword =
       try {
         const idToken = await user.getIdToken();
         console.log("register w email TOKEN:", idToken);
-        createUser({name: name, uid: user.uid, email:email}, idToken);
+        createUser({ name: name, uid: user.uid, email: email }, idToken);
       } catch (error: any) {
         alert(error.message);
       }
@@ -91,14 +89,14 @@ const registerWithEmailAndPassword =
     catch (error: any) {
       return getErrorMessage(error);
     }
-};
+  };
 
 // TODO: handle errors to show to user
-const sendPasswordReset = async (email : string) => {
+const sendPasswordReset = async (email: string) => {
   try {
     await sendPasswordResetEmail(auth, email);
     alert("Password reset link sent!");
-  } catch (err:any) {
+  } catch (err: any) {
     console.error(err);
     alert(err.message);
   }
@@ -107,14 +105,14 @@ const sendPasswordReset = async (email : string) => {
 // TODO: handle errors to show to user
 const logout = async () => {
   try {
-      await signOut(auth);
-  } catch (err:any) {
-      console.error(err);
-      alert(err.message);
+    await signOut(auth);
+  } catch (err: any) {
+    console.error(err);
+    alert(err.message);
   }
 };
 
-const getErrorMessage = (error: AuthError) : string => {
+const getErrorMessage = (error: AuthError): string => {
   switch (getCauseFromErrorMessage(error.code)) {
     case "invalid-email":
       return "Correo inválido";
@@ -138,7 +136,7 @@ const getErrorMessage = (error: AuthError) : string => {
   }
 }
 
-const sendUserInfoToBackend = async (data : userInfo, idToken: string) => {
+const sendUserInfoToBackend = async (data: userInfo, idToken: string) => {
   // get de prueba
   // try {
   //   const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
@@ -161,7 +159,7 @@ const sendUserInfoToBackend = async (data : userInfo, idToken: string) => {
   //   console.error(err);
   //   alert(err.message);
   // }
-  
+
   // post
   try {
     const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
@@ -181,18 +179,18 @@ const sendUserInfoToBackend = async (data : userInfo, idToken: string) => {
         console.log("BACKEND RESPONSE:", data);
       } catch (err: any) {
         console.error(err);
-      }      
+      }
     } else {
       alert("Error al iniciar sesión");
       console.error(response.json());
     }
-  } catch (err:any) {
+  } catch (err: any) {
     console.error(err);
     alert(err.message);
   }
 }
 
-const createUser = async (data : userInfo, idToken: string) => {
+const createUser = async (data: userInfo, idToken: string) => {
   console.log("DATA:", data);
   try {
     const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
@@ -218,14 +216,14 @@ const createUser = async (data : userInfo, idToken: string) => {
       alert("Error al iniciar sesión");
       console.error(response.json());
     }
-  } catch (err:any) {
+  } catch (err: any) {
     console.error(err);
     console.log(err.stack);
     alert("CREATE USER ERROR" + err.message);
   }
 }
 
-const updateUserDetails = async (data : userDetails) => {
+const updateUserDetails = async (data: userDetails) => {
   data.userId = internal_id;
   console.log("DATA:", data);
   const newData = {
@@ -254,14 +252,14 @@ const updateUserDetails = async (data : userDetails) => {
       try {
         const data = await response.json();
         console.log("BACKEND RESPONSE:", data);
-      } catch (err : any) {
+      } catch (err: any) {
         console.error(err);
       }
     } else {
       alert("Error al iniciar sesión");
       console.error(response.json());
     }
-  } catch (err:any) {
+  } catch (err: any) {
     console.error(err);
     alert("user details error:" + err.message);
   }
@@ -274,7 +272,7 @@ const getIdToken = async () => {
       const idToken = await user.getIdToken();
       console.log("GETTING ID TOKEN:", idToken);
       return idToken;
-    } catch (err : any) {
+    } catch (err: any) {
       console.error(err);
       alert("Error al obtener token");
     }

@@ -8,33 +8,33 @@ import MoveToApp from "../components/extraInformation/moveToApp";
 
 
 
-export default function ExtraInformationScreen({ navigation } : any) {
+export default function ExtraInformationScreen({ navigation }: any) {
   const route = useRoute();
   const theme = extendTheme({
     components: {
       Button: {
         defaultProps: {
-            background: "#FF6060",
+          background: "#FF6060",
         }
       },
       Heading: {
         defaultProps: {
-            color: '#FF6060',
+          color: '#FF6060',
         }
       }
     }
   });
-  
-  const [latitude, setLatitude] = useState(-34.61315);
-  const [longitude, setLongitude] = useState(-58.37723);
+
+  const [streetName, setStreetName] = useState("");
+  const [streetNumber, setStreetNumber] = useState(0);
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
   const [weight, setWeight] = useState(50);
   const [height, setHeight] = useState(150);
   const [interests, setInterests] = useState("");
 
   const clearFields = () => {
-    setLatitude(-34.61315);
-    setLongitude(-58.37723);
+    setStreetName("");
+    setStreetNumber(0);
     setDateOfBirth(new Date());
     setWeight(50);
     setHeight(150);
@@ -50,16 +50,17 @@ export default function ExtraInformationScreen({ navigation } : any) {
       top="-10%"
     >
       <Heading
+        mt={"10"}
+        mb={"10"}
         style={[loginAndRegisterStyles.heading, loginAndRegisterStyles.extraInfoHeading]}
       >
         Queremos conocerte mas!
       </Heading>
       <ExtraInformationForm
-        latitude={latitude}
-        setLatitude={setLatitude}
-        longitude={longitude}
-        setLongitude={setLongitude}
-        dateOfBirth={dateOfBirth}
+        streetName={streetName}
+        setStreetName={setStreetName}
+        streetNumber={streetNumber}
+        setStreetNumber={setStreetNumber}
         setDateOfBirth={setDateOfBirth}
         weight={weight}
         setWeight={setWeight}
@@ -72,8 +73,8 @@ export default function ExtraInformationScreen({ navigation } : any) {
       />
       <SubmitButton
         navigation={navigation}
-        latitude={latitude}
-        longitude={longitude}
+        streetName={streetName}
+        streetNumber={streetNumber}
         dateOfBirth={dateOfBirth}
         weight={weight}
         height={height}

@@ -1,8 +1,8 @@
 import { Button, HStack } from "native-base";
-import { welcomeStyles } from "../../styles"; 
+import { welcomeStyles } from "../../styles";
 
 
-export default function Buttons({ navigation } : any) {
+export default function Buttons({ navigation }: any) {
   return (
     <HStack
       space={8}
@@ -10,7 +10,7 @@ export default function Buttons({ navigation } : any) {
     >
       <Button
         style={welcomeStyles.button}
-        _text={{color: "#FFFFFF"}}
+        _text={{ color: "#FFFFFF" }}
         variant="firstButton"
         onPress={() => navigation.navigate('LoginScreen')}
       >
@@ -18,7 +18,7 @@ export default function Buttons({ navigation } : any) {
       </Button>
       <Button
         style={welcomeStyles.button}
-        _text={{color: "#FFFFFF"}}
+        _text={{ color: "#FFFFFF" }}
         variant="secondButton"
         onPress={() => navigation.navigate('RegisterScreen')}
       >

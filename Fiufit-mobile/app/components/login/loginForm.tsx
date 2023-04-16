@@ -15,9 +15,9 @@ export default function LoginForm(props: Props) {
   const { email, setEmail, password, setPassword } = props;
 
   return (
-    <VStack space={10} alignItems="center" top={"8%"}>
-      <InputForm value={email} placeholder="Email" setValue={setEmail}/>
-      <InputPassword password={password} setPassword={setPassword}/>
+    <VStack space={10} marginBottom={"32"}>
+      <InputForm value={email} placeholder="Email" setValue={setEmail} />
+      <InputPassword password={password} setPassword={setPassword} />
     </VStack>
   );
 }

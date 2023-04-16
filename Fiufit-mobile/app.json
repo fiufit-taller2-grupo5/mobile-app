@@ -15,21 +15,31 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fiufit.app"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.fiufit.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "scheme": "fiufit",
+    "scheme": "exp+fiufit-mobile",
     "extra": {
       "eas": {
-        "projectId": "a9b48b8e-6904-4846-9385-e5b351c5f0a8"
+        "projectId": "9447cde2-6fe0-4efb-9b96-6bcbdff27a0b"
+      }
+    },
+    "owner": "lucianotrujillo",
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/9447cde2-6fe0-4efb-9b96-6bcbdff27a0b",
+      "requestHeaders": {
+        "expo-channel-name": "main"
       }
     }
   }

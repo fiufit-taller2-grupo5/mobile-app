@@ -18,10 +18,10 @@ export default function RegisterForm(props: Props) {
 
 
   return (
-    <VStack space={10} alignItems="center" top={"10%"}>
-      <InputForm value={name} placeholder="Nombre completo" setValue={setName}/>
-      <InputForm value={email} placeholder="Email" setValue={setEmail}/>
-      <InputPassword password={password} setPassword={setPassword}/>
+    <VStack space={10} alignItems="center" marginBottom={"32"}>
+      <InputForm value={name} placeholder="Nombre completo" setValue={setName} />
+      <InputForm value={email} placeholder="Email" setValue={setEmail} />
+      <InputPassword password={password} setPassword={setPassword} />
     </VStack>
   );
 }

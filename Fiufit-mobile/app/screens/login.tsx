@@ -12,22 +12,22 @@ import ErrorMessage from '../components/form/errorMessage';
 
 
 
-export default function LoginScreen({ navigation } : any) {
+export default function LoginScreen({ navigation }: any) {
   const theme = extendTheme({
     components: {
       Text: {
         defaultProps: {
-            color: '#AEAEAE',
+          color: '#AEAEAE',
         },
       },
       Button: {
         defaultProps: {
-            background: "#FF6060",
+          background: "#FF6060",
         }
       },
       Heading: {
         defaultProps: {
-            color: '#FF6060',
+          color: '#FF6060',
         }
       }
     }
@@ -58,14 +58,15 @@ export default function LoginScreen({ navigation } : any) {
 
   return <NativeBaseProvider theme={theme}>
     <VStack
-      space={6}
+      // space={"10"}
       style={loginAndRegisterStyles.stack}
       height={"full"}
       width={"full"}
     >
-      <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage}/>
+      {errorMessage && <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage} />}
       <Heading
-        style={[loginAndRegisterStyles.heading, loginAndRegisterStyles.loginHeading]}
+        marginTop={"40"}
+        marginBottom={"20"}
       >
         Ingresa tus datos
       </Heading>
@@ -82,7 +83,7 @@ export default function LoginScreen({ navigation } : any) {
         setErrorMessage={setErrorMessage}
         clearFields={cleanFields}
       />
-      <GoogleLogin navigation={ navigation }/>
+      <GoogleLogin navigation={navigation} />
       <MoveToRegister
         navigation={navigation}
         clearFields={cleanFields}

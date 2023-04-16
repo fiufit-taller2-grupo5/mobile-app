@@ -1,13 +1,12 @@
-import { VStack, Text, HStack, Link, Select, CheckIcon, Checkbox, Button } from "native-base";
+import { VStack, Text, HStack, Link, Select, CheckIcon, Checkbox, Button, Input } from "native-base";
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 interface Props {
-  latitude: number;
-  setLatitude: (latitude: number) => void;
-  longitude: number;
-  setLongitude: (longitude: number) => void;
-  dateOfBirth: Date;
+  streetName: string;
+  setStreetName: (streetName: string) => void;
+  streetNumber: number;
+  setStreetNumber: (streetNumber: number) => void;
   setDateOfBirth: (dateOfBirth: Date) => void;
   weight: number
   setWeight: (weight: number) => void;
@@ -21,11 +20,10 @@ interface Props {
 
 export default function ExtraInformationForm(props: Props) {
   const {
-    latitude,
-    setLatitude,
-    longitude,
-    setLongitude,
-    dateOfBirth,
+    streetName,
+    setStreetName,
+    streetNumber,
+    setStreetNumber,
     setDateOfBirth,
     weight,
     setWeight,
@@ -37,7 +35,7 @@ export default function ExtraInformationForm(props: Props) {
     route
   } = props;
 
-  const [date, setDate] = useState(new Date(1598051730000));
+  const [date, setDate] = useState<Date | null>(null);
 
   const onDateChange = (event: any, selectedDate: any) => {
     const currentDate = selectedDate;
@@ -47,7 +45,7 @@ export default function ExtraInformationForm(props: Props) {
 
   const showMode = (currentMode: any) => {
     DateTimePickerAndroid.open({
-      value: date,
+      value: new Date(),
       onChange: onDateChange,
       mode: currentMode,
       is24Hour: true,
@@ -73,71 +71,83 @@ export default function ExtraInformationForm(props: Props) {
   const heightData = Array.from({ length: heightFinish }, (_, a) => a + heightStart);
 
   // TODO: use endpoint from backend
-  const interestsData = ["Deportes", "Música", "Cine", "Arte", "Literatura", "Cocina", "Viajes", "Tecnología", "Otros"];
-  console.log("latitude:", latitude);
+  const interestsData = ["HIT", "Cardio", "Body Pump", "Functional", "Resistance", "Running"];
   return (
     <VStack space={6} alignItems="center" top={"10%"}>
-      <HStack space={48}>
-        <Text style={{ fontSize: 13, top: "2%" }}>Ubicación</Text>
-        <Link
-          isUnderlined={false}
-          style={{ top: "20%" }}
-          onPress={() => {
-            //navigation.navigate('MapScreen');
-            console.log("maps screen not implemented yet");
-          }}
-          _text={{ color: "#FF6060" }}
-        >
-          Modificar
-        </Link>
+      <Text style={{ fontSize: 13, top: "2%" }}>Ubicación</Text>
+      <HStack space={6} alignItems="center" >
+        <Input
+          width={200}
+          variant="underlined"
+          placeholder="Nombre de la calle"
+          placeholderTextColor={"#000000"}
+          onChangeText={text => setStreetName(text)}
+          value={streetName}
+        />
+        <Input
+          width={20}
+          variant="underlined"
+          placeholder="Número de la calle"
+          placeholderTextColor={"#000000"}
+          onChangeText={text => setStreetNumber(parseInt(text))}
+          value={streetNumber.toString()}
+        />
       </HStack>
-      <HStack space={4}>
-        <Text style={{ color: "#9d9d9d", fontSize: 13 }}>Latitud:</Text>
-        <Text style={{ color: "#9d9d9d", fontSize: 13 }}>{latitude.toFixed(5)}</Text>
-        <Text style={{ color: "#9d9d9d", fontSize: 13 }}>Longitud:</Text>
-        <Text style={{ color: "#9d9d9d", fontSize: 13 }}>{longitude.toFixed(5)}</Text>
-      </HStack>
-      <HStack space={8}>
-        <Text style={{ fontSize: 13, top: "2%" }}>Fecha de nacimiento!</Text>
-        <Button onPress={showDatepicker}>
-          <Text>Seleccionar fecha de nacimiento</Text>
-        </Button>
-        <Text>selected: {date.toLocaleString()}</Text>
-      </HStack>
-      <Select
+      <Button onPress={showDatepicker} variant="ghost" backgroundColor={"white"}>
+        <Text>{date ? "Fecha de nacimiento: " + date.toLocaleString().substring(0, 9) : "Ingresar Fecha de nacimiento"}</Text>
+      </Button>
+      <Input
         width="xs"
         variant="underlined"
         accessibilityLabel="Seleccionar peso"
         placeholder="Seleccionar peso"
         placeholderTextColor={"#000000"}
-        _selectedItem={{
-          bg: "teal.600",
-          endIcon: <CheckIcon size="5" />
-        }}
         mt={1}
-        onValueChange={numberString => setWeight(parseInt(numberString))}
-      >
-        {weightData.map((number) => {
-          return <Select.Item key={number} label={number.toString()} value={number.toString()} />
-        })}
-      </Select>
-      <Select
+        keyboardType="numeric"
+        value={weight.toString()}
+        InputRightElement={
+          <Text
+            color="muted.400"
+            fontSize="xs"
+            mr={2}
+            _light={{
+              color: "blueGray.400",
+            }}
+            _dark={{
+              color: "blueGray.50",
+            }}
+          >
+            kgs
+          </Text>
+        }
+        onChangeText={text => setWeight(parseInt(text))}
+      />
+      <Input
         width="xs"
         variant="underlined"
         accessibilityLabel="Seleccionar altura"
         placeholder="Seleccionar altura"
         placeholderTextColor={"#000000"}
-        _selectedItem={{
-          bg: "teal.600",
-          endIcon: <CheckIcon size="5" />
-        }}
         mt={1}
-        onValueChange={numberString => setHeight(parseInt(numberString))}
-      >
-        {heightData.map((number) => {
-          return <Select.Item key={number} label={number.toString()} value={number.toString()} />
-        })}
-      </Select>
+        keyboardType="numeric"
+        value={height.toString()}
+        InputRightElement={
+          <Text
+            color="muted.400"
+            fontSize="xs"
+            mr={2}
+            _light={{
+              color: "blueGray.400",
+            }}
+            _dark={{
+              color: "blueGray.50",
+            }}
+          >
+            cm
+          </Text>
+        }
+        onChangeText={text => setHeight(parseInt(text))}
+      />
       <VStack space={8}
         style={{
           display: 'flex',
@@ -148,13 +158,26 @@ export default function ExtraInformationForm(props: Props) {
           justifyContent: 'space-between'
         }}
       >
-        {interestsData.map((interest) => {
-          return (
-            <Checkbox colorScheme='rose' key={interest} value={interest}>
-              {interest}
-            </Checkbox>
-          );
-        })}
+        {/*rows of 3 elements, equidistant to each other horizontally and vertically:*/}
+        <VStack space={"9"}
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: "wrap",
+            alignItems: 'center',
+            justifyContent: "flex-start"
+          }}
+        >
+          {interestsData.map((interest) => {
+            return (
+              <Checkbox colorScheme='rose' key={interest} value={interest} mr={"12"}>
+                <Text width={"20"}>
+                  {interest}
+                </Text>
+              </Checkbox>
+            );
+          })}
+        </VStack>
       </VStack>
     </VStack>
   );

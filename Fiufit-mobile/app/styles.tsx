@@ -67,7 +67,6 @@ export const loginAndRegisterStyles = StyleSheet.create({
   stack: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center',
     alignItems: 'center',
   },
   button: {
