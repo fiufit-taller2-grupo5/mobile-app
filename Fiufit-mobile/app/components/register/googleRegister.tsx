@@ -39,11 +39,14 @@ export default function GoogleRegister(props: Props) {
   });
 
   useEffect(() => {
-    async function signIn() {
+    async function signUp() {
       if (response?.type === "success" && response?.params?.id_token) {
         const credential = GoogleAuthProvider.credential(response?.params?.id_token);
-        await signInWithCredential(auth, credential).then((result) => {
+        await signInWithCredential(auth, credential).then(async (result) => {
           console.log('Signed in with Google:', result.user);
+          const user = result.user;
+          await createUser({ name: user.displayName as string, uid: user.uid, email: user.email as string }, (user as any).stsTokenManager.accessToken);
+          props.navigation.navigate('ExtraInfoScreen');
           // Here you can add additional logic, e.g., create a user in your database
         }).catch((error) => {
           console.error('Error signing in with Google:', error);
@@ -57,29 +60,29 @@ export default function GoogleRegister(props: Props) {
         alert("Errorrrr: " + response.error);
       }
     }
-    signIn();
-  }, [response, token]);
+    signUp();
+  }, [response]);
 
   // get user info and send it to the backend
-  useEffect(() => {
-    if (accessTok) {
-      (async () => {
-        const userInfoResponse = await fetch(
-          `https://www.googleapis.com/userinfo/v2/me`,
-          {
-            method: "GET",
-            headers: { "Authorization": "Bearer " + accessTok },
-          }
-        );
-        const userInfo = await userInfoResponse.json();
-        console.log("USER INFO:", userInfo);
-        setUserId(userInfo.id);
+  // useEffect(() => {
+  //   if (accessTok) {
+  //     (async () => {
+  //       const userInfoResponse = await fetch(
+  //         `https://www.googleapis.com/userinfo/v2/me`,
+  //         {
+  //           method: "GET",
+  //           headers: { "Authorization": "Bearer " + accessTok },
+  //         }
+  //       );
+  //       const userInfo = await userInfoResponse.json();
+  //       console.log("USER INFO:", userInfo);
+  //       setUserId(userInfo.id);
 
-        await createUser({ name: userInfo.name, uid: userInfo.id, email: userInfo.email }, token);
-        props.navigation.navigate('ExtraInfoScreen');
-      })();
-    }
-  }, [token]);
+  //       await createUser({ name: userInfo.name, uid: userInfo.id, email: userInfo.email }, token);
+  //       props.navigation.navigate('ExtraInfoScreen');
+  //     })();
+  //   }
+  // }, [token]);
 
 
   return (

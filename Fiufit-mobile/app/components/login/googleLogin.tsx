@@ -18,7 +18,7 @@ export default function GoogleLogin(props: Props) {
 
   // TODO: add the case in which the user logs in with google withouth having an account on the app
   const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: "fiufit-93740", // created in dev build
+    androidClientId: "423504146626-f2ricjcl5u5lsl410m9knpl3gn5l2civ.apps.googleusercontent.com", // created in dev build
     webClientId:
       "423504146626-mf53940m2vhk31teo1t5ek5q6kjvvc4c.apps.googleusercontent.com",
   });
