@@ -1,6 +1,6 @@
-import { VStack, Text, HStack, Link, Select, CheckIcon, Checkbox, Button, Input } from "native-base";
+import { VStack, Text, HStack, Checkbox, Button, Input } from "native-base";
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { Fragment, useState } from "react";
+import { useState } from "react";
 
 interface Props {
   streetName: string;
@@ -56,24 +56,10 @@ export default function ExtraInformationForm(props: Props) {
     showMode('date');
   };
 
-
-  const onChange = (event: any, selectedDate: any) => {
-    const currentDate = selectedDate;
-    setDateOfBirth(currentDate);
-  };
-
-  const weightStart = 30;
-  const weightFinish = 150;
-  const weightData = Array.from({ length: weightFinish }, (_, a) => a + weightStart);
-
-  const heightStart = 130;
-  const heightFinish = 220;
-  const heightData = Array.from({ length: heightFinish }, (_, a) => a + heightStart);
-
   // TODO: use endpoint from backend
   const interestsData = ["HIT", "Cardio", "Body Pump", "Functional", "Resistance", "Running"];
   return (
-    <VStack space={6} alignItems="center" top={"10%"}>
+    <VStack space={6} alignItems="center" top={"5%"}>
       <Text style={{ fontSize: 13, top: "2%" }}>Ubicación</Text>
       <HStack space={6} alignItems="center" >
         <Input

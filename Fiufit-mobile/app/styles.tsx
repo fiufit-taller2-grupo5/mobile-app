@@ -80,7 +80,7 @@ export const loginAndRegisterStyles = StyleSheet.create({
     top: "-10%",
   },
   extraInfoButton: {
-    top: "30%",
+    top: "20%",
   },
   heading: {
     flex: 0,
@@ -116,7 +116,7 @@ export const loginAndRegisterStyles = StyleSheet.create({
     top: "50%",
   },
   extraInfoLink: {
-    top: "35%",
+    top: "25%",
   },
   googleTextOption: {
     top: '0%',
@@ -136,20 +136,5 @@ export const loginAndRegisterStyles = StyleSheet.create({
   moveToRegister: {
     top: '2.8%',
     left: '0%',
-  }
-});
-
-export const mapStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  map: {
-    width: '100%',
-    height: '100%',
-  },
-  button: {
-    bottom: "20%",
-    right: "-30%",
-    width: '30%',
   }
 });

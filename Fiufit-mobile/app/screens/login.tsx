@@ -65,8 +65,8 @@ export default function LoginScreen({ navigation }: any) {
     >
       {errorMessage && <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage} />}
       <Heading
-        marginTop={"40"}
-        marginBottom={"20"}
+        marginTop={'25%'}
+        marginBottom={"10%"}
       >
         Ingresa tus datos
       </Heading>

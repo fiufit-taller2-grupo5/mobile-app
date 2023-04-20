@@ -7,7 +7,6 @@ import WelcomeScreen from './app/screens/welcome';
 import RegisterScreen from './app/screens/register';
 import LoginScreen from './app/screens/login';
 import HomeScreen from './app/screens/home';
-import MapScreen from './app/screens/map';
 import ExtraInformationScreen from './app/screens/extraInformation';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -45,9 +44,6 @@ export default function App() {
           <Stack.Screen
             name="HomeScreen"
             component={HomeScreen} />
-          <Stack.Screen
-            name="MapScreen"
-            component={MapScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

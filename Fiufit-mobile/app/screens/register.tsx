@@ -60,8 +60,8 @@ export default function RegisterScreen({ navigation }: any) {
     >
       {errorMessage && <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage} />}
       <Heading
-        marginTop={"30"}
-        marginBottom={"20"}
+        marginTop={"20%"}
+        marginBottom={"10%"}
       >
         Ingresa tus datos
       </Heading>
