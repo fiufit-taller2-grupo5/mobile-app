@@ -4,19 +4,16 @@ import { loginAndRegisterStyles } from "../../styles";
 import { useEffect, useState } from "react";
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
-import { sendUserInfoToBackend, userInfo } from "../../../firebase";
+import { auth, createUser, userInfo } from "../../../firebase";
+import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";
 interface Props {
   navigation: any;
 }
 
-
-WebBrowser.maybeCompleteAuthSession();
+// WebBrowser.maybeCompleteAuthSession();
 
 export default function GoogleLogin(props: Props) {
-  const [token, setToken] = useState("");
-  const [userId, setUserId] = useState("");
-
-  // TODO: add the case in which the user logs in with google withouth having an account on the app
+  // TODO: add the case in which the user logs in with google without having an account on the app
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId: "423504146626-f2ricjcl5u5lsl410m9knpl3gn5l2civ.apps.googleusercontent.com", // created in dev build
     webClientId:
@@ -24,37 +21,22 @@ export default function GoogleLogin(props: Props) {
   });
 
   useEffect(() => {
-    if (response?.type === "success" && response?.params?.access_token) {
-      // console.log("RESPONSE:",response.params);
-      setToken(response.params.access_token);
-      console.log("response:", response);
-      console.log("TOKEN:", token);
-      props.navigation.navigate('HomeScreen');
-    } else if (response?.type === "error") {
-      alert("Error: " + response.error);
+    async function signIn() {
+      if (response?.type === "success" && response?.params?.id_token) {
+        const credential = GoogleAuthProvider.credential(response?.params?.id_token);
+        await signInWithCredential(auth, credential).then(async (result) => {
+          console.log('Signed in with Google:', result.user);
+          // TODO: get the user info from the back and show it in the home screen          props.navigation.navigate('HomeScreen');
+        }).catch((error) => {
+          console.error('Error signing in with Google:', error);
+        });
+
+      } else if (response?.type === "error") {
+        alert("Error: " + response.error);
+      }
     }
-  }, [response, token]);
-
-  // get user info and send it to the backend
-  // useEffect(() => {
-  //   if (token) {
-  //     (async () => {
-  //       const userInfoResponse = await fetch(
-  //         `https://www.googleapis.com/userinfo/v2/me`,
-  //         {
-  //           method: "GET",
-  //           headers: {"Authorization": "Bearer " + token},
-  //         }
-  //       );
-  //       const userInfo = await userInfoResponse.json();
-  //       console.log("USER INFO:", userInfo);
-  //       setUserId(userInfo.id);
-  //       sendUserInfoToBackend({uid: userId }, token);
-  //     })();
-  //   }
-  // }, [token]);
-
-
+    signIn();
+  }, [response]);
 
   return (
     <VStack space={8} alignItems="center">

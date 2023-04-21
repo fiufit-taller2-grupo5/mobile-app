@@ -61,7 +61,7 @@ const logInWithEmailAndPassword = async (email: string, password: string): Promi
     const uid = user.uid;
     try {
       const idToken = await user.getIdToken();
-      // sendUserInfoToBackend({uid}, idToken);
+      // TODO: get the user info from the back and show it in the home screen
     } catch (error: any) {
       alert(error.message);
     }
@@ -136,31 +136,8 @@ const getErrorMessage = (error: AuthError): string => {
   }
 }
 
-const sendUserInfoToBackend = async (data: userInfo, idToken: string) => {
-  // get de prueba
-  // try {
-  //   const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       "accept": "*/*",
-  //       "connection": "keep-alive",
-  //       "Authorization": "Bearer " + idToken,
-  //     },
-  //   });
-  //   if (response.ok) {
-  //     const data = await response.json();
-  //     console.log(data);
-  //   } else {
-  //     alert("Error al iniciar sesión");
-  //     console.error(response);
-  //   }
-  // } catch (err:any) {
-  //   console.error(err);
-  //   alert(err.message);
-  // }
-
-  // post
+const createUser = async (data: userInfo, token: string) => {
+  console.log("DATA:", data, "token:", token);
   try {
     const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
       method: "POST",
@@ -169,38 +146,7 @@ const sendUserInfoToBackend = async (data: userInfo, idToken: string) => {
         "accept": "*/*",
         "accept-encoding": "gzip, deflate, br",
         "connection": "keep-alive",
-        "Authorization": "Bearer " + idToken,
-      },
-      body: JSON.stringify(data),
-    });
-    if (response.ok) {
-      try {
-        const data = await response.json();
-        console.log("BACKEND RESPONSE:", data);
-      } catch (err: any) {
-        console.error(err);
-      }
-    } else {
-      alert("Error al iniciar sesión");
-      console.error(response.json());
-    }
-  } catch (err: any) {
-    console.error(err);
-    alert(err.message);
-  }
-}
-
-const createUser = async (data: userInfo, idToken: string) => {
-  console.log("DATA:", data, "token:", idToken);
-  try {
-    const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + idToken,
+        "Authorization": "Bearer " + token,
       },
       body: JSON.stringify(data),
     });
@@ -284,7 +230,6 @@ export {
   createUser,
   updateUserDetails,
   userInfo,
-  sendUserInfoToBackend,
   auth,
   logInWithEmailAndPassword,
   registerWithEmailAndPassword,
