@@ -43,7 +43,7 @@ export default function RegisterScreen({ navigation }: any) {
       // maybe trigger a loading screen
       return;
     }
-    if (user) navigation.navigate('HomeScreen');
+    if (user) navigation.navigate('ExtraInfoScreen');
   }, [user, loading]);
 
   const clearFields = () => {
