@@ -37,7 +37,7 @@ export default function GoogleRegister(props: Props) {
           if (userCreationRes && userCreationRes.ok) {
             console.log("User created successfully google register");
             props.setCorrectlyLogged(true);
-            // navigation setted on register.tsx
+            props.navigation.navigate("ExtraInfoScreen");
           } else {
             const responseData = await userCreationRes?.text();
             props.setError(getErrorMessage(responseData? responseData : "Error creating user"));
