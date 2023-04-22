@@ -37,13 +37,13 @@ export default function RegisterScreen({ navigation }: any) {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [user, loading, error] = useAuthState(auth);
-
+  const [isCorrectlyLogged, setIsCorrectlyLogged] = useState(false);
   React.useEffect(() => {
     if (loading) {
       // maybe trigger a loading screen
       return;
     }
-    if (user) navigation.navigate('ExtraInfoScreen');
+    if (user && isCorrectlyLogged) navigation.navigate('ExtraInfoScreen');
   }, [user, loading]);
 
   const clearFields = () => {
@@ -80,8 +80,9 @@ export default function RegisterScreen({ navigation }: any) {
         password={password}
         setErrorMessage={setErrorMessage}
         clearFields={clearFields}
+        setCorrectlyLogged={setIsCorrectlyLogged}
       />
-      <GoogleRegister navigation={navigation} />
+      <GoogleRegister navigation={navigation} setError={setErrorMessage} setCorrectlyLogged={setIsCorrectlyLogged}/>
       <MoveToLogin
         navigation={navigation}
         clearFields={clearFields}

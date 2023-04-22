@@ -10,6 +10,7 @@ interface Props {
   password: string;
   setErrorMessage: (errorMessage: string) => void;
   clearFields: () => void;
+  setCorrectlyLogged : (isCorrectlyLogged: boolean) => void;
 }
 
 export default function SubmitButton(props: Props) {
@@ -28,6 +29,7 @@ export default function SubmitButton(props: Props) {
           if (!errorMessage) {
             console.log("User registered successfully");
             clearFields();
+            props.setCorrectlyLogged(true);
             navigation.navigate('ExtraInfoScreen');
           } else {
             console.log("Error registering user: ", errorMessage);

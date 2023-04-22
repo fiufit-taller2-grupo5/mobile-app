@@ -10,8 +10,14 @@ import { initializeApp } from "firebase/app";
 
 interface Props {
   navigation: any;
+  setError : (errorMessage: string) => void;
+  setCorrectlyLogged : (isCorrectlyLogged: boolean) => void;
 }
-
+function getErrorMessage (error: string) : string {
+  // receive a string like "{"error":"User with name pepe alreasy exists"}" and return the error message
+  const errorStr = error.split(':"')[1].split('"}')[0];
+  return errorStr;
+}
 export default function GoogleRegister(props: Props) {
   // TODO: add the case in which the user logs in with google withouth having an account on the app
   const [request, response, promptAsync] = Google.useAuthRequest({
@@ -27,8 +33,16 @@ export default function GoogleRegister(props: Props) {
         await signInWithCredential(auth, credential).then(async (result) => {
           console.log('Signed in with Google:', result.user);
           const user = result.user;
-          await createUser({ name: user.displayName as string, uid: user.uid, email: user.email as string }, (user as any).stsTokenManager.accessToken);
-          props.navigation.navigate('ExtraInfoScreen');
+          const userCreationRes = await createUser({ name: user.displayName as string, uid: user.uid, email: user.email as string }, (user as any).stsTokenManager.accessToken);
+          if (userCreationRes && userCreationRes.ok) {
+            console.log("User created successfully google register");
+            props.setCorrectlyLogged(true);
+            // navigation setted on register.tsx
+          } else {
+            const responseData = await userCreationRes?.text();
+            props.setError(getErrorMessage(responseData? responseData : "Error creating user"));
+            auth.signOut();
+          }
         }).catch((error) => {
           console.error('Error signing in with Google:', error);
         });

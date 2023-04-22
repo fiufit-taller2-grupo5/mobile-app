@@ -136,7 +136,7 @@ const getErrorMessage = (error: AuthError): string => {
   }
 }
 
-const createUser = async (data: userInfo, token: string) => {
+const createUser = async (data: userInfo, token: string) : Promise<void | Response>  => {
   console.log("DATA:", data, "token:", token);
   try {
     const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
@@ -152,20 +152,21 @@ const createUser = async (data: userInfo, token: string) => {
     });
     if (response.ok) {
       try {
-        const data = await response.json();
-        internal_id = getInternalIdFromResponse(data);
-        console.log("BACKEND RESPONSE:", data);
+        const responseData = await response.json();
+        internal_id = getInternalIdFromResponse(responseData);
+        console.log("BACKEND RESPONSE:", responseData);
       } catch (err: any) {
         console.error(err);
       }
     } else {
-      alert("Error al iniciar sesión");
-      console.error(response.json());
+      console.warn("ERROR CREATING USER");
     }
+    return response;
   } catch (err: any) {
     console.error(err);
     console.log(err.stack);
-    alert("CREATE USER ERROR" + err.message);
+    alert("CREATE USER ERROR:" + err.message);
+    return err;
   }
 }
 
