@@ -138,3 +138,15 @@ export const loginAndRegisterStyles = StyleSheet.create({
     left: '0%',
   }
 });
+
+export const footerTabStyles = StyleSheet.create({
+  horizontalFooterTab: {
+    borderRadius: 30,
+    position: 'relative',
+    bottom: -690,
+  },
+  text: {
+        fontFamily: 'Roboto',
+        fontStyle: 'normal',
+  }
+});

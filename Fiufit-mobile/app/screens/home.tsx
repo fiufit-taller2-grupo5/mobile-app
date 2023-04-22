@@ -1,25 +1,9 @@
+import { NativeBaseProvider } from 'native-base';
 import * as React from 'react';
-import { Container, Text, NativeBaseProvider, extendTheme } from 'native-base';
+import FooterTab from '../components/menu/footerTab';
 
 export default function HomeScreen() {
-    const theme = extendTheme({
-        components: {
-            Text: {
-                defaultProps: {
-                    fontFamily: 'Roboto',
-                    fontStyle: 'normal',
-                    fontWeight: '800',
-                    fontSize: '30px',
-                    top: '150px',
-                    left: '35%',
-                }
-            }
-        }
-    });
-
-    return <NativeBaseProvider theme={theme}>
-        <Container>
-            <Text>Home Screen</Text>
-        </Container>
+    return <NativeBaseProvider>
+        <FooterTab/>
     </NativeBaseProvider>;
 }
