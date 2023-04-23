@@ -139,6 +139,12 @@ export const loginAndRegisterStyles = StyleSheet.create({
   }
 });
 
+export const navigationBarStyles = StyleSheet.create({
+  navBar: {
+    borderRadius: 30,
+  }
+});
+
 export const footerTabStyles = StyleSheet.create({
   horizontalFooterTab: {
     borderRadius: 30,
