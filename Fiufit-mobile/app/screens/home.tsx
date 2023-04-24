@@ -1,7 +1,9 @@
 import { NativeBaseProvider, Text } from 'native-base';
 import * as React from 'react';
-import LoginScreen from './login';
-import RegisterScreen from './register';
+import TrainingsScreen from './trainings';
+import ProfileScreen from './profile';
+import UsersScreen from './users';
+import FavoritesScreen from './favorites';
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -9,10 +11,22 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
 
 export default function HomeScreen() {
+    const screenOptions = {
+        headerShown: false,
+        tabBarStyle:{
+          height:"8%",
+          borderTopRightRadius:30, 
+          borderTopLeftRadius:30,
+        },
+        tabBarItemStyle:{
+          margin:5,
+          borderRadius:10,
+        },
+      };
     return <NativeBaseProvider>
-        <Tab.Navigator screenOptions={{ headerShown: false, tabBarStyle:{borderTopRightRadius:30, borderTopLeftRadius:30, height:"6%"} }}>
+        <Tab.Navigator {... { screenOptions }} >
             <Tab.Screen
-                name="Users" component={LoginScreen}
+                name="Users" component={UsersScreen}
                 options={
                     {tabBarLabel: 'Users', tabBarIcon: ({ color, size }) => (
                     <FontAwesome5 name='users' color={color} size={size} />),
@@ -25,7 +39,7 @@ export default function HomeScreen() {
                     <MaterialCommunityIcons name='dumbbell' color={color} size={size} />),
                     tabBarActiveTintColor: '#FF6060'}
                 }
-                name="Trainings" component={RegisterScreen}
+                name="Trainings" component={TrainingsScreen}
             />
             <Tab.Screen
                 options={
@@ -33,7 +47,7 @@ export default function HomeScreen() {
                     <MaterialCommunityIcons name='heart' color={color} size={size} />),
                     tabBarActiveTintColor: '#FF6060'}
                 }
-                name="Favorites" component={LoginScreen} 
+                name="Favorites" component={FavoritesScreen} 
             />
             <Tab.Screen
                 options={
@@ -41,7 +55,7 @@ export default function HomeScreen() {
                     <MaterialCommunityIcons name='account' color={color} size={size} />),
                     tabBarActiveTintColor: '#FF6060'}
                 }
-                name="Profile" component={LoginScreen}
+                name="Profile" component={ProfileScreen}
             />
         </Tab.Navigator>
     </NativeBaseProvider>;

@@ -7,6 +7,10 @@ import WelcomeScreen from './app/screens/welcome';
 import RegisterScreen from './app/screens/register';
 import LoginScreen from './app/screens/login';
 import HomeScreen from './app/screens/home';
+import FavoritesScreen from './app/screens/favorites';
+import ProfileScreen from './app/screens/profile';
+import UsersScreen from './app/screens/users';
+import TrainingsScreen from './app/screens/trainings';
 import ExtraInformationScreen from './app/screens/extraInformation';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -44,6 +48,18 @@ export default function App() {
           <Stack.Screen
             name="HomeScreen"
             component={HomeScreen} />
+          <Stack.Screen
+            name="UsersScreen"
+            component={UsersScreen} />
+          <Stack.Screen
+            name="TrainingsScreen"
+            component={TrainingsScreen} />
+          <Stack.Screen
+            name="FavoritesScreen"
+            component={FavoritesScreen} />
+          <Stack.Screen
+            name="ProfileScreen"
+            component={ProfileScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
