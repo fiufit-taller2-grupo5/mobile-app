@@ -1,60 +1,80 @@
-import React, { useState } from 'react';
-import { NativeBaseProvider, Box, Text, Pressable, Heading, IconButton, Icon, HStack, Avatar, Center } from 'native-base';
-import { SwipeListView } from 'react-native-swipe-list-view';
-import { Ionicons } from '@expo/vector-icons';
+import React from "react";
+import { Box, FlatList, Heading, Avatar, HStack, VStack, Text, Spacer, Center, NativeBaseProvider, Button } from "native-base";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons'; 
+import SearchBar from './searchBar';
+
+const TrainingsInfo = () => {
+  const data = [{
+    id: "1",
+    name: "Cardio Power",
+    difficulty: "5",
+    description: "Entrenamiento full cardio",
+    avatarUrl: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+  }, {
+    id: "2",
+    name: "Funcional",
+    difficulty: "10",
+    description: "Combina cardio con pesas",
+    avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyEaZqT3fHeNrPGcnjLLX1v_W4mvBlgpwxnA&usqp=CAU"
+  }, {
+    id: "3",
+    name: "Abs",
+    difficulty: "3",
+    description: "Entrenamiento full abdominales",
+    avatarUrl: "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg"
+  }, {
+    id: "4",
+    name: "Superior",
+    difficulty: "8",
+    description: "Brazos con mucho peso",
+    avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU"
+  }, {
+    id: "5",
+    name: "Yoga",
+    difficulty: "4",
+    description: "Chill para arrancar la semana",
+    avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU"
+  }, {
+    id: "6",
+    name: "Inferior",
+    difficulty: "9",
+    description: "Rutina de piernas",
+    avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU"
+  }];
+  
+  return <Box>
+    <SearchBar />
+    <FlatList data={data} renderItem={({item}) => 
+    <Box borderBottomWidth="10" borderColor="#fff" px="6" py="10" borderRadius="30px" backgroundColor="#f6685e">
+            <HStack space={[5, 3]} justifyContent="space-between">
+              <MaterialCommunityIcons name='dumbbell' color="#ffffff" size={26} alignSelf="center"/>
+              <VStack>
+                <Text fontSize="md" color="#000000" bold>
+                  {item.name}
+                </Text>
+                <Text color="#000000">
+                  {item.description}
+                </Text>
+                <Text fontSize="sm" color="#000000">
+                Difficulty: {item.difficulty}
+                </Text>
+              </VStack>
+              <Spacer />
+              <Button backgroundColor="#ffffff" size={10} borderRadius="10px" alignSelf="center"
+              onPress={async () => { alert("Training info")}}>
+                <AntDesign name="arrowright" size={20} color="#000000" />
+              </Button>
+            </HStack>
+          </Box>
+        } keyExtractor={item => item.id} />
+    </Box>;
+};
 
 export default function TrainingsList() {
-    const [mode, setMode] = useState('Basic');
-    return <NativeBaseProvider>
-        <Box textAlign="center" bg="white" flex={1} safeAreaTop>
-          <TrainingsInfo />
-        </Box>
-      </NativeBaseProvider>;
-  }
-  
-function TrainingsInfo() {
-    const [listData, setListData] = useState(Array(20).fill('').map((_, i) => ({
-      key: `${i}`,
-      text: `item #${i}`
-    })));
-  
-    const closeRow = (rowMap, rowKey) => {
-      if (rowMap[rowKey]) {
-        rowMap[rowKey].closeRow();
-      }
-    };
-
-    const onRowDidOpen = rowKey => {
-      console.log('This row opened', rowKey);
-    };
-  
-    const renderItem = ({
-      item,
-      index
-    }) => <Box>
-        <Pressable onPress={() => console.log('You touched me')} alignItems="center" bg="white" borderBottomColor="trueGray.200" borderBottomWidth={1} justifyContent="center" height={50} underlayColor={'#AAA'} _pressed={{
-        bg: 'trueGray.200'
-      }} py={8}>
-          <HStack width="100%" px={4}>
-            <HStack space={2} alignItems="center">
-              <Avatar color="white" bg={'secondary.700'}>
-                {index}
-              </Avatar>
-              <Text>{item.text}</Text>
-            </HStack>
-          </HStack>
-        </Pressable>
-      </Box>;
-  
-    const renderHiddenItem = (data, rowMap) => <HStack flex={1} pl={2}>
-        <Pressable px={4} ml="auto" bg="dark.500" justifyContent="center" onPress={() => closeRow(rowMap, data.item.key)} _pressed={{
-        opacity: 0.5
-      }}>
-          <Icon as={<Ionicons name="close" />} color="white" />
-        </Pressable>
-      </HStack>;
-  
-    return <Box bg="white" safeArea flex={1}>
-        <SwipeListView data={listData} renderItem={renderItem} renderHiddenItem={renderHiddenItem} rightOpenValue={-130} previewRowKey={'0'} previewOpenValue={-40} previewOpenDelay={3000} onRowDidOpen={onRowDidOpen} />
-      </Box>;
-  }
+  return (
+    <NativeBaseProvider>
+      <TrainingsInfo />
+    </NativeBaseProvider>
+  );
+};
