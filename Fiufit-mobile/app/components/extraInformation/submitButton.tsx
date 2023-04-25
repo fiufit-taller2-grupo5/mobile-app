@@ -7,21 +7,23 @@ interface Props {
   navigation: any;
   streetName: string;
   streetNumber: number;
-  dateOfBirth: Date;
+  date: Date | null;
   weight: number;
   height: number;
-  interests: string;
+  interests: Array<string>;
 }
 
 export default function SubmitButton(props: Props) {
-  const { navigation, streetName, streetNumber, dateOfBirth, weight, height, interests } = props;
+  const { navigation, streetName, streetNumber, date, weight, height, interests } = props;
 
   return (
     <View style={{ height: 50, width: "100%", alignItems: "center" }}>
       <Button
         style={[loginAndRegisterStyles.button, loginAndRegisterStyles.extraInfoButton]}
         onPress={() => {
-          console.log("pass the extra information to backend y hacer chequeo de tipos");
+          console.log("intereses", interests);
+          console.log("pass the extra information to backend");
+          // TODO: pasar cosas al back
           // updateUserDetails({ streetName: streetName, streetNumber: streetNumber, birthDate: dateOfBirth.toString(), weight: weight, height: height })
           navigation.navigate('HomeScreen');
         }}

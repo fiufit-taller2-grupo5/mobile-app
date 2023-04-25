@@ -27,18 +27,17 @@ export default function ExtraInformationScreen({ navigation }: any) {
 
   const [streetName, setStreetName] = useState("");
   const [streetNumber, setStreetNumber] = useState(0);
-  const [dateOfBirth, setDateOfBirth] = useState(new Date());
+  const [date, setDate] = useState<Date | null>(null);
   const [weight, setWeight] = useState(50);
   const [height, setHeight] = useState(150);
-  const [interests, setInterests] = useState("");
+  const [interests, setInterests] = useState([]);
 
   const clearFields = () => {
     setStreetName("");
     setStreetNumber(0);
-    setDateOfBirth(new Date());
+    setDate(new Date());
     setWeight(50);
     setHeight(150);
-    setInterests("");
   }
 
   return <NativeBaseProvider theme={theme}>
@@ -61,21 +60,20 @@ export default function ExtraInformationScreen({ navigation }: any) {
         setStreetName={setStreetName}
         streetNumber={streetNumber}
         setStreetNumber={setStreetNumber}
-        setDateOfBirth={setDateOfBirth}
+        date={date}
+        setDate={setDate}
         weight={weight}
         setWeight={setWeight}
         height={height}
         setHeight={setHeight}
         interests={interests}
         setInterests={setInterests}
-        navigation={navigation}
-        route={route}
       />
       <SubmitButton
         navigation={navigation}
         streetName={streetName}
         streetNumber={streetNumber}
-        dateOfBirth={dateOfBirth}
+        date={date}
         weight={weight}
         height={height}
         interests={interests}
