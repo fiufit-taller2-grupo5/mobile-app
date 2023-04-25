@@ -2,8 +2,8 @@ import React from 'react';
 import {NativeBaseProvider} from "native-base";
 import TrainingsList from '../components/trainings/trainingsList';
 
-export default function Trainings() {
+export default function Trainings({ navigation }: any) {
     return <NativeBaseProvider>
-        <TrainingsList/>
+        <TrainingsList navigation={navigation}/>
     </NativeBaseProvider>;
 }

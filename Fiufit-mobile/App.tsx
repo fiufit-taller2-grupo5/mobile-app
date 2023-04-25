@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import WelcomeScreen from './app/screens/welcome';
 import RegisterScreen from './app/screens/register';
 import LoginScreen from './app/screens/login';
+import TrainingInfoScreen from './app/screens/trainingInfo';
 import HomeScreen from './app/screens/home';
 import FavoritesScreen from './app/screens/favorites';
 import ProfileScreen from './app/screens/profile';
@@ -60,6 +61,9 @@ export default function App() {
           <Stack.Screen
             name="ProfileScreen"
             component={ProfileScreen} />
+          <Stack.Screen
+            name="TrainingInfoScreen"
+            component={TrainingInfoScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

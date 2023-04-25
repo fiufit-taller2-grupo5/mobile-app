@@ -4,7 +4,12 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons'; 
 import SearchBar from './searchBar';
 
-const TrainingsInfo = () => {
+interface Props {
+  navigation: any;
+}
+
+const TrainingsInfo = (props: Props) => {
+  const { navigation } = props;
   const data = [{
     id: "1",
     name: "Cardio Power",
@@ -62,7 +67,7 @@ const TrainingsInfo = () => {
               </VStack>
               <Spacer />
               <Button backgroundColor="#ffffff" size={10} borderRadius="10px" alignSelf="center"
-              onPress={async () => { alert("Training info")}}>
+              onPress={async () => { navigation.navigate('TrainingInfoScreen');}}>
                 <AntDesign name="arrowright" size={20} color="#000000" />
               </Button>
             </HStack>
@@ -71,10 +76,11 @@ const TrainingsInfo = () => {
     </Box>;
 };
 
-export default function TrainingsList() {
+export default function TrainingsList(props: Props) {
+  const { navigation } = props;
   return (
     <NativeBaseProvider>
-      <TrainingsInfo />
+      <TrainingsInfo navigation={navigation}/>
     </NativeBaseProvider>
   );
 };
