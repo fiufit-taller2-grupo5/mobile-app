@@ -6,51 +6,52 @@ import SearchBar from './searchBar';
 
 interface Props {
   navigation: any;
-}
+};
 
 const TrainingsInfo = (props: Props) => {
   const { navigation } = props;
+  //aca se tiene que hacer un get a la lista de trainings y data seria data={responseData}
   const data = [{
     id: "1",
     name: "Cardio Power",
     difficulty: "5",
     description: "Entrenamiento full cardio",
-    avatarUrl: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+    type: "Running"
   }, {
     id: "2",
-    name: "Funcional",
+    name: "Crossfit",
     difficulty: "10",
     description: "Combina cardio con pesas",
-    avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyEaZqT3fHeNrPGcnjLLX1v_W4mvBlgpwxnA&usqp=CAU"
+    type: "Crossfit"
   }, {
     id: "3",
     name: "Abs",
     difficulty: "3",
     description: "Entrenamiento full abdominales",
-    avatarUrl: "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg"
+    type: "Calisthenics"
   }, {
     id: "4",
-    name: "Superior",
+    name: "Pilates",
     difficulty: "8",
-    description: "Brazos con mucho peso",
-    avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU"
+    description: "Para mejorar la postura",
+    type: "Pilates"
   }, {
     id: "5",
     name: "Yoga",
     difficulty: "4",
     description: "Chill para arrancar la semana",
-    avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU"
+    type: "Yoga"
   }, {
     id: "6",
-    name: "Inferior",
+    name: "Bicicleteada",
     difficulty: "9",
-    description: "Rutina de piernas",
-    avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU"
+    description: "10 km en bici",
+    type: "Cycling"
   }];
   
   return <Box>
     <SearchBar />
-    <FlatList data={data} renderItem={({item}) => 
+    <FlatList data={data} marginBottom="15%" renderItem={({item}) => 
     <Box borderBottomWidth="10" borderColor="#fff" px="6" py="10" borderRadius="30px" backgroundColor="#f6685e">
             <HStack space={[5, 3]} justifyContent="space-between">
               <MaterialCommunityIcons name='dumbbell' color="#ffffff" size={26} alignSelf="center"/>
@@ -62,12 +63,12 @@ const TrainingsInfo = (props: Props) => {
                   {item.description}
                 </Text>
                 <Text fontSize="sm" color="#000000">
-                Difficulty: {item.difficulty}
+                Dificultad: {item.difficulty}
                 </Text>
               </VStack>
               <Spacer />
               <Button backgroundColor="#ffffff" size={10} borderRadius="10px" alignSelf="center"
-              onPress={async () => { navigation.navigate('TrainingInfoScreen');}}>
+              onPress={async () => { navigation.navigate('TrainingInfoScreen', { trainingData: item });}}>
                 <AntDesign name="arrowright" size={20} color="#000000" />
               </Button>
             </HStack>
