@@ -2,6 +2,7 @@ import { VStack, Text, HStack, Checkbox, Button, Input } from "native-base";
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { useEffect, useState } from "react";
 import useSWR from 'swr';
+import { getInterests } from "../../../api";
 
 interface Props {
   streetName: string;
@@ -194,36 +195,3 @@ export default function ExtraInformationForm(props: Props) {
     </VStack>
   );
 }
-
-async function getInterests(url:string) : Promise<string[] | null> {
-  console.log("getting interests at url: ", url);
-  try {
-    // const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/interests";
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "dev": "a",
-        // "Authorization": "Bearer " + accessToken,
-      },
-    });
-    if (response.ok) {
-      try {
-        const interests = await response.json() ;
-        console.log("possible interests:", interests);
-        return interests;
-      } catch (err: any) {
-        console.error(err);
-      }
-    } else {
-      console.error("error getting interests response: ",await response.json());
-    }
-  } catch (err: any) {
-    console.error("error fetching interests: ",err);
-  }
-  return null;
-}
-

@@ -1,6 +1,6 @@
 import { View, Button } from "native-base";
 import { loginAndRegisterStyles } from "../../styles";
-import { updateUserDetails } from "../../../firebase";
+import { updateUserDetails } from "../../../api";
 
 
 interface Props {

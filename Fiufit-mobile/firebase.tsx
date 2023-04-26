@@ -9,15 +9,7 @@ import {
   User
 } from "firebase/auth";
 import { getUser, storeUser } from "./app/utils/storageController";
-
-type userDetails = {
-  userId?: string;
-  weight: number;
-  height: number;
-  birthDate: string;
-  location: string;
-  interests: string[];
-}
+import { createUser } from "./api";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDoN3FOFeaLagniu1nAkyWTbb_4kO4kXBw",
@@ -41,14 +33,6 @@ const getCauseFromErrorMessage = (s: string): string => {
   return s.split("/")[1].split(")")[0];
 }
 
-const getInternalIdFromResponse = (response: any): string => {
-  // receives a response from the backend like "{"status": "User Jdjde with id 10 created"}"
-  // returns a string similar to "10"
-  console.log("internal id receiving response", response.status);
-  const res = response.status.split("with id ")[1].split(" ")[0];
-  console.log(res);
-  return res;
-}
 
 const logInWithEmailAndPassword = async (email: string, password: string): Promise<string | void> => {
   try {
@@ -128,95 +112,13 @@ const getErrorMessage = (error: AuthError): string => {
       return "Error desconocido"
   }
 }
-// emailRegisterName default value is "null"
-const createUser = async (user: User, emailRegisterName : string = "" ) : Promise<void | Response>  => {
 
-  const data = {
-    name: user.displayName? user.displayName as string : emailRegisterName,
-    uid: user.uid,
-    email: user.email as string
-  };
-  const token = (user as any).stsTokenManager.accessToken;
-  console.log("DATA:", data, "token:", token);
-  try {
-    const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + token,
-      },
-      body: JSON.stringify(data),
-    });
-    if (response.ok) {
-      try {
-        const responseData = await response.json();
-        internal_id = getInternalIdFromResponse(responseData);
-        storeUser({
-          user: user,
-          internal_id: internal_id,
-          is_trainer: false
-        });
-        console.log("BACKEND RESPONSE:", responseData);
-      } catch (err: any) {
-        console.error(err);
-      }
-    } else {
-      console.warn("ERROR CREATING USER:", await response.json());
-    }
-    return response;
-  } catch (err: any) {
-    console.error(err);
-    alert("CREATE USER ERROR:" + err.message);
-    return err;
-  }
-}
-
-const updateUserDetails = async (data: userDetails) => {
-  const userInfo = await getUser();
-  data.userId = internal_id;
-  const accessToken = (userInfo?.user as any).stsTokenManager.accessToken;
-  console.log("data:", JSON.stringify(data));
-  try {
-    const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/" + internal_id + "/metadata";
-    const response = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        // "dev": "a",
-        "Authorization": "Bearer " + accessToken,
-      },
-      body: JSON.stringify(data),
-    });
-    console.log("RESPONSE:", response);
-    if (response.ok) {
-      try {
-        console.log("BACKEND RESPONSE:", response);
-        const data = await response.json();
-      } catch (err: any) {
-        console.error(err);
-      }
-    } else {
-      alert("Error al iniciar sesión");
-      console.error(await response.json());
-    }
-  } catch (err: any) {
-    console.error("errorsito: ",err);
-    alert("user details error:" + err.message);
-  }
-}
 
 export {
-  createUser,
-  updateUserDetails,
   auth,
   logInWithEmailAndPassword,
   registerWithEmailAndPassword,
   sendPasswordReset,
   logout,
+  
 };
