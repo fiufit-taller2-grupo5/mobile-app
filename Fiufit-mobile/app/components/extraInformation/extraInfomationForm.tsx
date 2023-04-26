@@ -1,19 +1,21 @@
 import { VStack, Text, HStack, Checkbox, Button, Input } from "native-base";
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { useEffect, useState } from "react";
+import useSWR from 'swr';
 
 interface Props {
   streetName: string;
   setStreetName: (streetName: string) => void;
   streetNumber: number;
   setStreetNumber: (streetNumber: number) => void;
-  date: Date | null;
-  setDate: (date: Date | null) => void;
+  date: Date;
+  setDate: (date: Date) => void;
   weight: number
   setWeight: (weight: number) => void;
   height: number;
   setHeight: (height: number) => void;
-  interests: Array<string>;
-  setInterests: (interests: any) => void;
+  interests: string[];
+  setInterests: (interests: string[]) => void;
 }
 
 export default function ExtraInformationForm(props: Props) {
@@ -31,7 +33,9 @@ export default function ExtraInformationForm(props: Props) {
     interests,
     setInterests,
   } = props;
-
+  
+  const interestsResponse = useSWR("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/interests", getInterests);
+  const [interestsList, setInterestsList] = useState<string[]>([]);
   const onDateChange = (event: any, selectedDate: any) => {
     const currentDate = selectedDate;
     setDate(currentDate);
@@ -51,9 +55,14 @@ export default function ExtraInformationForm(props: Props) {
     showMode('date');
   };
 
-  let interestsSelected = interests;
+  useEffect(() => {
+    if(interestsResponse.data) {
+      setInterestsList(interestsResponse.data);
+    }
+  }, [interestsResponse.data]);
 
-  const handleChange = (interest: string) => {
+  let interestsSelected = interests;
+  const handleInterestSelection = (interest: string) => {
     if (interestsSelected.includes(interest)) {
       const index = interestsSelected.indexOf(interest);
       if (index > -1) {
@@ -65,10 +74,8 @@ export default function ExtraInformationForm(props: Props) {
       interestsSelected.push(interest);
       setInterests(interestsSelected);
     }
+    console.log(interestsSelected);
   }
-
-  // TODO: use endpoint from backend
-  const interestsData = ["HIT", "Cardio", "Body Pump", "Functional", "Resistance", "Running"];
 
   return (
     <VStack space={6} alignItems="center" top={"5%"}>
@@ -146,15 +153,16 @@ export default function ExtraInformationForm(props: Props) {
         }
         onChangeText={text => setHeight(parseInt(text))}
       />
+      <Text style={{ fontSize: 13, top: "2%" }}>Intereses</Text>
       <VStack space={8}
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          width: '80%',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        width: '80%',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+      }}
       >
         {/*rows of 3 elements, equidistant to each other horizontally and vertically:*/}
         <VStack space={"9"}
@@ -166,14 +174,14 @@ export default function ExtraInformationForm(props: Props) {
             justifyContent: "flex-start"
           }}
         >
-          {interestsData.map((interest) => {
+          {interestsList && interestsList.map((interest: string) => {
             return (
               <Checkbox
                 colorScheme='rose'
                 key={interest}
                 value={interest}
                 mr={"12"}
-                onChange={() => {handleChange(interest);}}
+                onChange={() => {handleInterestSelection(interest);}}
               >
                 <Text width={"20"}>
                   {interest}
@@ -186,3 +194,36 @@ export default function ExtraInformationForm(props: Props) {
     </VStack>
   );
 }
+
+async function getInterests(url:string) : Promise<string[] | null> {
+  console.log("getting interests at url: ", url);
+  try {
+    // const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/interests";
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "dev": "a",
+        // "Authorization": "Bearer " + accessToken,
+      },
+    });
+    if (response.ok) {
+      try {
+        const interests = await response.json() ;
+        console.log("possible interests:", interests);
+        return interests;
+      } catch (err: any) {
+        console.error(err);
+      }
+    } else {
+      console.error("error getting interests response: ",await response.json());
+    }
+  } catch (err: any) {
+    console.error("error fetching interests: ",err);
+  }
+  return null;
+}
+

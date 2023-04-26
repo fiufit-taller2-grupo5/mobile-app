@@ -5,22 +5,18 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
-  signOut
+  signOut,
+  User
 } from "firebase/auth";
-
-type userInfo = {
-  name?: string;
-  uid: string;
-  email: string;
-}
+import { getUser, storeUser } from "./app/utils/storageController";
 
 type userDetails = {
   userId?: string;
   weight: number;
   height: number;
   birthDate: string;
-  streetName: string;
-  streetNumber: number;
+  location: string;
+  interests: string[];
 }
 
 const firebaseConfig = {
@@ -74,14 +70,11 @@ const logInWithEmailAndPassword = async (email: string, password: string): Promi
 const registerWithEmailAndPassword =
   async (name: string, email: string, password: string): Promise<void | string> => {
     try {
-      console.log("registering");
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      console.log("registered user with id: " + user.uid);
       try {
-        const idToken = await user.getIdToken();
-        console.log("register w email TOKEN:", idToken);
-        createUser({ name: name, uid: user.uid, email: email }, idToken);
+        console.log("register w email");
+        createUser(user, name);
       } catch (error: any) {
         alert(error.message);
       }
@@ -135,8 +128,15 @@ const getErrorMessage = (error: AuthError): string => {
       return "Error desconocido"
   }
 }
+// emailRegisterName default value is "null"
+const createUser = async (user: User, emailRegisterName : string = "" ) : Promise<void | Response>  => {
 
-const createUser = async (data: userInfo, token: string) : Promise<void | Response>  => {
+  const data = {
+    name: user.displayName? user.displayName as string : emailRegisterName,
+    uid: user.uid,
+    email: user.email as string
+  };
+  const token = (user as any).stsTokenManager.accessToken;
   console.log("DATA:", data, "token:", token);
   try {
     const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
@@ -154,33 +154,31 @@ const createUser = async (data: userInfo, token: string) : Promise<void | Respon
       try {
         const responseData = await response.json();
         internal_id = getInternalIdFromResponse(responseData);
+        storeUser({
+          user: user,
+          internal_id: internal_id,
+          is_trainer: false
+        });
         console.log("BACKEND RESPONSE:", responseData);
       } catch (err: any) {
         console.error(err);
       }
     } else {
-      console.warn("ERROR CREATING USER");
+      console.warn("ERROR CREATING USER:", await response.json());
     }
     return response;
   } catch (err: any) {
     console.error(err);
-    console.log(err.stack);
     alert("CREATE USER ERROR:" + err.message);
     return err;
   }
 }
 
 const updateUserDetails = async (data: userDetails) => {
+  const userInfo = await getUser();
   data.userId = internal_id;
-  console.log("DATA:", data);
-  const newData = {
-    "userId": internal_id,
-    "weight": 80,
-    "height": 180,
-    "birthDate": null,
-    "latitude": 3.14,
-    "longitude": 10.1
-  }
+  const accessToken = (userInfo?.user as any).stsTokenManager.accessToken;
+  console.log("data:", JSON.stringify(data));
   try {
     const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/" + internal_id + "/metadata";
     const response = await fetch(url, {
@@ -191,46 +189,31 @@ const updateUserDetails = async (data: userDetails) => {
         "accept-encoding": "gzip, deflate, br",
         "connection": "keep-alive",
         // "dev": "a",
-        "Authorization": "Bearer " + await getIdToken(),
+        "Authorization": "Bearer " + accessToken,
       },
-      body: JSON.stringify(newData), // SENDIND MOCKED DATA
+      body: JSON.stringify(data),
     });
+    console.log("RESPONSE:", response);
     if (response.ok) {
       try {
+        console.log("BACKEND RESPONSE:", response);
         const data = await response.json();
-        console.log("BACKEND RESPONSE:", data);
       } catch (err: any) {
         console.error(err);
       }
     } else {
       alert("Error al iniciar sesión");
-      console.error(response.json());
+      console.error(await response.json());
     }
   } catch (err: any) {
-    console.error(err);
+    console.error("errorsito: ",err);
     alert("user details error:" + err.message);
   }
-}
-
-const getIdToken = async () => {
-  const user = auth.currentUser;
-  if (user) {
-    try {
-      const idToken = await user.getIdToken();
-      console.log("GETTING ID TOKEN:", idToken);
-      return idToken;
-    } catch (err: any) {
-      console.error(err);
-      alert("Error al obtener token");
-    }
-  }
-  return null;
 }
 
 export {
   createUser,
   updateUserDetails,
-  userInfo,
   auth,
   logInWithEmailAndPassword,
   registerWithEmailAndPassword,

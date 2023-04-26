@@ -4,10 +4,10 @@
     "slug": "Fiufit-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.svg",
+    "icon": "./assets/images/logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/images/logo.svg",
+      "image": "./assets/images/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -20,21 +20,20 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/logo.svg",
+        "foregroundImage": "./assets/images/logo.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.fiufit.app"
     },
     "web": {
-      "favicon": "./assets/images/logo.svg"
+      "favicon": "./assets/images/logo.png"
     },
     "scheme": "exp+fiufit-mobile",
     "extra": {
       "eas": {
-        "projectId": "9447cde2-6fe0-4efb-9b96-6bcbdff27a0b"
+        "projectId": "a9b48b8e-6904-4846-9385-e5b351c5f0a8"
       }
     },
-    "owner": "lucianotrujillo",
     "runtimeVersion": "1.0.0",
     "updates": {
       "url": "https://u.expo.dev/9447cde2-6fe0-4efb-9b96-6bcbdff27a0b",

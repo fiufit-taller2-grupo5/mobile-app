@@ -11,10 +11,12 @@
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
     "@expo/webpack-config": "^18.0.1",
+    "@react-native-async-storage/async-storage": "^1.18.1",
     "@react-native-community/datetimepicker": "6.7.3",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
+    "eas-cli": "^3.10.0",
     "expo": "~48.0.11",
     "expo-application": "~5.1.1",
     "expo-auth-session": "~4.0.3",
@@ -38,7 +40,8 @@
     "react-native-svg": "13.4.0",
     "react-native-swipe-list-view": "^3.2.9",
     "react-native-vector-icons": "^9.2.0",
-    "react-native-web": "~0.18.10"
+    "react-native-web": "~0.18.10",
+    "swr": "^2.1.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -7,10 +7,10 @@ interface Props {
   navigation: any;
   streetName: string;
   streetNumber: number;
-  date: Date | null;
+  date: Date;
   weight: number;
   height: number;
-  interests: Array<string>;
+  interests: string[];
 }
 
 export default function SubmitButton(props: Props) {
@@ -21,10 +21,8 @@ export default function SubmitButton(props: Props) {
       <Button
         style={[loginAndRegisterStyles.button, loginAndRegisterStyles.extraInfoButton]}
         onPress={() => {
-          console.log("intereses", interests);
-          console.log("pass the extra information to backend");
-          // TODO: pasar cosas al back
-          // updateUserDetails({ streetName: streetName, streetNumber: streetNumber, birthDate: dateOfBirth.toString(), weight: weight, height: height })
+          console.log("userDetails:", { location: streetName+streetNumber.toString(10), birthDate: date.toString(), weight: weight, height: height, interests: interests });
+          updateUserDetails({ location: streetName+streetNumber.toString(10), birthDate: date.toISOString(), weight: weight, height: height, interests: interests })
           navigation.navigate('HomeScreen');
         }}
         _text={{ color: "#FFFFFF", fontSize: "20px", fontWeight: "bold" }}

@@ -27,10 +27,10 @@ export default function ExtraInformationScreen({ navigation }: any) {
 
   const [streetName, setStreetName] = useState("");
   const [streetNumber, setStreetNumber] = useState(0);
-  const [date, setDate] = useState<Date | null>(null);
+  const [date, setDate] = useState<Date>(new Date());
   const [weight, setWeight] = useState(50);
   const [height, setHeight] = useState(150);
-  const [interests, setInterests] = useState([]);
+  const [interests, setInterests] = useState(new Array<string>());
 
   const clearFields = () => {
     setStreetName("");
@@ -38,6 +38,7 @@ export default function ExtraInformationScreen({ navigation }: any) {
     setDate(new Date());
     setWeight(50);
     setHeight(150);
+    setInterests(new Array<string>());
   }
 
   return <NativeBaseProvider theme={theme}>

@@ -4,9 +4,10 @@ import { loginAndRegisterStyles } from "../../styles";
 import { useEffect, useState } from "react";
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
-import { auth, createUser, userInfo } from "../../../firebase";
+import { auth, createUser } from "../../../firebase";
 import { getAuth, signInWithCredential, GoogleAuthProvider } from "firebase/auth";
 import { initializeApp } from "firebase/app";
+import { storeUser } from "../../utils/storageController";
 
 interface Props {
   navigation: any;
@@ -33,7 +34,7 @@ export default function GoogleRegister(props: Props) {
         await signInWithCredential(auth, credential).then(async (result) => {
           console.log('Signed in with Google:', result.user);
           const user = result.user;
-          const userCreationRes = await createUser({ name: user.displayName as string, uid: user.uid, email: user.email as string }, (user as any).stsTokenManager.accessToken);
+          const userCreationRes = await createUser(user);
           if (userCreationRes && userCreationRes.ok) {
             console.log("User created successfully google register");
             props.setCorrectlyLogged(true);

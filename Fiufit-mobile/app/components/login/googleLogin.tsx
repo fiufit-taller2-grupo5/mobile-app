@@ -6,6 +6,7 @@ import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import { auth, createUser, userInfo } from "../../../firebase";
 import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";
+import { storeUser } from "../../utils/storageController";
 interface Props {
   navigation: any;
 }
@@ -25,7 +26,9 @@ export default function GoogleLogin(props: Props) {
       if (response?.type === "success" && response?.params?.id_token) {
         const credential = GoogleAuthProvider.credential(response?.params?.id_token);
         await signInWithCredential(auth, credential).then(async (result) => {
-          console.log('Signed in with Google:', result.user);
+          const user = result.user;
+          storeUser(user);
+          console.log('Signed in with Google:', user);
           // TODO: get the user info from the back and show it in the home screen          props.navigation.navigate('HomeScreen');
         }).catch((error) => {
           console.error('Error signing in with Google:', error);
