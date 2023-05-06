@@ -1,8 +1,9 @@
 import React from "react";
-import { Box, FlatList, Heading, Avatar, HStack, VStack, Text, Spacer, Center, NativeBaseProvider, Button } from "native-base";
+import { Image, Box, FlatList, Heading, Avatar, HStack, VStack, Text, Spacer, Center, NativeBaseProvider, Button, Divider } from "native-base";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons'; 
 import SearchBar from './searchBar';
+import { trainingStyles } from "../../styles"
 
 interface Props {
   navigation: any;
@@ -49,14 +50,14 @@ const TrainingsInfo = (props: Props) => {
     type: "Cycling"
   }];
   
-  return <Box>
+  return <Box backgroundColor="#fff" >
     <SearchBar />
-    <FlatList data={data} marginBottom="15%" renderItem={({item}) => 
-    <Box borderBottomWidth="10" borderColor="#fff" px="6" py="10" borderRadius="30px" backgroundColor="#f6685e">
-            <HStack space={[5, 3]} justifyContent="space-between">
-              <MaterialCommunityIcons name='dumbbell' color="#ffffff" size={26} alignSelf="center"/>
-              <VStack>
-                <Text fontSize="md" color="#000000" bold>
+    <FlatList data={data} marginBottom={10} marginTop={2} renderItem={({item}) => 
+    <Button height={150} px="10" py="10" backgroundColor="#fff" onPress={async () => { navigation.navigate('TrainingInfoScreen', { trainingData: item });}}>
+            <HStack space={[2, 3]} justifyContent="space-between" height={70} width={380}>
+            <Image source={{uri: "https://wallpaperaccess.com/full/317501.jpg"}} alt="Alternate Text" size="lg" borderRadius={10}/>
+              <VStack my={1} width={220} height={10} mr={0} ml={1}>
+                <Text style={trainingStyles.textTitle} color="#00000" text-align="left" bold>
                   {item.name}
                 </Text>
                 <Text color="#000000">
@@ -66,13 +67,10 @@ const TrainingsInfo = (props: Props) => {
                 Dificultad: {item.difficulty}
                 </Text>
               </VStack>
-              <Spacer />
-              <Button backgroundColor="#ffffff" size={10} borderRadius="10px" alignSelf="center"
-              onPress={async () => { navigation.navigate('TrainingInfoScreen', { trainingData: item });}}>
-                <AntDesign name="arrowright" size={20} color="#000000" />
-              </Button>
+              <AntDesign name="arrowright" size={20} color="#000000" alignSelf="center"/>
             </HStack>
-          </Box>
+            <Divider my={10} mx={1} />
+          </Button>
         } keyExtractor={item => item.id} />
     </Box>;
 };

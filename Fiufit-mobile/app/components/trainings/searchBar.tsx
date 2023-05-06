@@ -1,13 +1,13 @@
 import { Box, Divider, Heading, Icon, Input, VStack } from "native-base";
 import React from "react";
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function SearchBar() {
-    return <VStack my="2" mx="2" space={2} w="100%" maxW="300px" divider={<Box px="2">
+    return <VStack mx="1" my="3" space={2} w="100%" maxW="380px" backgroundColor="#fff" divider={<Box px="2">
         <Divider />
         </Box>}>
-        <VStack>
-            <Input placeholder="Search trainings" variant="filled" width="100%" minW={350} minH={30} backgroundColor="gray.200" borderRadius="10" py="1" px="2" InputLeftElement={<Icon ml="2" size="4" color="gray.800" as={<Ionicons name="ios-search" />} />} />
+        <VStack w="100%" space={5} alignSelf="center">
+            <Input placeholder="Search trainings" width="100%" borderRadius="4" py="3" px="1" fontSize="14" InputLeftElement={<Icon m="2" ml="3" size="6" color="gray.400" as={<MaterialIcons name="search" />} />} />
         </VStack>
     </VStack>;
 }

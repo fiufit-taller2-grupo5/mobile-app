@@ -156,3 +156,11 @@ export const footerTabStyles = StyleSheet.create({
         fontStyle: 'normal',
   }
 });
+
+export const trainingStyles = StyleSheet.create({
+  textTitle: {
+      fontFamily: 'Roboto',
+      fontStyle: 'normal',
+      fontSize: 20,
+  },
+});

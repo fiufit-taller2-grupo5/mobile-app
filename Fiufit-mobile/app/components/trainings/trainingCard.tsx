@@ -9,10 +9,10 @@ interface Props {
 
 export default function TrainingCard(props: Props) {
     const { navigation, trainingData} = props;
-    return <Box alignItems="center">
+    return <Box alignItems="center" backgroundColor="#fff" >
         <Box maxW="1000" rounded="lg" overflow="hidden" borderColor="coolGray.200" borderWidth="1">
           <Box>
-            <Button backgroundColor="coolGray.100" size={10} maxW={50} borderRadius="10px" alignSelf="stretch"
+            <Button backgroundColor="#fff" size={10} maxW={50} borderRadius="10px" alignSelf="stretch"
             onPress={async () => { navigation.navigate('HomeScreen');}}>
             <AntDesign name="arrowleft" size={25} color="#000000" />
             </Button>
