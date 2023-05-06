@@ -9,8 +9,7 @@ import SubmitButton from '../components/login/submitButton';
 import GoogleLogin from '../components/login/googleLogin';
 import MoveToRegister from '../components/login/moveToRegister';
 import ErrorMessage from '../components/form/errorMessage';
-
-
+import ResetPassword from '../components/login/resetPassword';
 
 export default function LoginScreen({ navigation }: any) {
   const theme = extendTheme({
@@ -87,6 +86,13 @@ export default function LoginScreen({ navigation }: any) {
       <MoveToRegister
         navigation={navigation}
         clearFields={cleanFields}
+      />
+      <ResetPassword
+        navigation={navigation}
+        clearFields={cleanFields}
+        setErrorMessage={setErrorMessage}
+        email={email}
+
       />
     </VStack>
   </NativeBaseProvider>;

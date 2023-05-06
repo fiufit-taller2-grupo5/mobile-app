@@ -35,6 +35,7 @@ export default function ExtraInformationForm(props: Props) {
     setInterests,
   } = props;
   
+  // TODO should move this to api.ts?
   const interestsResponse = useSWR("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/interests", getInterests);
   const [interestsList, setInterestsList] = useState<string[]>([]);
   const onDateChange = (event: any, selectedDate: any) => {

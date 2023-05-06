@@ -1,5 +1,3 @@
-// TODO bring here the api calls from the components
-
 import { User } from "firebase/auth";
 import { getUser, storeUser } from "./app/utils/storageController";
 
@@ -130,6 +128,39 @@ export async function getInterests(url:string) : Promise<string[] | null> {
     }
   } catch (err: any) {
     console.error("error fetching interests: ",err);
+  }
+  return null;
+}
+
+export async function getResetPasswordUrl(email:string) : Promise<string | null> {
+  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/changepassword";
+  console.log("getting reset password url: ", url);
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "dev": "a",
+        // "Authorization": "Bearer " + accessToken,
+      },
+      body: JSON.stringify({email: email}),
+    });
+    if (response.ok) {
+      try {
+        const url_response = await response.json() ;
+        console.log("reset password url:", url_response);
+        return url_response;
+      } catch (err: any) {
+        console.error(err);
+      }
+    } else {
+      console.error("error getting password reset url: ",await response.json());
+    }
+  } catch (err: any) {
+    console.error("error fetching password reset url: ",err);
   }
   return null;
 }
