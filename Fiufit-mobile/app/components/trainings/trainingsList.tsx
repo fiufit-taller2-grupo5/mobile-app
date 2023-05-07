@@ -57,7 +57,7 @@ const TrainingsInfo = (props: Props) => {
             <HStack space={[2, 3]} justifyContent="space-between" height={70} width={380}>
             <Image source={{uri: "https://wallpaperaccess.com/full/317501.jpg"}} alt="Alternate Text" size="lg" borderRadius={10}/>
               <VStack my={1} width={220} height={10} mr={0} ml={1}>
-                <Text style={trainingStyles.textTitle} color="#00000" text-align="left" bold>
+                <Text style={trainingStyles.textTitle} color="#000000" text-align="left" bold>
                   {item.name}
                 </Text>
                 <Text color="#000000">
