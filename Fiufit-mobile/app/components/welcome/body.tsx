@@ -12,13 +12,9 @@ export default function Body({ navigation }: any) {
     console.log(GoogleFit.isAuthorized);
 
     if (!GoogleFit.isAuthorized) {
+      const allScopes: string[] = Object.values(Scopes);
       const options = {
-        scopes: [
-          Scopes.FITNESS_ACTIVITY_READ,
-          Scopes.FITNESS_ACTIVITY_WRITE,
-          Scopes.FITNESS_BODY_READ,
-          Scopes.FITNESS_BODY_WRITE,
-        ],
+        scopes: allScopes as Scopes[],
       }
       GoogleFit.authorize(options)
         .then(authResult => {
@@ -32,16 +28,10 @@ export default function Body({ navigation }: any) {
           console.log("AUTH_ERROR");
         })
     } else {
-      const opt = {
-        startDate: "2023-01-01T00:00:00.000Z", // required ISO8601Timestamp
-        endDate: new Date().toISOString(), // required ISO8601Timestamp
-        bucketUnit: BucketUnit.DAY, // optional - default "DAY". Valid values: "NANOSECOND" | "MICROSECOND" | "MILLISECOND" | "SECOND" | "MINUTE" | "HOUR" | "DAY"
-        bucketInterval: 1, // optional - default 1. 
-      };
-
       try {
-        let res = await GoogleFit.getDailySteps(new Date())
-        console.log(res[0].steps);
+        let res = await GoogleFit.getWeeklySteps(new Date((Date.now() - 1 * 24 * 60 * 60 * 1000)));
+        let estimated = res.find(results => results.source === "com.google.android.gms:estimated_steps");
+        console.log(estimated?.steps);
       } catch (err) {
         console.log(err);
       }
