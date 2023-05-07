@@ -6,12 +6,12 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Title from '../components/welcome/title';
 import Body from '../components/welcome/body';
 
-export default function WelcomeScreen({navigation} : NativeStackScreenProps<any, any>) {
+export default function WelcomeScreen({ navigation }: NativeStackScreenProps<any, any>) {
   const theme = extendTheme({
     components: {
       Button: {
         defaultProps: {
-            background: '#FF6060',
+          background: '#FF6060',
         },
       },
       Text: {
@@ -41,8 +41,8 @@ export default function WelcomeScreen({navigation} : NativeStackScreenProps<any,
         width={"full"}
         height={"full"}
       >
-        <Title/>
-        <Body navigation={navigation}/>
+        <Title />
+        <Body navigation={navigation} />
       </VStack>
     </NativeBaseProvider>
   </SafeAreaProvider>;
