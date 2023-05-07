@@ -57,7 +57,6 @@ export default function LoginScreen({ navigation }: any) {
 
   return <NativeBaseProvider theme={theme}>
     <VStack
-      // space={"10"}
       style={loginAndRegisterStyles.stack}
       height={"full"}
       width={"full"}

@@ -1,7 +1,6 @@
 import { NativeBaseProvider, VStack, Heading, extendTheme } from "native-base";
 import { loginAndRegisterStyles } from "../styles";
 import { useState } from "react";
-import { useRoute } from "@react-navigation/native";
 import ExtraInformationForm from "../components/extraInformation/extraInfomationForm";
 import SubmitButton from "../components/extraInformation/submitButton";
 import MoveToApp from "../components/extraInformation/moveToApp";
@@ -9,7 +8,6 @@ import MoveToApp from "../components/extraInformation/moveToApp";
 
 
 export default function ExtraInformationScreen({ navigation }: any) {
-  const route = useRoute();
   const theme = extendTheme({
     components: {
       Button: {

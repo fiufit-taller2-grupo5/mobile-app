@@ -162,5 +162,67 @@ export const trainingStyles = StyleSheet.create({
       fontFamily: 'Roboto',
       fontStyle: 'normal',
       fontSize: 20,
+  }
+});
+
+export const editProfileStyles = StyleSheet.create({
+  heading: {
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    fontWeight: '800',
+    fontSize: 30,
+    top: '50%',
+    lineHeight: 35,
+    textAlign: 'center',
+    alignSelf: 'center',
+    color: '#FF6060',
+  },
+  button: {
+    top: '100%',
+    width: '80%',
+    height: '100%',
+    borderRadius: 30,
+    alignSelf: 'center',
+    backgroundColor: '#FF6060',
+  },
+  text: {
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    fontWeight: '800',
+    fontSize: 30,
+    top: '25%',
+    lineHeight: 35,
+    textAlign: 'center',
+    alignSelf: 'center',
+    color: '#FF6060',
+  },
+  nameBox: {
+    width: '100%',
+    height: '20%',
+    fontSize: 30,
+    borderBottomEndRadius: 30,
+    borderBottomStartRadius: 30,
+  },
+  infoBox: {
+    width: '90%',
+    height: '74%',
+    marginTop: '5%',
+    alignSelf: 'center',
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  stack: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  link: {
+    top: '15%',
+    right: '15%',
+    textAlign: 'left',
+    alignSelf: 'flex-end',
   },
 });

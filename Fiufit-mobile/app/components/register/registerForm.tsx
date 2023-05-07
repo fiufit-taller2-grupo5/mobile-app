@@ -16,7 +16,6 @@ interface Props {
 export default function RegisterForm(props: Props) {
   const { name, setName, email, setEmail, password, setPassword } = props;
 
-
   return (
     <VStack space={10} alignItems="center" marginBottom={"32"}>
       <InputForm value={name} placeholder="Nombre completo" setValue={setName} />

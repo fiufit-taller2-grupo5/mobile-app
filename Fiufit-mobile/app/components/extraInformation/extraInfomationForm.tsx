@@ -1,8 +1,9 @@
-import { VStack, Text, HStack, Checkbox, Button, Input } from "native-base";
-import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { useEffect, useState } from "react";
-import useSWR from 'swr';
-import { getInterests } from "../../../api";
+import { VStack, Text } from "native-base";
+import LocationForm from "../metadata/locationForm";
+import BirthDateForm from "../metadata/birthdateForm";
+import WeightForm from "../metadata/weightForm";
+import HeightForm from "../metadata/heightForm";
+import InterestsForm from "../metadata/interestsForm";
 
 interface Props {
   streetName: string;
@@ -34,165 +35,20 @@ export default function ExtraInformationForm(props: Props) {
     interests,
     setInterests,
   } = props;
-  
-  // TODO should move this to api.ts?
-  const interestsResponse = useSWR("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/interests", getInterests);
-  const [interestsList, setInterestsList] = useState<string[]>([]);
-  const onDateChange = (event: any, selectedDate: any) => {
-    const currentDate = selectedDate;
-    setDate(currentDate);
-    DateTimePickerAndroid.dismiss('date');
-  };
-
-  const showMode = (currentMode: any) => {
-    DateTimePickerAndroid.open({
-      value: new Date(),
-      onChange: onDateChange,
-      mode: currentMode,
-      is24Hour: true,
-    });
-  };
-
-  const showDatepicker = () => {
-    showMode('date');
-  };
-
-  useEffect(() => {
-    if(interestsResponse.data) {
-      setInterestsList(interestsResponse.data);
-    }
-  }, [interestsResponse.data]);
-
-  let interestsSelected = interests;
-  const handleInterestSelection = (interest: string) => {
-    if (interestsSelected.includes(interest)) {
-      const index = interestsSelected.indexOf(interest);
-      if (index > -1) {
-        interestsSelected.splice(index, 1);
-      }
-      setInterests(interestsSelected);
-    }
-    else {
-      interestsSelected.push(interest);
-      setInterests(interestsSelected);
-    }
-    console.log(interestsSelected);
-  }
 
   return (
     <VStack space={6} alignItems="center" top={"5%"}>
       <Text style={{ fontSize: 13, top: "2%" }}>Ubicación</Text>
-      <HStack space={6} alignItems="center" >
-        <Input
-          width={200}
-          variant="underlined"
-          placeholder="Nombre de la calle"
-          placeholderTextColor={"#000000"}
-          onChangeText={text => setStreetName(text)}
-          value={streetName}
-        />
-        <Input
-          width={20}
-          variant="underlined"
-          placeholder="Número de la calle"
-          placeholderTextColor={"#000000"}
-          onChangeText={text => setStreetNumber(parseInt(text))}
-          value={streetNumber.toString()}
-        />
-      </HStack>
-      <Button onPress={showDatepicker} variant="ghost" backgroundColor={"white"}>
-        <Text>{date ? "Fecha de nacimiento: " + date.toLocaleString().substring(0, 9) : "Ingresar Fecha de nacimiento"}</Text>
-      </Button>
-      <Input
-        width="xs"
-        variant="underlined"
-        accessibilityLabel="Seleccionar peso"
-        placeholder="Seleccionar peso"
-        placeholderTextColor={"#000000"}
-        mt={1}
-        keyboardType="numeric"
-        value={weight.toString()}
-        InputRightElement={
-          <Text
-            color="muted.400"
-            fontSize="xs"
-            mr={2}
-            _light={{
-              color: "blueGray.400",
-            }}
-            _dark={{
-              color: "blueGray.50",
-            }}
-          >
-            kgs
-          </Text>
-        }
-        onChangeText={text => setWeight(parseInt(text))}
+      <LocationForm
+        streetName={streetName}
+        setStreetName={setStreetName}
+        streetNumber={streetNumber}
+        setStreetNumber={setStreetNumber}
       />
-      <Input
-        width="xs"
-        variant="underlined"
-        accessibilityLabel="Seleccionar altura"
-        placeholder="Seleccionar altura"
-        placeholderTextColor={"#000000"}
-        mt={1}
-        keyboardType="numeric"
-        value={height.toString()}
-        InputRightElement={
-          <Text
-            color="muted.400"
-            fontSize="xs"
-            mr={2}
-            _light={{
-              color: "blueGray.400",
-            }}
-            _dark={{
-              color: "blueGray.50",
-            }}
-          >
-            cm
-          </Text>
-        }
-        onChangeText={text => setHeight(parseInt(text))}
-      />
-      <Text style={{ fontSize: 13, top: "2%" }}>Intereses</Text>
-      <VStack space={8}
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        width: '80%',
-        alignItems: 'center',
-        justifyContent: 'space-between'
-      }}
-      >
-        {/*rows of 3 elements, equidistant to each other horizontally and vertically:*/}
-        <VStack space={"9"}
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            flexWrap: "wrap",
-            alignItems: 'center',
-            justifyContent: "flex-start"
-          }}
-        >
-          {interestsList && interestsList.map((interest: string) => {
-            return (
-              <Checkbox
-                colorScheme='rose'
-                key={interest}
-                value={interest}
-                mr={"12"}
-                onChange={() => {handleInterestSelection(interest);}}
-              >
-                <Text width={"20"}>
-                  {interest}
-                </Text>
-              </Checkbox>
-            );
-          })}
-        </VStack>
-      </VStack>
+      <BirthDateForm top={"0%"} date={date} setDate={setDate}/>
+      <WeightForm top={"0%"} weight={weight} setWeight={setWeight}/>
+      <HeightForm top={"0%"} height={height} setHeight={setHeight}/>
+      <InterestsForm top={"0%"} interests={interests} setInterests={setInterests}/>
     </VStack>
   );
 }

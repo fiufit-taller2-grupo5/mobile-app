@@ -13,6 +13,15 @@ import ProfileScreen from './app/screens/profile';
 import UsersScreen from './app/screens/users';
 import TrainingsScreen from './app/screens/trainings';
 import ExtraInformationScreen from './app/screens/extraInformation';
+import ChangeNameScreen from './app/screens/editProfile/changeName';
+import ChangeHeightScreen from './app/screens/editProfile/changeHeight';
+import ChangeWeightScreen from './app/screens/editProfile/changeWeight';
+import ChangeDateScreen from './app/screens/editProfile/changeBirthDate';
+import ChangeInterestsScreen from './app/screens/editProfile/changeInterests';
+// import ChangeLocationScreen from './app/screens/editProfile/changeLocation';
+import ChangeStreetNameScreen from './app/screens/editProfile/changeStreetName';
+import ChangeStreetNumberScreen from './app/screens/editProfile/changeStreetNumber';
+import ChangeRoleScreen from './app/screens/editProfile/changeRole';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator();
@@ -64,6 +73,33 @@ export default function App() {
           <Stack.Screen
             name="TrainingInfoScreen"
             component={TrainingInfoScreen} />
+          <Stack.Screen
+            name="ChangeNameScreen"
+            component={ChangeNameScreen} />
+          <Stack.Screen
+            name="ChangeHeightScreen"
+            component={ChangeHeightScreen} />
+          <Stack.Screen
+            name="ChangeWeightScreen"
+            component={ChangeWeightScreen} />
+          <Stack.Screen
+            name="ChangeDateScreen"
+            component={ChangeDateScreen} />
+          <Stack.Screen
+            name="ChangeInterestsScreen"
+            component={ChangeInterestsScreen} />
+          {/* <Stack.Screen
+            name="ChangeLocationScreen"
+            component={ChangeLocationScreen} /> */}
+          <Stack.Screen
+            name="ChangeStreetNameScreen"
+            component={ChangeStreetNameScreen} />
+          <Stack.Screen
+            name="ChangeStreetNumberScreen"
+            component={ChangeStreetNumberScreen} />
+          <Stack.Screen
+            name="ChangeRoleScreen"
+            component={ChangeRoleScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
