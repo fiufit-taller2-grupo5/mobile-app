@@ -1,9 +1,10 @@
-import { VStack, Text, Button } from "native-base";
+import { VStack, Text, Button, View } from "native-base";
 import { welcomeStyles } from "../../styles";
 import Paragraph from "./paragraph";
 import WelcomeImage from "./image";
 import Buttons from "./buttons"
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
+import React from "react";
 
 export default function Body({ navigation }: any) {
 
@@ -46,7 +47,6 @@ export default function Body({ navigation }: any) {
       alignItems="center"
       top="-3%"
     >
-      <Button onTouchEnd={testGoogleFit}>hola</Button>
       <Paragraph />
       <WelcomeImage />
       <Buttons navigation={navigation} />

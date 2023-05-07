@@ -152,16 +152,16 @@ export const footerTabStyles = StyleSheet.create({
     bottom: -690,
   },
   text: {
-        fontFamily: 'Roboto',
-        fontStyle: 'normal',
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
   }
 });
 
 export const trainingStyles = StyleSheet.create({
   textTitle: {
-      fontFamily: 'Roboto',
-      fontStyle: 'normal',
-      fontSize: 20,
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    fontSize: 20,
   }
 });
 
@@ -190,7 +190,6 @@ export const editProfileStyles = StyleSheet.create({
     fontStyle: 'normal',
     fontWeight: '800',
     fontSize: 30,
-    top: '25%',
     lineHeight: 35,
     textAlign: 'center',
     alignSelf: 'center',
@@ -198,8 +197,8 @@ export const editProfileStyles = StyleSheet.create({
   },
   nameBox: {
     width: '100%',
-    height: '20%',
     fontSize: 30,
+    paddingTop: 20,
     borderBottomEndRadius: 30,
     borderBottomStartRadius: 30,
   },
