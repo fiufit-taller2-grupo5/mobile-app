@@ -4,11 +4,15 @@ import { loginAndRegisterStyles } from "../../styles";
 import { useEffect, useState } from "react";
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
-import { auth, createUser, userInfo } from "../../../firebase";
-import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";
-import { storeUser } from "../../utils/storageController";
+import { auth, createUser } from "../../../firebase";
+import { AuthErrorCodes, GoogleAuthProvider, signInWithCredential } from "firebase/auth";
+import { storeUserOnStorage, userInfo } from "../../utils/storageController";
+import { getUserInfoByEmail } from "../../../api";
+import { AuthError } from "expo-auth-session";
+
 interface Props {
   navigation: any;
+  setErrorMessage : (errorMessage: string) => void;
 }
 
 // WebBrowser.maybeCompleteAuthSession();
@@ -27,15 +31,35 @@ export default function GoogleLogin(props: Props) {
         const credential = GoogleAuthProvider.credential(response?.params?.id_token);
         await signInWithCredential(auth, credential).then(async (result) => {
           const user = result.user;
-          storeUser(user);
-          console.log('Signed in with Google:', user);
-          // TODO: get the user info from the back and show it in the home screen          props.navigation.navigate('HomeScreen');
+          // we make sure user.email is not null
+          if (!user?.email) {
+            props.setErrorMessage("Error al iniciar sesión con Google. Por favor, inténtelo de nuevo más tarde.");
+            console.error("Error signing in with Google: user.email is null");
+            return;
+          }
+          // we get the user info from the back to store it on the storage
+          const userInfoRes = await getUserInfoByEmail(user.email);
+          if (userInfoRes && userInfoRes.ok) {
+            // we store the user info on the storage
+            const userInfo = await userInfoRes.json();
+            userInfo.googleUser = user;
+            storeUserOnStorage(userInfo);
+            console.log('Signed in with Google:', userInfo);
+            // TODO: use the user info from the back and show it in the home screen
+            props.navigation.navigate('HomeScreen');
+          } else {
+              props.setErrorMessage("No se encuetra actualmente registrado en Fiufit. Por favor, regístrese primero.");
+              // logout from firebase
+              auth.signOut();
+              return;
+          }
         }).catch((error) => {
           console.error('Error signing in with Google:', error);
         });
 
       } else if (response?.type === "error") {
-        alert("Error: " + response.error);
+        props.setErrorMessage("Error al iniciar sesión con Google. Por favor, inténtelo de nuevo más tarde.");
+        console.error("Error signing in with Google:", response?.error);
       }
     }
     signIn();

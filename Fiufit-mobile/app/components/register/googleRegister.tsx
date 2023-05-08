@@ -7,7 +7,7 @@ import * as Google from 'expo-auth-session/providers/google';
 import { auth, createUser } from "../../../firebase";
 import { getAuth, signInWithCredential, GoogleAuthProvider } from "firebase/auth";
 import { initializeApp } from "firebase/app";
-import { storeUser } from "../../utils/storageController";
+import { storeUserOnStorage } from "../../utils/storageController";
 
 interface Props {
   navigation: any;

@@ -42,7 +42,7 @@ export default function LoginScreen({ navigation }: any) {
       // maybe trigger a loading screen
       return;
     }
-    if (user) navigation.navigate('HomeScreen');
+    // if (user) navigation.navigate('HomeScreen');
 
     if (error) {
       console.log(error);
@@ -81,7 +81,10 @@ export default function LoginScreen({ navigation }: any) {
         setErrorMessage={setErrorMessage}
         clearFields={cleanFields}
       />
-      <GoogleLogin navigation={navigation} />
+      <GoogleLogin 
+        navigation={navigation}
+        setErrorMessage={setErrorMessage}
+      />
       <MoveToRegister
         navigation={navigation}
         clearFields={cleanFields}
@@ -91,7 +94,6 @@ export default function LoginScreen({ navigation }: any) {
         clearFields={cleanFields}
         setErrorMessage={setErrorMessage}
         email={email}
-
       />
     </VStack>
   </NativeBaseProvider>;

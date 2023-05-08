@@ -1,6 +1,8 @@
 import { View, Button, Alert, Stack, VStack, HStack, Text, IconButton, CloseIcon } from "native-base";
 import { loginAndRegisterStyles } from "../../styles";
-import { logInWithEmailAndPassword } from '../../../firebase';
+import { auth, logInWithEmailAndPassword } from '../../../firebase';
+import { getUserInfoByEmail } from "../../../api";
+import { storeUserOnStorage } from "../../utils/storageController";
 
 
 interface Props {
@@ -21,6 +23,20 @@ export default function SubmitButton(props: Props) {
         onPress={async () => {
           const errorMessage = await logInWithEmailAndPassword(email, password);
           if (!errorMessage) {
+            // get user info from the back and store it on the storage
+            const userInfoRes = await getUserInfoByEmail(email);
+            if (!userInfoRes.ok) {
+              // user is not registered in the app
+              setErrorMessage("No se encuetra actualmente registrado en Fiufit. Por favor, regístrese primero.");
+              // logout from firebase
+              auth.signOut();
+              return;
+            }
+            const userInfo = await userInfoRes.json();
+            // we store the user info on the storage
+            const user = auth.currentUser;
+            userInfo.googleUser = user;
+            storeUserOnStorage(userInfo);
             clearFields();
             navigation.navigate('HomeScreen');
           } else {
