@@ -1,14 +1,7 @@
 import { Box, Text, NativeBaseProvider, extendTheme, FlatList, HStack, Spacer, Link, Button } from 'native-base';
 import { editProfileStyles } from '../styles';
 import { AntDesign } from '@expo/vector-icons';
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart
-} from "react-native-chart-kit";
+import { ProgressChart } from "react-native-chart-kit";
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
 import { useEffect, useState } from 'react';
 
@@ -52,7 +45,7 @@ export default function ProfileScreen(props: Props) {
   const chartConfig = {
     backgroundGradientFromOpacity: 0,
     backgroundGradientToOpacity: 0,
-    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+    color: (opacity = 1) => `rgba(255, 96, 96, ${opacity})`,
     barPercentage: 0.8,
     useShadowColorFromDataset: false,
   };
@@ -84,9 +77,11 @@ export default function ProfileScreen(props: Props) {
           basalCalculation: true, // optional, to calculate or not basalAVG over the week
         }
         let res = await GoogleFit.getDailyCalorieSamples(opts);
-        let estimated = res[0].calorie;
-        console.log(estimated);
-        setDailyCalories(estimated || 0);
+        if (res.length > 0) {
+          let estimated = res[0].calorie;
+          console.log(estimated);
+          setDailyCalories(estimated || 0);
+        }
       } catch (err) {
         console.log(err);
       }
@@ -106,9 +101,11 @@ export default function ProfileScreen(props: Props) {
           bucketInterval: 1, // required, 1 or 2 for HOUR bucketUnit or 1 - 24 for DAY bucketUnit
         }
         let res = await GoogleFit.getDailyDistanceSamples(opts);
-        let estimated = res[0].distance
-        console.log(estimated);
-        setDailyDistance(estimated || 0);
+        if (res.length > 0) {
+          let estimated = res[0].distance
+          console.log(estimated);
+          setDailyDistance(estimated || 0);
+        }
       } catch (err) {
         console.log(err);
       }
@@ -118,8 +115,10 @@ export default function ProfileScreen(props: Props) {
       try {
         let res = await GoogleFit.getDailySteps();
         let estimated = res.find(results => results.source === "com.google.android.gms:estimated_steps");
-        console.log(estimated?.steps[0].value);
-        setDailySteps(estimated?.steps[0].value || 0);
+        if (estimated?.steps[0] !== undefined) {
+          console.log(estimated?.steps[0].value);
+          setDailySteps(estimated?.steps[0].value || 0);
+        }
       } catch (err) {
         console.log(err);
       }
@@ -169,9 +168,9 @@ export default function ProfileScreen(props: Props) {
         chartConfig={chartConfig}
         hideLegend={false}
       />
-      <Text>Pasos de hoy: {dailySteps}</Text>
-      <Text>Distancia de hoy: {dailyDistance}</Text>
-      <Text>Calorías de hoy: {dailyCalories}</Text>
+      <Text style={editProfileStyles.fitText}>Pasos de hoy: {dailySteps}</Text>
+      <Text style={editProfileStyles.fitText}>Distancia de hoy: {dailyDistance}</Text>
+      <Text style={editProfileStyles.fitText}>Calorías de hoy: {dailyCalories}</Text>
     </Box>
     <Box style={editProfileStyles.infoBox}>
       <FlatList data={fields} renderItem={({ item }) =>

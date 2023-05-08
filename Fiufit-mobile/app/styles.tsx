@@ -177,6 +177,13 @@ export const editProfileStyles = StyleSheet.create({
     alignSelf: 'center',
     color: '#FF6060',
   },
+  fitText: {
+    left: '5%',
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    fontSize: 14,
+    lineHeight: 25,
+  },
   button: {
     top: '100%',
     width: '80%',
@@ -204,7 +211,7 @@ export const editProfileStyles = StyleSheet.create({
   },
   infoBox: {
     width: '90%',
-    height: '74%',
+    height: '40%',
     marginTop: '5%',
     alignSelf: 'center',
     borderBottomLeftRadius: 30,
