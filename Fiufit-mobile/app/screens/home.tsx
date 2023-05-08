@@ -23,6 +23,7 @@ export default function HomeScreen() {
           borderRadius:10,
         },
       };
+      console.log("HomeScreen");
     return <NativeBaseProvider>
         <Tab.Navigator {... { screenOptions }} >
             <Tab.Screen

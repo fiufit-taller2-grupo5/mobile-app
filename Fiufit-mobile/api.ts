@@ -1,8 +1,9 @@
 import { User } from "firebase/auth";
-import { getUser, storeUser } from "./app/utils/storageController";
+import { getUserFromStorage, storeUserOnStorage } from "./app/utils/storageController";
+import { auth } from "./firebase";
 
 type userDetails = {
-    userId?: string;
+    userId?: number;
     weight: number;
     height: number;
     birthDate: string;
@@ -19,7 +20,7 @@ const getInternalIdFromResponse = (response: any): string => {
     return res;
 }
 
-export const createUser = async (user: User, emailRegisterName : string = "" ) : Promise<void | Response>  => {
+export const createUser = async (user: User, emailRegisterName : string = "default name" ) : Promise<void | Response>  => {
     const data = {
       name: user.displayName? user.displayName as string : emailRegisterName,
       uid: user.uid,
@@ -43,11 +44,10 @@ export const createUser = async (user: User, emailRegisterName : string = "" ) :
         try {
           const responseData = await response.json();
           const internal_id = getInternalIdFromResponse(responseData);
-          storeUser({
-            user: user,
-            internal_id: internal_id,
-            is_trainer: false
-          });
+          const userInfo = await getUserInfoById(internal_id);
+
+          userInfo.googleUser = user;
+          await storeUserOnStorage(userInfo);
           console.log("BACKEND RESPONSE:", responseData);
         } catch (err: any) {
           console.error(err);
@@ -62,12 +62,16 @@ export const createUser = async (user: User, emailRegisterName : string = "" ) :
       return err;
     }
   }
-  
+
+// const response = await fetch('https://jsonplaceholder.typicode.com/comments?' + new URLSearchParams({
+// postId: 1
+// }))
+
 export const updateUserDetails = async (data: userDetails) => {
-    const userInfo = await getUser();
-    const internal_id = userInfo?.internal_id;
+    const userInfo = await getUserFromStorage();
+    const internal_id = userInfo?.id;
     data.userId = internal_id;
-    const accessToken = (userInfo?.user as any).stsTokenManager.accessToken;
+    const accessToken = (userInfo?.googleUser as any).stsTokenManager.accessToken;
     console.log("data:", JSON.stringify(data), "userId:", internal_id);
     try {
       const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/" + internal_id + "/metadata";
@@ -78,31 +82,27 @@ export const updateUserDetails = async (data: userDetails) => {
           "accept": "*/*",
           "accept-encoding": "gzip, deflate, br",
           "connection": "keep-alive",
-          // "dev": "a",
           "Authorization": "Bearer " + accessToken,
         },
         body: JSON.stringify(data),
       });
       console.log("RESPONSE:", response);
       if (response.ok) {
-        try {
-          console.log("BACKEND RESPONSE:", response);
-          const data = await response.json();
-        } catch (err: any) {
-          console.error(err);
-        }
+        console.log("user details updated");
       } else {
         alert("Error al iniciar sesión");
-        console.error(await response.json());
+        // console.error(await response.json());
       }
     } catch (err: any) {
-      console.error("errorsito: ",err);
+      // console.error("errorsito: ",err);
       alert("user details error:" + err.message);
     }
-}
+  }
 
 export async function getInterests(url:string) : Promise<string[] | null> {
   console.log("getting interests at url: ", url);
+  const userInfo = await getUserFromStorage();
+  const accessToken = (userInfo?.googleUser as any).stsTokenManager.accessToken;
   try {
     const response = await fetch(url, {
       method: "GET",
@@ -111,8 +111,7 @@ export async function getInterests(url:string) : Promise<string[] | null> {
         "accept": "*/*",
         "accept-encoding": "gzip, deflate, br",
         "connection": "keep-alive",
-        "dev": "a",
-        // "Authorization": "Bearer " + accessToken,
+        "Authorization": "Bearer " + accessToken,
       },
     });
     if (response.ok) {
@@ -161,6 +160,71 @@ export async function getResetPasswordUrl(email:string) : Promise<string | null>
     }
   } catch (err: any) {
     console.error("error fetching password reset url: ",err);
+  }
+  return null;
+}
+
+export async function getUserInfoByEmail(email:string) : Promise<any | null> {
+  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/?email=" + email;
+  console.log("getting user info by email: ", url);
+  const accessToken = (auth.currentUser as any).stsTokenManager.accessToken;
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "Authorization": "Bearer " + accessToken,
+      },
+    });
+    if (response.ok) {
+      try {
+        const user = await response.json() ;
+        console.log("user info:", user);
+        return user;
+      } catch (err: any) {
+        console.error(err);
+      }
+    } else {
+      console.warn("error getting user info: ",await response.json());
+    }
+  } catch (err: any) {
+    console.error("error fetching user info: ",err);
+  }
+  return null;
+}
+
+// TODO refactor methods to reduce code redundancy
+export async function getUserInfoById(id:string) : Promise<any | null> {
+  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/?id=" + id;
+  console.log("getting user info by id: ", url);
+  const accessToken = (auth.currentUser as any).stsTokenManager.accessToken;
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "Authorization": "Bearer " + accessToken,
+      },
+    });
+    if (response.ok) {
+      try {
+        const user = await response.json();
+        console.log("user info:", user);
+        return user;
+      } catch (err: any) {
+        console.error(err);
+      }
+    } else {
+      console.warn("error getting user info: ",await response.json());
+    }
+  } catch (err: any) {
+    console.error("error fetching user info: ",err);
   }
   return null;
 }

@@ -21,7 +21,6 @@ export default function SubmitButton(props: Props) {
       <Button
         style={[loginAndRegisterStyles.button, loginAndRegisterStyles.extraInfoButton]}
         onPress={() => {
-          console.log("userDetails:", { location: streetName+streetNumber.toString(10), birthDate: date.toString(), weight: weight, height: height, interests: interests });
           updateUserDetails({ location: streetName+streetNumber.toString(10), birthDate: date.toISOString(), weight: weight, height: height, interests: interests })
           navigation.navigate('HomeScreen');
         }}

@@ -8,7 +8,6 @@ import {
   signOut,
   User
 } from "firebase/auth";
-import { getUser, storeUser } from "./app/utils/storageController";
 import { createUser } from "./api";
 
 const firebaseConfig = {
@@ -96,7 +95,7 @@ const getErrorMessage = (error: AuthError): string => {
     case "user-disabled":
       return "Usuario deshabilitado";
     case "user-not-found":
-      return "Usuario no encontrado";
+      return "Usuario no encontrado, por favor regístrese primero";
     case "wrong-password":
       return "Contraseña incorrecta";
     case "weak-password":
@@ -119,5 +118,5 @@ export {
   logInWithEmailAndPassword,
   registerWithEmailAndPassword,
   sendPasswordReset,
-  logout,
+  logout, createUser,
 };
