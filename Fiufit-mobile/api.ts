@@ -1,5 +1,5 @@
 import { User } from "firebase/auth";
-import { getUserFromStorage, storeUserOnStorage } from "./app/utils/storageController";
+import { getUserFromStorage, storeUserOnStorage, userInfo } from "./app/utils/storageController";
 import { auth } from "./firebase";
 
 type userDetails = {
@@ -46,9 +46,12 @@ export const createUser = async (user: User, emailRegisterName : string = "defau
           const internal_id = getInternalIdFromResponse(responseData);
           const userInfo = await getUserInfoById(internal_id);
 
+          if (userInfo instanceof Error) {
+            throw userInfo;
+          }
           userInfo.googleUser = user;
           await storeUserOnStorage(userInfo);
-          console.log("BACKEND RESPONSE:", responseData);
+          console.log("user created");
         } catch (err: any) {
           console.error(err);
         }
@@ -198,7 +201,7 @@ export async function getTrainings(url:string) : Promise<string[] | null> {
   return null;
 }
 
-export async function getUserInfoByEmail(email:string) : Promise<any | null> {
+export async function getUserInfoByEmail(email:string) : Promise<userInfo | Error> {
   const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/?email=" + email;
   console.log("getting user info by email: ", url);
   const accessToken = (auth.currentUser as any).stsTokenManager.accessToken;
@@ -213,9 +216,10 @@ export async function getUserInfoByEmail(email:string) : Promise<any | null> {
         "Authorization": "Bearer " + accessToken,
       },
     });
+    // console.log("getUserInfoByEmail->RESPONSE:", response);
     if (response.ok) {
       try {
-        const user = await response.json() ;
+        const user : userInfo = await response.json();
         console.log("user info:", user);
         return user;
       } catch (err: any) {
@@ -227,11 +231,11 @@ export async function getUserInfoByEmail(email:string) : Promise<any | null> {
   } catch (err: any) {
     console.error("error fetching user info: ",err);
   }
-  return null;
+  return Error("User not found");
 }
 
 // TODO refactor methods to reduce code redundancy
-export async function getUserInfoById(id:string) : Promise<any | null> {
+export async function getUserInfoById(id:string) : Promise<userInfo | Error> {
   const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/?id=" + id;
   console.log("getting user info by id: ", url);
   const accessToken = (auth.currentUser as any).stsTokenManager.accessToken;
@@ -248,7 +252,7 @@ export async function getUserInfoById(id:string) : Promise<any | null> {
     });
     if (response.ok) {
       try {
-        const user = await response.json();
+        const user : userInfo = await response.json();
         console.log("user info:", user);
         return user;
       } catch (err: any) {
@@ -260,5 +264,5 @@ export async function getUserInfoById(id:string) : Promise<any | null> {
   } catch (err: any) {
     console.error("error fetching user info: ",err);
   }
-  return null;
+  return Error("User not found");
 }

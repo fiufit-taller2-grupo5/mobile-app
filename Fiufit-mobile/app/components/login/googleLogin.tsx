@@ -38,21 +38,21 @@ export default function GoogleLogin(props: Props) {
             return;
           }
           // we get the user info from the back to store it on the storage
-          const userInfoRes = await getUserInfoByEmail(user.email);
-          if (userInfoRes && userInfoRes.ok) {
-            // we store the user info on the storage
-            const userInfo = await userInfoRes.json();
-            userInfo.googleUser = user;
-            storeUserOnStorage(userInfo);
-            console.log('Signed in with Google:', userInfo);
-            // TODO: use the user info from the back and show it in the home screen
-            props.navigation.navigate('HomeScreen');
-          } else {
-              props.setErrorMessage("No se encuetra actualmente registrado en Fiufit. Por favor, regístrese primero.");
-              // logout from firebase
-              auth.signOut();
-              return;
+          
+          const userInfo = await getUserInfoByEmail(user.email);
+          if (userInfo instanceof Error) {
+            props.setErrorMessage("No se encuetra actualmente registrado en Fiufit. Por favor, regístrese primero.");
+            // logout from firebase
+            auth.signOut();
+            return;
           }
+          // we store the user info on the storage
+          userInfo.googleUser = user;
+          storeUserOnStorage(userInfo);
+          console.log('Signed in with Google:', userInfo);
+          // TODO: use the user info from the back and show it in the home screen
+          props.navigation.navigate('HomeScreen');
+          
         }).catch((error) => {
           console.error('Error signing in with Google:', error);
         });
