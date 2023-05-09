@@ -164,6 +164,40 @@ export async function getResetPasswordUrl(email:string) : Promise<string | null>
   return null;
 }
 
+export async function getTrainings(url:string) : Promise<string[] | null> {
+  console.log("getting trainings at url: ", url);
+  console.log("estoy en getTrainings");
+  //const user = await getUser();
+  //const token = (user as any).stsTokenManager.accessToken;
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "dev": "a",
+        //"Authorization": "Bearer " + token,
+      },
+    });
+    if (response.ok) {
+      try {
+        const trainings = await response.json() ;
+        console.log("Training plans:", trainings);
+        return trainings;
+      } catch (err: any) {
+        console.error(err);
+      }
+    } else {
+      console.error("error getting trainings response: ",await response.json());
+    }
+  } catch (err: any) {
+    console.error("error fetching trainings: ",err);
+  }
+  return null;
+}
+
 export async function getUserInfoByEmail(email:string) : Promise<any | null> {
   const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/?email=" + email;
   console.log("getting user info by email: ", url);

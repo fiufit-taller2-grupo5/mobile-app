@@ -30,7 +30,7 @@ export default function TrainingCard(props: Props) {
           <Stack p="4" space={3}>
             <Stack space={2}>
               <Heading size="md" ml="-1">
-              {trainingData.name}
+              {trainingData.title}
               </Heading>
             </Stack>
             <HStack alignItems="center" space={4} justifyContent="space-between">
