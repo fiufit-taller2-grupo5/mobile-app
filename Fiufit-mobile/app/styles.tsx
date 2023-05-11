@@ -80,7 +80,7 @@ export const loginAndRegisterStyles = StyleSheet.create({
     top: "-10%",
   },
   extraInfoButton: {
-    top: "20%",
+    top: "15%",
   },
   heading: {
     flex: 0,
@@ -116,7 +116,7 @@ export const loginAndRegisterStyles = StyleSheet.create({
     top: "50%",
   },
   extraInfoLink: {
-    top: "25%",
+    top: "15%",
   },
   googleTextOption: {
     top: '0%',
