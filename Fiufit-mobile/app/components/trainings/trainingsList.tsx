@@ -7,10 +7,14 @@ import { addFavoriteTraining, getFavoriteTrainings, getTrainings, Training } fro
 
 interface Props {
   navigation: any;
+};
+
+interface TrainingInfoProps {
+  navigation: any;
   training: Training;
 };
 
-const TrainingsInfo = (props: Props) => {
+const TrainingsInfo = (props: TrainingInfoProps) => {
   const { navigation, training} = props;
   const [isFavorite, setTrainingFavorite] = useState<Boolean>(training.isFavorite || false);
   const mainImage = (training_type: any) => {
