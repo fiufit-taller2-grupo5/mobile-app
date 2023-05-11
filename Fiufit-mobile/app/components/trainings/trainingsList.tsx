@@ -42,7 +42,7 @@ const TrainingsInfo = (props: Props) => {
                 </Text>
               </VStack>
               <Button backgroundColor="#fff" onPress={async () => {
-                if(training.isFavorite) {
+                if(isFavorite) {
                   console.log("el entrenamiento ya esta en favoritos");
                   /*setTrainingFavorite(false);
                   const response = await quitFavoriteTraining(training.id);
