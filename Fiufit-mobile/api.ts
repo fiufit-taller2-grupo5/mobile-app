@@ -42,13 +42,14 @@ export const createUser = async (user: User, emailRegisterName : string = "defau
       if (response.ok) {
         try {
           const responseData = await response.json();
-          const internal_id = getInternalIdFromResponse(responseData);
-          const userInfo = await getUserInfoById(internal_id, user);
+          const internal_id : number = parseInt(getInternalIdFromResponse(responseData));
+          const userInfo = await getUserInfoById(internal_id, user, false);
 
           if (userInfo instanceof Error) {
             throw userInfo;
           }
           userInfo.googleUser = user;
+          userInfo.role = "Atleta";
           await storeUserOnStorage(userInfo);
           console.log("user created");
         } catch (err: any) {
@@ -198,10 +199,16 @@ export async function getUserInfoByEmail(email:string, user: User) : Promise<use
 }
 
 // TODO refactor methods to reduce code redundancy
-export async function getUserInfoById(id:string, user: User) : Promise<userInfo | Error> {
+export async function getUserInfoById(id:number, user: User, userDetails: Boolean) : Promise<userInfo | Error> {
+  /// userDetails indicates if the user details are returned or only the essential info
+
   console.log("getting user info by id of user ", user );
-  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/?id=" + id;
-  console.log("getting user info by id: ", url);
+  let url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/";
+  if (userDetails) {
+    url += id ; // return user details
+  } else {
+    url += "?id=" + id; // return only essential info
+  }
   const accessToken = (user as any).stsTokenManager.accessToken;
   try {
     const response = await fetch(url, {

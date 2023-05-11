@@ -5,7 +5,7 @@ import TrainingsList from '../components/trainings/trainingsList';
 export default function TrainingsScreen({ navigation }: any) {
     return <NativeBaseProvider>
         <Container minWidth="400" height="800" backgroundColor="#fff">
-        <TrainingsList navigation={navigation}/>
+            <TrainingsList navigation={navigation}/>
         </Container>
     </NativeBaseProvider>;
 }

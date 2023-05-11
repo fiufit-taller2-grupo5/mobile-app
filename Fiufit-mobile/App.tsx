@@ -22,7 +22,9 @@ import ChangeInterestsScreen from './app/screens/editProfile/changeInterests';
 import ChangeStreetNameScreen from './app/screens/editProfile/changeStreetName';
 import ChangeStreetNumberScreen from './app/screens/editProfile/changeStreetNumber';
 import ChangeRoleScreen from './app/screens/editProfile/changeRole';
+import CreateTrainingScreen from './app/screens/createTraining';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import ChangeLocationScreen from './app/screens/editProfile/changeLocation';
 
 const Stack = createNativeStackNavigator();
 
@@ -43,8 +45,7 @@ export default function App() {
         >
           <Stack.Screen
             name="WelcomeScreen"
-            component={WelcomeScreen}
-          />
+            component={WelcomeScreen}/>
           <Stack.Screen
             name="RegisterScreen"
             component={RegisterScreen} />
@@ -53,8 +54,7 @@ export default function App() {
             component={LoginScreen} />
           <Stack.Screen
             name="ExtraInfoScreen"
-            component={ExtraInformationScreen}
-            initialParams={{ latitude: -34.61315, longitude: -58.37723 }} />
+            component={ExtraInformationScreen}/>
           <Stack.Screen
             name="HomeScreen"
             component={HomeScreen} />
@@ -88,18 +88,21 @@ export default function App() {
           <Stack.Screen
             name="ChangeInterestsScreen"
             component={ChangeInterestsScreen} />
-          {/* <Stack.Screen
-            name="ChangeLocationScreen"
-            component={ChangeLocationScreen} /> */}
           <Stack.Screen
+            name="ChangeLocationScreen"
+            component={ChangeLocationScreen} />
+          {/* <Stack.Screen
             name="ChangeStreetNameScreen"
             component={ChangeStreetNameScreen} />
           <Stack.Screen
             name="ChangeStreetNumberScreen"
-            component={ChangeStreetNumberScreen} />
+            component={ChangeStreetNumberScreen} /> */}
           <Stack.Screen
             name="ChangeRoleScreen"
             component={ChangeRoleScreen} />
+          <Stack.Screen
+            name="CreateTrainingScreen"
+            component={CreateTrainingScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
