@@ -10,13 +10,13 @@ import { getUserInfoById } from '../../api';
 const screens = ['ChangeNameScreen', 'ChangeHeightScreen', 'ChangeWeightScreen', 'ChangeDateScreen', 'ChangeInterestsScreen', 'ChangeLocationScreen', 'ChangeRoleScreen']
 
 const fields = [
-  { name: "Nombre completo", id: 0 },
+  { name: "Nombre completo", id: 0 }, // no hay endpoint para cambiar esto
   { name: "Altura", id: 1 },
   { name: "Peso", id: 2 },
   { name: "Fecha de nacimiento", id: 3 },
   { name: "Intereses", id: 4 },
   { name: "Dirección", id: 5 },
-  { name: "Rol", id: 6 },
+  { name: "Rol", id: 6 }, // se guarda en el contexto
 ];
 
 interface Props {
@@ -164,6 +164,12 @@ export default function ProfileScreen(props: Props) {
       console.log("userinfo stored:", userInfoStored);
       const fullUser = await getUserInfoById(userInfoStored.id, userInfoStored.googleUser, true);
       const details = await (fullUser as any ).UserMetadata;
+
+      if (details === null && fullUser !== null) { // if the user has skipped the registration form
+        setUserInformation([ fullUser.name, "", "", "", "", "", userInfoStored.role]);
+        return;
+      }
+
       const interests = await details.interests;
 
       let birthdate = details.birthDate; // from "2000-09-22T17:43:38.879Z" to "22/09/2000"
