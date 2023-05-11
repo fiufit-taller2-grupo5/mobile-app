@@ -167,40 +167,6 @@ export async function getResetPasswordUrl(email:string) : Promise<string | null>
   return null;
 }
 
-export async function getTrainings(url:string) : Promise<string[] | null> {
-  console.log("getting trainings at url: ", url);
-  console.log("estoy en getTrainings");
-  //const user = await getUser();
-  //const token = (user as any).stsTokenManager.accessToken;
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "dev": "a",
-        //"Authorization": "Bearer " + token,
-      },
-    });
-    if (response.ok) {
-      try {
-        const trainings = await response.json() ;
-        console.log("Training plans:", trainings);
-        return trainings;
-      } catch (err: any) {
-        console.error(err);
-      }
-    } else {
-      console.error("error getting trainings response: ",await response.json());
-    }
-  } catch (err: any) {
-    console.error("error fetching trainings: ",err);
-  }
-  return null;
-}
-
 export async function getUserInfoByEmail(email:string) : Promise<userInfo | Error> {
   const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/?email=" + email;
   console.log("getting user info by email: ", url);
@@ -265,4 +231,114 @@ export async function getUserInfoById(id:string) : Promise<userInfo | Error> {
     console.error("error fetching user info: ",err);
   }
   return Error("User not found");
+}
+
+export interface Training {
+  id: number,
+  title: string, 
+  description?: string, 
+  state: string,
+  difficulty?: number, 
+  type: string,
+  trainer_id: number,
+  isFavorite?: boolean,
+}
+
+export async function getTrainings() : Promise<Training[]> {
+  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings";
+  const userInfo = await getUserFromStorage();
+  const accessToken = (userInfo?.googleUser as any).stsTokenManager.accessToken;
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "dev": "a",
+        "Authorization": "Bearer " + accessToken,
+      },
+    });
+    if (response.ok) {
+      try {
+        const trainings = await response.json() ;
+        console.log("Training plans:", trainings);
+        return trainings;
+      } catch (err: any) {
+        console.error(err);
+      }
+    } else {
+      console.error("error getting trainings response: ",await response.json());
+    }
+  } catch (err: any) {
+    console.error("error fetching trainings: ",err);
+  }
+  return [];
+}
+
+export async function getFavoriteTrainings() : Promise<Training[]> {
+  const url = 'https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/favorites/'
+  const userInfo = await getUserFromStorage();
+  const userId = userInfo?.id;
+  const accessToken = (userInfo?.googleUser as any).stsTokenManager.accessToken;
+  console.log("getting tfavorite rainings at url: ", url + userId);
+  console.log("estoy en getFavoriteTrainings");
+  try {
+    const response = await fetch(url + userId, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "dev": "a",
+        "Authorization": "Bearer " + accessToken,
+      },
+    });
+    if (response.ok) {
+      try {
+        const favoriteTrainings = await response.json() ;
+        console.log("Training plans:", favoriteTrainings);
+        return favoriteTrainings;
+      } catch (err: any) {
+        console.error(err);
+      }
+    } else {
+      console.error("error getting favorite trainings response: ",await response.json());
+    }
+  } catch (err: any) {
+    console.error("error fetching favorite trainings: ",err);
+  }
+  return [];
+}
+
+export async function addFavoriteTraining(trainingPlanId:number) : Promise<boolean> {
+  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/";
+  const userInfo = await getUserFromStorage();
+  const userId = userInfo?.id;
+  const accessToken = (userInfo?.googleUser as any).stsTokenManager.accessToken;
+  try {
+    const response = await fetch(url + trainingPlanId + '/favorite/' + userId, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "dev": "a",
+        "Authorization": "Bearer " + accessToken,
+      }
+    });
+    if (response.ok) {
+      console.log("favorite training added");
+      return true;
+    } else {
+      console.error("error getting trainings response: ",await response.json());
+      return false;
+    }
+  } catch (err: any) {
+    console.error("error adding favorite training: ",err);
+  }
+  return false
 }

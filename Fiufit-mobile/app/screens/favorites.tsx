@@ -1,25 +1,11 @@
 import * as React from 'react';
-import { Container, Text, NativeBaseProvider, extendTheme } from 'native-base';
+import { Container, NativeBaseProvider } from 'native-base';
+import FavoritesTrainingsList from '../components/trainings/favoritesTrainingsList';
 
-export default function FavoritesScreen() {
-    const theme = extendTheme({
-        components: {
-            Text: {
-                defaultProps: {
-                    fontFamily: 'Roboto',
-                    fontStyle: 'normal',
-                    fontWeight: '800',
-                    fontSize: '30px',
-                    top: '150px',
-                    left: '35%',
-                }
-            }
-        }
-    });
-
-    return <NativeBaseProvider theme={theme}>
-        <Container>
-            <Text>Favorites Screen</Text>
+export default function FavoritesScreen({ navigation }: any) {
+    return <NativeBaseProvider>
+        <Container minWidth="400" height="800" backgroundColor="#fff">
+        <FavoritesTrainingsList navigation={navigation}/>
         </Container>
     </NativeBaseProvider>;
 }
