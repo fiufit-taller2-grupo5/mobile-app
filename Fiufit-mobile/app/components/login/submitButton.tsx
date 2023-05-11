@@ -41,6 +41,9 @@ export default function SubmitButton(props: Props) {
             }
             // we store the user info on the storage
             userInfo.googleUser = user;
+            if (userInfo.role === null || userInfo.role === "user") {
+              userInfo.role = "Atleta"
+            }
             storeUserOnStorage(userInfo);
             clearFields();
             navigation.navigate('HomeScreen');
