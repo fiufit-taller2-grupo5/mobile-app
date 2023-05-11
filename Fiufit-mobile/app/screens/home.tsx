@@ -1,4 +1,4 @@
-import { NativeBaseProvider, Text } from 'native-base';
+import { NativeBaseProvider } from 'native-base';
 import * as React from 'react';
 import TrainingsScreen from './trainings';
 import ProfileScreen from './profile';
@@ -22,7 +22,11 @@ export default function HomeScreen() {
           margin:5,
           borderRadius:10,
         },
-      };
+    };
+
+    // TODO: use context to get user role
+    const isAthlete = true;
+
     return <NativeBaseProvider>
         <Tab.Navigator {... { screenOptions }} >
             <Tab.Screen
@@ -41,14 +45,14 @@ export default function HomeScreen() {
                 }
                 name="Trainings" component={TrainingsScreen}
             />
-            <Tab.Screen
-                options={
-                    {tabBarLabel: 'Favorites', tabBarIcon: ({ color, size }) => (
+            {isAthlete && <Tab.Screen
+                options={{
+                    tabBarLabel: 'Favorites', tabBarIcon: ({ color, size }) => (
                     <MaterialCommunityIcons name='heart' color={color} size={size} />),
-                    tabBarActiveTintColor: '#FF6060'}
-                }
+                    tabBarActiveTintColor: '#FF6060'
+                }}
                 name="Favorites" component={FavoritesScreen} 
-            />
+            />}
             <Tab.Screen
                 options={
                     {tabBarLabel: 'Profile', tabBarIcon: ({ color, size }) => (

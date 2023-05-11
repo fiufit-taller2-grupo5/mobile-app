@@ -165,6 +165,79 @@ export const trainingStyles = StyleSheet.create({
   }
 });
 
+export const createTrainingStyles = StyleSheet.create({
+  heading: {
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    fontWeight: '800',
+    fontSize: 30,
+    lineHeight: 35,
+    top: '10%',
+    textAlign: 'center',
+    alignSelf: 'center',
+    color: '#FF6060',
+  },
+  text: {
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    fontSize: 18,
+    top: '18%',
+    left: '10%',
+  },
+  stack: {
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: '#ffffff',
+    height: '100%',
+  },
+  button: {
+    top: '100%',
+    alignSelf: 'center',
+    width: '60%',
+    borderRadius: 30,
+    backgroundColor: "#FF6060",
+    alignItems: 'center',
+  },
+  buttonForm: {
+    alignSelf: 'center',
+    width: '80%',
+    borderRadius: 30,
+    backgroundColor: "#F0F0F0",
+  },
+  calendarButton: {
+    top: '10%',
+    width: '100%',
+    borderRadius: 30,
+    backgroundColor: "#FF6060",
+    alignContent: 'center',
+    justifyContent: 'center',
+    left: "-70%"
+  },
+  typeButton: {
+    top: '30%',
+    width: '100%',
+    borderRadius: 30,
+    backgroundColor: "#FF6060",
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+  difficultyButton: {
+    top: '50%',
+    width: '100%',
+    borderRadius: 30,
+    backgroundColor: "#FF6060",
+    alignContent: 'center',
+  },
+  distanceButton: {
+    top: '50%',
+    alignSelf: 'center',
+    width: '100%',
+    borderRadius: 30,
+    backgroundColor: "#FF6060",
+    alignContent: 'center',
+  },
+});
+
 export const editProfileStyles = StyleSheet.create({
   heading: {
     fontFamily: 'Roboto',
