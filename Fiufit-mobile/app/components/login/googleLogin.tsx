@@ -39,7 +39,7 @@ export default function GoogleLogin(props: Props) {
           }
           // we get the user info from the back to store it on the storage
           
-          const userInfo = await getUserInfoByEmail(user.email);
+          const userInfo = await getUserInfoByEmail(user.email, user);
           if (userInfo instanceof Error) {
             props.setErrorMessage("No se encuetra actualmente registrado en Fiufit. Por favor, regístrese primero.");
             // logout from firebase
@@ -48,6 +48,9 @@ export default function GoogleLogin(props: Props) {
           }
           // we store the user info on the storage
           userInfo.googleUser = user;
+          if (userInfo.role === null || userInfo.role === "user") {
+            userInfo.role = "Atleta"
+          }
           storeUserOnStorage(userInfo);
           console.log('Signed in with Google:', userInfo);
           // TODO: use the user info from the back and show it in the home screen

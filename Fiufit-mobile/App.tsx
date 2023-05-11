@@ -24,6 +24,7 @@ import ChangeStreetNumberScreen from './app/screens/editProfile/changeStreetNumb
 import ChangeRoleScreen from './app/screens/editProfile/changeRole';
 import CreateTrainingScreen from './app/screens/createTraining';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import ChangeLocationScreen from './app/screens/editProfile/changeLocation';
 
 const Stack = createNativeStackNavigator();
 
@@ -87,15 +88,15 @@ export default function App() {
           <Stack.Screen
             name="ChangeInterestsScreen"
             component={ChangeInterestsScreen} />
-          {/* <Stack.Screen
-            name="ChangeLocationScreen"
-            component={ChangeLocationScreen} /> */}
           <Stack.Screen
+            name="ChangeLocationScreen"
+            component={ChangeLocationScreen} />
+          {/* <Stack.Screen
             name="ChangeStreetNameScreen"
             component={ChangeStreetNameScreen} />
           <Stack.Screen
             name="ChangeStreetNumberScreen"
-            component={ChangeStreetNumberScreen} />
+            component={ChangeStreetNumberScreen} /> */}
           <Stack.Screen
             name="ChangeRoleScreen"
             component={ChangeRoleScreen} />

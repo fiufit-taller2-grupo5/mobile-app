@@ -1,105 +1,91 @@
 import React, { useEffect, useState } from "react";
-import { Image, Box, FlatList, Heading, Avatar, HStack, VStack, Text, Spacer, Center, NativeBaseProvider, Button, Divider, Icon, List } from "native-base";
+import { Image, Box, FlatList, Heading, Avatar, HStack, VStack, Text, Spacer, Center, NativeBaseProvider, Button, Divider, Icon, List, Input } from "native-base";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons'; 
 import SearchBar from './searchBar';
 import { trainingStyles } from "../../styles"
-import useSWR from 'swr';
-import { getTrainings } from "../../../api";
+import { addFavoriteTraining, getFavoriteTrainings, getTrainings, Training } from "../../../api";
 
 interface Props {
   navigation: any;
+  training: Training;
 };
 
 const TrainingsInfo = (props: Props) => {
-  const { navigation } = props;
-  const [selected, setSelected] = React.useState(1);
-  //aca se tiene que hacer un get a la lista de trainings y data seria data={responseData}
-  /*const data = [{
-    id: "1",
-    name: "Cardio Power",
-    difficulty: "5",
-    description: "Entrenamiento full cardio",
-    type: "Running",
-    favorite: 1
-  }, {
-    id: "2",
-    name: "Crossfit",
-    difficulty: "10",
-    description: "Combina cardio con pesas",
-    type: "Crossfit",
-    favorite: 0
-  }, {
-    id: "3",
-    name: "Abs",
-    difficulty: "3",
-    description: "Entrenamiento full abdominales",
-    type: "Calisthenics",
-    favorite: 1,
-  }, {
-    id: "4",
-    name: "Pilates",
-    difficulty: "8",
-    description: "Para mejorar la postura",
-    type: "Pilates",
-    favorite: 0
-  }, {
-    id: "5",
-    name: "Yoga",
-    difficulty: "4",
-    description: "Chill para arrancar la semana",
-    type: "Yoga",
-    favorite: 0
-  }, {
-    id: "6",
-    name: "Bicicleteada",
-    difficulty: "9",
-    description: "10 km en bici",
-    type: "Cycling",
-    favorite: 0
-  }];*/
-  const trainingsResponse  = useSWR("https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings", getTrainings);
-  //const data = getTrainings("https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings");
-
-  const [trainingsData, setTrainingsList] = useState<string[]>([]);
-  useEffect(() => {
-    if(trainingsResponse.data) {
-      setTrainingsList(trainingsResponse.data);
-    }
-  }, [trainingsResponse.data]);
-  
+  const { navigation, training} = props;
+  const [isFavorite, setTrainingFavorite] = useState<Boolean>(training.isFavorite || false);
+  const mainImage = (training_type: any) => {
+    if(training_type === 'Running') return "https://wallpaperaccess.com/thumb/2604922.jpg";
+    else if(training_type === 'Swimming') return "https://wallpaperaccess.com/thumb/1634055.jpg";
+    else if(training_type === 'Walking') return "https://wallpaperaccess.com/thumb/654835.jpg";
+    else if(training_type === 'Cycling') return "https://wallpaperaccess.com/thumb/4431599.jpg";
+    else return "https://wallpaperaccess.com/thumb/654835.jpg";
+  };
+  //data.filter((item) => item.state == 'New York')
+  /*const [value, setValue] = React.useState("");
+  const handleChange = (text: React.SetStateAction<string>) => {
+    setValue(text);
+    trainingsData.filter((item) => item.difficulty == value);
+  };*/
   return <Box backgroundColor="#fff" >
-    <SearchBar />
-    <FlatList data={trainingsData} marginBottom={5} marginTop={2} renderItem={({item}) => 
-    <Button height={150} px="10" py="10" backgroundColor="#fff" onPress={async () => { navigation.navigate('TrainingInfoScreen', { trainingData: item });}}>
+    <Button height={150} px="10" py="10" backgroundColor="#fff" onPress={async () => { navigation.navigate('TrainingInfoScreen', { trainingData: training });}}>
             <HStack space={[2, 3]} justifyContent="space-between" height={70} width={380}>
-            <Image source={{uri: "https://wallpaperaccess.com/thumb/654835.jpg"}} alt="Alternate Text" size="lg" borderRadius={10}/>
+            <Image source={{uri: mainImage(training.type)}} alt="Alternate Text" size="lg" borderRadius={10}/>
               <VStack my={1} width={220} height={10} mr={0} ml={1}>
                 <Text style={trainingStyles.textTitle} color="#000000" text-align="left" bold>
-                  {item.title}
+                  {training.title}
                 </Text>
                 <Text fontSize="sm" color="#000000">
-                  {item.description}
+                  {training.description}
                 </Text>
                 <Text fontSize="xs" color="#000000">
-                Dificultad: {item.difficulty}
+                Dificultad: {training.difficulty}
                 </Text>
               </VStack>
-              <Button backgroundColor="#fff" onPress={() => setSelected(0)}>
-              <Icon as={<MaterialCommunityIcons name={selected === 0 ? 'heart' : 'heart-outline'} />} size={6} color="#FF6060" alignSelf="center"/>
+              <Button backgroundColor="#fff" onPress={async () => {
+                if(training.isFavorite) {
+                  console.log("el entrenamiento ya esta en favoritos");
+                  /*setTrainingFavorite(false);
+                  const response = await quitFavoriteTraining(training.id);
+                  if(!response) setTrainingFavorite(true);*/
+                }
+                else {
+                  setTrainingFavorite(true);
+                  const response = await addFavoriteTraining(training.id);
+                  if(!response) setTrainingFavorite(false);
+                }
+              }}>
+              <Icon as={<MaterialCommunityIcons name={isFavorite? 'heart' : 'heart-outline'} />} size={6} color="#FF6060" alignSelf="center"/>
               </Button>
             </HStack>
             <Divider my={10} mx={1} />
           </Button>
-        } keyExtractor={item => item.id} />
     </Box>;
 };
 
 export default function TrainingsList(props: Props) {
   const { navigation } = props;
+  const [trainingsList, setTrainingsList] = useState<Training[]>([]);
+  useEffect(() => {
+    function updateFavoriteStatus(trainingResponse: Training[], favoriteTrainingResponse: Training[]): Training[] {
+      const favoriteTrainingIds = new Set(favoriteTrainingResponse.map(training => training.id));
+      return trainingResponse.map(training => ({
+        ...training, 
+        isFavorite: favoriteTrainingIds.has(training.id)
+      }));
+    }
+    const getTrainingsList = async () => {
+      const trainingsResponse  = await getTrainings();
+      const favoritesTrainingsResponse  = await getFavoriteTrainings();
+      let trainings = updateFavoriteStatus(trainingsResponse, favoritesTrainingsResponse);
+      setTrainingsList(trainings);
+    }
+    getTrainingsList();
+  }, [])
+
   return (
     <NativeBaseProvider>
-      <TrainingsInfo navigation={navigation}/>
+      <SearchBar/>
+      <FlatList data={trainingsList} marginBottom={65} marginTop={2} renderItem = {(training) => <TrainingsInfo training={training.item} navigation={navigation}/> }></FlatList> 
     </NativeBaseProvider>
   );
 };

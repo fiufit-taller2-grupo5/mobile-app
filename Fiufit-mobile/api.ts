@@ -1,6 +1,5 @@
 import { User } from "firebase/auth";
 import { getUserFromStorage, storeUserOnStorage, userInfo } from "./app/utils/storageController";
-import { auth } from "./firebase";
 
 type userDetails = {
     userId?: number;
@@ -43,13 +42,14 @@ export const createUser = async (user: User, emailRegisterName : string = "defau
       if (response.ok) {
         try {
           const responseData = await response.json();
-          const internal_id = getInternalIdFromResponse(responseData);
-          const userInfo = await getUserInfoById(internal_id);
+          const internal_id : number = parseInt(getInternalIdFromResponse(responseData));
+          const userInfo = await getUserInfoById(internal_id, user, false);
 
           if (userInfo instanceof Error) {
             throw userInfo;
           }
           userInfo.googleUser = user;
+          userInfo.role = "Atleta";
           await storeUserOnStorage(userInfo);
           console.log("user created");
         } catch (err: any) {
@@ -167,11 +167,91 @@ export async function getResetPasswordUrl(email:string) : Promise<string | null>
   return null;
 }
 
-export async function getTrainings(url:string) : Promise<string[] | null> {
-  console.log("getting trainings at url: ", url);
-  console.log("estoy en getTrainings");
-  //const user = await getUser();
-  //const token = (user as any).stsTokenManager.accessToken;
+export async function getUserInfoByEmail(email:string, user: User) : Promise<userInfo | Error> {
+  console.log("getting user info by email of user ", user );
+  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/?email=" + email;
+  const accessToken = (user as any).stsTokenManager.accessToken;
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "Authorization": "Bearer " + accessToken,
+      },
+    });
+    if (response.ok) {
+      try {
+        const user : userInfo = await response.json();
+        return user;
+      } catch (err: any) {
+        console.error(err);
+      }
+    } else {
+      console.warn("error getting user info: ",await response.json());
+    }
+  } catch (err: any) {
+    console.error("error fetching user info: ",err);
+  }
+  return Error("User not found");
+}
+
+// TODO refactor methods to reduce code redundancy
+export async function getUserInfoById(id:number, user: User, userDetails: Boolean) : Promise<userInfo | Error> {
+  /// userDetails indicates if the user details are returned or only the essential info
+
+  console.log("getting user info by id of user ", user );
+  let url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/";
+  if (userDetails) {
+    url += id ; // return user details
+  } else {
+    url += "?id=" + id; // return only essential info
+  }
+  const accessToken = (user as any).stsTokenManager.accessToken;
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "Authorization": "Bearer " + accessToken,
+      },
+    });
+    if (response.ok) {
+      try {
+        const user : userInfo = await response.json();
+        return user;
+      } catch (err: any) {
+        console.error(err);
+      }
+    } else {
+      console.warn("error getting user info: ",await response.json());
+    }
+  } catch (err: any) {
+    console.error("error fetching user info: ",err);
+  }
+  return Error("User not found");
+}
+
+export interface Training {
+  id: number,
+  title: string, 
+  description?: string, 
+  state: string,
+  difficulty?: number, 
+  type: string,
+  trainer_id: number,
+  isFavorite?: boolean,
+}
+
+export async function getTrainings() : Promise<Training[]> {
+  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings";
+  const userInfo = await getUserFromStorage();
+  const accessToken = (userInfo?.googleUser as any).stsTokenManager.accessToken;
   try {
     const response = await fetch(url, {
       method: "GET",
@@ -181,7 +261,7 @@ export async function getTrainings(url:string) : Promise<string[] | null> {
         "accept-encoding": "gzip, deflate, br",
         "connection": "keep-alive",
         "dev": "a",
-        //"Authorization": "Bearer " + token,
+        "Authorization": "Bearer " + accessToken,
       },
     });
     if (response.ok) {
@@ -198,71 +278,71 @@ export async function getTrainings(url:string) : Promise<string[] | null> {
   } catch (err: any) {
     console.error("error fetching trainings: ",err);
   }
-  return null;
+  return [];
 }
 
-export async function getUserInfoByEmail(email:string) : Promise<userInfo | Error> {
-  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/?email=" + email;
-  console.log("getting user info by email: ", url);
-  const accessToken = (auth.currentUser as any).stsTokenManager.accessToken;
+export async function getFavoriteTrainings() : Promise<Training[]> {
+  const url = 'https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/favorites/'
+  const userInfo = await getUserFromStorage();
+  const userId = userInfo?.id;
+  const accessToken = (userInfo?.googleUser as any).stsTokenManager.accessToken;
+  console.log("getting tfavorite rainings at url: ", url + userId);
+  console.log("estoy en getFavoriteTrainings");
   try {
-    const response = await fetch(url, {
+    const response = await fetch(url + userId, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         "accept": "*/*",
         "accept-encoding": "gzip, deflate, br",
         "connection": "keep-alive",
+        "dev": "a",
         "Authorization": "Bearer " + accessToken,
       },
     });
-    // console.log("getUserInfoByEmail->RESPONSE:", response);
     if (response.ok) {
       try {
-        const user : userInfo = await response.json();
-        console.log("user info:", user);
-        return user;
+        const favoriteTrainings = await response.json() ;
+        console.log("Training plans:", favoriteTrainings);
+        return favoriteTrainings;
       } catch (err: any) {
         console.error(err);
       }
     } else {
-      console.warn("error getting user info: ",await response.json());
+      console.error("error getting favorite trainings response: ",await response.json());
     }
   } catch (err: any) {
-    console.error("error fetching user info: ",err);
+    console.error("error fetching favorite trainings: ",err);
   }
-  return Error("User not found");
+  return [];
 }
 
-// TODO refactor methods to reduce code redundancy
-export async function getUserInfoById(id:string) : Promise<userInfo | Error> {
-  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/?id=" + id;
-  console.log("getting user info by id: ", url);
-  const accessToken = (auth.currentUser as any).stsTokenManager.accessToken;
+export async function addFavoriteTraining(trainingPlanId:number) : Promise<boolean> {
+  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/";
+  const userInfo = await getUserFromStorage();
+  const userId = userInfo?.id;
+  const accessToken = (userInfo?.googleUser as any).stsTokenManager.accessToken;
   try {
-    const response = await fetch(url, {
-      method: "GET",
+    const response = await fetch(url + trainingPlanId + '/favorite/' + userId, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         "accept": "*/*",
         "accept-encoding": "gzip, deflate, br",
         "connection": "keep-alive",
+        "dev": "a",
         "Authorization": "Bearer " + accessToken,
-      },
+      }
     });
     if (response.ok) {
-      try {
-        const user : userInfo = await response.json();
-        console.log("user info:", user);
-        return user;
-      } catch (err: any) {
-        console.error(err);
-      }
+      console.log("favorite training added");
+      return true;
     } else {
-      console.warn("error getting user info: ",await response.json());
+      console.error("error getting trainings response: ",await response.json());
+      return false;
     }
   } catch (err: any) {
-    console.error("error fetching user info: ",err);
+    console.error("error adding favorite training: ",err);
   }
-  return Error("User not found");
+  return false
 }

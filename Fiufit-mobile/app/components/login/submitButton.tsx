@@ -3,6 +3,7 @@ import { loginAndRegisterStyles } from "../../styles";
 import { auth, logInWithEmailAndPassword } from '../../../firebase';
 import { getUserInfoByEmail } from "../../../api";
 import { storeUserOnStorage } from "../../utils/storageController";
+import { User } from "firebase/auth";
 
 
 interface Props {
@@ -24,18 +25,25 @@ export default function SubmitButton(props: Props) {
           const errorMessage = await logInWithEmailAndPassword(email, password);
           if (!errorMessage) {
             // get user info from the back and store it on the storage
-            const userInfoRes = await getUserInfoByEmail(email);
-            if (!userInfoRes.ok) {
+            const user = auth.currentUser;
+            if (user === null) {
+              setErrorMessage("Error al iniciar sesión. Por favor, inténtelo de nuevo más tarde.");
+              console.error("Error signing in with email: user is null");
+              return;
+            }
+            const userInfo = await getUserInfoByEmail(email, user);
+            if (userInfo instanceof Error) {
               // user is not registered in the app
               setErrorMessage("No se encuetra actualmente registrado en Fiufit. Por favor, regístrese primero.");
               // logout from firebase
               auth.signOut();
               return;
             }
-            const userInfo = await userInfoRes.json();
             // we store the user info on the storage
-            const user = auth.currentUser;
             userInfo.googleUser = user;
+            if (userInfo.role === null || userInfo.role === "user") {
+              userInfo.role = "Atleta"
+            }
             storeUserOnStorage(userInfo);
             clearFields();
             navigation.navigate('HomeScreen');
