@@ -3,7 +3,6 @@ import StreetNameForm from "./streetNameForm";
 import StreetNumberForm from "./streetNumberForm";
 
 
-
 interface Props {
   streetName: string;
   setStreetName: (streetName: string) => void;

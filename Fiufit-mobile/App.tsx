@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useFonts } from 'expo-font';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import WelcomeScreen from './app/screens/welcome';
 import RegisterScreen from './app/screens/register';
 import LoginScreen from './app/screens/login';
@@ -22,7 +23,6 @@ import ChangeRoleScreen from './app/screens/editProfile/changeRole';
 import CreateTrainingScreen from './app/screens/createTraining';
 import ChangeLocationScreen from './app/screens/editProfile/changeLocation';
 import FavoriteTrainingInfoScreen from './app/screens/favoriteTrainingInfoScreen';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator();
 
@@ -92,12 +92,6 @@ export default function App() {
           <Stack.Screen
             name="ChangeLocationScreen"
             component={ChangeLocationScreen} />
-          {/* <Stack.Screen
-            name="ChangeStreetNameScreen"
-            component={ChangeStreetNameScreen} />
-          <Stack.Screen
-            name="ChangeStreetNumberScreen"
-            component={ChangeStreetNumberScreen} /> */}
           <Stack.Screen
             name="ChangeRoleScreen"
             component={ChangeRoleScreen} />
