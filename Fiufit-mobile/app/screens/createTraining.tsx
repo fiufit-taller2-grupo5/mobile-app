@@ -55,6 +55,7 @@ export default function CreateTrainingScreen({ navigation }: any) {
   const handleSave = () => {
     // TODO: pasarle la info al back
     console.log("save training and send to backend");
+    navigation.navigate("Home");
   }
 
   return <NativeBaseProvider>

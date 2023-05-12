@@ -8,5 +8,5 @@ export default function FavoriteTrainingInfoScreen({ route, navigation }: any) {
         <Container minWidth="400" height="800" backgroundColor="#fff">
             <FavoriteTrainingCard navigation={navigation} trainingData={trainingData}/>
         </Container>
-      </NativeBaseProvider>;
-  };
+    </NativeBaseProvider>;
+};

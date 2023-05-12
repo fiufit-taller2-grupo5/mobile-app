@@ -9,7 +9,6 @@ import RegisterScreen from './app/screens/register';
 import LoginScreen from './app/screens/login';
 import TrainingInfoScreen from './app/screens/trainingInfo';
 import HomeScreen from './app/screens/home';
-import FavoritesScreen from './app/screens/favorites';
 import ProfileScreen from './app/screens/profile';
 import UsersScreen from './app/screens/users';
 import TrainingsScreen from './app/screens/trainings';
@@ -22,7 +21,10 @@ import ChangeInterestsScreen from './app/screens/editProfile/changeInterests';
 import ChangeRoleScreen from './app/screens/editProfile/changeRole';
 import CreateTrainingScreen from './app/screens/createTraining';
 import ChangeLocationScreen from './app/screens/editProfile/changeLocation';
+import FavoritesScreen from './app/screens/favorites';
 import FavoriteTrainingInfoScreen from './app/screens/favoriteTrainingInfoScreen';
+import TrainerTrainingsScreen from './app/screens/trainerTrainings';
+import TrainerTrainingInfoScreen from './app/screens/trainerTrainingsInfo';
 
 const Stack = createNativeStackNavigator();
 
@@ -98,6 +100,12 @@ export default function App() {
           <Stack.Screen
             name="CreateTrainingScreen"
             component={CreateTrainingScreen} />
+          <Stack.Screen
+            name="TrainerTrainingsScreen"
+            component={TrainerTrainingsScreen} />
+          <Stack.Screen
+            name="TrainerTrainingInfoScreen"
+            component={TrainerTrainingInfoScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

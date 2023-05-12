@@ -1,13 +1,14 @@
 import { NativeBaseProvider } from 'native-base';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
+import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import globalUser from '../utils/storageController';
 import TrainingsScreen from './trainings';
 import ProfileScreen from './profile';
 import UsersScreen from './users';
 import FavoritesScreen from './favorites';
-import globalUser from '../utils/storageController';
-import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import TrainerTrainingsScreen from './trainerTrainings';
 
 const Tab = createBottomTabNavigator();
 
@@ -50,14 +51,22 @@ export default function HomeScreen({ navigation }: any) {
                     tabBarActiveTintColor: '#FF6060'}
                 }
             />
-            <Tab.Screen
+            {isAthlete && <Tab.Screen
                 options={
                     {tabBarLabel: 'Trainings', tabBarIcon: ({ color, size }) => (
                     <MaterialCommunityIcons name='dumbbell' color={color} size={size} />),
                     tabBarActiveTintColor: '#FF6060'}
                 }
                 name="Trainings" component={TrainingsScreen}
-            />
+            />}
+            {!isAthlete && <Tab.Screen
+                options={
+                    {tabBarLabel: 'Trainings', tabBarIcon: ({ color, size }) => (
+                    <MaterialCommunityIcons name='dumbbell' color={color} size={size} />),
+                    tabBarActiveTintColor: '#FF6060'}
+                }
+                name="Trainings" component={TrainerTrainingsScreen}
+            />}
             {isAthlete && <Tab.Screen
                 options={{
                     tabBarLabel: 'Favorites', tabBarIcon: ({ color, size }) => (
