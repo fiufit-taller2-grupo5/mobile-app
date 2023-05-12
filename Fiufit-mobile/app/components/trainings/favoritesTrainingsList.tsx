@@ -1,54 +1,64 @@
 import React, { useEffect, useState } from "react";
-import { Image, Box, FlatList, HStack, VStack, Text, NativeBaseProvider, Button, Divider} from "native-base";
+import { Image, Box, FlatList, HStack, VStack, Text, NativeBaseProvider, Button, Divider } from "native-base";
 import SearchBar from './searchBar';
 import { trainingStyles } from "../../styles"
-import useSWR from 'swr';
-import { getFavoriteTrainings } from "../../../api";
+import { getFavoriteTrainings, Training } from "../../../api";
 
 interface Props {
   navigation: any;
 };
 
-const FavoritesTrainingsInfo = (props: Props) => {
-  const { navigation } = props;
-  const [selected, setSelected] = React.useState(1);
-  const favoritesTrainingsResponse  = useSWR('https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/favorites/', getFavoriteTrainings);
-  const [trainingsData, setFavoritesTrainingsList] = useState<string[]>([]);
-  useEffect(() => {
-    if(favoritesTrainingsResponse.data) {
-        setFavoritesTrainingsList(favoritesTrainingsResponse.data);
-    }
-  }, [favoritesTrainingsResponse.data]);
-  
+interface FavoriteTrainingInfoProps {
+  navigation: any;
+  favoriteTraining: Training;
+};
+
+const mainImage = (training_type: any) => {
+  if(training_type === 'Running') return "https://wallpaperaccess.com/thumb/2604922.jpg";
+  else if(training_type === 'Swimming') return "https://wallpaperaccess.com/thumb/1634055.jpg";
+  else if(training_type === 'Walking') return "https://wallpaperaccess.com/thumb/654835.jpg";
+  else if(training_type === 'Cycling') return "https://wallpaperaccess.com/thumb/4431599.jpg";
+  else return "https://wallpaperaccess.com/thumb/654835.jpg";
+};
+
+const FavoriteTrainingsInfo = (props: FavoriteTrainingInfoProps) => {
+  const { navigation, favoriteTraining} = props;
   return <Box backgroundColor="#fff" >
-    <SearchBar />
-    <FlatList data={trainingsData} marginBottom={5} marginTop={2} renderItem={({item}) => 
-    <Button height={150} px="10" py="10" backgroundColor="#fff" onPress={async () => { navigation.navigate('FavoriteTrainingInfoScreen', { trainingData: item });}}>
-            <HStack space={[2, 3]} justifyContent="space-between" height={70} width={380}>
-            <Image source={{uri: "https://wallpaperaccess.com/thumb/654835.jpg"}} alt="Alternate Text" size="lg" borderRadius={10}/>
+    <Button height={150} px="10" py="10" backgroundColor="#fff" onPress={async () => { navigation.navigate('FavoriteTrainingInfoScreen', { trainingData: favoriteTraining });}}>
+            <HStack space={[2, 3]} height={70} width={380}>
+            <Image source={{uri: mainImage(favoriteTraining.type)}} alt="Alternate Text" size="lg" borderRadius={10}/>
               <VStack my={1} width={220} height={10} mr={0} ml={1}>
                 <Text style={trainingStyles.textTitle} color="#000000" text-align="left" bold>
-                  {item.title}
+                  {favoriteTraining.title}
                 </Text>
                 <Text fontSize="sm" color="#000000">
-                  {item.description}
+                  {favoriteTraining.description}
                 </Text>
                 <Text fontSize="xs" color="#000000">
-                Dificultad: {item.difficulty}
+                Dificultad: {favoriteTraining.difficulty}
                 </Text>
               </VStack>
             </HStack>
             <Divider my={10} mx={1} />
           </Button>
-        } keyExtractor={item => item.id} />
     </Box>;
 };
 
-export default function FavoritesTrainingsList(props: Props) {
+export default function FavoriteTrainingsList(props: Props) {
   const { navigation } = props;
+  const [favoriteTrainingsList, setFavoriteTrainingsList] = useState<Training[]>([]);
+  useEffect(() => {
+    const getTrainingsList = async () => {
+      const favoritesTrainingsResponse  = await getFavoriteTrainings();
+      setFavoriteTrainingsList(favoritesTrainingsResponse);
+    }
+    getTrainingsList();
+  }, []) //agregar favoriteTrainingsList entre los [] para notar que se renderiza cuando se agregan nuevos trainings favs
+
   return (
     <NativeBaseProvider>
-      <FavoritesTrainingsInfo navigation={navigation}/>
+      <SearchBar/>
+      <FlatList data={favoriteTrainingsList} marginBottom={65} marginTop={2} renderItem = {(favoriteTraining) => <FavoriteTrainingsInfo favoriteTraining={favoriteTraining.item} navigation={navigation}/> }></FlatList> 
     </NativeBaseProvider>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, Box, FlatList, Heading, Avatar, HStack, VStack, Text, Spacer, Center, NativeBaseProvider, Button, Divider, Icon, List, Input } from "native-base";
+import { Image, Box, FlatList, HStack, VStack, Text, NativeBaseProvider, Button, Divider, Icon } from "native-base";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import SearchBar from './searchBar';
 import { trainingStyles } from "../../styles"
@@ -14,16 +14,17 @@ interface TrainingInfoProps {
   training: Training;
 };
 
+const mainImage = (training_type: any) => {
+  if(training_type === 'Running') return "https://wallpaperaccess.com/thumb/2604922.jpg";
+  else if(training_type === 'Swimming') return "https://wallpaperaccess.com/thumb/1634055.jpg";
+  else if(training_type === 'Walking') return "https://wallpaperaccess.com/thumb/654835.jpg";
+  else if(training_type === 'Cycling') return "https://wallpaperaccess.com/thumb/4431599.jpg";
+  else return "https://wallpaperaccess.com/thumb/654835.jpg";
+};
+
 const TrainingsInfo = (props: TrainingInfoProps) => {
   const { navigation, training} = props;
   const [isFavorite, setTrainingFavorite] = useState<Boolean>(training.isFavorite || false);
-  const mainImage = (training_type: any) => {
-    if(training_type === 'Running') return "https://wallpaperaccess.com/thumb/2604922.jpg";
-    else if(training_type === 'Swimming') return "https://wallpaperaccess.com/thumb/1634055.jpg";
-    else if(training_type === 'Walking') return "https://wallpaperaccess.com/thumb/654835.jpg";
-    else if(training_type === 'Cycling') return "https://wallpaperaccess.com/thumb/4431599.jpg";
-    else return "https://wallpaperaccess.com/thumb/654835.jpg";
-  };
   //data.filter((item) => item.state == 'New York')
   /*const [value, setValue] = React.useState("");
   const handleChange = (text: React.SetStateAction<string>) => {
@@ -47,7 +48,6 @@ const TrainingsInfo = (props: TrainingInfoProps) => {
               </VStack>
               <Button backgroundColor="#fff" onPress={async () => {
                 if(isFavorite) {
-                  console.log("el entrenamiento ya esta en favoritos");
                   /*setTrainingFavorite(false);
                   const response = await quitFavoriteTraining(training.id);
                   if(!response) setTrainingFavorite(true);*/
@@ -70,6 +70,7 @@ export default function TrainingsList(props: Props) {
   const { navigation } = props;
   const [trainingsList, setTrainingsList] = useState<Training[]>([]);
   useEffect(() => {
+    console.log("useEffect called");
     function updateFavoriteStatus(trainingResponse: Training[], favoriteTrainingResponse: Training[]): Training[] {
       const favoriteTrainingIds = new Set(favoriteTrainingResponse.map(training => training.id));
       return trainingResponse.map(training => ({
@@ -84,7 +85,7 @@ export default function TrainingsList(props: Props) {
       setTrainingsList(trainings);
     }
     getTrainingsList();
-  }, [])
+  }, []) //agregar trainingsList entre los [] para notar que se renderiza cuando se agregan nuevos trainings
 
   return (
     <NativeBaseProvider>

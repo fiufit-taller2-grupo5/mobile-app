@@ -25,6 +25,7 @@ import ChangeRoleScreen from './app/screens/editProfile/changeRole';
 import CreateTrainingScreen from './app/screens/createTraining';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import ChangeLocationScreen from './app/screens/editProfile/changeLocation';
+import FavoriteTrainingInfoScreen from './app/screens/favoriteTrainingInfoScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -73,6 +74,9 @@ export default function App() {
           <Stack.Screen
             name="TrainingInfoScreen"
             component={TrainingInfoScreen} />
+          <Stack.Screen
+            name="FavoriteTrainingInfoScreen"
+            component={FavoriteTrainingInfoScreen} />
           <Stack.Screen
             name="ChangeNameScreen"
             component={ChangeNameScreen} />
