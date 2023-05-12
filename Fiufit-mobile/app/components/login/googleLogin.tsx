@@ -48,9 +48,9 @@ export default function GoogleLogin(props: Props) {
           }
           // we store the user info on the storage
           userInfo.googleUser = user;
-          if (userInfo.role === null || userInfo.role === "user") {
-            userInfo.role = "Atleta"
-          }
+          userInfo.role = "Atleta";
+          userInfo.UserMetadata = null;
+          
           storeUserOnStorage(userInfo);
           console.log('Signed in with Google:', userInfo);
           // TODO: use the user info from the back and show it in the home screen

@@ -4,8 +4,8 @@ import { AntDesign } from '@expo/vector-icons';
 import { ProgressChart } from "react-native-chart-kit";
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
 import { useEffect, useState } from 'react';
-import { getUserFromStorage } from '../utils/storageController';
 import { getUserInfoById } from '../../api';
+import globalUser from '../utils/storageController';
 
 const screens = ['ChangeNameScreen', 'ChangeHeightScreen', 'ChangeWeightScreen', 'ChangeDateScreen', 'ChangeInterestsScreen', 'ChangeLocationScreen', 'ChangeRoleScreen']
 
@@ -156,27 +156,22 @@ export default function ProfileScreen(props: Props) {
   
   useEffect(() => {
     const getUserInfo = async () => {
-      const userInfoStored = await getUserFromStorage();
-      if (userInfoStored === null) {
-        navigation.navigate('LoginScreen');
-        return;
-      }
-      console.log("userinfo stored:", userInfoStored);
-      const fullUser = await getUserInfoById(userInfoStored.id, userInfoStored.googleUser, true);
-      const details = await (fullUser as any ).UserMetadata;
+      const userInfoStored = await globalUser.getUser();
 
-      if (details === null && fullUser !== null) { // if the user has skipped the registration form
-        setUserInformation([ fullUser.name, "", "", "", "", "", userInfoStored.role]);
+      const details = await globalUser.getUserMetadata();
+      console.log("details:", details);
+      if (details === null && userInfoStored !== null) { // if the user has skipped the registration form
+        setUserInformation([ userInfoStored.name, "", "", "", "", "", userInfoStored!.role]);
         return;
       }
 
-      const interests = await details.interests;
+      const interests = details!.interests
 
-      let birthdate = details.birthDate; // from "2000-09-22T17:43:38.879Z" to "22/09/2000"
+      let birthdate = details!.birthDate; // from "2000-09-22T17:43:38.879Z" to "22/09/2000"
       birthdate = birthdate.split('T')[0].split('-').reverse().join('/');
       
-      if (fullUser && details && interests) {
-        setUserInformation([ fullUser.name, details.height, details.weight, birthdate, interests.join(', '), details.location, userInfoStored.role]);
+      if (userInfoStored && details && interests) {
+        setUserInformation([ userInfoStored.name, details.height.toString(), details.weight.toString(), birthdate, interests.join(', '), details.location, userInfoStored.role]);
       }
     } 
     getUserInfo();

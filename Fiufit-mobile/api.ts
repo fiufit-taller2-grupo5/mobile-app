@@ -1,5 +1,5 @@
 import { User } from "firebase/auth";
-import { getUserFromStorage, storeUserOnStorage, userInfo } from "./app/utils/storageController";
+import globalUser, { UserMetadata, storeUserOnStorage, userInfo } from "./app/utils/storageController";
 
 type userDetails = {
     userId?: number;
@@ -71,10 +71,10 @@ export const createUser = async (user: User, emailRegisterName : string = "defau
 // }))
 
 export const updateUserDetails = async (data: userDetails) => {
-    const userInfo = await getUserFromStorage();
-    const internal_id = userInfo?.id;
+    const user = await globalUser.getUser();
+    const internal_id = user!.id;
     data.userId = internal_id;
-    const accessToken = (userInfo?.googleUser as any).stsTokenManager.accessToken;
+    const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
     console.log("data:", JSON.stringify(data), "userId:", internal_id);
     try {
       const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/" + internal_id + "/metadata";
@@ -104,8 +104,9 @@ export const updateUserDetails = async (data: userDetails) => {
 
 export async function getInterests(url:string) : Promise<string[] | null> {
   console.log("getting interests at url: ", url);
-  const userInfo = await getUserFromStorage();
-  const accessToken = (userInfo?.googleUser as any).stsTokenManager.accessToken;
+  await globalUser.verifyUserMetadataExists();
+  const user = await globalUser.getUser();
+  const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
   try {
     const response = await fetch(url, {
       method: "GET",
@@ -130,6 +131,38 @@ export async function getInterests(url:string) : Promise<string[] | null> {
     }
   } catch (err: any) {
     console.error("error fetching interests: ",err);
+  }
+  return null;
+}
+
+
+export async function getUserDetails(userId:number, user:User) : Promise<UserMetadata | null> {
+  const accessToken = (user as any).stsTokenManager.accessToken;
+  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/" + userId + "/metadata";
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "Authorization": "Bearer " + accessToken,
+      },
+    });
+    if (response.ok) {
+      try {
+        const userDetails = await response.json() ;
+        console.log("userDetails:", userDetails);
+        return userDetails;
+      } catch (err: any) {
+        console.error(err);
+      }
+    } else {
+      console.error("error getting user details response: ",await response.json());
+    }
+  } catch (err: any) {
+    console.error("error fetching user details: ",err);
   }
   return null;
 }
@@ -250,8 +283,8 @@ export interface Training {
 
 export async function getTrainings() : Promise<Training[]> {
   const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings";
-  const userInfo = await getUserFromStorage();
-  const accessToken = (userInfo?.googleUser as any).stsTokenManager.accessToken;
+  const user = await globalUser.getUser();
+  const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
   try {
     const response = await fetch(url, {
       method: "GET",
@@ -266,7 +299,7 @@ export async function getTrainings() : Promise<Training[]> {
     });
     if (response.ok) {
       try {
-        const trainings = await response.json() ;
+        const trainings = await response.json();
         console.log("Training plans:", trainings);
         return trainings;
       } catch (err: any) {
@@ -283,9 +316,9 @@ export async function getTrainings() : Promise<Training[]> {
 
 export async function getFavoriteTrainings() : Promise<Training[]> {
   const url = 'https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/favorites/'
-  const userInfo = await getUserFromStorage();
-  const userId = userInfo?.id;
-  const accessToken = (userInfo?.googleUser as any).stsTokenManager.accessToken;
+  const user = await globalUser.getUser();
+  const userId = user?.id;
+  const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
   console.log("getting tfavorite rainings at url: ", url + userId);
   console.log("estoy en getFavoriteTrainings");
   try {
@@ -319,9 +352,9 @@ export async function getFavoriteTrainings() : Promise<Training[]> {
 
 export async function addFavoriteTraining(trainingPlanId:number) : Promise<boolean> {
   const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/";
-  const userInfo = await getUserFromStorage();
-  const userId = userInfo?.id;
-  const accessToken = (userInfo?.googleUser as any).stsTokenManager.accessToken;
+  const user = await globalUser.getUser();
+  const userId = user?.id;
+  const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
   try {
     const response = await fetch(url + trainingPlanId + '/favorite/' + userId, {
       method: "POST",
