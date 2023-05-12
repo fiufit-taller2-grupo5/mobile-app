@@ -8,6 +8,7 @@ interface Props {
   newStreetNumber: number;
   setterStreetName: (streetName: string) => void;
   setterStreetNumber: (streetNumber: number) => void;
+  setErrorMessage: (errorMessage: string) => void;
 }
 
 // TODO BORRAR
@@ -20,11 +21,10 @@ export default function LocationSubmitButton(props: Props) {
       <Button
         style={editProfileStyles.button}
         onPress={() => {
-          console.log("mandar el nombre al backend: ", newStreetName, newStreetNumber);
-          // TODO:
-          // pedirle al back la lista de la metadata y
-          // mandarsela de nuevo con el nuevo valor
-          // de newStreetName y newStreetNumber actualizado
+          if (newStreetName === "" || newStreetNumber === 0) {
+            props.setErrorMessage("Por favor ingrese una dirección válida");
+            return;
+          }
           setterStreetName("");
           setterStreetNumber(0);
           navigation.navigate('HomeScreen');

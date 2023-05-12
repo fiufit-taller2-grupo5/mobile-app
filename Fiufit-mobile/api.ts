@@ -150,7 +150,7 @@ export async function getUserDetails(userId:number, user:User) : Promise<UserMet
         console.error(err);
       }
     } else {
-      console.error("error getting user details response: ",await response.json());
+      console.info("error getting user details response: ",await response.json());
     }
   } catch (err: any) {
     console.error("error fetching user details: ",err);

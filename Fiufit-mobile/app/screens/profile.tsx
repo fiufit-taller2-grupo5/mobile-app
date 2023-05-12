@@ -4,7 +4,6 @@ import { AntDesign } from '@expo/vector-icons';
 import { ProgressChart } from "react-native-chart-kit";
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
 import { useEffect, useState } from 'react';
-import { getUserInfoById } from '../../api';
 import globalUser from '../utils/storageController';
 
 const screens = ['ChangeNameScreen', 'ChangeHeightScreen', 'ChangeWeightScreen', 'ChangeDateScreen', 'ChangeInterestsScreen', 'ChangeLocationScreen', 'ChangeRoleScreen']
@@ -154,28 +153,57 @@ export default function ProfileScreen(props: Props) {
   const [userInformation, setUserInformation] = useState(["", "", "", "", "", "", ""]);
   
   
-  useEffect(() => {
-    const getUserInfo = async () => {
-      const userInfoStored = await globalUser.getUser();
+  // useEffect(() => {
+  //   const getUserInfo = async () => {
+  //     const userInfoStored = await globalUser.getUser();
 
-      const details = await globalUser.getUserMetadata();
-      console.log("details:", details);
-      if (details === null && userInfoStored !== null) { // if the user has skipped the registration form
-        setUserInformation([ userInfoStored.name, "", "", "", "", "", userInfoStored!.role]);
-        return;
-      }
+  //     const details = await globalUser.getUserMetadata();
+  //     console.log("details:", details);
+  //     if (details === null && userInfoStored !== null) { // if the user has skipped the registration form
+  //       setUserInformation([ userInfoStored.name, "", "", "", "", "", userInfoStored!.role]);
+  //       return;
+  //     }
 
-      const interests = details!.interests
+  //     const interests = details!.interests
 
-      let birthdate = details!.birthDate; // from "2000-09-22T17:43:38.879Z" to "22/09/2000"
-      birthdate = birthdate.split('T')[0].split('-').reverse().join('/');
+  //     let birthdate = details!.birthDate; // from "2000-09-22T17:43:38.879Z" to "22/09/2000"
+  //     birthdate = birthdate.split('T')[0].split('-').reverse().join('/');
       
-      if (userInfoStored && details && interests) {
-        setUserInformation([ userInfoStored.name, details.height.toString(), details.weight.toString(), birthdate, interests.join(', '), details.location, userInfoStored.role]);
+  //     if (userInfoStored && details && interests) {
+  //       setUserInformation([ userInfoStored.name, details.height.toString(), details.weight.toString(), birthdate, interests.join(', '), details.location, userInfoStored.role]);
+  //     }
+  //   } 
+  //   getUserInfo();
+  // }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      const getUserInfo = async () => {
+        const userInfoStored = await globalUser.getUser();
+
+        const details = await globalUser.getUserMetadata();
+        console.log("details:", details);
+
+        if (details!.birthDate === "" && userInfoStored !== null) { // if the user has skipped the registration form
+          setUserInformation([ userInfoStored.name, "", "", "", "", "", userInfoStored!.role]);
+          return;
+        }
+
+        const interests = details!.interests
+        
+        let birthdate = details!.birthDate; // from "2000-09-22T17:43:38.879Z" to "22/09/2000"
+        birthdate = birthdate.split('T')[0].split('-').reverse().join('/');
+
+        if (userInfoStored && details && interests) {
+          setUserInformation([ userInfoStored.name, details.height.toString(), details.weight.toString(), birthdate, interests.join(', '), details.location, userInfoStored.role]);
+        }
       }
-    } 
-    getUserInfo();
-  }, []);
+      getUserInfo();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+        
 
   return <NativeBaseProvider theme={theme}>
     <Box style={editProfileStyles.nameBox}>

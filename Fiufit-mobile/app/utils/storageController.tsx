@@ -1,6 +1,6 @@
 import { User } from '@firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getUserDetails, updateUserDetails } from '../../api';
+import { getUserDetailsWrapper, updateUserDetailsWrapper } from './userMetadataController';
 
 export type UserMetadata = {
     id: number,
@@ -64,7 +64,19 @@ export class StoredUser {
     async verifyUserMetadataExists() {
         await this.verifyUserExists();
         if (this.user!.UserMetadata === null) {
-            this.user!.UserMetadata = await getUserDetails(this.user!.id, this.user!.googleUser);
+            const details = await getUserDetailsWrapper(this.user!.id, this.user!.googleUser);
+            if (details === null) {
+                this.user!.UserMetadata = {
+                    id: this.user!.id,
+                    weight: 0,
+                    height: 0,
+                    birthDate: "",
+                    location: "",
+                    interests: []
+                }
+            } else {
+                this.user!.UserMetadata = details;
+            }
         }
     }
 
@@ -72,35 +84,35 @@ export class StoredUser {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.weight = weight;
         await storeUserOnStorage(this.user!);
-        await updateUserDetails(this.user!.UserMetadata!);
+        await updateUserDetailsWrapper(this.user!.UserMetadata!);
     }
 
     async setHeight(height: number) {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.height = height;
         await storeUserOnStorage(this.user!);
-        await updateUserDetails(this.user!.UserMetadata!);
+        await updateUserDetailsWrapper(this.user!.UserMetadata!);
     }
 
     async setBirthdate(birthdate: string) {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.birthDate = birthdate;
         await storeUserOnStorage(this.user!);
-        await updateUserDetails(this.user!.UserMetadata!);
+        await updateUserDetailsWrapper(this.user!.UserMetadata!);
     }
 
     async setLocation(location: string) {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.location = location;
         await storeUserOnStorage(this.user!);
-        await updateUserDetails(this.user!.UserMetadata!);
+        await updateUserDetailsWrapper(this.user!.UserMetadata!);
     }
 
     async setInterests(interests: string[]) {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.interests = interests;
         await storeUserOnStorage(this.user!);
-        await updateUserDetails(this.user!.UserMetadata!);
+        await updateUserDetailsWrapper(this.user!.UserMetadata!);
     }
 
     async setRole(role: string) {
