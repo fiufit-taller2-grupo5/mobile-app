@@ -33,37 +33,37 @@ const TrainingsInfo = (props: TrainingInfoProps) => {
   };*/
   return <Box backgroundColor="#fff" >
     <Button height={150} px="10" py="10" backgroundColor="#fff" onPress={async () => { navigation.navigate('TrainingInfoScreen', { trainingData: training });}}>
-            <HStack space={[2, 3]} justifyContent="space-between" height={70} width={380}>
-            <Image source={{uri: mainImage(training.type)}} alt="Alternate Text" size="lg" borderRadius={10}/>
-              <VStack my={1} width={220} height={10} mr={0} ml={1}>
-                <Text style={trainingStyles.textTitle} color="#000000" text-align="left" bold>
-                  {training.title}
-                </Text>
-                <Text fontSize="sm" color="#000000">
-                  {training.description}
-                </Text>
-                <Text fontSize="xs" color="#000000">
-                Dificultad: {training.difficulty}
-                </Text>
-              </VStack>
-              <Button backgroundColor="#fff" onPress={async () => {
-                if(isFavorite) {
-                  /*setTrainingFavorite(false);
-                  const response = await quitFavoriteTraining(training.id);
-                  if(!response) setTrainingFavorite(true);*/
-                }
-                else {
-                  setTrainingFavorite(true);
-                  const response = await addFavoriteTraining(training.id);
-                  if(!response) setTrainingFavorite(false);
-                }
-              }}>
-              <Icon as={<MaterialCommunityIcons name={isFavorite? 'heart' : 'heart-outline'} />} size={6} color="#FF6060" alignSelf="center"/>
-              </Button>
-            </HStack>
-            <Divider my={10} mx={1} />
-          </Button>
-    </Box>;
+      <HStack space={[2, 3]} justifyContent="space-between" height={70} width={380}>
+        <Image source={{uri: mainImage(training.type)}} alt="Alternate Text" size="lg" borderRadius={10}/>
+        <VStack my={1} width={220} height={10} mr={0} ml={1}>
+          <Text style={trainingStyles.textTitle} color="#000000" text-align="left" bold>
+            {training.title}
+          </Text>
+          <Text fontSize="sm" color="#000000">
+            {training.description}
+          </Text>
+          <Text fontSize="xs" color="#000000">
+            Dificultad: {training.difficulty}
+          </Text>
+        </VStack>
+        <Button backgroundColor="#fff" onPress={async () => {
+          if(isFavorite) {
+            /*setTrainingFavorite(false);
+              const response = await quitFavoriteTraining(training.id);
+                if(!response) setTrainingFavorite(true);*/
+          }
+          else {
+            setTrainingFavorite(true);
+            const response = await addFavoriteTraining(training.id);
+            if(!response) setTrainingFavorite(false);
+          }
+          }}>
+          <Icon as={<MaterialCommunityIcons name={isFavorite? 'heart' : 'heart-outline'} />} size={6} color="#FF6060" alignSelf="center"/>
+        </Button>
+      </HStack>
+      <Divider my={10} mx={1} />
+    </Button>
+  </Box>;
 };
 
 export default function TrainingsList(props: Props) {

@@ -18,14 +18,11 @@ import ChangeHeightScreen from './app/screens/editProfile/changeHeight';
 import ChangeWeightScreen from './app/screens/editProfile/changeWeight';
 import ChangeDateScreen from './app/screens/editProfile/changeBirthDate';
 import ChangeInterestsScreen from './app/screens/editProfile/changeInterests';
-// import ChangeLocationScreen from './app/screens/editProfile/changeLocation';
-import ChangeStreetNameScreen from './app/screens/editProfile/changeStreetName';
-import ChangeStreetNumberScreen from './app/screens/editProfile/changeStreetNumber';
 import ChangeRoleScreen from './app/screens/editProfile/changeRole';
 import CreateTrainingScreen from './app/screens/createTraining';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import ChangeLocationScreen from './app/screens/editProfile/changeLocation';
 import FavoriteTrainingInfoScreen from './app/screens/favoriteTrainingInfoScreen';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator();
 

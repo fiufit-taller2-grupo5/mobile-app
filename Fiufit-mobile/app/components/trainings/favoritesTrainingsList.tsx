@@ -25,23 +25,23 @@ const FavoriteTrainingsInfo = (props: FavoriteTrainingInfoProps) => {
   const { navigation, favoriteTraining} = props;
   return <Box backgroundColor="#fff" >
     <Button height={150} px="10" py="10" backgroundColor="#fff" onPress={async () => { navigation.navigate('FavoriteTrainingInfoScreen', { trainingData: favoriteTraining });}}>
-            <HStack space={[2, 3]} height={70} width={380}>
-            <Image source={{uri: mainImage(favoriteTraining.type)}} alt="Alternate Text" size="lg" borderRadius={10}/>
-              <VStack my={1} width={220} height={10} mr={0} ml={1}>
-                <Text style={trainingStyles.textTitle} color="#000000" text-align="left" bold>
-                  {favoriteTraining.title}
-                </Text>
-                <Text fontSize="sm" color="#000000">
-                  {favoriteTraining.description}
-                </Text>
-                <Text fontSize="xs" color="#000000">
-                Dificultad: {favoriteTraining.difficulty}
-                </Text>
-              </VStack>
-            </HStack>
-            <Divider my={10} mx={1} />
-          </Button>
-    </Box>;
+      <HStack space={[2, 3]} height={70} width={380}>
+        <Image source={{uri: mainImage(favoriteTraining.type)}} alt="Alternate Text" size="lg" borderRadius={10}/>
+        <VStack my={1} width={220} height={10} mr={0} ml={1}>
+          <Text style={trainingStyles.textTitle} color="#000000" text-align="left" bold>
+            {favoriteTraining.title}
+          </Text>
+          <Text fontSize="sm" color="#000000">
+            {favoriteTraining.description}
+          </Text>
+          <Text fontSize="xs" color="#000000">
+            Dificultad: {favoriteTraining.difficulty}
+          </Text>
+        </VStack>
+      </HStack>
+      <Divider my={10} mx={1} />
+    </Button>
+  </Box>;
 };
 
 export default function FavoriteTrainingsList(props: Props) {
