@@ -1,14 +1,5 @@
 import { User } from "firebase/auth";
-import globalUser, { UserMetadata, storeUserOnStorage, userInfo } from "./app/utils/storageController";
-
-type userDetails = {
-    userId?: number;
-    weight: number;
-    height: number;
-    birthDate: string;
-    location: string;
-    interests: string[];
-  }
+import globalUser, { UserMetadata, userInfo } from "./app/utils/storageController";
 
 const getInternalIdFromResponse = (response: any): string => {
     // receives a response from the backend like "{"status": "User Jdjde with id 10 created"}"
@@ -50,7 +41,7 @@ export const createUser = async (user: User, emailRegisterName : string = "defau
           }
           userInfo.googleUser = user;
           userInfo.role = "Atleta";
-          await storeUserOnStorage(userInfo);
+          await globalUser.setUser(userInfo);
           console.log("user created");
         } catch (err: any) {
           console.error(err);
@@ -70,10 +61,10 @@ export const createUser = async (user: User, emailRegisterName : string = "defau
 // postId: 1
 // }))
 
-export const updateUserDetails = async (data: userDetails) => {
+export const updateUserDetails = async (data: UserMetadata) => {
     const user = await globalUser.getUser();
     const internal_id = user!.id;
-    data.userId = internal_id;
+    data.id = internal_id;
     const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
     console.log("data:", JSON.stringify(data), "userId:", internal_id);
     try {

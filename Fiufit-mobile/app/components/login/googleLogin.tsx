@@ -6,7 +6,7 @@ import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import { auth, createUser } from "../../../firebase";
 import { AuthErrorCodes, GoogleAuthProvider, signInWithCredential } from "firebase/auth";
-import { storeUserOnStorage, userInfo } from "../../utils/storageController";
+import globalUser, { userInfo } from "../../utils/storageController";
 import { getUserInfoByEmail } from "../../../api";
 import { AuthError } from "expo-auth-session";
 
@@ -51,7 +51,7 @@ export default function GoogleLogin(props: Props) {
           userInfo.role = "Atleta";
           userInfo.UserMetadata = null;
           
-          storeUserOnStorage(userInfo);
+          globalUser.setUser(userInfo);
           console.log('Signed in with Google:', userInfo);
           // TODO: use the user info from the back and show it in the home screen
           props.navigation.navigate('HomeScreen');

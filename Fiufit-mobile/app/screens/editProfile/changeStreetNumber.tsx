@@ -19,13 +19,13 @@ export default function ChangeStreetNumberScreen({ navigation }: any) {
         streetNumber={streetNumber}
         setStreetNumber={setStreetNumber}
       />
-      <SubmitButton
+      {/* <SubmitButton
         navigation={navigation}
         optionName="streetNumber"
         newValue={streetNumber}
         setter={setStreetNumber}
         emptyValue={0}
-      />
+      /> */}
     </VStack>
   </NativeBaseProvider>;
 }

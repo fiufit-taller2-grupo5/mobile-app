@@ -5,9 +5,7 @@ import { useEffect, useState } from "react";
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import { auth, createUser } from "../../../firebase";
-import { getAuth, signInWithCredential, GoogleAuthProvider } from "firebase/auth";
-import { initializeApp } from "firebase/app";
-import { storeUserOnStorage } from "../../utils/storageController";
+import { signInWithCredential, GoogleAuthProvider } from "firebase/auth";
 
 interface Props {
   navigation: any;

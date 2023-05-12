@@ -1,14 +1,28 @@
 import { VStack, Select, Heading, NativeBaseProvider, CheckIcon } from "native-base";
 import SubmitButton from "../../components/editProfile/submitButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { editProfileStyles } from "../../styles";
+import globalUser from "../../utils/storageController";
+import ErrorMessage from "../../components/form/errorMessage";
 
 
 export default function ChangeRoleScreen({ navigation }: any) {
   const [role, setRole] = useState("Atleta");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    async function updateRole() {
+      if (role !== "") {
+        await globalUser.setRole(role);
+      }
+    }
+    updateRole();
+  }, [role]);
+
 
   return <NativeBaseProvider>
     <VStack width="100%" space={4} alignItems="center">
+    {errorMessage && <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage} />}
       <Heading style={editProfileStyles.heading}>
         ¿Cuál es tu rol?
       </Heading>
@@ -30,6 +44,7 @@ export default function ChangeRoleScreen({ navigation }: any) {
         newValue={role}
         setter={setRole}
         emptyValue=""
+        setErrorMessage={setErrorMessage}
       />
     </VStack>
   </NativeBaseProvider>;

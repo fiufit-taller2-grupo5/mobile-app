@@ -1,9 +1,8 @@
-import { View, Button, Alert, Stack, VStack, HStack, Text, IconButton, CloseIcon } from "native-base";
+import { View, Button} from "native-base";
 import { loginAndRegisterStyles } from "../../styles";
 import { auth, logInWithEmailAndPassword } from '../../../firebase';
 import { getUserInfoByEmail } from "../../../api";
-import { storeUserOnStorage } from "../../utils/storageController";
-import { User } from "firebase/auth";
+import globalUser from "../../utils/storageController";
 
 
 interface Props {
@@ -44,7 +43,7 @@ export default function SubmitButton(props: Props) {
             userInfo.role = "Atleta";
             userInfo.UserMetadata = null;
             
-            storeUserOnStorage(userInfo);
+            globalUser.setUser(userInfo);
             clearFields();
             navigation.navigate('HomeScreen');
           } else {

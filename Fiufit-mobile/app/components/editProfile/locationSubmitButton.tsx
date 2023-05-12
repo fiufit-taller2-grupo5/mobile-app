@@ -12,7 +12,7 @@ interface Props {
 
 // TODO BORRAR
 
-export default function SubmitButton(props: Props) {
+export default function LocationSubmitButton(props: Props) {
   const { navigation, newStreetName, newStreetNumber, setterStreetName, setterStreetNumber } = props;
 
   return (

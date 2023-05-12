@@ -1,6 +1,6 @@
 import { User } from '@firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getUserDetails } from '../../api';
+import { getUserDetails, updateUserDetails } from '../../api';
 
 export type UserMetadata = {
     id: number,
@@ -23,12 +23,16 @@ export type userInfo = {
     UserMetadata: UserMetadata | null
 }
 
-// class StoredUser that stores the user metadata
 export class StoredUser {
     user: userInfo | null;
 
     constructor() {
         this.user = null;
+    }
+
+    async setUser(user: userInfo) {
+        this.user = user;
+        await storeUserOnStorage(user);
     }
 
     async getUser() {
@@ -68,30 +72,35 @@ export class StoredUser {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.weight = weight;
         await storeUserOnStorage(this.user!);
+        await updateUserDetails(this.user!.UserMetadata!);
     }
 
     async setHeight(height: number) {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.height = height;
         await storeUserOnStorage(this.user!);
+        await updateUserDetails(this.user!.UserMetadata!);
     }
 
     async setBirthdate(birthdate: string) {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.birthDate = birthdate;
         await storeUserOnStorage(this.user!);
+        await updateUserDetails(this.user!.UserMetadata!);
     }
 
     async setLocation(location: string) {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.location = location;
         await storeUserOnStorage(this.user!);
+        await updateUserDetails(this.user!.UserMetadata!);
     }
 
     async setInterests(interests: string[]) {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.interests = interests;
         await storeUserOnStorage(this.user!);
+        await updateUserDetails(this.user!.UserMetadata!);
     }
 
     async setRole(role: string) {
@@ -117,7 +126,7 @@ export class StoredUser {
     }
 }
 
-export async function storeUserOnStorage(user: userInfo) {
+async function storeUserOnStorage(user: userInfo) {
     try {
         const jsonValue = JSON.stringify(user);
         console.log("Storing user in local storage: ", jsonValue);
@@ -128,7 +137,6 @@ export async function storeUserOnStorage(user: userInfo) {
 }
 
 async function getUserFromStorage(): Promise<userInfo | null> {
-    // only for StoredUser class internal use
     try {
         const jsonValue = await AsyncStorage.getItem('@userInfo');
         console.log("Getting user from local storage: ", jsonValue);
