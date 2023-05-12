@@ -6,7 +6,7 @@ export default function FavoriteTrainingInfoScreen({ route, navigation }: any) {
     const { trainingData } = route.params;
     return <NativeBaseProvider>
         <Container minWidth="400" height="800" backgroundColor="#fff">
-        <FavoriteTrainingCard navigation={navigation} trainingData={trainingData}/>
+            <FavoriteTrainingCard navigation={navigation} trainingData={trainingData}/>
         </Container>
       </NativeBaseProvider>;
   };

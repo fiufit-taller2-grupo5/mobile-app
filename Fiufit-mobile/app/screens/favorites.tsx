@@ -5,7 +5,7 @@ import FavoritesTrainingsList from '../components/trainings/favoritesTrainingsLi
 export default function FavoritesScreen({ navigation }: any) {
     return <NativeBaseProvider>
         <Container minWidth="400" height="800" backgroundColor="#fff">
-        <FavoritesTrainingsList navigation={navigation}/>
+            <FavoritesTrainingsList navigation={navigation}/>
         </Container>
     </NativeBaseProvider>;
 }
