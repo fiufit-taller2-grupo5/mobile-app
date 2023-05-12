@@ -44,6 +44,7 @@ export default function ExtraInformationForm(props: Props) {
         setStreetName={setStreetName}
         streetNumber={streetNumber}
         setStreetNumber={setStreetNumber}
+        top='0%'
       />
       <BirthDateForm top={"0%"} date={date} setDate={setDate}/>
       <WeightForm top={"0%"} weight={weight} setWeight={setWeight}/>
