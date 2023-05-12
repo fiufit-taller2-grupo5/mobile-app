@@ -191,7 +191,7 @@ export const createTrainingStyles = StyleSheet.create({
     height: '100%',
   },
   button: {
-    top: '100%',
+    top: '85%',
     alignSelf: 'center',
     width: '60%',
     borderRadius: 30,
@@ -204,14 +204,13 @@ export const createTrainingStyles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: "#F0F0F0",
   },
-  calendarButton: {
-    top: '10%',
+  titleButton: {
+    top: '50%',
     width: '100%',
+    height: '70%',
     borderRadius: 30,
     backgroundColor: "#FF6060",
-    alignContent: 'center',
-    justifyContent: 'center',
-    left: "-70%"
+    alignSelf: 'center',
   },
   typeButton: {
     top: '30%',
@@ -230,6 +229,14 @@ export const createTrainingStyles = StyleSheet.create({
   },
   distanceButton: {
     top: '50%',
+    alignSelf: 'center',
+    width: '100%',
+    borderRadius: 30,
+    backgroundColor: "#FF6060",
+    alignContent: 'center',
+  },
+  descriptionButton: {
+    top: '120%',
     alignSelf: 'center',
     width: '100%',
     borderRadius: 30,
