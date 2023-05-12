@@ -22,8 +22,6 @@ export default function SubmitButton(props: Props) {
         return "Por favor ingrese una altura válida";
       case "birthdate":
         return "Por favor ingrese una fecha válida";
-      case "location":
-        return "Por favor ingrese una dirección válida";
       case "interests":
         return "Por favor ingrese al menos un interés";
       default:
@@ -31,7 +29,6 @@ export default function SubmitButton(props: Props) {
     }
   };
       
-
   return (
     <View style={{ height: 50, width: "100%", alignItems: "center" }}>
       <Button
