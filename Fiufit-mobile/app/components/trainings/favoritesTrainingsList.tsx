@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Image, Box, FlatList, HStack, VStack, Text, NativeBaseProvider, Button, Divider } from "native-base";
-import SearchBar from './searchBar';
+import { Image, Box, FlatList, HStack, VStack, Text, NativeBaseProvider, Button, Divider, Input, Icon } from "native-base";
+import { MaterialIcons } from "@expo/vector-icons";
 import { trainingStyles } from "../../styles"
 import { getFavoriteTrainings, Training } from "../../../api";
 
@@ -17,8 +17,13 @@ const mainImage = (training_type: any) => {
   if(training_type === 'Running') return "https://wallpaperaccess.com/thumb/2604922.jpg";
   else if(training_type === 'Swimming') return "https://wallpaperaccess.com/thumb/1634055.jpg";
   else if(training_type === 'Walking') return "https://wallpaperaccess.com/thumb/654835.jpg";
-  else if(training_type === 'Cycling') return "https://wallpaperaccess.com/thumb/4431599.jpg";
-  else return "https://wallpaperaccess.com/thumb/654835.jpg";
+  else if(training_type === 'Biking') return "https://wallpaperaccess.com/thumb/4431599.jpg";
+  else if(training_type === 'Yoga') return "https://wallpaperaccess.com/thumb/2532294.jpg";
+  else if(training_type === 'Basketball') return "https://wallpaperaccess.com/thumb/798750.jpg";
+  else if(training_type === 'Football') return "https://wallpaperaccess.com/thumb/1813065.jpg";
+  else if(training_type === 'Gymnastics') return "https://wallpaperaccess.com/thumb/2236559.jpg";
+  else if(training_type === 'Dancing') return "https://wallpaperaccess.com/thumb/1315981.jpg";
+  else if(training_type === 'Hiking') return "https://wallpaperaccess.com/thumb/7309738.jpg";
 };
 
 const FavoriteTrainingsInfo = (props: FavoriteTrainingInfoProps) => {
@@ -47,18 +52,47 @@ const FavoriteTrainingsInfo = (props: FavoriteTrainingInfoProps) => {
 export default function FavoriteTrainingsList(props: Props) {
   const { navigation } = props;
   const [favoriteTrainingsList, setFavoriteTrainingsList] = useState<Training[]>([]);
+  const [searchText, setSearchText] = useState('');
+  const [filteredData, setFilteredData] = useState<Training[]>([]);
+
+  const filterDataByDifficultyOrType = (text: string) => {
+    if(text) {
+      const filtered = favoriteTrainingsList.filter(
+        (item) =>
+          item.difficulty === parseInt(text) ||
+          item.type.toLowerCase().includes(text.toLowerCase())
+      );
+      setFilteredData(filtered);
+    }
+    else {
+      setFilteredData(favoriteTrainingsList);
+    }
+  };
+
+  const handleSearch = (text: string) => {
+      setSearchText(text);
+      filterDataByDifficultyOrType(text);
+  };
+
   useEffect(() => {
     const getTrainingsList = async () => {
       const favoritesTrainingsResponse  = await getFavoriteTrainings();
       setFavoriteTrainingsList(favoritesTrainingsResponse);
+      setFilteredData(favoritesTrainingsResponse);
     }
     getTrainingsList();
   }, []) //agregar favoriteTrainingsList entre los [] para notar que se renderiza cuando se agregan nuevos trainings favs
 
   return (
     <NativeBaseProvider>
-      <SearchBar/>
-      <FlatList data={favoriteTrainingsList} marginBottom={65} marginTop={2} renderItem = {(favoriteTraining) => <FavoriteTrainingsInfo favoriteTraining={favoriteTraining.item} navigation={navigation}/> }></FlatList> 
+      <VStack mx="1" my="3" space={2} w="100%" maxW="380px" backgroundColor="#fff" divider={<Box px="2">
+        <Divider />
+        </Box>}>
+        <VStack w="100%" space={5} alignSelf="center">
+            <Input placeholder="Search fav trainings by difficulty or type" onChangeText={handleSearch} value={searchText} width="100%" borderRadius="4" py="3" px="1" fontSize="14" InputLeftElement={<Icon m="2" ml="3" size="6" color="gray.400" as={<MaterialIcons name="search" />} />} />
+        </VStack>
+      </VStack>
+      <FlatList data={filteredData} marginBottom={65} marginTop={2} renderItem = {(favoriteTraining) => <FavoriteTrainingsInfo favoriteTraining={favoriteTraining.item} navigation={navigation}/> } keyExtractor={(training) => training.id.toString()} ></FlatList> 
     </NativeBaseProvider>
   );
 };

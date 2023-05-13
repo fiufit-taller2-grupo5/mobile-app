@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Image, Box, FlatList, HStack, VStack, Text, NativeBaseProvider, Button, Divider, Icon, Input, Center, Select, CheckIcon } from "native-base";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import SearchBar from './searchBar';
 import { trainingStyles } from "../../styles"
 import { addFavoriteTraining, getFavoriteTrainings, getTrainings, Training } from "../../../api";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -26,7 +25,6 @@ const mainImage = (training_type: any) => {
   else if(training_type === 'Gymnastics') return "https://wallpaperaccess.com/thumb/2236559.jpg";
   else if(training_type === 'Dancing') return "https://wallpaperaccess.com/thumb/1315981.jpg";
   else if(training_type === 'Hiking') return "https://wallpaperaccess.com/thumb/7309738.jpg";
-
 };
 
 const TrainingsInfo = (props: TrainingInfoProps) => {
@@ -73,7 +71,7 @@ export default function TrainingsList(props: Props) {
   const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState<Training[]>([]);
 
-  const filterDataByDifficulty = (text: string) => {
+  const filterDataByDifficultyOrType = (text: string) => {
     if(text) {
       const filtered = trainingsList.filter(
         (item) =>
@@ -89,7 +87,7 @@ export default function TrainingsList(props: Props) {
 
   const handleSearch = (text: string) => {
       setSearchText(text);
-      filterDataByDifficulty(text);
+      filterDataByDifficultyOrType(text);
   };
   
   useEffect(() => {
