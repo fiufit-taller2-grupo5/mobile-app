@@ -1,6 +1,7 @@
 import { Box, Divider, Heading, Icon, Input, VStack } from "native-base";
 import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Training } from "../../../api";
 
 export default function SearchBar() {
     return <VStack mx="1" my="3" space={2} w="100%" maxW="380px" backgroundColor="#fff" divider={<Box px="2">

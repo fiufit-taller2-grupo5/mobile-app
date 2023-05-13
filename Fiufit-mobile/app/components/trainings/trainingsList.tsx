@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Image, Box, FlatList, HStack, VStack, Text, NativeBaseProvider, Button, Divider, Icon } from "native-base";
+import React, { useEffect, useMemo, useState } from "react";
+import { Image, Box, FlatList, HStack, VStack, Text, NativeBaseProvider, Button, Divider, Icon, Input, Center, Select, CheckIcon } from "native-base";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import SearchBar from './searchBar';
 import { trainingStyles } from "../../styles"
 import { addFavoriteTraining, getFavoriteTrainings, getTrainings, Training } from "../../../api";
+import { MaterialIcons } from "@expo/vector-icons";
 
 interface Props {
   navigation: any;
@@ -25,12 +26,6 @@ const mainImage = (training_type: any) => {
 const TrainingsInfo = (props: TrainingInfoProps) => {
   const { navigation, training} = props;
   const [isFavorite, setTrainingFavorite] = useState<Boolean>(training.isFavorite || false);
-  //data.filter((item) => item.state == 'New York')
-  /*const [value, setValue] = React.useState("");
-  const handleChange = (text: React.SetStateAction<string>) => {
-    setValue(text);
-    trainingsData.filter((item) => item.difficulty == value);
-  };*/
   return <Box backgroundColor="#fff" >
     <Button height={150} px="10" py="10" backgroundColor="#fff" onPress={async () => { navigation.navigate('TrainingInfoScreen', { trainingData: training });}}>
       <HStack space={[2, 3]} justifyContent="space-between" height={70} width={380}>
@@ -69,8 +64,29 @@ const TrainingsInfo = (props: TrainingInfoProps) => {
 export default function TrainingsList(props: Props) {
   const { navigation } = props;
   const [trainingsList, setTrainingsList] = useState<Training[]>([]);
+  const [searchText, setSearchText] = useState('');
+  const [filteredData, setFilteredData] = useState<Training[]>([]);
+
+  const filterDataByDifficulty = (text: string) => {
+    if(text) {
+      const filtered = trainingsList.filter(
+        (item) =>
+          item.difficulty === parseInt(text) ||
+          item.type.toLowerCase().includes(text.toLowerCase())
+      );
+      setFilteredData(filtered);
+    }
+    else {
+      setFilteredData(trainingsList);
+    }
+  };
+
+  const handleSearch = (text: string) => {
+      setSearchText(text);
+      filterDataByDifficulty(text);
+  };
+  
   useEffect(() => {
-    console.log("useEffect called");
     function updateFavoriteStatus(trainingResponse: Training[], favoriteTrainingResponse: Training[]): Training[] {
       const favoriteTrainingIds = new Set(favoriteTrainingResponse.map(training => training.id));
       return trainingResponse.map(training => ({
@@ -83,14 +99,21 @@ export default function TrainingsList(props: Props) {
       const favoritesTrainingsResponse  = await getFavoriteTrainings();
       let trainings = updateFavoriteStatus(trainingsResponse, favoritesTrainingsResponse);
       setTrainingsList(trainings);
+      setFilteredData(trainings);
     }
     getTrainingsList();
   }, []) //agregar trainingsList entre los [] para notar que se renderiza cuando se agregan nuevos trainings
 
   return (
     <NativeBaseProvider>
-      <SearchBar/>
-      <FlatList data={trainingsList} marginBottom={65} marginTop={2} renderItem = {(training) => <TrainingsInfo training={training.item} navigation={navigation}/> }></FlatList> 
+      <VStack mx="1" my="3" space={2} w="100%" maxW="380px" backgroundColor="#fff" divider={<Box px="2">
+        <Divider />
+        </Box>}>
+        <VStack w="100%" space={5} alignSelf="center">
+            <Input placeholder="Search trainings by difficulty or type" onChangeText={handleSearch} value={searchText} width="100%" borderRadius="4" py="3" px="1" fontSize="14" InputLeftElement={<Icon m="2" ml="3" size="6" color="gray.400" as={<MaterialIcons name="search" />} />} />
+        </VStack>
+      </VStack>
+      <FlatList data={filteredData} marginBottom={65} marginTop={2} renderItem = {(training) => <TrainingsInfo training={training.item} navigation={navigation}/> } keyExtractor={(training) => training.id.toString()} ></FlatList> 
     </NativeBaseProvider>
   );
 };

@@ -290,7 +290,7 @@ export async function getTrainings() : Promise<Training[]> {
     });
     if (response.ok) {
       try {
-        const trainings = await response.json();
+        const trainings = response.json();
         console.log("Training plans:", trainings);
         return trainings;
       } catch (err: any) {
