@@ -19,8 +19,14 @@ const mainImage = (training_type: any) => {
   if(training_type === 'Running') return "https://wallpaperaccess.com/thumb/2604922.jpg";
   else if(training_type === 'Swimming') return "https://wallpaperaccess.com/thumb/1634055.jpg";
   else if(training_type === 'Walking') return "https://wallpaperaccess.com/thumb/654835.jpg";
-  else if(training_type === 'Cycling') return "https://wallpaperaccess.com/thumb/4431599.jpg";
-  else return "https://wallpaperaccess.com/thumb/654835.jpg";
+  else if(training_type === 'Biking') return "https://wallpaperaccess.com/thumb/4431599.jpg";
+  else if(training_type === 'Yoga') return "https://wallpaperaccess.com/thumb/2532294.jpg";
+  else if(training_type === 'Basketball') return "https://wallpaperaccess.com/thumb/798750.jpg";
+  else if(training_type === 'Football') return "https://wallpaperaccess.com/thumb/1813065.jpg";
+  else if(training_type === 'Gymnastics') return "https://wallpaperaccess.com/thumb/2236559.jpg";
+  else if(training_type === 'Dancing') return "https://wallpaperaccess.com/thumb/1315981.jpg";
+  else if(training_type === 'Hiking') return "https://wallpaperaccess.com/thumb/7309738.jpg";
+
 };
 
 const TrainingsInfo = (props: TrainingInfoProps) => {
