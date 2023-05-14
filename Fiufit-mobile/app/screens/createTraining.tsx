@@ -1,7 +1,8 @@
 import { VStack, Heading, Text, NativeBaseProvider, Input, TextArea, HStack, Select, Button, View, Modal, Icon } from "native-base";
 import { createTrainingStyles } from "../styles";
 import { useState } from "react";
-import { MaterialCommunityIcons, MaterialIcons, AntDesign, Feather, Entypo } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons, AntDesign, Feather } from '@expo/vector-icons';
+import { addTraining } from "../../api";
 
 
 const useTitleModal = () => {
@@ -32,35 +33,37 @@ const useDifficultyModal = () => {
   return { isDifficultyOpen, openDifficulty, closeDifficulty};
 };
 
-const useDistanceModal = () => {
-  const [isDistanceOpen, setIsDistanceOpen] = useState(false);
-  const closeDistance = () => setIsDistanceOpen(false);
-  const openDistance = () => setIsDistanceOpen(true);
-  return { isDistanceOpen, openDistance, closeDistance};
-};
+export type Training = {
+  name: string,
+  description: string,
+  type: string,
+  difficulty: number,
+}
 
 export default function CreateTrainingScreen({ navigation }: any) {
   const [trainingTitle, setTrainingTitle] = useState("");
   const [trainingDescription, setTrainingDescription] = useState("");
   const [trainingType, setTrainingType] = useState("");
   const [trainingDifficulty, setTrainingDifficulty] = useState(0);
-  const [trainingDistance, setTrainingDistance] = useState(0);
 
   const { isTitleOpen, openTitle, closeTitle } = useTitleModal();
   const { isDescriptionOpen, openDescription, closeDescription } = useDescriptionModal();
   const { isTypeOpen, openType, closeType } = useTypeModal();
   const { isDifficultyOpen, openDifficulty, closeDifficulty } = useDifficultyModal();
-  const { isDistanceOpen, openDistance, closeDistance } = useDistanceModal();
 
   const handleSave = () => {
-    // TODO: pasarle la info al back
-    console.log("save training and send to backend");
-    navigation.navigate("Home");
+    addTraining({title: trainingTitle,
+                description: trainingDescription,
+                state: "active",
+                difficulty: trainingDifficulty, 
+                type: trainingType})
+    console.log("Saving training...");
+    navigation.navigate("HomeScreen");
   }
 
   return <NativeBaseProvider>
     <VStack style={createTrainingStyles.stack}>
-      <Heading style={createTrainingStyles.heading}>Crear nuevo entenamiento</Heading>
+      <Heading style={createTrainingStyles.heading}>Nuevo entrenamiento</Heading>
       <Text style={createTrainingStyles.text}>Detalles:</Text>
       <Button
         style={createTrainingStyles.buttonForm}
@@ -106,18 +109,6 @@ export default function CreateTrainingScreen({ navigation }: any) {
           <Icon as={Feather} size={6} name='activity' color="#707070" style={{ left: "-390%" }}/>
           <Text color="#000000" left="-340%">
             Dificultad
-          </Text>
-          <Icon as={AntDesign} name="right" size={6} color="#707070" style={{ left: "390%" }}/>  
-        </HStack>
-      </Button>
-      <Button
-        style={createTrainingStyles.buttonForm}
-        top="65%" onPress={() => openDistance()}
-      >
-        <HStack>
-          <Icon as={Entypo} size={6} name='gauge' color="#707070" style={{ left: "-390%" }}/>
-          <Text color="#000000" left="-340%">
-            Distancia
           </Text>
           <Icon as={AntDesign} name="right" size={6} color="#707070" style={{ left: "390%" }}/>  
         </HStack>
@@ -229,7 +220,7 @@ export default function CreateTrainingScreen({ navigation }: any) {
               size={"lg"}
               onValueChange={newDifficulty => setTrainingDifficulty(parseInt(newDifficulty))}>
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((difficulty) => (
-                    <Select.Item label={difficulty.toString()} value={difficulty.toString()}/>
+                    <Select.Item key={difficulty.toString()} label={difficulty.toString()} value={difficulty.toString()}/>
                   ))
                 }
             </Select>
@@ -247,49 +238,10 @@ export default function CreateTrainingScreen({ navigation }: any) {
         </Modal>
       )}
 
-      {isDistanceOpen && (
-        <Modal isOpen={isDistanceOpen} backgroundColor={"#F0F0F0"}>
-          <View style={{height:"10%", top:"-5%"}}>
-            <Input
-              width="70%"
-              variant="underlined"
-              accessibilityLabel="Seleccionar distancia"
-              placeholder="Seleccionar distancia"
-              placeholderTextColor={"#000000"}
-              mt={1}
-              keyboardType="numeric"
-              size={"lg"}
-              value={trainingDistance.toString()}
-              InputRightElement={
-                <Text
-                  color="#000000"
-                  fontSize="md"
-                  mr={2}
-                >
-                  km
-                </Text>
-              }
-              onChangeText={text => setTrainingDistance(parseInt(text))}
-            />
-            <Button
-              style={createTrainingStyles.distanceButton}
-              onPress={() => closeDistance()}
-            >
-              <Text
-                style={{fontFamily: 'Roboto', color: "#FFFFFF", fontStyle: 'normal', fontWeight: '800', fontSize: 16, left: "-140%"}}
-              >
-                Guardar
-              </Text>
-            </Button>
-          </View>
-        </Modal>
-      )}
-
-
       <Button
         onPress={handleSave}
         style={createTrainingStyles.button}
-        disabled={trainingTitle === "" && trainingDistance === 0 && trainingDifficulty === 0 && trainingType === ""}
+        disabled={trainingTitle === "" && trainingDifficulty === 0 && trainingType === ""}
       >
         <Text
           style={{fontFamily: 'Roboto', color: "#FFFFFF", fontStyle: 'normal', fontWeight: '800', fontSize: 16}}

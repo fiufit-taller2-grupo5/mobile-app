@@ -11,8 +11,6 @@ interface Props {
   setErrorMessage: (errorMessage: string) => void;
 }
 
-// TODO BORRAR
-
 export default function LocationSubmitButton(props: Props) {
   const { navigation, newStreetName, newStreetNumber, setterStreetName, setterStreetNumber } = props;
 
