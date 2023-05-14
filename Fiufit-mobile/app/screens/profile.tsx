@@ -151,40 +151,20 @@ export default function ProfileScreen(props: Props) {
   }, []);
 
   const [userInformation, setUserInformation] = useState(["", "", "", "", "", "", ""]);
-  
-  
-  // useEffect(() => {
-  //   const getUserInfo = async () => {
-  //     const userInfoStored = await globalUser.getUser();
-
-  //     const details = await globalUser.getUserMetadata();
-  //     console.log("details:", details);
-  //     if (details === null && userInfoStored !== null) { // if the user has skipped the registration form
-  //       setUserInformation([ userInfoStored.name, "", "", "", "", "", userInfoStored!.role]);
-  //       return;
-  //     }
-
-  //     const interests = details!.interests
-
-  //     let birthdate = details!.birthDate; // from "2000-09-22T17:43:38.879Z" to "22/09/2000"
-  //     birthdate = birthdate.split('T')[0].split('-').reverse().join('/');
-      
-  //     if (userInfoStored && details && interests) {
-  //       setUserInformation([ userInfoStored.name, details.height.toString(), details.weight.toString(), birthdate, interests.join(', '), details.location, userInfoStored.role]);
-  //     }
-  //   } 
-  //   getUserInfo();
-  // }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       const getUserInfo = async () => {
         const userInfoStored = await globalUser.getUser();
 
+        if (userInfoStored === null) {
+          return;
+        }
+
         const details = await globalUser.getUserMetadata();
         console.log("details:", details);
 
-        if (details!.birthDate === "" && userInfoStored !== null) { // if the user has skipped the registration form
+        if (details === null || details === undefined) { // if the user has skipped the registration form
           setUserInformation([ userInfoStored.name, "", "", "", "", "", userInfoStored!.role]);
           return;
         }
@@ -192,18 +172,19 @@ export default function ProfileScreen(props: Props) {
         const interests = details!.interests
         
         let birthdate = details!.birthDate; // from "2000-09-22T17:43:38.879Z" to "22/09/2000"
-        birthdate = birthdate.split('T')[0].split('-').reverse().join('/');
+        if (birthdate !== null) {
+          birthdate = birthdate.split('T')[0].split('-').reverse().join('/');
+        }
 
+        console.log("there is user info stored:", userInfoStored, "details:",details, "interests:", interests);
         if (userInfoStored && details && interests) {
-          setUserInformation([ userInfoStored.name, details.height.toString(), details.weight.toString(), birthdate, interests.join(', '), details.location, userInfoStored.role]);
+          setUserInformation([ userInfoStored.name, details.height?.toString() ?? "", details.weight?.toString() ?? "", birthdate?? "", interests.join(', '), details.location?? "", userInfoStored.role]);
         }
       }
       getUserInfo();
     });
     return unsubscribe;
   }, [navigation]);
-
-        
 
   return <NativeBaseProvider theme={theme}>
     <Box style={editProfileStyles.nameBox}>

@@ -32,13 +32,12 @@ export const createUser = async (user: User, emailRegisterName : string = "defau
       });
       if (response.ok) {
         try {
-          const responseData = await response.json();
-          const internal_id : number = parseInt(getInternalIdFromResponse(responseData));
-          const userInfo = await getUserInfoById(internal_id, user, false);
+          const userInfo = await response.json();
 
-          if (userInfo instanceof Error) {
-            throw userInfo;
-          }
+          // if (userInfo instanceof Error) {
+          //   throw userInfo;
+          // }
+
           userInfo.googleUser = user;
           userInfo.role = "Atleta";
           await globalUser.setUser(userInfo);
@@ -84,8 +83,8 @@ export const updateUserDetails = async (data: UserMetadata) => {
       if (response.ok) {
         console.log("user details updated");
       } else {
-        alert("Error al iniciar sesión");
-        // console.error(await response.json());
+        // alert("Error al iniciar sesión");
+        console.error(await response.json());
       }
     } catch (err: any) {
       // console.error("errorsito: ",err);

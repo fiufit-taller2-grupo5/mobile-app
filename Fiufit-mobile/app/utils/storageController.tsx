@@ -1,13 +1,13 @@
 import { User } from '@firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getUserDetailsWrapper, updateUserDetailsWrapper } from './userMetadataController';
+import { getUserDetails, updateUserDetails } from '../../api';
 
 export type UserMetadata = {
-    id: number,
-    weight: number,
-    height: number,
-    birthDate: string,
-    location: string,
+    id: number | null,
+    weight: number | null,
+    height: number | null,
+    birthDate: string | null,
+    location: string | null,
     interests: string[]
 }
 
@@ -63,56 +63,59 @@ export class StoredUser {
 
     async verifyUserMetadataExists() {
         await this.verifyUserExists();
-        if (this.user!.UserMetadata === null) {
-            const details = await getUserDetailsWrapper(this.user!.id, this.user!.googleUser);
-            if (details === null) {
+        const details = await getUserDetails(this.user!.id, this.user!.googleUser);
+        console.log("details received:", details, "user stored metadata:", this.user!.UserMetadata)
+        if (details === null) {
+            if ( this.user!.UserMetadata === null || this.user!.UserMetadata === undefined) {
+                console.log("creating new empty metadata");
                 this.user!.UserMetadata = {
                     id: this.user!.id,
-                    weight: 0,
-                    height: 0,
-                    birthDate: "",
-                    location: "",
+                    weight: null,
+                    height: null,
+                    birthDate: null,
+                    location: null,
                     interests: []
                 }
-            } else {
-                this.user!.UserMetadata = details;
-            }
         }
+        } else {
+            this.user!.UserMetadata = details;
+        }
+        console.log("user metadata after verifying:", this.user!.UserMetadata);
     }
 
     async setWeight(weight: number) {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.weight = weight;
         await storeUserOnStorage(this.user!);
-        await updateUserDetailsWrapper(this.user!.UserMetadata!);
+        await updateUserDetails(this.user!.UserMetadata!);
     }
 
     async setHeight(height: number) {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.height = height;
         await storeUserOnStorage(this.user!);
-        await updateUserDetailsWrapper(this.user!.UserMetadata!);
+        await updateUserDetails(this.user!.UserMetadata!);
     }
 
     async setBirthdate(birthdate: string) {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.birthDate = birthdate;
         await storeUserOnStorage(this.user!);
-        await updateUserDetailsWrapper(this.user!.UserMetadata!);
+        await updateUserDetails(this.user!.UserMetadata!);
     }
 
     async setLocation(location: string) {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.location = location;
         await storeUserOnStorage(this.user!);
-        await updateUserDetailsWrapper(this.user!.UserMetadata!);
+        await updateUserDetails(this.user!.UserMetadata!);
     }
 
     async setInterests(interests: string[]) {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.interests = interests;
         await storeUserOnStorage(this.user!);
-        await updateUserDetailsWrapper(this.user!.UserMetadata!);
+        await updateUserDetails(this.user!.UserMetadata!);
     }
 
     async setRole(role: string) {
