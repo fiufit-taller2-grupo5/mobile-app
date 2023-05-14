@@ -66,27 +66,41 @@ export default function TrainerTrainingsList(props: Props) {
   const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState<Training[]>([]);
 
-  useEffect(() => {
-    if (searchText) {
-      const getFilteredTrainingsList = async (filterRule: string, filterValue: string) => {
-        const trainersTrainingsResponse  = await getTrainerTrainings(filterRule, filterValue);
-        setTrainerTrainingsList(trainersTrainingsResponse);
-        setFilteredData(trainersTrainingsResponse);
-      }
-      if (parseInt(searchText)) {
-        getFilteredTrainingsList("difficulty", searchText);
-      } else {
-        getFilteredTrainingsList("training_type", searchText);
-      }
+  // useEffect(() => {
+  //   if (searchText) {
+  //     const getFilteredTrainingsList = async (filterRule: string, filterValue: string) => {
+  //       const trainersTrainingsResponse  = await getTrainerTrainings(filterRule, filterValue);
+  //       setTrainerTrainingsList(trainersTrainingsResponse);
+  //       setFilteredData(trainersTrainingsResponse);
+  //     }
+  //     if (parseInt(searchText)) {
+  //       getFilteredTrainingsList("difficulty", searchText);
+  //     } else {
+  //       getFilteredTrainingsList("training_type", searchText);
+  //     }
+  //   }
+  //   else {
+  //     setFilteredData(trainerTrainingsList);
+  //   }
+  // }, [searchText])
+
+  const filterDataByDifficultyOrType = (text: string) => {
+    if(text) {
+      const filtered = trainerTrainingsList.filter(
+        (item) =>
+          item.difficulty === parseInt(text) ||
+          item.type.toLowerCase().includes(text.toLowerCase())
+      );
+      setFilteredData(filtered);
     }
     else {
       setFilteredData(trainerTrainingsList);
     }
-  }, [searchText])
-
+  };
 
   const handleSearch = (text: string) => {
     setSearchText(text);
+    filterDataByDifficultyOrType(text);
   };
 
   useEffect(() => {
@@ -96,7 +110,7 @@ export default function TrainerTrainingsList(props: Props) {
       setFilteredData(trainersTrainingsResponse);
     }
     getTrainingsList();
-  }, [getTrainerTrainings()])
+  }, [])
 
   return (
     <NativeBaseProvider>
@@ -134,6 +148,7 @@ export default function TrainerTrainingsList(props: Props) {
             navigation={navigation}
           />
         }
+        keyExtractor={(training) => training.id.toString()}
       >
       </FlatList> 
     </NativeBaseProvider>
