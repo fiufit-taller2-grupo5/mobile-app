@@ -408,7 +408,7 @@ export async function addFavoriteTraining(trainingPlanId: number) : Promise<bool
       console.log("favorite training added");
       return true;
     } else {
-      console.error("error getting trainings response: ",await response.json());
+      console.error("error adding favorite training response: ",await response.json());
       return false;
     }
   } catch (err: any) {
@@ -416,6 +416,37 @@ export async function addFavoriteTraining(trainingPlanId: number) : Promise<bool
   }
   return false
 }
+
+export async function quitFavoriteTraining(trainingPlanId: number) : Promise<boolean> {
+  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/";
+  const user = await globalUser.getUser();
+  const userId = user?.id;
+  const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
+  try {
+    const response = await fetch(url + trainingPlanId + '/favorite/' + userId, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "dev": "a",
+        "Authorization": "Bearer " + accessToken,
+      }
+    });
+    if (response.ok) {
+      console.log("favorite training deleted");
+      return true;
+    } else {
+      console.error("error deleting favorite training response: ",await response.json());
+      return false;
+    }
+  } catch (err: any) {
+    console.error("error adding favorite training: ",err);
+  }
+  return false
+}
+
 
 export async function addTraining(training: TrainerTraining) : Promise<boolean> {
   const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/";
@@ -440,7 +471,7 @@ export async function addTraining(training: TrainerTraining) : Promise<boolean> 
       console.log("training added");
       return true;
     } else {
-      console.error("error getting trainings response: ",await response.json());
+      console.error("error adding trainings response: ",await response.json());
       return false;
     }
   } catch (err: any) {

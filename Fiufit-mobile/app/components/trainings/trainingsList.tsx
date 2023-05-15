@@ -11,9 +11,6 @@ import {
   Divider,
   Icon,
   Input,
-  Center,
-  Select,
-  CheckIcon,
 } from "native-base";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { trainingStyles } from "../../styles";
@@ -21,9 +18,11 @@ import {
   addFavoriteTraining,
   getFavoriteTrainings,
   getTrainings,
+  quitFavoriteTraining,
   Training,
 } from "../../../api";
 import { MaterialIcons } from "@expo/vector-icons";
+import { RefreshControl, ActivityIndicator } from 'react-native';
 
 interface Props {
   navigation: any;
@@ -110,9 +109,9 @@ const TrainingsInfo = (props: TrainingInfoProps) => {
             backgroundColor="#fff"
             onPress={async () => {
               if (isFavorite) {
-                /*setTrainingFavorite(false);
-              const response = await quitFavoriteTraining(training.id);
-                if(!response) setTrainingFavorite(true);*/
+                setTrainingFavorite(false);
+                const response = await quitFavoriteTraining(training.id);
+                if(!response) setTrainingFavorite(true);
               } else {
                 setTrainingFavorite(true);
                 const response = await addFavoriteTraining(training.id);
@@ -161,6 +160,7 @@ export default function TrainingsList(props: Props) {
   const [trainingsList, setTrainingsList] = useState<Training[]>([]);
   const [searchText, setSearchText] = useState("");
   const [filteredData, setFilteredData] = useState<Training[]>([]);
+  const [refreshing, setRefreshing] = useState(true);
 
   const filterDataByDifficultyOrType = (text: string) => {
     if (text) {
@@ -180,31 +180,27 @@ export default function TrainingsList(props: Props) {
     filterDataByDifficultyOrType(text);
   };
 
+  function updateFavoriteStatus(trainingResponse: Training[], favoriteTrainingResponse: Training[]): Training[] {
+    const favoriteTrainingIds = new Set(favoriteTrainingResponse.map(training => training.id));
+    return trainingResponse.map(training => ({
+      ...training, 
+      isFavorite: favoriteTrainingIds.has(training.id)
+    }));
+  }
+
+  const getTrainingsList = async () => {
+    setRefreshing(true);
+    const trainingsResponse  = await getTrainings();
+    const favoritesTrainingsResponse  = await getFavoriteTrainings();
+    let trainings = updateFavoriteStatus(trainingsResponse, favoritesTrainingsResponse);
+    setTrainingsList(trainings);
+    setRefreshing(false);
+    setFilteredData(trainings);
+  }
+  
   useEffect(() => {
-    function updateFavoriteStatus(
-      trainingResponse: Training[],
-      favoriteTrainingResponse: Training[]
-    ): Training[] {
-      const favoriteTrainingIds = new Set(
-        favoriteTrainingResponse.map((training) => training.id)
-      );
-      return trainingResponse.map((training) => ({
-        ...training,
-        isFavorite: favoriteTrainingIds.has(training.id),
-      }));
-    }
-    const getTrainingsList = async () => {
-      const trainingsResponse = await getTrainings();
-      const favoritesTrainingsResponse = await getFavoriteTrainings();
-      let trainings = updateFavoriteStatus(
-        trainingsResponse,
-        favoritesTrainingsResponse
-      );
-      setTrainingsList(trainings);
-      setFilteredData(trainings);
-    };
     getTrainingsList();
-  }, []); //agregar trainingsList entre los [] para notar que se renderiza cuando se agregan nuevos trainings
+  }, [])
 
   return (
     <NativeBaseProvider>
@@ -243,6 +239,7 @@ export default function TrainingsList(props: Props) {
           />
         </VStack>
       </VStack>
+      {refreshing ? <ActivityIndicator /> : null}
       <FlatList
         data={filteredData}
         marginBottom={65}
@@ -251,6 +248,7 @@ export default function TrainingsList(props: Props) {
           <TrainingsInfo training={training.item} navigation={navigation} />
         )}
         keyExtractor={(training) => training.id.toString()}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getTrainingsList} />}
       ></FlatList>
     </NativeBaseProvider>
   );
