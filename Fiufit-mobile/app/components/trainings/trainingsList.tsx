@@ -4,6 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { trainingStyles } from "../../styles"
 import { addFavoriteTraining, getFavoriteTrainings, getTrainings, Training } from "../../../api";
 import { MaterialIcons } from "@expo/vector-icons";
+import { RefreshControl, ActivityIndicator } from 'react-native';
 
 interface Props {
   navigation: any;
@@ -70,6 +71,7 @@ export default function TrainingsList(props: Props) {
   const [trainingsList, setTrainingsList] = useState<Training[]>([]);
   const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState<Training[]>([]);
+  const [refreshing, setRefreshing] = useState(true);
 
   const filterDataByDifficultyOrType = (text: string) => {
     if(text) {
@@ -89,24 +91,28 @@ export default function TrainingsList(props: Props) {
       setSearchText(text);
       filterDataByDifficultyOrType(text);
   };
+
+  function updateFavoriteStatus(trainingResponse: Training[], favoriteTrainingResponse: Training[]): Training[] {
+    const favoriteTrainingIds = new Set(favoriteTrainingResponse.map(training => training.id));
+    return trainingResponse.map(training => ({
+      ...training, 
+      isFavorite: favoriteTrainingIds.has(training.id)
+    }));
+  }
+
+  const getTrainingsList = async () => {
+    setRefreshing(true);
+    const trainingsResponse  = await getTrainings();
+    const favoritesTrainingsResponse  = await getFavoriteTrainings();
+    let trainings = updateFavoriteStatus(trainingsResponse, favoritesTrainingsResponse);
+    setTrainingsList(trainings);
+    setRefreshing(false);
+    setFilteredData(trainings);
+  }
   
   useEffect(() => {
-    function updateFavoriteStatus(trainingResponse: Training[], favoriteTrainingResponse: Training[]): Training[] {
-      const favoriteTrainingIds = new Set(favoriteTrainingResponse.map(training => training.id));
-      return trainingResponse.map(training => ({
-        ...training, 
-        isFavorite: favoriteTrainingIds.has(training.id)
-      }));
-    }
-    const getTrainingsList = async () => {
-      const trainingsResponse  = await getTrainings();
-      const favoritesTrainingsResponse  = await getFavoriteTrainings();
-      let trainings = updateFavoriteStatus(trainingsResponse, favoritesTrainingsResponse);
-      setTrainingsList(trainings);
-      setFilteredData(trainings);
-    }
     getTrainingsList();
-  }, []) //agregar trainingsList entre los [] para notar que se renderiza cuando se agregan nuevos trainings
+  }, [])
 
   return (
     <NativeBaseProvider>
@@ -121,7 +127,9 @@ export default function TrainingsList(props: Props) {
             <Input placeholder="Search trainings by difficulty or type" onChangeText={handleSearch} value={searchText} width="100%" borderRadius="4" py="3" px="1" fontSize="14" InputLeftElement={<Icon m="2" ml="3" size="6" color="gray.400" as={<MaterialIcons name="search" />} />} />
         </VStack>
       </VStack>
-      <FlatList data={filteredData} marginBottom={65} marginTop={2} renderItem = {(training) => <TrainingsInfo training={training.item} navigation={navigation}/> } keyExtractor={(training) => training.id.toString()} ></FlatList> 
+      {refreshing ? <ActivityIndicator /> : null}
+      <FlatList data={filteredData} marginBottom={65} marginTop={2} renderItem = {(training) => <TrainingsInfo training={training.item} navigation={navigation}/> } keyExtractor={(training) => training.id.toString()} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getTrainingsList} />
+      }></FlatList> 
     </NativeBaseProvider>
   );
 };

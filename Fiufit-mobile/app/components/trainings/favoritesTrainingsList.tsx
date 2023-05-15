@@ -3,6 +3,7 @@ import { Image, Box, FlatList, HStack, VStack, Text, NativeBaseProvider, Button,
 import { MaterialIcons } from "@expo/vector-icons";
 import { trainingStyles } from "../../styles"
 import { getFavoriteTrainings, Training } from "../../../api";
+import { RefreshControl, ActivityIndicator } from 'react-native';
 
 interface Props {
   navigation: any;
@@ -54,6 +55,7 @@ export default function FavoriteTrainingsList(props: Props) {
   const [favoriteTrainingsList, setFavoriteTrainingsList] = useState<Training[]>([]);
   const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState<Training[]>([]);
+  const [refreshing, setRefreshing] = useState(true);
 
   const filterDataByDifficultyOrType = (text: string) => {
     if(text) {
@@ -74,15 +76,18 @@ export default function FavoriteTrainingsList(props: Props) {
       filterDataByDifficultyOrType(text);
   };
 
-  useEffect(() => {
-    const getTrainingsList = async () => {
-      const favoritesTrainingsResponse  = await getFavoriteTrainings();
-      setFavoriteTrainingsList(favoritesTrainingsResponse);
-      setFilteredData(favoritesTrainingsResponse);
-    }
-    getTrainingsList();
-  }, []) //agregar favoriteTrainingsList entre los [] para notar que se renderiza cuando se agregan nuevos trainings favs
+  const getTrainingsList = async () => {
+    setRefreshing(true);
+    const favoritesTrainingsResponse  = await getFavoriteTrainings();
+    setFavoriteTrainingsList(favoritesTrainingsResponse);
+    setRefreshing(false);
+    setFilteredData(favoritesTrainingsResponse);
+  }
 
+  useEffect(() => {
+    getTrainingsList();
+  }, [])
+  
   return (
     <NativeBaseProvider>
       <VStack mx="1" my="3" space={2} w="100%" maxW="380px" backgroundColor="#fff" divider={<Box px="2">
@@ -92,7 +97,8 @@ export default function FavoriteTrainingsList(props: Props) {
             <Input placeholder="Search fav trainings by difficulty or type" onChangeText={handleSearch} value={searchText} width="100%" borderRadius="4" py="3" px="1" fontSize="14" InputLeftElement={<Icon m="2" ml="3" size="6" color="gray.400" as={<MaterialIcons name="search" />} />} />
         </VStack>
       </VStack>
-      <FlatList data={filteredData} marginBottom={65} marginTop={2} renderItem = {(favoriteTraining) => <FavoriteTrainingsInfo favoriteTraining={favoriteTraining.item} navigation={navigation}/> } keyExtractor={(training) => training.id.toString()} ></FlatList> 
+      {refreshing ? <ActivityIndicator /> : null}
+      <FlatList data={filteredData} marginBottom={65} marginTop={2} renderItem = {(favoriteTraining) => <FavoriteTrainingsInfo favoriteTraining={favoriteTraining.item} navigation={navigation}/> } keyExtractor={(training) => training.id.toString()} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getTrainingsList} />}></FlatList> 
     </NativeBaseProvider>
   );
 };
