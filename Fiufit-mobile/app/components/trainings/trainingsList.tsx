@@ -18,6 +18,7 @@ import {
   addFavoriteTraining,
   getFavoriteTrainings,
   getTrainings,
+  quitFavoriteTraining,
   Training,
 } from "../../../api";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -108,9 +109,9 @@ const TrainingsInfo = (props: TrainingInfoProps) => {
             backgroundColor="#fff"
             onPress={async () => {
               if (isFavorite) {
-                /*setTrainingFavorite(false);
-              const response = await quitFavoriteTraining(training.id);
-                if(!response) setTrainingFavorite(true);*/
+                setTrainingFavorite(false);
+                const response = await quitFavoriteTraining(training.id);
+                if(!response) setTrainingFavorite(true);
               } else {
                 setTrainingFavorite(true);
                 const response = await addFavoriteTraining(training.id);
