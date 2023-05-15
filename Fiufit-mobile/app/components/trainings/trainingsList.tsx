@@ -104,7 +104,7 @@ const TrainingsInfo = (props: TrainingInfoProps) => {
               Dificultad: {training.difficulty}
             </Text>
           </VStack>
-          <VStack my={1} width={30} height={10} mr={0} ml={1}> 
+          <VStack my={1} width={30} height={10} mr={0} ml={1}>
           <Button
             backgroundColor="#fff"
             onPress={async () => {
@@ -193,10 +193,22 @@ export default function TrainingsList(props: Props) {
     const trainingsResponse  = await getTrainings();
     const favoritesTrainingsResponse  = await getFavoriteTrainings();
     let trainings = updateFavoriteStatus(trainingsResponse, favoritesTrainingsResponse);
+    // const ratings = await getTrainingsRatings(trainings.map((training) => training.id));
+    // trainings = updateMeanRating(trainings, ratings);
     setTrainingsList(trainings);
     setRefreshing(false);
     setFilteredData(trainings);
   }
+  
+  // function updateMeanRating(trainingResponse: Training[]): Training[] {
+  //   return trainingResponse.map((training) => ({
+  //     ...training,
+  //     meanRating: training.ratings.reduce(
+  //       (acc, rating) => acc + rating.value,
+  //       0
+  //     ),
+  //   }));
+  // }
   
   useEffect(() => {
     getTrainingsList();
