@@ -269,6 +269,7 @@ export interface Training {
   type: string,
   trainer_id: number,
   isFavorite?: boolean,
+  meanRating?: number,
 }
 
 export interface TrainerTraining {
@@ -479,3 +480,7 @@ export async function addTraining(training: TrainerTraining) : Promise<boolean> 
   }
   return false
 }
+
+// receives a list of ids and returns a map with the id and a list of ratings for each training
+// export async function getTrainingsRatings(ids:number[]) : Promise<Map<number, number>> {
+
