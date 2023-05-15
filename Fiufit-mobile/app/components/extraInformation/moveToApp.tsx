@@ -1,6 +1,6 @@
 import { Box, Link } from "native-base";
 import { loginAndRegisterStyles } from "../../styles";
-import { updateUserDetails } from "../../../api";
+import { updateUserDetails } from "../../../userStorage";
 
 
 interface Props {

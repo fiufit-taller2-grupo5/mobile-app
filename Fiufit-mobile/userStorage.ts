@@ -185,10 +185,10 @@ export async function getUserDetails(userId:number, user:User) : Promise<UserMet
           console.error(err);
         }
       } else {
-        console.info("error getting user details response: ",await response.json());
+        console.info("error getting user details response: ", await response.json());
       }
     } catch (err: any) {
-      console.error("error fetching user details: ",err);
+      console.error("error fetching user details: ", err);
     }
     return null;
 }
@@ -212,15 +212,12 @@ export const updateUserDetails = async (data: UserMetadata) => {
         },
         body: JSON.stringify(data),
       });
-      console.log("RESPONSE:", response);
       if (response.ok) {
         console.log("user details updated");
       } else {
-        // alert("Error al iniciar sesión");
         console.error(await response.json());
       }
     } catch (err: any) {
-      // console.error("errorsito: ",err);
       alert("user details error:" + err.message);
     }
 };
