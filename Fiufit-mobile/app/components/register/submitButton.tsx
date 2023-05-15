@@ -30,7 +30,7 @@ export default function SubmitButton(props: Props) {
             console.log("User registered successfully");
             clearFields();
             props.setCorrectlyLogged(true);
-            navigation.navigate('ExtraInfoScreen');
+            navigation.navigate('LocationScreen');
           } else {
             console.log("Error registering user: ", errorMessage);
             setErrorMessage(errorMessage);

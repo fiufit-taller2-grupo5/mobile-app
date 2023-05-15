@@ -42,6 +42,7 @@ export default function InterestsForm(props: Props) {
 
   return (
     <VStack space={8}
+      height={"25%"}
       style={{
         top: top,
         display: 'flex',

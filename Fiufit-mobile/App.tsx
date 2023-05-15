@@ -12,6 +12,7 @@ import HomeScreen from './app/screens/home';
 import ProfileScreen from './app/screens/profile';
 import UsersScreen from './app/screens/users';
 import TrainingsScreen from './app/screens/trainings';
+import LocationScreen from './app/screens/locationScreen';
 import ExtraInformationScreen from './app/screens/extraInformation';
 import ChangeNameScreen from './app/screens/editProfile/changeName';
 import ChangeHeightScreen from './app/screens/editProfile/changeHeight';
@@ -53,8 +54,12 @@ export default function App() {
             name="LoginScreen"
             component={LoginScreen} />
           <Stack.Screen
+            name="LocationScreen"
+            component={LocationScreen}/>
+          <Stack.Screen
             name="ExtraInfoScreen"
-            component={ExtraInformationScreen}/>
+            component={ExtraInformationScreen}
+            initialParams={{streetName: '', streetNumber: 0}}/>
           <Stack.Screen
             name="HomeScreen"
             component={HomeScreen} />

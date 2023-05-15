@@ -7,7 +7,9 @@ import MoveToApp from "../components/extraInformation/moveToApp";
 
 
 
-export default function ExtraInformationScreen({ navigation }: any) {
+export default function ExtraInformationScreen({ navigation, route }: any) {
+  const { streetName, streetNumber } = route.params ?? {};
+
   const theme = extendTheme({
     components: {
       Button: {
@@ -23,16 +25,12 @@ export default function ExtraInformationScreen({ navigation }: any) {
     }
   });
 
-  const [streetName, setStreetName] = useState("");
-  const [streetNumber, setStreetNumber] = useState(0);
   const [date, setDate] = useState<Date>(new Date());
   const [weight, setWeight] = useState(50);
   const [height, setHeight] = useState(150);
   const [interests, setInterests] = useState(new Array<string>());
 
   const clearFields = () => {
-    setStreetName("");
-    setStreetNumber(0);
     setDate(new Date());
     setWeight(50);
     setHeight(150);
@@ -52,13 +50,9 @@ export default function ExtraInformationScreen({ navigation }: any) {
         mb={"10"}
         style={[loginAndRegisterStyles.heading, loginAndRegisterStyles.extraInfoHeading]}
       >
-        Queremos conocerte mas!
+        Brindanos más información!
       </Heading>
       <ExtraInformationForm
-        streetName={streetName}
-        setStreetName={setStreetName}
-        streetNumber={streetNumber}
-        setStreetNumber={setStreetNumber}
         date={date}
         setDate={setDate}
         weight={weight}
@@ -79,6 +73,8 @@ export default function ExtraInformationScreen({ navigation }: any) {
       />
       <MoveToApp
         navigation={navigation}
+        streetName={streetName}
+        streetNumber={streetNumber}
         clearFields={clearFields}
       />
     </VStack>

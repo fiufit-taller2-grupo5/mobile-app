@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getUserDetails, updateUserDetails } from '../../api';
 
 export type UserMetadata = {
-    id: number | null,
+    id?: number | null,
     weight: number | null,
     height: number | null,
     birthDate: string | null,

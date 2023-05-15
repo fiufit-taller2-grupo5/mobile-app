@@ -76,11 +76,15 @@ export const loginAndRegisterStyles = StyleSheet.create({
     width: "80%",
     borderRadius: 30
   },
+  button2: {
+    backgroundColor: "#FF6060",
+    top: "60%",
+  },
   loginAndRegisterButton: {
     top: "-10%",
   },
   extraInfoButton: {
-    top: "15%",
+    top: "3%",
   },
   heading: {
     flex: 0,
@@ -92,6 +96,20 @@ export const loginAndRegisterStyles = StyleSheet.create({
     lineHeight: 35,
     textAlign: 'center',
   },
+  heading1: {
+    top: '15%',
+    color: "#FF6060",
+  },
+  heading2: {
+    flex: 0,
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    fontWeight: '800',
+    fontSize: 20,
+    lineHeight: 35,
+    textAlign: 'center',
+    top: '10%',
+  },
   registerHeading: {
     top: '3%',
   },
@@ -99,7 +117,7 @@ export const loginAndRegisterStyles = StyleSheet.create({
     top: '0%',
   },
   extraInfoHeading: {
-    top: '10%',
+    top: '15%',
   },
   googleImage: {
     top: "0%",
@@ -116,7 +134,7 @@ export const loginAndRegisterStyles = StyleSheet.create({
     top: "50%",
   },
   extraInfoLink: {
-    top: "15%",
+    top: "3%",
   },
   googleTextOption: {
     top: '0%',

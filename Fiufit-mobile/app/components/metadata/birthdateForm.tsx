@@ -31,7 +31,7 @@ export default function BirthDateForm(props: Props) {
   };
 
   return (
-    <VStack>
+    <VStack height="20%">
       <Button top={top} onPress={showDatepicker} variant="ghost" backgroundColor={"white"}>
         <Text>{date ? "Fecha de nacimiento: " + date.toLocaleString().substring(0, 9) : "Ingresar Fecha de nacimiento"}</Text>
       </Button>
