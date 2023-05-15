@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import globalUser from '../utils/storageController';
+import globalUser from '../../userStorage';
 import TrainingsScreen from './trainings';
 import ProfileScreen from './profile';
 import UsersScreen from './users';

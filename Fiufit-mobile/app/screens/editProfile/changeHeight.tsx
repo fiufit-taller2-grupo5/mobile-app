@@ -4,7 +4,7 @@ import { editProfileStyles } from "../../styles";
 import { useEffect, useState } from "react";
 import HeightForm from "../../components/metadata/heightForm";
 import ErrorMessage from "../../components/form/errorMessage";
-import globalUser from "../../utils/storageController";
+import globalUser from "../../../userStorage";
 
 
 export default function ChangeHeightScreen({ navigation }: any) {

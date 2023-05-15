@@ -3,7 +3,7 @@ import SubmitButton from "../../components/editProfile/submitButton";
 import { editProfileStyles } from "../../styles";
 import React, { useEffect, useState } from "react";
 import WeightForm from "../../components/metadata/weightForm";
-import globalUser from "../../utils/storageController";
+import globalUser from "../../../userStorage";
 import ErrorMessage from "../../components/form/errorMessage";
 
 

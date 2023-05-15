@@ -1,14 +1,13 @@
 import { VStack, Text, Image } from "native-base";
 import { TouchableOpacity } from "react-native";
 import { loginAndRegisterStyles } from "../../styles";
-import { useEffect, useState } from "react";
-import * as WebBrowser from 'expo-web-browser';
+import { useEffect } from "react";
 import * as Google from 'expo-auth-session/providers/google';
-import { auth, createUser } from "../../../firebase";
-import { AuthErrorCodes, GoogleAuthProvider, signInWithCredential } from "firebase/auth";
-import globalUser, { userInfo } from "../../utils/storageController";
+import { auth } from "../../../firebase";
+import {GoogleAuthProvider, signInWithCredential } from "firebase/auth";
+import globalUser from "../../../userStorage";
 import { getUserInfoByEmail } from "../../../api";
-import { AuthError } from "expo-auth-session";
+
 
 interface Props {
   navigation: any;

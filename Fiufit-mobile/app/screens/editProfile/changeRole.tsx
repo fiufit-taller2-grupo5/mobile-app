@@ -2,7 +2,7 @@ import { VStack, Select, Heading, NativeBaseProvider, CheckIcon } from "native-b
 import SubmitButton from "../../components/editProfile/submitButton";
 import { useEffect, useState } from "react";
 import { editProfileStyles } from "../../styles";
-import globalUser from "../../utils/storageController";
+import globalUser from "../../../userStorage";
 import ErrorMessage from "../../components/form/errorMessage";
 
 

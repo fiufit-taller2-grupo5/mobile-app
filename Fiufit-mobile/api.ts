@@ -1,5 +1,6 @@
 import { User } from "firebase/auth";
-import globalUser, { UserMetadata, userInfo } from "./app/utils/storageController";
+import globalUser, { userInfo } from "./userStorage";
+
 
 const getInternalIdFromResponse = (response: any): string => {
     // receives a response from the backend like "{"status": "User Jdjde with id 10 created"}"
@@ -60,38 +61,6 @@ export const createUser = async (user: User, emailRegisterName : string = "defau
 // postId: 1
 // }))
 
-export const updateUserDetails = async (data: UserMetadata) => {
-    const user = await globalUser.getUser();
-    const internal_id = user!.id;
-    data.id = internal_id;
-    const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
-    console.log("data:", JSON.stringify(data), "userId:", internal_id);
-    try {
-      const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/" + internal_id + "/metadata";
-      const response = await fetch(url, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "accept": "*/*",
-          "accept-encoding": "gzip, deflate, br",
-          "connection": "keep-alive",
-          "Authorization": "Bearer " + accessToken,
-        },
-        body: JSON.stringify(data),
-      });
-      console.log("RESPONSE:", response);
-      if (response.ok) {
-        console.log("user details updated");
-      } else {
-        // alert("Error al iniciar sesión");
-        console.error(await response.json());
-      }
-    } catch (err: any) {
-      // console.error("errorsito: ",err);
-      alert("user details error:" + err.message);
-    }
-  }
-
 export async function getInterests(url:string) : Promise<string[] | null> {
   console.log("getting interests at url: ", url);
   await globalUser.verifyUserMetadataExists();
@@ -126,36 +95,36 @@ export async function getInterests(url:string) : Promise<string[] | null> {
 }
 
 
-export async function getUserDetails(userId:number, user:User) : Promise<UserMetadata | null> {
-  const accessToken = (user as any).stsTokenManager.accessToken;
-  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/" + userId + "/metadata";
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + accessToken,
-      },
-    });
-    if (response.ok) {
-      try {
-        const userDetails = await response.json() ;
-        console.log("userDetails:", userDetails);
-        return userDetails;
-      } catch (err: any) {
-        console.error(err);
-      }
-    } else {
-      console.info("error getting user details response: ",await response.json());
-    }
-  } catch (err: any) {
-    console.error("error fetching user details: ",err);
-  }
-  return null;
-}
+// export async function getUserDetails(userId:number, user:User) : Promise<UserMetadata | null> {
+//   const accessToken = (user as any).stsTokenManager.accessToken;
+//   const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/" + userId + "/metadata";
+//   try {
+//     const response = await fetch(url, {
+//       method: "GET",
+//       headers: {
+//         "Content-Type": "application/json",
+//         "accept": "*/*",
+//         "accept-encoding": "gzip, deflate, br",
+//         "connection": "keep-alive",
+//         "Authorization": "Bearer " + accessToken,
+//       },
+//     });
+//     if (response.ok) {
+//       try {
+//         const userDetails = await response.json() ;
+//         console.log("userDetails:", userDetails);
+//         return userDetails;
+//       } catch (err: any) {
+//         console.error(err);
+//       }
+//     } else {
+//       console.info("error getting user details response: ",await response.json());
+//     }
+//   } catch (err: any) {
+//     console.error("error fetching user details: ",err);
+//   }
+//   return null;
+// }
 
 export async function getResetPasswordUrl(email:string) : Promise<string | null> {
   const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/changepassword";

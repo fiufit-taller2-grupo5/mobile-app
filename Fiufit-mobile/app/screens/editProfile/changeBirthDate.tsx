@@ -4,7 +4,7 @@ import BirthDateForm from "../../components/metadata/birthdateForm";
 import SubmitButton from "../../components/editProfile/submitButton";
 import { editProfileStyles } from "../../styles";
 import ErrorMessage from "../../components/form/errorMessage";
-import globalUser from "../../utils/storageController";
+import globalUser from "../../../userStorage";
 
 
 export default function ChangeDateScreen({ navigation }: any) {

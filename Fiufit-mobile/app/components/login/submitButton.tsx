@@ -2,7 +2,7 @@ import { View, Button} from "native-base";
 import { loginAndRegisterStyles } from "../../styles";
 import { auth, logInWithEmailAndPassword } from '../../../firebase';
 import { getUserInfoByEmail } from "../../../api";
-import globalUser from "../../utils/storageController";
+import globalUser from "../../../userStorage";
 
 
 interface Props {

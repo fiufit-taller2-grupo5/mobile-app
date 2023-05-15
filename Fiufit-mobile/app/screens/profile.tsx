@@ -4,7 +4,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { ProgressChart } from "react-native-chart-kit";
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
 import { useEffect, useState } from 'react';
-import globalUser from '../utils/storageController';
+import globalUser from '../../userStorage';
 
 const screens = ['ChangeNameScreen', 'ChangeHeightScreen', 'ChangeWeightScreen', 'ChangeDateScreen', 'ChangeInterestsScreen', 'ChangeLocationScreen', 'ChangeRoleScreen']
 

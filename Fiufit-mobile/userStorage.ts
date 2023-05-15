@@ -1,27 +1,6 @@
-import { User } from '@firebase/auth';
+import { User } from "firebase/auth";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getUserDetails, updateUserDetails } from '../../api';
 
-export type UserMetadata = {
-    id?: number | null,
-    weight: number | null,
-    height: number | null,
-    birthDate: string | null,
-    location: string | null,
-    interests: string[]
-}
-
-export type userInfo = {
-    id: number,
-    email: string,
-    name: string,
-    createdAt: string,
-    updatedAt: string,
-    state: string,
-    role: string,
-    googleUser: User,
-    UserMetadata: UserMetadata | null
-}
 
 export class StoredUser {
     user: userInfo | null;
@@ -161,6 +140,90 @@ async function getUserFromStorage(): Promise<userInfo | null> {
         return null;
     }
 }
+
+export type UserMetadata = {
+    id?: number | null,
+    weight: number | null,
+    height: number | null,
+    birthDate: string | null,
+    location: string | null,
+    interests: string[]
+}
+
+export type userInfo = {
+    id: number,
+    email: string,
+    name: string,
+    createdAt: string,
+    updatedAt: string,
+    state: string,
+    role: string,
+    googleUser: User,
+    UserMetadata: UserMetadata | null
+}
+
+export async function getUserDetails(userId:number, user:User) : Promise<UserMetadata | null> {
+    const accessToken = (user as any).stsTokenManager.accessToken;
+    const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/" + userId + "/metadata";
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "accept": "*/*",
+          "accept-encoding": "gzip, deflate, br",
+          "connection": "keep-alive",
+          "Authorization": "Bearer " + accessToken,
+        },
+      });
+      if (response.ok) {
+        try {
+          const userDetails = await response.json() ;
+          console.log("userDetails:", userDetails);
+          return userDetails;
+        } catch (err: any) {
+          console.error(err);
+        }
+      } else {
+        console.info("error getting user details response: ",await response.json());
+      }
+    } catch (err: any) {
+      console.error("error fetching user details: ",err);
+    }
+    return null;
+}
+
+export const updateUserDetails = async (data: UserMetadata) => {
+    const user = await globalUser.getUser();
+    const internal_id = user!.id;
+    data.id = internal_id;
+    const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
+    console.log("data:", JSON.stringify(data), "userId:", internal_id);
+    try {
+      const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/" + internal_id + "/metadata";
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "accept": "*/*",
+          "accept-encoding": "gzip, deflate, br",
+          "connection": "keep-alive",
+          "Authorization": "Bearer " + accessToken,
+        },
+        body: JSON.stringify(data),
+      });
+      console.log("RESPONSE:", response);
+      if (response.ok) {
+        console.log("user details updated");
+      } else {
+        // alert("Error al iniciar sesión");
+        console.error(await response.json());
+      }
+    } catch (err: any) {
+      // console.error("errorsito: ",err);
+      alert("user details error:" + err.message);
+    }
+};
 
 const globalUser = new StoredUser();
 

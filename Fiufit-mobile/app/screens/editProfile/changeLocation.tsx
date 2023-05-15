@@ -4,7 +4,7 @@ import LocationSubmitButton from "../../components/editProfile/locationSubmitBut
 import { editProfileStyles } from "../../styles";
 import { useEffect, useState } from "react";
 import ErrorMessage from "../../components/form/errorMessage";
-import globalUser from "../../utils/storageController";
+import globalUser from "../../../userStorage";
 
 
 export default function ChangeLocationScreen({ navigation }: any) {
