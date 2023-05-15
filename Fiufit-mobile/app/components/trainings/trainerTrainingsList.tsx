@@ -3,6 +3,7 @@ import { Image, Box, FlatList, HStack, VStack, Text, NativeBaseProvider, Button,
 import { trainingStyles } from "../../styles"
 import { getTrainerTrainings, Training } from "../../../api";
 import { MaterialIcons } from "@expo/vector-icons";
+import { RefreshControl, ActivityIndicator } from 'react-native';
 
 
 interface Props {
@@ -65,6 +66,7 @@ export default function TrainerTrainingsList(props: Props) {
   const [trainerTrainingsList, setTrainerTrainingsList] = useState<Training[]>([]);
   const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState<Training[]>([]);
+  const [refreshing, setRefreshing] = useState(true);
 
   // useEffect(() => {
   //   if (searchText) {
@@ -103,12 +105,15 @@ export default function TrainerTrainingsList(props: Props) {
     filterDataByDifficultyOrType(text);
   };
 
+  const getTrainingsList = async () => {
+    setRefreshing(true);
+    const trainersTrainingsResponse  = await getTrainerTrainings();
+    setTrainerTrainingsList(trainersTrainingsResponse);
+    setRefreshing(false);
+    setFilteredData(trainersTrainingsResponse);
+  }
+
   useEffect(() => {
-    const getTrainingsList = async () => {
-      const trainersTrainingsResponse  = await getTrainerTrainings();
-      setTrainerTrainingsList(trainersTrainingsResponse);
-      setFilteredData(trainersTrainingsResponse);
-    }
     getTrainingsList();
   }, [])
 
@@ -138,6 +143,7 @@ export default function TrainerTrainingsList(props: Props) {
       >
         Crear nuevo
       </Button>
+      {refreshing ? <ActivityIndicator /> : null}
       <FlatList
         data={filteredData}
         marginBottom={65}
@@ -149,6 +155,7 @@ export default function TrainerTrainingsList(props: Props) {
           />
         }
         keyExtractor={(training) => training.id.toString()}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getTrainingsList} />}
       >
       </FlatList> 
     </NativeBaseProvider>
