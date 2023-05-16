@@ -23,6 +23,7 @@ import {
 } from "../../../api";
 import { MaterialIcons } from "@expo/vector-icons";
 import { RefreshControl } from 'react-native';
+import { TrainingInfoCard } from "./trainingInfoCard";
 
 interface Props {
   navigation: any;
@@ -247,13 +248,17 @@ export default function TrainingsList(props: Props) {
           />
         </VStack>
       </VStack>
-      {/*refreshing ? <ActivityIndicator /> : null*/}
       <FlatList
         data={filteredData}
         marginBottom={65}
         marginTop={2}
         renderItem={(training) => (
-          <TrainingsInfo training={training.item} navigation={navigation} />
+          <TrainingInfoCard
+            trainingData={training.item}
+            setFavorite
+            navigation={navigation}
+            navigateToScreen="FavoriteTrainingInfoScreen"
+          />
         )}
         keyExtractor={(training) => training.id.toString()}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getTrainingsList} />}

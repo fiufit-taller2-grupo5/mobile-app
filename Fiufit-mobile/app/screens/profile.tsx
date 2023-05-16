@@ -32,7 +32,7 @@ export default function ProfileScreen(props: Props) {
     components: {
       Box: {
         defaultProps: {
-          bg: '#FFFFFF',
+          bg: '#00CED1',
         }
       }
     }
@@ -165,20 +165,20 @@ export default function ProfileScreen(props: Props) {
         console.log("details:", details);
 
         if (details === null || details === undefined) { // if the user has skipped the registration form
-          setUserInformation([ userInfoStored.name, "", "", "", "", "", userInfoStored!.role]);
+          setUserInformation([userInfoStored.name, "", "", "", "", "", userInfoStored!.role]);
           return;
         }
 
         const interests = details!.interests
-        
+
         let birthdate = details!.birthDate; // from "2000-09-22T17:43:38.879Z" to "22/09/2000"
         if (birthdate !== null) {
           birthdate = birthdate.split('T')[0].split('-').reverse().join('/');
         }
 
-        console.log("there is user info stored:", userInfoStored, "details:",details, "interests:", interests);
+        console.log("there is user info stored:", userInfoStored, "details:", details, "interests:", interests);
         if (userInfoStored && details && interests) {
-          setUserInformation([ userInfoStored.name, details.height?.toString() ?? "", details.weight?.toString() ?? "", birthdate?? "", interests.join(', '), details.location?? "", userInfoStored.role]);
+          setUserInformation([userInfoStored.name, details.height?.toString() ?? "", details.weight?.toString() ?? "", birthdate ?? "", interests.join(', '), details.location ?? "", userInfoStored.role]);
         }
       }
       getUserInfo();
@@ -199,9 +199,9 @@ export default function ProfileScreen(props: Props) {
         chartConfig={chartConfig}
         hideLegend={false}
       />
-      <Text style={editProfileStyles.fitText}>Pasos de hoy: {dailySteps}</Text>
+      {/* <Text style={editProfileStyles.fitText}>Pasos de hoy: {dailySteps}</Text>
       <Text style={editProfileStyles.fitText}>Distancia de hoy: {dailyDistance}</Text>
-      <Text style={editProfileStyles.fitText}>Calorías de hoy: {dailyCalories}</Text>
+      <Text style={editProfileStyles.fitText}>Calorías de hoy: {dailyCalories}</Text> */}
     </Box>
     <Box style={editProfileStyles.infoBox}>
       <FlatList data={fields} renderItem={({ item }) =>
