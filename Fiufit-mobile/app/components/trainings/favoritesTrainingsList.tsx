@@ -3,7 +3,7 @@ import { Image, Box, FlatList, HStack, VStack, Text, NativeBaseProvider, Button,
 import { MaterialIcons } from "@expo/vector-icons";
 import { trainingStyles } from "../../styles"
 import { getFavoriteTrainings, Training } from "../../../api";
-import { RefreshControl, ActivityIndicator } from 'react-native';
+import { RefreshControl } from 'react-native';
 
 interface Props {
   navigation: any;
@@ -15,24 +15,24 @@ interface FavoriteTrainingInfoProps {
 };
 
 const mainImage = (training_type: any) => {
-  if(training_type === 'Running') return "https://wallpaperaccess.com/thumb/2604922.jpg";
-  else if(training_type === 'Swimming') return "https://wallpaperaccess.com/thumb/1634055.jpg";
-  else if(training_type === 'Walking') return "https://wallpaperaccess.com/thumb/654835.jpg";
-  else if(training_type === 'Biking') return "https://wallpaperaccess.com/thumb/4431599.jpg";
-  else if(training_type === 'Yoga') return "https://wallpaperaccess.com/thumb/2532294.jpg";
-  else if(training_type === 'Basketball') return "https://wallpaperaccess.com/thumb/798750.jpg";
-  else if(training_type === 'Football') return "https://wallpaperaccess.com/thumb/1813065.jpg";
-  else if(training_type === 'Gymnastics') return "https://wallpaperaccess.com/thumb/2236559.jpg";
-  else if(training_type === 'Dancing') return "https://wallpaperaccess.com/thumb/1315981.jpg";
-  else if(training_type === 'Hiking') return "https://wallpaperaccess.com/thumb/7309738.jpg";
+  if (training_type === 'Running') return "https://wallpaperaccess.com/thumb/2604922.jpg";
+  else if (training_type === 'Swimming') return "https://wallpaperaccess.com/thumb/1634055.jpg";
+  else if (training_type === 'Walking') return "https://wallpaperaccess.com/thumb/654835.jpg";
+  else if (training_type === 'Biking') return "https://wallpaperaccess.com/thumb/4431599.jpg";
+  else if (training_type === 'Yoga') return "https://wallpaperaccess.com/thumb/2532294.jpg";
+  else if (training_type === 'Basketball') return "https://wallpaperaccess.com/thumb/798750.jpg";
+  else if (training_type === 'Football') return "https://wallpaperaccess.com/thumb/1813065.jpg";
+  else if (training_type === 'Gymnastics') return "https://wallpaperaccess.com/thumb/2236559.jpg";
+  else if (training_type === 'Dancing') return "https://wallpaperaccess.com/thumb/1315981.jpg";
+  else if (training_type === 'Hiking') return "https://wallpaperaccess.com/thumb/7309738.jpg";
 };
 
 const FavoriteTrainingsInfo = (props: FavoriteTrainingInfoProps) => {
-  const { navigation, favoriteTraining} = props;
+  const { navigation, favoriteTraining } = props;
   return <Box backgroundColor="#fff" >
-    <Button height={150} px="10" py="10" backgroundColor="#fff" onPress={async () => { navigation.navigate('FavoriteTrainingInfoScreen', { trainingData: favoriteTraining });}}>
+    <Button height={150} px="10" py="10" backgroundColor="#fff" onPress={async () => { navigation.navigate('FavoriteTrainingInfoScreen', { trainingData: favoriteTraining }); }}>
       <HStack space={[2, 3]} height={70} width={380}>
-        <Image source={{uri: mainImage(favoriteTraining.type)}} alt="Alternate Text" size="lg" borderRadius={10}/>
+        <Image source={{ uri: mainImage(favoriteTraining.type) }} alt="Alternate Text" size="lg" borderRadius={10} />
         <VStack my={1} width={220} height={10} mr={0} ml={1}>
           <Text style={trainingStyles.textTitle} color="#000000" text-align="left" bold>
             {favoriteTraining.title}
@@ -58,7 +58,7 @@ export default function FavoriteTrainingsList(props: Props) {
   const [refreshing, setRefreshing] = useState(true);
 
   const filterDataByDifficultyOrType = (text: string) => {
-    if(text) {
+    if (text) {
       const filtered = favoriteTrainingsList.filter(
         (item) =>
           item.difficulty === parseInt(text) ||
@@ -72,13 +72,13 @@ export default function FavoriteTrainingsList(props: Props) {
   };
 
   const handleSearch = (text: string) => {
-      setSearchText(text);
-      filterDataByDifficultyOrType(text);
+    setSearchText(text);
+    filterDataByDifficultyOrType(text);
   };
 
   const getTrainingsList = async () => {
     setRefreshing(true);
-    const favoritesTrainingsResponse  = await getFavoriteTrainings();
+    const favoritesTrainingsResponse = await getFavoriteTrainings();
     setFavoriteTrainingsList(favoritesTrainingsResponse);
     setRefreshing(false);
     setFilteredData(favoritesTrainingsResponse);
@@ -87,18 +87,41 @@ export default function FavoriteTrainingsList(props: Props) {
   useEffect(() => {
     getTrainingsList();
   }, [])
-  
+
   return (
     <NativeBaseProvider>
-      <VStack mx="1" my="3" space={2} w="100%" maxW="380px" backgroundColor="#fff" divider={<Box px="2">
-        <Divider />
-        </Box>}>
-        <VStack w="100%" space={5} alignSelf="center">
-            <Input placeholder="Search fav trainings by difficulty or type" onChangeText={handleSearch} value={searchText} width="100%" borderRadius="4" py="3" px="1" fontSize="14" InputLeftElement={<Icon m="2" ml="3" size="6" color="gray.400" as={<MaterialIcons name="search" />} />} />
+      <VStack
+        paddingY={2}
+        paddingX={4}
+        w="100%"
+        backgroundColor="#fff"
+        divider={
+          <Box px="2">
+            <Divider />
+          </Box>
+        }
+      >
+        <VStack alignSelf="center">
+          <Input
+            placeholder="Search trainings by difficulty or type"
+            onChangeText={handleSearch}
+            value={searchText}
+            width="100%"
+            borderRadius="4"
+            fontSize="14"
+            InputLeftElement={
+              <Icon
+                m="2"
+                ml="3"
+                size="6"
+                color="gray.400"
+                as={<MaterialIcons name="search" />}
+              />
+            }
+          />
         </VStack>
       </VStack>
-      {refreshing ? <ActivityIndicator /> : null}
-      <FlatList data={filteredData} marginBottom={65} marginTop={2} renderItem = {(favoriteTraining) => <FavoriteTrainingsInfo favoriteTraining={favoriteTraining.item} navigation={navigation}/> } keyExtractor={(training) => training.id.toString()} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getTrainingsList} />}></FlatList> 
+      <FlatList data={filteredData} marginBottom={65} marginTop={2} renderItem={(favoriteTraining) => <FavoriteTrainingsInfo favoriteTraining={favoriteTraining.item} navigation={navigation} />} keyExtractor={(training) => training.id.toString()} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getTrainingsList} />}></FlatList>
     </NativeBaseProvider>
   );
 };

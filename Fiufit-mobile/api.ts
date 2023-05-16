@@ -139,8 +139,6 @@ export async function getResetPasswordUrl(email: string): Promise<string | null>
         "accept": "*/*",
         "accept-encoding": "gzip, deflate, br",
         "connection": "keep-alive",
-        "dev": "a",
-        // "Authorization": "Bearer " + accessToken,
       },
       body: JSON.stringify({ email: email }),
     });
@@ -264,7 +262,6 @@ export async function getTrainings(): Promise<Training[]> {
         "accept": "*/*",
         "accept-encoding": "gzip, deflate, br",
         "connection": "keep-alive",
-        "dev": "a",
         "Authorization": "Bearer " + accessToken,
       },
     });
@@ -338,7 +335,6 @@ export async function getFavoriteTrainings(): Promise<Training[]> {
         "accept": "*/*",
         "accept-encoding": "gzip, deflate, br",
         "connection": "keep-alive",
-        "dev": "a",
         "Authorization": "Bearer " + accessToken,
       },
     });
@@ -372,7 +368,6 @@ export async function addFavoriteTraining(trainingPlanId: number): Promise<boole
         "accept": "*/*",
         "accept-encoding": "gzip, deflate, br",
         "connection": "keep-alive",
-        "dev": "a",
         "Authorization": "Bearer " + accessToken,
       }
     });
@@ -402,7 +397,6 @@ export async function quitFavoriteTraining(trainingPlanId: number): Promise<bool
         "accept": "*/*",
         "accept-encoding": "gzip, deflate, br",
         "connection": "keep-alive",
-        "dev": "a",
         "Authorization": "Bearer " + accessToken,
       }
     });
@@ -434,7 +428,6 @@ export async function addTraining(training: TrainerTraining): Promise<boolean> {
         "accept": "*/*",
         "accept-encoding": "gzip, deflate, br",
         "connection": "keep-alive",
-        "dev": "a",
         "Authorization": "Bearer " + accessToken,
       },
       body: JSON.stringify(training),
@@ -469,7 +462,6 @@ export async function addTrainingReview(trainingId: number, review: trainingRevi
         "accept": "*/*",
         "accept-encoding": "gzip, deflate, br",
         "connection": "keep-alive",
-        "dev": "a",
         "Authorization": "Bearer " + accessToken,
       },
       body: JSON.stringify(review),
@@ -499,7 +491,6 @@ export async function getTrainingReviews(trainingId: number): Promise<trainingRe
         "accept": "*/*",
         "accept-encoding": "gzip, deflate, br",
         "connection": "keep-alive",
-        "dev": "a",
         "Authorization": "Bearer " + accessToken,
       },
     });
