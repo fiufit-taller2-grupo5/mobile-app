@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { loginAndRegisterStyles } from '../styles';
-import { Heading, VStack, NativeBaseProvider, extendTheme } from 'native-base';
+import { Heading, VStack, NativeBaseProvider, extendTheme, Modal, View } from 'native-base';
 import { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../firebase';
@@ -38,6 +38,7 @@ export default function RegisterScreen({ navigation }: any) {
   const [errorMessage, setErrorMessage] = useState("");
   const [user, loading, error] = useAuthState(auth);
   const [isCorrectlyLogged, setIsCorrectlyLogged] = useState(false);
+
   React.useEffect(() => {
     if (loading) {
       // maybe trigger a loading screen
@@ -58,7 +59,19 @@ export default function RegisterScreen({ navigation }: any) {
       height={"full"}
       width={"full"}
     >
-      {errorMessage && <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage} />}
+      {errorMessage && 
+        <Modal
+          style={{maxHeight:"20%", height:"20%", width:"100%", top:"-1.3%"}}
+          _backdrop={{backgroundColor: "transparent"}}
+          closeOnOverlayClick={true}
+          onClose={() => setErrorMessage("")}
+          isOpen={errorMessage !== ""}
+        >
+          <View maxHeight="20%" width="100%">
+            <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
+          </View>
+        </Modal>
+      }
       <Heading
         marginTop={"20%"}
         marginBottom={"10%"}

@@ -36,6 +36,7 @@ export default function SubmitButton(props: Props) {
             setErrorMessage(errorMessage);
           }
         }}
+        disabled={name === "" || email === "" || password === ""}
         _text={{ color: "#FFFFFF", fontSize: "20px", fontWeight: "bold" }}
       >
         Registrarse
