@@ -22,7 +22,7 @@ import {
   Training,
 } from "../../../api";
 import { MaterialIcons } from "@expo/vector-icons";
-import { RefreshControl, ActivityIndicator } from 'react-native';
+import { RefreshControl } from 'react-native';
 
 interface Props {
   navigation: any;
@@ -105,48 +105,48 @@ const TrainingsInfo = (props: TrainingInfoProps) => {
             </Text>
           </VStack>
           <VStack my={1} width={30} height={10} mr={0} ml={1}>
-          <Button
-            backgroundColor="#fff"
-            onPress={async () => {
-              if (isFavorite) {
-                setTrainingFavorite(false);
-                const response = await quitFavoriteTraining(training.id);
-                if(!response) setTrainingFavorite(true);
-              } else {
-                setTrainingFavorite(true);
-                const response = await addFavoriteTraining(training.id);
-                if (!response) setTrainingFavorite(false);
-              }
-            }}
-          >
-            <Icon
-              as={
-                <MaterialCommunityIcons
-                  name={isFavorite ? "heart" : "heart-outline"}
-                />
-              }
-              size={6}
-              color="#FF6060"
-              alignSelf="center"
-            />
-          </Button>
-          <Button
-            backgroundColor="#fff"
-            onPress={async () => {
-              console.log("click");
-            }}
-          >
-            <Icon
-              as={
-                <MaterialCommunityIcons
-                  name={isRated ? "star" : "star-outline"}
-                />
-              }
-              size={6}
-              color="#FFD27D"
-              alignSelf="center"
-            />
-          </Button>
+            <Button
+              backgroundColor="#fff"
+              onPress={async () => {
+                if (isFavorite) {
+                  setTrainingFavorite(false);
+                  const response = await quitFavoriteTraining(training.id);
+                  if (!response) setTrainingFavorite(true);
+                } else {
+                  setTrainingFavorite(true);
+                  const response = await addFavoriteTraining(training.id);
+                  if (!response) setTrainingFavorite(false);
+                }
+              }}
+            >
+              <Icon
+                as={
+                  <MaterialCommunityIcons
+                    name={isFavorite ? "heart" : "heart-outline"}
+                  />
+                }
+                size={6}
+                color="#FF6060"
+                alignSelf="center"
+              />
+            </Button>
+            <Button
+              backgroundColor="#fff"
+              onPress={async () => {
+                console.log("click");
+              }}
+            >
+              <Icon
+                as={
+                  <MaterialCommunityIcons
+                    name={isRated ? "star" : "star-outline"}
+                  />
+                }
+                size={6}
+                color="#FFD27D"
+                alignSelf="center"
+              />
+            </Button>
           </VStack>
         </HStack>
         <Divider my={10} mx={1} />
@@ -183,15 +183,15 @@ export default function TrainingsList(props: Props) {
   function updateFavoriteStatus(trainingResponse: Training[], favoriteTrainingResponse: Training[]): Training[] {
     const favoriteTrainingIds = new Set(favoriteTrainingResponse.map(training => training.id));
     return trainingResponse.map(training => ({
-      ...training, 
+      ...training,
       isFavorite: favoriteTrainingIds.has(training.id)
     }));
   }
 
   const getTrainingsList = async () => {
     setRefreshing(true);
-    const trainingsResponse  = await getTrainings();
-    const favoritesTrainingsResponse  = await getFavoriteTrainings();
+    const trainingsResponse = await getTrainings();
+    const favoritesTrainingsResponse = await getFavoriteTrainings();
     let trainings = updateFavoriteStatus(trainingsResponse, favoritesTrainingsResponse);
     // const ratings = await getTrainingsRatings(trainings.map((training) => training.id));
     // trainings = updateMeanRating(trainings, ratings);
@@ -199,7 +199,7 @@ export default function TrainingsList(props: Props) {
     setRefreshing(false);
     setFilteredData(trainings);
   }
-  
+
   // function updateMeanRating(trainingResponse: Training[]): Training[] {
   //   return trainingResponse.map((training) => ({
   //     ...training,
@@ -209,7 +209,7 @@ export default function TrainingsList(props: Props) {
   //     ),
   //   }));
   // }
-  
+
   useEffect(() => {
     getTrainingsList();
   }, [])
@@ -217,11 +217,9 @@ export default function TrainingsList(props: Props) {
   return (
     <NativeBaseProvider>
       <VStack
-        mx="1"
-        my="3"
-        space={2}
+        paddingY={2}
+        paddingX={4}
         w="100%"
-        maxW="380px"
         backgroundColor="#fff"
         divider={
           <Box px="2">
@@ -229,15 +227,13 @@ export default function TrainingsList(props: Props) {
           </Box>
         }
       >
-        <VStack w="100%" space={5} alignSelf="center">
+        <VStack alignSelf="center">
           <Input
             placeholder="Search trainings by difficulty or type"
             onChangeText={handleSearch}
             value={searchText}
             width="100%"
             borderRadius="4"
-            py="3"
-            px="1"
             fontSize="14"
             InputLeftElement={
               <Icon
@@ -251,7 +247,7 @@ export default function TrainingsList(props: Props) {
           />
         </VStack>
       </VStack>
-      {refreshing ? <ActivityIndicator /> : null}
+      {/*refreshing ? <ActivityIndicator /> : null*/}
       <FlatList
         data={filteredData}
         marginBottom={65}

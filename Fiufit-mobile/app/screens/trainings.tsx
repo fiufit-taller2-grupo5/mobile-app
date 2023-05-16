@@ -1,11 +1,9 @@
 import React from 'react';
-import {Container, NativeBaseProvider} from "native-base";
+import { Container, NativeBaseProvider, View } from "native-base";
 import TrainingsList from '../components/trainings/trainingsList';
 
 export default function TrainingsScreen({ navigation }: any) {
-    return <NativeBaseProvider>
-        <Container minWidth="400" height="800" backgroundColor="#fff">
-            <TrainingsList navigation={navigation}/>
-        </Container>
-    </NativeBaseProvider>;
+    return <View style={{ flex: 1 }} backgroundColor="#fff">
+        <TrainingsList navigation={navigation} />
+    </View>;
 }

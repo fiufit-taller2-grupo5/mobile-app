@@ -8,7 +8,7 @@ import globalUser from "../../../userStorage";
 
 
 export default function ChangeInterestsScreen({ navigation }: any) {
-  const [interests, setInterests] = useState([]);
+  const [interests, setInterests] = useState<string[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
@@ -19,14 +19,14 @@ export default function ChangeInterestsScreen({ navigation }: any) {
     }
     updateInterests();
   }, [interests]);
-  
+
 
   return <NativeBaseProvider>
     <VStack width="100%" space={4} alignItems="center">
-      {errorMessage && 
+      {errorMessage &&
         <Modal
-          style={{maxHeight:"20%", height:"20%", width:"100%", top:"-1.3%"}}
-          _backdrop={{backgroundColor: "transparent"}}
+          style={{ maxHeight: "20%", height: "20%", width: "100%", top: "-1.3%" }}
+          _backdrop={{ backgroundColor: "transparent" }}
           closeOnOverlayClick={true}
           onClose={() => setErrorMessage("")}
           isOpen={errorMessage !== ""}
