@@ -300,8 +300,7 @@ export const rateTrainingStyles = StyleSheet.create({
   },
   commentInputBox: {
     width: '90%',
-    height: 450,
-    marginTop: '5%',
+    marginTop: 4,
     alignSelf: 'center',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
@@ -309,6 +308,8 @@ export const rateTrainingStyles = StyleSheet.create({
     borderTopRightRadius: 30,
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'center',
+    alignContent: 'center',
   },
 });
 

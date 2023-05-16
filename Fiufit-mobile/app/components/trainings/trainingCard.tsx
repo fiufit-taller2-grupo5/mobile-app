@@ -122,6 +122,7 @@ export default function TrainingCard(props: Props) {
         </Heading>
         {reviews.map(review => (
           <Box
+            key={review.id}
             rounded="sm"
             overflow="hidden"
             borderColor="coolGray.200"

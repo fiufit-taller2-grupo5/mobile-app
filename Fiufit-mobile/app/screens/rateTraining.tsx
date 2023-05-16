@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   HStack,
   Heading,
   Input,
@@ -8,9 +7,12 @@ import {
   Spacer,
   Text,
   VStack,
+  View,
   extendTheme,
+  TextArea,
 } from "native-base";
 import { useState } from "react";
+import { Button } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { rateTrainingStyles } from "../styles";
 import { addTrainingReview } from "../../api";
@@ -47,11 +49,11 @@ export default function RateTrainingScreen({ route, navigation }: any) {
     setIsLoading(true);
     console.log(
       "rate training: " +
-        trainingId +
-        " with rating: " +
-        starClicked +
-        " and comment: " +
-        comment
+      trainingId +
+      " with rating: " +
+      starClicked +
+      " and comment: " +
+      comment
     );
     const response = await addTrainingReview(trainingId, {
       comment: comment,
@@ -66,57 +68,49 @@ export default function RateTrainingScreen({ route, navigation }: any) {
 
   return (
     <NativeBaseProvider theme={theme}>
-      <Box height="250" style={rateTrainingStyles.starRatingBox}>
-        <VStack space={6} alignItems="center">
-          <Heading
-            fontSize="2xl"
-            fontWeight="bold"
-            style={rateTrainingStyles.heading}
-          >
-            Valorar entrenamiento
-          </Heading>
-          <Spacer size={"1%"} />
+      <View flex={1} backgroundColor="#ffffff">
+        <Box height="200" style={rateTrainingStyles.starRatingBox}>
+          <VStack space={6} alignItems="center">
+            <Heading
+              fontSize="2xl"
+              fontWeight="bold"
+              style={rateTrainingStyles.heading}
+            >
+              Valorar entrenamiento
+            </Heading>
+            <Spacer size={"1%"} />
+            <Text fontSize="xl" fontWeight="bold">
+              Puntuación
+            </Text>
+            <HStack space={4} alignItems="center">
+              <FiveStars
+                starClicked={starClicked}
+                setStarClicked={setStarClicked}
+                areButtons={true}
+              />
+            </HStack>
+            <Spacer />
+          </VStack>
+        </Box>
+        <View flex={1} flexGrow={1} justifyContent="flex-start" alignItems="center">
           <Text fontSize="xl" fontWeight="bold">
-            Puntuación
+            Comentario
           </Text>
-          <HStack space={4} alignItems="center">
-            <FiveStars
-              starClicked={starClicked}
-              setStarClicked={setStarClicked}
-              areButtons={true}
-            />
-          </HStack>
-          <Spacer/>
-        </VStack>
-      </Box>
-      <Box height="100" style={rateTrainingStyles.commentInputBox}>
-        <Text fontSize="xl" fontWeight="bold" style={{left:"5%", top:"5%"}}>
-          Comentario
-        </Text>
-        <Input
-          width="90%"
-          height="300"
-          backgroundColor="#FFFFFF"
-          top="10%"
-          alignSelf="center"
-          onChangeText={handleComment}
-        />
-        <Button
-          backgroundColor="#fff"
-          size={10}
-          maxW={360}
-          width={320}
-          top={"15%"}
-          borderRadius="10px"
-          alignSelf="center"
-          onPress={handleRateTraining}
-        >
-          <HStack alignItems="center" space={3}>
-            <AntDesign name="star" size={30} color="#FFD27D" />
-            <Text fontWeight="400">Valorar entrenamiento</Text>
-          </HStack>
-        </Button>
-      </Box>
+          <TextArea
+            autoCompleteType={"off"}
+            width="90%"
+            backgroundColor="#FFFFFF"
+            top="10%"
+            alignSelf="center"
+            onChangeText={handleComment}
+            marginBottom="60"
+          />
+          <Button
+            color="#FF6060"
+            title="Agregar Valoración"
+            onPress={handleRateTraining} />
+        </View>
+      </View>
     </NativeBaseProvider>
   );
 }
