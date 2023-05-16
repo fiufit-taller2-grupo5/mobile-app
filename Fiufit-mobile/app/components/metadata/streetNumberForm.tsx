@@ -11,6 +11,14 @@ interface Props {
 export default function StreetNumberForm(props: Props) {
   const { top, width, streetNumber, setStreetNumber } = props;
 
+  const onChange = (text: string) => {
+    if (text !== undefined && text !== null && parseInt(text) !== NaN && parseInt(text) >= 0) {
+      setStreetNumber(parseInt(text));
+    } else {
+      setStreetNumber(0);
+    }
+  }
+
   return (
     <View>
       <Input
@@ -19,7 +27,7 @@ export default function StreetNumberForm(props: Props) {
         placeholder="Número de la calle"
         placeholderTextColor={"#000000"}
         top={top}
-        onChangeText={text => setStreetNumber(parseInt(text))}
+        onChangeText={onChange}
         value={streetNumber.toString()}
       />
     </View>
