@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { loginAndRegisterStyles } from '../styles';
-import { Heading, NativeBaseProvider, extendTheme, VStack } from "native-base";
+import { Heading, NativeBaseProvider, extendTheme, VStack, Modal, View } from "native-base";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useState } from 'react';
 import { auth } from '../../firebase';
@@ -61,7 +61,19 @@ export default function LoginScreen({ navigation }: any) {
       height={"full"}
       width={"full"}
     >
-      {errorMessage && <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage} />}
+      {errorMessage && 
+        <Modal
+          style={{maxHeight:"20%", height:"20%", width:"100%", top:"-1.3%"}}
+          _backdrop={{backgroundColor: "transparent"}}
+          closeOnOverlayClick={true}
+          onClose={() => setErrorMessage("")}
+          isOpen={errorMessage !== ""}
+        >
+          <View maxHeight="20%" width="100%">
+            <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
+          </View>
+        </Modal>
+      }
       <Heading
         marginTop={'25%'}
         marginBottom={"10%"}

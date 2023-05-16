@@ -1,4 +1,4 @@
-import { NativeBaseProvider, VStack, Heading } from "native-base";
+import { NativeBaseProvider, VStack, Heading, Modal, View } from "native-base";
 import { useEffect, useState } from "react";
 import BirthDateForm from "../../components/metadata/birthdateForm";
 import SubmitButton from "../../components/editProfile/submitButton";
@@ -22,7 +22,19 @@ export default function ChangeDateScreen({ navigation }: any) {
 
   return <NativeBaseProvider>
     <VStack width="100%" space={4} alignItems="center">
-      {errorMessage && <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage} />}
+      {errorMessage && 
+        <Modal
+          style={{maxHeight:"20%", height:"20%", width:"100%", top:"-1.3%"}}
+          _backdrop={{backgroundColor: "transparent"}}
+          closeOnOverlayClick={true}
+          onClose={() => setErrorMessage("")}
+          isOpen={errorMessage !== ""}
+        >
+          <View maxHeight="20%" width="100%">
+            <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
+          </View>
+        </Modal>
+      }
       <Heading style={editProfileStyles.heading}>
         ¿Cuando naciste?
       </Heading>

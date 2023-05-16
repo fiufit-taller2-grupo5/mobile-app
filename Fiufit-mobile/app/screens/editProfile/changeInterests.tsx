@@ -1,4 +1,4 @@
-import { VStack, Heading, NativeBaseProvider } from "native-base";
+import { VStack, Heading, NativeBaseProvider, Modal, View } from "native-base";
 import SubmitButton from "../../components/editProfile/submitButton";
 import { editProfileStyles } from "../../styles";
 import { useEffect, useState } from "react";
@@ -23,7 +23,19 @@ export default function ChangeInterestsScreen({ navigation }: any) {
 
   return <NativeBaseProvider>
     <VStack width="100%" space={4} alignItems="center">
-      {errorMessage && <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage} />}
+      {errorMessage && 
+        <Modal
+          style={{maxHeight:"20%", height:"20%", width:"100%", top:"-1.3%"}}
+          _backdrop={{backgroundColor: "transparent"}}
+          closeOnOverlayClick={true}
+          onClose={() => setErrorMessage("")}
+          isOpen={errorMessage !== ""}
+        >
+          <View maxHeight="20%" width="100%">
+            <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
+          </View>
+        </Modal>
+      }
       <Heading style={editProfileStyles.heading}>
         ¿Cuáles son tus intereses?
       </Heading>
