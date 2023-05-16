@@ -11,6 +11,7 @@ import {
   Divider,
   Icon,
   Input,
+  View
 } from "native-base";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { trainingStyles } from "../../styles";
@@ -215,43 +216,43 @@ export default function TrainingsList(props: Props) {
     getTrainingsList();
   }, [])
 
-  return (
-    <NativeBaseProvider>
-      <VStack
-        paddingY={2}
-        paddingX={4}
-        w="100%"
-        backgroundColor="#fff"
-        divider={
-          <Box px="2">
-            <Divider />
-          </Box>
-        }
-      >
-        <VStack alignSelf="center">
-          <Input
-            placeholder="Search trainings by difficulty or type"
-            onChangeText={handleSearch}
-            value={searchText}
-            width="100%"
-            borderRadius="4"
-            fontSize="14"
-            InputLeftElement={
-              <Icon
-                m="2"
-                ml="3"
-                size="6"
-                color="gray.400"
-                as={<MaterialIcons name="search" />}
-              />
-            }
-          />
-        </VStack>
+  return (<View flex={1} backgroundColor="#fff">
+    <VStack
+      paddingY={2}
+      paddingX={4}
+      w="100%"
+      backgroundColor="#fff"
+      divider={
+        <Box px="2">
+          <Divider />
+        </Box>
+      }
+    >
+      <VStack alignSelf="center">
+        <Input
+          placeholder="Search trainings by difficulty or type"
+          onChangeText={handleSearch}
+          value={searchText}
+          width="100%"
+          borderRadius="4"
+          fontSize="14"
+          InputLeftElement={
+            <Icon
+              m="2"
+              ml="3"
+              size="6"
+              color="gray.400"
+              as={<MaterialIcons name="search" />}
+            />
+          }
+        />
       </VStack>
+    </VStack>
+    <View flex={1}>
       <FlatList
+        contentContainerStyle={{ flexGrow: 1 }}
         data={filteredData}
-        marginBottom={65}
-        marginTop={2}
+        marginBottom={0}
         renderItem={(training) => (
           <TrainingInfoCard
             trainingData={training.item}
@@ -262,7 +263,7 @@ export default function TrainingsList(props: Props) {
         )}
         keyExtractor={(training) => training.id.toString()}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getTrainingsList} />}
-      ></FlatList>
-    </NativeBaseProvider>
+      ></FlatList></View>
+  </View>
   );
 }

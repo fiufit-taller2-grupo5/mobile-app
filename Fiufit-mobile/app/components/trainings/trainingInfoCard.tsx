@@ -38,7 +38,7 @@ export const TrainingInfoCard = ({
     trainingData.isFavorite || false
   );
   const [isRated, setTrainingRated] = useState<Boolean>(
-    true || false // training.isRated || false
+    true || false
   );
 
   const handleFavorite = async () => {
@@ -46,17 +46,17 @@ export const TrainingInfoCard = ({
 
     if (isFavorite) {
       setTrainingFavorite(false);
-      const response = await quitFavoriteTraining(trainingData.id);
+      await quitFavoriteTraining(trainingData.id);
     } else {
       setTrainingFavorite(true);
-      const response = await addFavoriteTraining(trainingData.id);
+      await addFavoriteTraining(trainingData.id);
     }
   }
 
   return (
-    <Box backgroundColor="#fff">
+    <Box backgroundColor="#fff" style={{ height: 130 }}>
       <Button
-        height={150}
+        height={170}
         px="10"
         py="10"
         backgroundColor="#fff"
@@ -68,7 +68,6 @@ export const TrainingInfoCard = ({
           space={[2, 3]}
           justifyContent="space-between"
           height={70}
-          width={380}
         >
           <Image
             source={{ uri: mainImage(trainingData.type) }}

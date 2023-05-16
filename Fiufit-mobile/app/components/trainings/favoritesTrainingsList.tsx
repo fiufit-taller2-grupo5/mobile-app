@@ -122,11 +122,16 @@ export default function FavoriteTrainingsList(props: Props) {
           />
         </VStack>
       </VStack>
-      <FlatList data={filteredData} marginBottom={65} marginTop={2} renderItem={(favoriteTraining) => <TrainingInfoCard
-        trainingData={favoriteTraining.item}
-        navigation={navigation}
-        navigateToScreen="FavoriteTrainingInfoScreen"
-      />} keyExtractor={(training) => training.id.toString()} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getTrainingsList} />}></FlatList>
+      <FlatList
+        contentContainerStyle={{ flexGrow: 1 }}
+        marginBottom={0}
+        marginTop={0}
+        data={filteredData}
+        renderItem={(favoriteTraining) => <TrainingInfoCard
+          trainingData={favoriteTraining.item}
+          navigation={navigation}
+          navigateToScreen="FavoriteTrainingInfoScreen"
+        />} keyExtractor={(training) => training.id.toString()} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getTrainingsList} />}></FlatList>
     </NativeBaseProvider>
   );
 };
