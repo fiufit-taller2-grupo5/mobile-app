@@ -12,16 +12,37 @@ import {
   Button,
   VStack,
   FlatList,
+  Spacer,
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
+import { Training, getTrainingReviews } from "../../../api";
+import { trainingReview } from "../../screens/rateTraining";
+import FiveStars from "../rateTraining/fiveStars";
 
 interface Props {
   navigation: any;
-  trainingData: any;
+  trainingData: Training;
 }
 
 export default function TrainingCard(props: Props) {
   const { navigation, trainingData } = props;
+  const [reviews, setReviews] = React.useState<trainingReview[]>([]);
+
+  const retrieveTrainingReviews = async () => {
+    const trainingReviews = await getTrainingReviews(trainingData.id);
+    // map the training reviews to add an index to each review
+    const trainingReviewsWithIndex = trainingReviews.map(
+      (review: any, index: number) => {
+        return { ...review, index: index };
+      }
+    );
+    setReviews(trainingReviewsWithIndex);
+  };
+
+  React.useEffect(() => {
+    retrieveTrainingReviews();
+  }, []);
+
   return (
     <Box alignItems="center" backgroundColor="#fff">
       <Box
@@ -90,7 +111,7 @@ export default function TrainingCard(props: Props) {
             alignSelf="center"
             onPress={async () => {
               navigation.navigate("RateTrainingScreen", {
-                trainingData: trainingData,// ?????????????????????????????????????????????????????????????/
+                trainingId: trainingData.id,
               });
             }}
           >
@@ -101,15 +122,33 @@ export default function TrainingCard(props: Props) {
           </Button>
           <Text fontWeight="400">Valoraciones</Text>
           <Box width={320} height={200} backgroundColor="#fff">
-          {/* <FlatList
-            data={filteredData}
-            marginBottom={65}
-            marginTop={2}
-            renderItem={(training) => (
-              <TrainingsInfo training={training.item} navigation={navigation} />
-            )}
-            keyExtractor={(training) => training.id.toString()}
-          ></FlatList> */}
+            <FlatList
+              data={reviews}
+              renderItem={({ item }) => (
+                <Box
+                  backgroundColor="#fff"
+                  width={320}
+                  height={100}
+                  borderRadius="10px"
+                  borderWidth="1"
+                  borderColor="coolGray.200"
+                  my={2}
+                >
+                  <HStack alignItems="center" space={8}>
+                    <HStack alignItems="center" space={1}>
+                      <FiveStars
+                        starClicked={item.score}
+                        setStarClicked={undefined} // stars not clickable
+                        areButtons={false}
+                        size={15}
+                      />
+                    </HStack>
+                    <Text fontWeight="400">{item.comment}</Text>
+                  </HStack>
+                </Box>
+              )}
+              keyExtractor={(item) => item.id!.toString()}
+            ></FlatList>
           </Box>
         </VStack>
       </Box>

@@ -266,6 +266,52 @@ export const createTrainingStyles = StyleSheet.create({
   },
 });
 
+export const rateTrainingStyles = StyleSheet.create({
+  heading: {
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    fontWeight: '800',
+    fontSize: 30,
+    lineHeight: 35,
+    top: '10%',
+    textAlign: 'center',
+    alignSelf: 'center',
+    color: '#FF6060',
+  },
+  text: {
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    alignSelf: 'center',
+    textAlign: 'center',
+    fontSize: 18,
+    top: '18%',
+    left: '10%',
+  },
+  starRatingBox: {
+    width: '100%',
+    fontSize: 30,
+    paddingTop: 20,
+    borderBottomEndRadius: 30,
+    borderBottomStartRadius: 30,
+    alignSelf: 'center',
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+  commentInputBox: {
+    width: '90%',
+    height: '40%',
+    marginTop: '5%',
+    alignSelf: 'center',
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    display: 'flex',
+    flexDirection: 'column',
+  },
+});
+
+
 export const editProfileStyles = StyleSheet.create({
   heading: {
     fontFamily: 'Roboto',

@@ -1,5 +1,6 @@
 import { User } from "firebase/auth";
 import globalUser, { userInfo } from "./userStorage";
+import { trainingReview } from "./app/screens/rateTraining";
 
 
 const getInternalIdFromResponse = (response: any): string => {
@@ -161,7 +162,7 @@ export async function getResetPasswordUrl(email:string) : Promise<string | null>
 
 export async function getUserInfoByEmail(email:string, user: User) : Promise<userInfo | Error> {
   console.log("getting user info by email of user ", user );
-  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/?email=" + email;
+  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/by_email/" + email;
   const accessToken = (user as any).stsTokenManager.accessToken;
   try {
     const response = await fetch(url, {
@@ -177,6 +178,7 @@ export async function getUserInfoByEmail(email:string, user: User) : Promise<use
     if (response.ok) {
       try {
         const user : userInfo = await response.json();
+        console.log("user info by email:", user);
         return user;
       } catch (err: any) {
         console.error(err);
@@ -453,3 +455,63 @@ export async function addTraining(training: TrainerTraining) : Promise<boolean> 
 // receives a list of ids and returns a map with the id and a list of ratings for each training
 // export async function getTrainingsRatings(ids:number[]) : Promise<Map<number, number>> {
 
+
+export async function addTrainingReview(trainingId:number, review:trainingReview) : Promise<any> {
+  const user = await globalUser.getUser();
+  const userId = user?.id;
+  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/" + trainingId + "/review/" + userId;
+  const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "dev": "a",
+        "Authorization": "Bearer " + accessToken,
+      },
+      body: JSON.stringify(review),
+    });
+    if (response.ok) {
+      console.log("training review added");
+      return true;
+    } else {
+      console.error("error adding training review, response: ",await response.json());
+      return false;
+    }
+  } catch (err: any) {
+    console.error("error adding training review: ",err);
+  }
+  return false
+}
+
+export async function getTrainingReviews(trainingId:number) : Promise<trainingReview[]> {
+  const user = await globalUser.getUser();
+  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/"+ trainingId +"/reviews";
+  const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "dev": "a",
+        "Authorization": "Bearer " + accessToken,
+      },
+    });
+    if (response.ok) {
+      console.log("getting reviews");
+      return await response.json();
+    } else {
+      console.error("error getting training reviews, response: ",await response.json());
+      return [];
+    }
+  } catch (err: any) {
+    console.error("error getting training reviews: ",err);
+  }
+  return []
+}
