@@ -299,7 +299,7 @@ export const rateTrainingStyles = StyleSheet.create({
   },
   commentInputBox: {
     width: '90%',
-    height: '40%',
+    height: 450,
     marginTop: '5%',
     alignSelf: 'center',
     borderBottomLeftRadius: 30,

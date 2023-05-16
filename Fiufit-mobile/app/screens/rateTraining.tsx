@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Container,
   HStack,
   Heading,
   Input,
@@ -67,37 +66,39 @@ export default function RateTrainingScreen({ route, navigation }: any) {
 
   return (
     <NativeBaseProvider theme={theme}>
-      <Box style={rateTrainingStyles.starRatingBox}>
-        <VStack alignItems="center">
+      <Box height="250" style={rateTrainingStyles.starRatingBox}>
+        <VStack space={6} alignItems="center">
           <Heading
             fontSize="2xl"
             fontWeight="bold"
-            mt={10}
             style={rateTrainingStyles.heading}
           >
             Valorar entrenamiento
           </Heading>
           <Spacer size={"1%"} />
-          <Text fontSize="xl" fontWeight="bold" mt={10}>
+          <Text fontSize="xl" fontWeight="bold">
             Puntuación
           </Text>
           <HStack space={4} alignItems="center">
-            {FiveStars({
-              starClicked: starClicked,
-              setStarClicked: setStarClicked,
-              areButtons: true,
-            })}
+            <FiveStars
+              starClicked={starClicked}
+              setStarClicked={setStarClicked}
+              areButtons={true}
+            />
           </HStack>
+          <Spacer/>
         </VStack>
       </Box>
-      <Box style={rateTrainingStyles.commentInputBox}>
-        <Text fontSize="xl" fontWeight="bold" mt={10}>
+      <Box height="100" style={rateTrainingStyles.commentInputBox}>
+        <Text fontSize="xl" fontWeight="bold" style={{left:"5%", top:"5%"}}>
           Comentario
         </Text>
         <Input
-          width={320}
-          height={200}
-          backgroundColor="#fff"
+          width="90%"
+          height="300"
+          backgroundColor="#FFFFFF"
+          top="10%"
+          alignSelf="center"
           onChangeText={handleComment}
         />
         <Button
@@ -105,6 +106,7 @@ export default function RateTrainingScreen({ route, navigation }: any) {
           size={10}
           maxW={360}
           width={320}
+          top={"15%"}
           borderRadius="10px"
           alignSelf="center"
           onPress={handleRateTraining}

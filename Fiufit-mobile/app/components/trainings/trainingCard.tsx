@@ -2,7 +2,6 @@ import * as React from "react";
 import {
   Image,
   Text,
-  NativeBaseProvider,
   AspectRatio,
   Box,
   Center,
@@ -10,14 +9,9 @@ import {
   Heading,
   HStack,
   Button,
-  VStack,
-  FlatList,
-  Spacer,
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
-import { Training, getTrainingReviews } from "../../../api";
-import { trainingReview } from "../../screens/rateTraining";
-import FiveStars from "../rateTraining/fiveStars";
+import { Training } from "../../../api";
 
 interface Props {
   navigation: any;
@@ -26,22 +20,6 @@ interface Props {
 
 export default function TrainingCard(props: Props) {
   const { navigation, trainingData } = props;
-  const [reviews, setReviews] = React.useState<trainingReview[]>([]);
-
-  const retrieveTrainingReviews = async () => {
-    const trainingReviews = await getTrainingReviews(trainingData.id);
-    // map the training reviews to add an index to each review
-    const trainingReviewsWithIndex = trainingReviews.map(
-      (review: any, index: number) => {
-        return { ...review, index: index };
-      }
-    );
-    setReviews(trainingReviewsWithIndex);
-  };
-
-  React.useEffect(() => {
-    retrieveTrainingReviews();
-  }, []);
 
   return (
     <Box alignItems="center" backgroundColor="#fff">
@@ -101,57 +79,19 @@ export default function TrainingCard(props: Props) {
           </HStack>
           <Text fontWeight="400">Rutina del plan de entrenamiento</Text>
         </Stack>
-        <VStack space={8} alignItems="center" my={4}>
-          <Button
-            backgroundColor="#fff"
-            size={10}
-            maxW={360}
-            width={320}
-            borderRadius="10px"
-            alignSelf="center"
-            onPress={async () => {
-              navigation.navigate("RateTrainingScreen", {
-                trainingId: trainingData.id,
-              });
-            }}
-          >
-            <HStack alignItems="center" space={3}>
-              <AntDesign name="star" size={30} color="#FFD27D" />
-              <Text fontWeight="400">Valorar entrenamiento</Text>
-            </HStack>
-          </Button>
-          <Text fontWeight="400">Valoraciones</Text>
-          <Box width={320} height={200} backgroundColor="#fff">
-            <FlatList
-              data={reviews}
-              renderItem={({ item }) => (
-                <Box
-                  backgroundColor="#fff"
-                  width={320}
-                  height={100}
-                  borderRadius="10px"
-                  borderWidth="1"
-                  borderColor="coolGray.200"
-                  my={2}
-                >
-                  <HStack alignItems="center" space={8}>
-                    <HStack alignItems="center" space={1}>
-                      <FiveStars
-                        starClicked={item.score}
-                        setStarClicked={undefined} // stars not clickable
-                        areButtons={false}
-                        size={15}
-                      />
-                    </HStack>
-                    <Text fontWeight="400">{item.comment}</Text>
-                  </HStack>
-                </Box>
-              )}
-              keyExtractor={(item) => item.id!.toString()}
-            ></FlatList>
-          </Box>
-        </VStack>
       </Box>
+      <Button
+        style={{top:"60%",
+                left: "20%",
+                borderRadius: 30,
+                backgroundColor: "#FF6060",
+                height: "10%",
+                width: 150,
+              }}
+          onPress={navigation.navigate("RatingsScreen", {trainingData: trainingData})}
+      >
+        Valoraciones
+      </Button>
     </Box>
   );
 }

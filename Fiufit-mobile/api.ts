@@ -163,7 +163,7 @@ export async function getResetPasswordUrl(email: string): Promise<string | null>
 
 export async function getUserInfoByEmail(email: string, user: User): Promise<userInfo | Error> {
   console.log("getting user info by email of user ", user);
-  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/?email=" + email;
+  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/by_email/" + email;
   const accessToken = (user as any).stsTokenManager.accessToken;
   try {
     const response = await fetch(url, {

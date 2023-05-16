@@ -1,6 +1,4 @@
-import { Button } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
-import { useState } from "react";
 
 interface RatingStarsProps {
   starClicked: number;
@@ -25,35 +23,35 @@ export default function FiveStars(props: RatingStarsProps) {
   return <>
     <AntDesign
       key={1}
-      name="star"
+      name={1 <= starClicked ? "star" : "staro"}
       size={size ? size : 30}
       color={1 <= starClicked ? "#FFD27D" : "#000000"}
       onPress={() => (areButtons ? updateStarFilling(1) : null)}
     />
     <AntDesign
       key={2}
-      name="star"
+      name={2 <= starClicked ? "star" : "staro"}
       size={size ? size : 30}
       color={2 <= starClicked ? "#FFD27D" : "#000000"}
       onPress={() => (areButtons ? updateStarFilling(2) : null)}
     />
     <AntDesign
       key={3}
-      name="star"
+      name={3 <= starClicked ? "star" : "staro"}
       size={size ? size : 30}
       color={3 <= starClicked ? "#FFD27D" : "#000000"}
       onPress={() => (areButtons ? updateStarFilling(3) : null)}
     />
     <AntDesign
       key={4}
-      name="star"
+      name={4 <= starClicked ? "star" : "staro"}
       size={size ? size : 30}
       color={4 <= starClicked ? "#FFD27D" : "#000000"}
       onPress={() => (areButtons ? updateStarFilling(4) : null)}
     />
     <AntDesign
       key={5}
-      name="star"
+      name={5 <= starClicked ? "star" : "staro"}
       size={size ? size : 30}
       color={5 <= starClicked ? "#FFD27D" : "#000000"}
       onPress={() => (areButtons ? updateStarFilling(5) : null)}
