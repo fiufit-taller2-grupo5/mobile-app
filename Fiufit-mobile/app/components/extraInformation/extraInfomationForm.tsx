@@ -12,7 +12,7 @@ interface Props {
   height: number;
   setHeight: (height: number) => void;
   interests: string[];
-  setInterests: (interests: string[]) => void;
+  setInterests: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export default function ExtraInformationForm(props: Props) {
@@ -29,10 +29,10 @@ export default function ExtraInformationForm(props: Props) {
 
   return (
     <VStack space={6} alignItems="center" top={"5%"}>
-      <BirthDateForm top={"15%"} date={date} setDate={setDate}/>
-      <WeightForm top={"0%"} weight={weight} setWeight={setWeight}/>
-      <HeightForm top={"5%"} height={height} setHeight={setHeight}/>
-      <InterestsForm top={"10%"} interests={interests} setInterests={setInterests}/>
+      <BirthDateForm top={"15%"} date={date} setDate={setDate} />
+      <WeightForm top={"0%"} weight={weight} setWeight={setWeight} />
+      <HeightForm top={"5%"} height={height} setHeight={setHeight} />
+      <InterestsForm top={"10%"} interests={interests} setInterests={setInterests} />
     </VStack>
   );
 }

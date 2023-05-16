@@ -28,15 +28,15 @@ export default function ExtraInformationScreen({ navigation, route }: any) {
   const [date, setDate] = useState<Date>(new Date());
   const [weight, setWeight] = useState(50);
   const [height, setHeight] = useState(150);
-  const [interests, setInterests] = useState(new Array<string>());
+  const [interests, setInterests] = useState<string[]>([]);
 
   const clearFields = () => {
     setDate(new Date());
     setWeight(50);
     setHeight(150);
-    setInterests(new Array<string>());
+    setInterests([]);
   }
-
+  console.log('info:', streetName, streetNumber, date, weight, height, interests);
   return <NativeBaseProvider theme={theme}>
     <VStack
       space={6}

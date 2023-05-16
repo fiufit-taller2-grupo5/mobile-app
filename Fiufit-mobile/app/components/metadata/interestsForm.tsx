@@ -7,38 +7,33 @@ import { getInterests } from "../../../api";
 interface Props {
   top: string;
   interests: string[];
-  setInterests: (interests: any) => void;
+  setInterests: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export default function InterestsForm(props: Props) {
   const { top, interests, setInterests } = props;
-
-  let interestsSelected = interests;
+  const [interestsData, setInterestsList] = useState<string[]>([]);
 
   const handleChange = (interest: string) => {
-    if (interestsSelected.includes(interest)) {
-      const index = interestsSelected.indexOf(interest);
-      if (index > -1) {
-        interestsSelected.splice(index, 1);
+    console.log(interests, interest);
+    setInterests((prevInterests) => {
+      if (prevInterests.includes(interest)) {
+        return prevInterests.filter((item) => item !== interest);
+      } else {
+        return [...prevInterests, interest];
       }
-      setInterests(interestsSelected);
-    }
-    else {
-      interestsSelected.push(interest);
-      setInterests(interestsSelected);
-    }
+    });
   }
 
   // TODO should move this to api.ts?
   const interestsResponse = useSWR("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/interests", getInterests);
 
-  const [interestsData, setInterestsList] = useState<string[]>([]);
   useEffect(() => {
-    if(interestsResponse.data) {
+    if (interestsResponse.data) {
       setInterestsList(interestsResponse.data);
     }
   }, [interestsResponse.data]);
-  
+
 
   return (
     <VStack space={8}
@@ -69,8 +64,9 @@ export default function InterestsForm(props: Props) {
               colorScheme='rose'
               key={interest}
               value={interest}
+              isChecked={interests.includes(interest)}
               mr={"12"}
-              onChange={() => {handleChange(interest);}}
+              onChange={() => { handleChange(interest); }}
             >
               <Text width={"20"}>
                 {interest}
