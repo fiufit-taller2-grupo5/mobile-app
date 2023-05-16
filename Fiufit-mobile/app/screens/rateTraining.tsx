@@ -2,7 +2,6 @@ import {
   Box,
   HStack,
   Heading,
-  Input,
   NativeBaseProvider,
   Spacer,
   Text,
@@ -10,12 +9,13 @@ import {
   View,
   extendTheme,
   TextArea,
+  Modal
 } from "native-base";
 import { useState } from "react";
 import { Button } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
 import { rateTrainingStyles } from "../styles";
 import { addTrainingReview } from "../../api";
+import ErrorMessage from '../components/form/errorMessage';
 import FiveStars from "../components/rateTraining/fiveStars";
 
 const theme = extendTheme({
@@ -40,6 +40,7 @@ export default function RateTrainingScreen({ route, navigation }: any) {
   const [comment, setComment] = useState("");
   const [isLoading, setIsLoading] = useState(false); // TODO: use this to show a loading indicator
   const [starClicked, setStarClicked] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleComment = (text: string) => {
     setComment(text);
@@ -59,11 +60,14 @@ export default function RateTrainingScreen({ route, navigation }: any) {
       comment: comment,
       score: starClicked,
     });
-    //TODO handle empty comment or rating
-    setIsLoading(false);
-    // if (response) {
-    navigation.goBack();
-    // }
+    console.log("response", response);
+    if (response === false) {
+      setErrorMessage("Entrenamiento ya valorado");
+    } else {
+      //TODO handle empty comment or rating
+      setIsLoading(false);
+      navigation.goBack();
+    }
   };
 
   return (
@@ -71,6 +75,22 @@ export default function RateTrainingScreen({ route, navigation }: any) {
       <View flex={1} backgroundColor="#ffffff">
         <Box height="200" style={rateTrainingStyles.starRatingBox}>
           <VStack space={6} alignItems="center">
+            {errorMessage && 
+              <Modal
+                style={{maxHeight:"18%", height:"18%", width:"100%", top:"-1.3%"}}
+                _backdrop={{backgroundColor: "transparent"}}
+                closeOnOverlayClick={true}
+                onClose={() => {
+                  setErrorMessage("");
+                  navigation.goBack();
+                }}
+                isOpen={errorMessage !== ""}
+              >
+                <View backgroundColor={"red.200"} maxHeight="20%" width="100%">
+                  <ErrorMessage errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
+                </View>
+              </Modal>
+            }
             <Heading
               fontSize="2xl"
               fontWeight="bold"

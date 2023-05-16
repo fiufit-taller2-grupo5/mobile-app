@@ -470,7 +470,7 @@ export async function addTrainingReview(trainingId: number, review: trainingRevi
       console.log("training review added");
       return true;
     } else {
-      console.error("error adding training review, response: ", await response.json());
+      console.log("ERROR adding training review");
       return false;
     }
   } catch (err: any) {
