@@ -253,12 +253,13 @@ export default function TrainingsList(props: Props) {
         contentContainerStyle={{ flexGrow: 1 }}
         data={filteredData}
         marginBottom={0}
+        marginTop={5}
         renderItem={(training) => (
           <TrainingInfoCard
             trainingData={training.item}
             canSetFavorite
             navigation={navigation}
-            navigateToScreen="FavoriteTrainingInfoScreen"
+            navigateToScreen="TrainingInfoScreen"
           />
         )}
         keyExtractor={(training) => training.id.toString()}

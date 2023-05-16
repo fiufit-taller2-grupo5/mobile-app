@@ -138,7 +138,7 @@ export default function FavoriteTrainingsList(props: Props) {
           onRemoveFavorite={getTrainingsList}
           trainingData={favoriteTraining.item}
           navigation={navigation}
-          navigateToScreen="FavoriteTrainingInfoScreen"
+          navigateToScreen="TrainingInfoScreen"
         />} keyExtractor={(training) => training.id.toString()} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getTrainingsList} />}></FlatList>
     </NativeBaseProvider>
   );

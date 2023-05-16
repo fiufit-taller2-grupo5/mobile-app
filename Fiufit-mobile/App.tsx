@@ -23,9 +23,7 @@ import ChangeRoleScreen from './app/screens/editProfile/changeRole';
 import CreateTrainingScreen from './app/screens/createTraining';
 import ChangeLocationScreen from './app/screens/editProfile/changeLocation';
 import FavoritesScreen from './app/screens/favorites';
-import FavoriteTrainingInfoScreen from './app/screens/favoriteTrainingInfoScreen';
 import TrainerTrainingsScreen from './app/screens/trainerTrainings';
-import TrainerTrainingInfoScreen from './app/screens/trainerTrainingsInfo';
 import RatingsScreen from './app/screens/ratings';
 import RateTrainingScreen from './app/screens/rateTraining';
 
@@ -48,7 +46,7 @@ export default function App() {
         >
           <Stack.Screen
             name="WelcomeScreen"
-            component={WelcomeScreen}/>
+            component={WelcomeScreen} />
           <Stack.Screen
             name="RegisterScreen"
             component={RegisterScreen} />
@@ -57,11 +55,11 @@ export default function App() {
             component={LoginScreen} />
           <Stack.Screen
             name="LocationScreen"
-            component={LocationScreen}/>
+            component={LocationScreen} />
           <Stack.Screen
             name="ExtraInfoScreen"
             component={ExtraInformationScreen}
-            initialParams={{streetName: '', streetNumber: 0}}/>
+            initialParams={{ streetName: '', streetNumber: 0 }} />
           <Stack.Screen
             name="HomeScreen"
             component={HomeScreen} />
@@ -80,9 +78,6 @@ export default function App() {
           <Stack.Screen
             name="TrainingInfoScreen"
             component={TrainingInfoScreen} />
-          <Stack.Screen
-            name="FavoriteTrainingInfoScreen"
-            component={FavoriteTrainingInfoScreen} />
           <Stack.Screen
             name="ChangeNameScreen"
             component={ChangeNameScreen} />
@@ -111,12 +106,9 @@ export default function App() {
             name="TrainerTrainingsScreen"
             component={TrainerTrainingsScreen} />
           <Stack.Screen
-            name="TrainerTrainingInfoScreen"
-            component={TrainerTrainingInfoScreen} />
-          <Stack.Screen
             name="RatingsScreen"
-            component={RatingsScreen} 
-            initialParams={{trainingData: null}}/>
+            component={RatingsScreen}
+            initialParams={{ trainingData: null }} />
           <Stack.Screen
             name="RateTrainingScreen"
             component={RateTrainingScreen} />
