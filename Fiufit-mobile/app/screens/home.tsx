@@ -17,7 +17,6 @@ export default function HomeScreen({ navigation }: any) {
         headerShown: false,
         tabBarStyle:{
           height:60,
-        //   height:"8%",
           borderTopRightRadius:30, 
           borderTopLeftRadius:30,
         },
