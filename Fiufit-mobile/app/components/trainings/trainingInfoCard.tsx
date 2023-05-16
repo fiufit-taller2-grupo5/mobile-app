@@ -29,7 +29,7 @@ const mainImage = (training_type: any) => {
 
 export const TrainingInfoCard = ({
   trainingData,
-  setFavorite = false,
+  canSetFavorite = false,
   navigation,
   navigateToScreen
 }: any) => {
@@ -42,16 +42,14 @@ export const TrainingInfoCard = ({
   );
 
   const handleFavorite = async () => {
-    if (!setFavorite) return;
+    if (!canSetFavorite) return;
 
     if (isFavorite) {
-      setFavorite(false);
+      setTrainingFavorite(false);
       const response = await quitFavoriteTraining(trainingData.id);
-      if (!response) setFavorite(true);
     } else {
-      setFavorite(true);
+      setTrainingFavorite(true);
       const response = await addFavoriteTraining(trainingData.id);
-      if (!response) setFavorite(false);
     }
   }
 
@@ -94,39 +92,28 @@ export const TrainingInfoCard = ({
               Dificultad: {trainingData.difficulty}
             </Text>
           </VStack>
-          {setFavorite && (
-            <VStack my={1} width={30} height={10} mr={0} ml={1}>
-              <Button backgroundColor="#fff" onPress={handleFavorite}>
-                <Icon
-                  as={
-                    <MaterialCommunityIcons
-                      name={isFavorite ? "heart" : "heart-outline"}
-                    />
-                  }
-                  size={6}
-                  color="#FF6060"
-                  alignSelf="center"
-                />
-              </Button>
-              <Button
-                backgroundColor="#fff"
-                onPress={async () => {
-                  console.log("click");
-                }}
-              >
-                <Icon
-                  as={
-                    <MaterialCommunityIcons
-                      name={isRated ? "star" : "star-outline"}
-                    />
-                  }
-                  size={6}
-                  color="#FFD27D"
-                  alignSelf="center"
-                />
-              </Button>
-            </VStack>
-          )}
+          <VStack my={1} width={30} height={10} mr={0} ml={1}>
+            {canSetFavorite && (
+              <>
+                <Button backgroundColor="#fff" onPress={handleFavorite}>
+                  <Icon
+                    as={<MaterialCommunityIcons name={isFavorite ? "heart" : "heart-outline"} />}
+                    size={6}
+                    color="#FF6060"
+                    alignSelf="center"
+                  />
+                </Button>
+                <Button backgroundColor="#fff" onPress={async () => { console.log("click"); }}>
+                  <Icon
+                    as={<MaterialCommunityIcons name={isRated ? "star" : "star-outline"} />}
+                    size={6}
+                    color="#FFD27D"
+                    alignSelf="center"
+                  />
+                </Button>
+              </>
+            )}
+          </VStack>
         </HStack>
         <Divider my={10} mx={1} />
       </Button>

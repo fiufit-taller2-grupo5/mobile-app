@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Container, Text, NativeBaseProvider, extendTheme } from 'native-base';
+import { Container, Text, NativeBaseProvider, extendTheme, View } from 'native-base';
 
 export default function UsersScreen() {
     const theme = extendTheme({
@@ -10,16 +10,14 @@ export default function UsersScreen() {
                     fontStyle: 'normal',
                     fontWeight: '800',
                     fontSize: '30px',
-                    top: '150px',
-                    left: '35%',
                 }
             }
         }
     });
 
     return <NativeBaseProvider theme={theme}>
-        <Container>
+        <View flex={1} style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: "white" }}>
             <Text>Users Screen</Text>
-        </Container>
+        </View>
     </NativeBaseProvider>;
 }

@@ -255,7 +255,7 @@ export default function TrainingsList(props: Props) {
         renderItem={(training) => (
           <TrainingInfoCard
             trainingData={training.item}
-            setFavorite
+            canSetFavorite
             navigation={navigation}
             navigateToScreen="FavoriteTrainingInfoScreen"
           />

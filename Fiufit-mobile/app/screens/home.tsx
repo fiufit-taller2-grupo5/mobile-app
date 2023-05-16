@@ -15,14 +15,12 @@ const Tab = createBottomTabNavigator();
 export default function HomeScreen({ navigation }: any) {
     const screenOptions = {
         headerShown: false,
-        tabBarStyle:{
-          height:60,
-          borderTopRightRadius:30, 
-          borderTopLeftRadius:30,
+        tabBarStyle: {
+            height: 60,
+
         },
-        tabBarItemStyle:{
-          margin:5,
-          borderRadius:10,
+        tabBarItemStyle: {
+            margin: 5,
         },
     };
 
@@ -37,49 +35,57 @@ export default function HomeScreen({ navigation }: any) {
             getCurrentRole();
         });
         return listener;
-      }, [navigation]);
+    }, [navigation]);
 
     const isAthlete = role === 'Atleta';
 
     return <NativeBaseProvider>
-        <Tab.Navigator {... { screenOptions }} >
+        <Tab.Navigator screenOptions={screenOptions}>
             <Tab.Screen
                 name="Users" component={UsersScreen}
                 options={
-                    {tabBarLabel: 'Users', tabBarIcon: ({ color, size }) => (
-                    <FontAwesome5 name='users' color={color} size={size} />),
-                    tabBarActiveTintColor: '#FF6060'}
+                    {
+                        tabBarLabel: 'Users', tabBarIcon: ({ color, size }) => (
+                            <FontAwesome5 name='users' color={color} size={size} />),
+                        tabBarActiveTintColor: '#FF6060'
+                    }
                 }
             />
             {isAthlete && <Tab.Screen
                 options={
-                    {tabBarLabel: 'Trainings', tabBarIcon: ({ color, size }) => (
-                    <MaterialCommunityIcons name='dumbbell' color={color} size={size} />),
-                    tabBarActiveTintColor: '#FF6060'}
+                    {
+                        tabBarLabel: 'Trainings', tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons name='dumbbell' color={color} size={size} />),
+                        tabBarActiveTintColor: '#FF6060'
+                    }
                 }
                 name="Trainings" component={TrainingsScreen}
             />}
             {!isAthlete && <Tab.Screen
                 options={
-                    {tabBarLabel: 'Trainings', tabBarIcon: ({ color, size }) => (
-                    <MaterialCommunityIcons name='dumbbell' color={color} size={size} />),
-                    tabBarActiveTintColor: '#FF6060'}
+                    {
+                        tabBarLabel: 'Trainings', tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons name='dumbbell' color={color} size={size} />),
+                        tabBarActiveTintColor: '#FF6060'
+                    }
                 }
                 name="Trainings" component={TrainerTrainingsScreen}
             />}
             {isAthlete && <Tab.Screen
                 options={{
                     tabBarLabel: 'Favorites', tabBarIcon: ({ color, size }) => (
-                    <MaterialCommunityIcons name='heart' color={color} size={size} />),
+                        <MaterialCommunityIcons name='heart' color={color} size={size} />),
                     tabBarActiveTintColor: '#FF6060'
                 }}
-                name="Favorites" component={FavoritesScreen} 
+                name="Favorites" component={FavoritesScreen}
             />}
             <Tab.Screen
                 options={
-                    {tabBarLabel: 'Profile', tabBarIcon: ({ color, size }) => (
-                    <MaterialCommunityIcons name='account' color={color} size={size} />),
-                    tabBarActiveTintColor: '#FF6060'}
+                    {
+                        tabBarLabel: 'Profile', tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons name='account' color={color} size={size} />),
+                        tabBarActiveTintColor: '#FF6060'
+                    }
                 }
                 name="Profile" component={ProfileScreen}
             />

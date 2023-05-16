@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { Platform } from 'react-native';
 
 export const welcomeStyles = StyleSheet.create({
   mainVerticalStack: {
@@ -357,16 +358,22 @@ export const editProfileStyles = StyleSheet.create({
     borderBottomStartRadius: 30,
   },
   infoBox: {
-    width: '90%',
-    height: '40%',
-    marginTop: '5%',
-    alignSelf: 'center',
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    display: 'flex',
-    flexDirection: 'column',
+    marginHorizontal: 5,
+    borderRadius: 2,
+    ...Platform.select({
+      ios: {
+        shadowColor: 'black',
+        shadowOpacity: 0.05,
+        shadowRadius: 1,
+        shadowOffset: {
+          width: 0,
+          height: 1,
+        },
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
   },
   stack: {
     display: 'flex',
