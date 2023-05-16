@@ -80,14 +80,20 @@ export default function FavoriteTrainingsList(props: Props) {
   const getTrainingsList = async () => {
     setRefreshing(true);
     const favoritesTrainingsResponse = await getFavoriteTrainings();
-    setFavoriteTrainingsList(favoritesTrainingsResponse);
+    const favoritesTrainings = favoritesTrainingsResponse.map((training) => ({
+      ...training,
+      isFavorite: true
+    }));
+    setFavoriteTrainingsList(favoritesTrainings);
     setRefreshing(false);
-    setFilteredData(favoritesTrainingsResponse);
+    setFilteredData(favoritesTrainings);
   }
 
   useEffect(() => {
     getTrainingsList();
   }, [])
+
+  console.log("favoriteTrainingsList:", filteredData)
 
   return (
     <NativeBaseProvider>
@@ -128,6 +134,8 @@ export default function FavoriteTrainingsList(props: Props) {
         marginTop={0}
         data={filteredData}
         renderItem={(favoriteTraining) => <TrainingInfoCard
+          canSetFavorite
+          onRemoveFavorite={getTrainingsList}
           trainingData={favoriteTraining.item}
           navigation={navigation}
           navigateToScreen="FavoriteTrainingInfoScreen"

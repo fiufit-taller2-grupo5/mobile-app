@@ -30,6 +30,7 @@ const mainImage = (training_type: any) => {
 export const TrainingInfoCard = ({
   trainingData,
   canSetFavorite = false,
+  onRemoveFavorite = () => { },
   navigation,
   navigateToScreen
 }: any) => {
@@ -47,6 +48,7 @@ export const TrainingInfoCard = ({
     if (isFavorite) {
       setTrainingFavorite(false);
       await quitFavoriteTraining(trainingData.id);
+      onRemoveFavorite();
     } else {
       setTrainingFavorite(true);
       await addFavoriteTraining(trainingData.id);
