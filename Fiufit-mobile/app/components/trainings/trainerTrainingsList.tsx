@@ -68,7 +68,7 @@ export default function TrainerTrainingsList(props: Props) {
   const [filteredData, setFilteredData] = useState<Training[]>([]);
   const [refreshing, setRefreshing] = useState(true);
 
-  const filterDataByDifficultyOrType = (text: string) => {
+  /*const filterDataByDifficultyOrType = (text: string) => {
     if (text) {
       const filtered = trainerTrainingsList.filter(
         (item) =>
@@ -80,11 +80,22 @@ export default function TrainerTrainingsList(props: Props) {
     else {
       setFilteredData(trainerTrainingsList);
     }
+  };*/
+  const filterDataByTitle = (text: string) => {
+    if (text) {
+      const filtered = trainerTrainingsList.filter(
+        (item) =>
+          item.title.toLowerCase().includes(text.toLowerCase())
+      );
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(trainerTrainingsList);
+    }
   };
 
   const handleSearch = (text: string) => {
     setSearchText(text);
-    filterDataByDifficultyOrType(text);
+    filterDataByTitle(text);
   };
 
   const getTrainingsList = async () => {

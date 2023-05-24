@@ -58,7 +58,7 @@ export default function FavoriteTrainingsList(props: Props) {
   const [filteredData, setFilteredData] = useState<Training[]>([]);
   const [refreshing, setRefreshing] = useState(true);
 
-  const filterDataByDifficultyOrType = (text: string) => {
+  /*const filterDataByDifficultyOrType = (text: string) => {
     if (text) {
       const filtered = favoriteTrainingsList.filter(
         (item) =>
@@ -70,11 +70,23 @@ export default function FavoriteTrainingsList(props: Props) {
     else {
       setFilteredData(favoriteTrainingsList);
     }
+  };*/
+
+  const filterDataByTitle = (text: string) => {
+    if (text) {
+      const filtered = favoriteTrainingsList.filter(
+        (item) =>
+          item.title.toLowerCase().includes(text.toLowerCase())
+      );
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(favoriteTrainingsList);
+    }
   };
 
   const handleSearch = (text: string) => {
     setSearchText(text);
-    filterDataByDifficultyOrType(text);
+    filterDataByTitle(text);
   };
 
   const getTrainingsList = async () => {

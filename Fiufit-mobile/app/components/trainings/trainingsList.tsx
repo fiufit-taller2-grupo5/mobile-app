@@ -11,7 +11,10 @@ import {
   Divider,
   Icon,
   Input,
-  View
+  View,
+  CheckIcon,
+  Select,
+  Center
 } from "native-base";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { trainingStyles } from "../../styles";
@@ -163,8 +166,9 @@ export default function TrainingsList(props: Props) {
   const [searchText, setSearchText] = useState("");
   const [filteredData, setFilteredData] = useState<Training[]>([]);
   const [refreshing, setRefreshing] = useState(true);
+  const [type, setType] = React.useState("");
 
-  const filterDataByDifficultyOrType = (text: string) => {
+  /*const filterDataByDifficultyOrType = (text: string) => {
     if (text) {
       const filtered = trainingsList.filter(
         (item) =>
@@ -175,11 +179,40 @@ export default function TrainingsList(props: Props) {
     } else {
       setFilteredData(trainingsList);
     }
+  };*/
+
+  const filterDataByType = (text: string) => {
+    if (text) {
+      const filtered = trainingsList.filter(
+        (item) =>
+          item.type.toLowerCase().includes(text.toLowerCase())
+      );
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(trainingsList);
+    }
+  };
+
+  const filterDataByTitle = (text: string) => {
+    if (text) {
+      const filtered = trainingsList.filter(
+        (item) =>
+          item.title.toLowerCase().includes(text.toLowerCase())
+      );
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(trainingsList);
+    }
   };
 
   const handleSearch = (text: string) => {
     setSearchText(text);
-    filterDataByDifficultyOrType(text);
+    filterDataByTitle(text);
+  };
+
+  const handleFilterByType = (text: string) => {
+    setType(text);
+    filterDataByType(text);
   };
 
   function updateFavoriteStatus(trainingResponse: Training[], favoriteTrainingResponse: Training[]): Training[] {
@@ -230,7 +263,7 @@ export default function TrainingsList(props: Props) {
     >
       <VStack alignSelf="center">
         <Input
-          placeholder="Search trainings by difficulty or type"
+          placeholder="Search trainings by name"
           onChangeText={handleSearch}
           value={searchText}
           width="100%"
@@ -247,6 +280,26 @@ export default function TrainingsList(props: Props) {
           }
         />
       </VStack>
+      <VStack>
+      <Box maxW="300">
+        <Select selectedValue={type} maxWidth="190" accessibilityLabel="Choose Type" placeholder="Choose Type" _selectedItem={{
+        bg: "teal.600",
+        endIcon: <CheckIcon size="5" />
+      }} mt={1} onValueChange={handleFilterByType}>
+          <Select.Item label="No filter" value="" />
+          <Select.Item label="Running" value="Running" />
+          <Select.Item label="Swimming" value="Swimming" />
+          <Select.Item label="Biking" value="Biking" />
+          <Select.Item label="Yoga" value="Yoga" />
+          <Select.Item label="Basketball" value="Basketball" />
+          <Select.Item label="Football" value="Football" />
+          <Select.Item label="Walking" value="Walking" />
+          <Select.Item label="Gymnastics" value="Gymnastics" />
+          <Select.Item label="Dancing" value="Dancing" />
+          <Select.Item label="Hiking" value="Hiking" />
+        </Select>
+      </Box>
+    </VStack>
     </VStack>
     <View flex={1}>
       <FlatList
