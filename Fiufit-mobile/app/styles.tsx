@@ -73,13 +73,12 @@ export const loginAndRegisterStyles = StyleSheet.create({
   button: {
     flex: 1,
     textAlign: "center",
-    height: "-10%",
     width: "80%",
     borderRadius: 30
   },
   button2: {
     backgroundColor: "#FF6060",
-    top: "60%",
+    top: 80,
   },
   loginAndRegisterButton: {
     top: "-10%",
@@ -88,7 +87,7 @@ export const loginAndRegisterStyles = StyleSheet.create({
     top: "3%",
   },
   heading: {
-    flex: 0,
+    // flex: 0,
     left: '0%',
     fontFamily: 'Roboto',
     fontStyle: 'normal',
@@ -98,7 +97,7 @@ export const loginAndRegisterStyles = StyleSheet.create({
     textAlign: 'center',
   },
   heading1: {
-    top: '15%',
+    top: 100,
     color: "#FF6060",
   },
   heading2: {
@@ -109,7 +108,7 @@ export const loginAndRegisterStyles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 35,
     textAlign: 'center',
-    top: '10%',
+    top: 30
   },
   registerHeading: {
     top: '3%',
