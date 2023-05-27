@@ -4,9 +4,10 @@ import { Image } from "native-base";
 export default function WelcomeImage() {
   return (
     <Image
-      top="-10%"
-      width="100%"
-      source={require('../../../assets/images/welcome_image.png')} 
+      marginBottom={10}
+      width={300}
+      height={300}
+      source={require('../../../assets/images/logo.png')}
       alt="image"
     />
   );

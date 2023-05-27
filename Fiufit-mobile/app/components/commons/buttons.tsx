@@ -19,6 +19,7 @@ const baseStyles = StyleSheet.create({
     width: 300,
     margin: 2,
     color: '#FFFFFF',
+    backgroundColor: "#FF6060",
   },
 });
 
@@ -26,26 +27,29 @@ export const LoadableButton = ({ text, customStyles, onPress }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
 
-  const handleClick = async () => {
+  const handleClick = () => {
     setIsLoading(true);
-    try {
-      const msg = await onPress();
-      if (msg) {
+    setTimeout(async () => {
+      try {
+        const msg = await onPress();
+        setIsLoading(false);
+        if (msg) {
+          toast.show({
+            description: msg,
+            backgroundColor: "green.600",
+            duration: 3000,
+          })
+        }
+      } catch (e: any) {
+        setIsLoading(false);
         toast.show({
-          description: msg,
-          backgroundColor: "green.600",
+          description: e.message,
+          backgroundColor: "red.700",
           duration: 3000,
         })
+        console.log(e);
       }
-    } catch (e: any) {
-      toast.show({
-        description: e.message,
-        backgroundColor: "red.700",
-        duration: 3000,
-      })
-      console.log(e);
-    }
-    setIsLoading(false);
+    }, 0);
   }
 
   const styles = StyleSheet.flatten([baseStyles.base, customStyles]);

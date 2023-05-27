@@ -3,6 +3,7 @@ import { NativeBaseProvider, VStack, Heading } from "native-base";
 import { loginAndRegisterStyles } from "../styles";
 import LocationForm from "../components/metadata/locationForm";
 import SubmitButton from "../components/extraInformation/locationSubmitButton";
+import { LoadableButton } from "../components/commons/buttons";
 
 export default function LocationScreen({ navigation }: any) {
   const [streetName, setStreetName] = useState("");
@@ -37,10 +38,22 @@ export default function LocationScreen({ navigation }: any) {
         setStreetNumber={setStreetNumber}
         top={"5px"} // Adjust this value as needed
       />
-      <SubmitButton
-        navigation={navigation}
-        streetName={streetName}
-        streetNumber={streetNumber}
+      <LoadableButton
+        text="Continuar"
+        customStyles={{ marginTop: 80 }}
+        onPress={async () => {
+          if (!streetName) {
+            throw Error("Por favor ingresa el nombre de la calle");
+            return;
+          }
+
+          if (!streetNumber) {
+            throw Error("Por favor ingresa el numero de la calle");
+            return;
+          }
+
+          navigation.navigate('ExtraInfoScreen', { streetName: streetName, streetNumber: streetNumber });
+        }}
       />
     </VStack>
   </NativeBaseProvider>;

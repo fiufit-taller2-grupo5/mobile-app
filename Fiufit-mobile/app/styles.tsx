@@ -3,7 +3,6 @@ import { Platform } from 'react-native';
 
 export const welcomeStyles = StyleSheet.create({
   mainVerticalStack: {
-    top: '5%',
     alignContent: 'center',
     display: 'flex',
     flexDirection: 'column',
@@ -61,6 +60,9 @@ export const welcomeStyles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 30,
     letterSpacing: -0.01,
+  },
+  desc: {
+    fontWeight: "700",
   }
 });
 

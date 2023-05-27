@@ -3,13 +3,13 @@ import { welcomeStyles } from "../../styles";
 
 export default function Title() {
   return (
-    <VStack style={welcomeStyles.verticalStack} width="full">
+    <VStack style={welcomeStyles.verticalStack} width="full" >
       <Text
         style={[welcomeStyles.text, welcomeStyles.heading1]}
         variant="heading1"
       > DESAFIA </Text>
       <HStack
-        space={2}
+        space={3}
         width="full"
         style={[welcomeStyles.horizontalStack, welcomeStyles.titleHorizontalStack]}
       >

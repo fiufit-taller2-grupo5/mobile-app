@@ -41,13 +41,11 @@ export default function Body({ navigation }: any) {
 
   return (
     <VStack
-      space={5}
+      space={0}
       style={welcomeStyles.verticalStack}
       width="full"
       alignItems="center"
-      top="-3%"
     >
-      <Paragraph />
       <WelcomeImage />
       <Buttons navigation={navigation} />
     </VStack>
