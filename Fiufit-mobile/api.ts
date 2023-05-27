@@ -159,35 +159,27 @@ export async function getResetPasswordUrl(email: string): Promise<string | null>
   return null;
 }
 
-export async function getUserInfoByEmail(email: string, user: User): Promise<userInfo | Error> {
+export async function getUserInfoByEmail(email: string, user: User): Promise<userInfo> {
   console.log("getting user info by email of user ", user);
   const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/by_email/" + email;
   const accessToken = (user as any).stsTokenManager.accessToken;
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + accessToken,
-      },
-    });
-    if (response.ok) {
-      try {
-        const user: userInfo = await response.json();
-        return user;
-      } catch (err: any) {
-        console.error(err);
-      }
-    } else {
-      console.warn("error getting user info: ", await response.json());
-    }
-  } catch (err: any) {
-    console.error("error fetching user info: ", err);
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "accept": "*/*",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive",
+      "Authorization": "Bearer " + accessToken,
+    },
+  });
+  if (response.ok) {
+    const user: userInfo = await response.json();
+    return user;
+  } else {
+    throw Error("error getting user info: " + (await response.json()).message);
   }
-  return Error("User not found");
+
 }
 
 // TODO refactor methods to reduce code redundancy

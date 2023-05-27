@@ -155,6 +155,7 @@ export const loginAndRegisterStyles = StyleSheet.create({
   moveToRegister: {
     top: '2.8%',
     left: '0%',
+    marginTop: 0
   }
 });
 

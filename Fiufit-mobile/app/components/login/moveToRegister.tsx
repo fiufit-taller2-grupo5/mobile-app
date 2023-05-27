@@ -10,7 +10,7 @@ export default function MoveToRegister(props: Props) {
   const { navigation, clearFields } = props;
 
   return (
-    <HStack space={2} top="10%">
+    <HStack space={2} top="10%" marginBottom={10}>
       <Text style={loginAndRegisterStyles.moveToRegister}>No tienes una cuenta?</Text>
       <Link
         style={[loginAndRegisterStyles.link, loginAndRegisterStyles.loginLink]}

@@ -12,6 +12,7 @@ export default function InputForm(props: Props) {
 
   return (
     <Input
+      autoCapitalize={"none"}
       value={value}
       w="80%"
       variant="underlined"

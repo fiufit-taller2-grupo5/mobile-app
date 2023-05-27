@@ -3,13 +3,16 @@ import { loginAndRegisterStyles } from '../styles';
 import { Heading, NativeBaseProvider, extendTheme, VStack, Modal, View } from "native-base";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useState } from 'react';
-import { auth } from '../../firebase';
+import { auth, logInWithEmailAndPassword } from '../../firebase';
 import LoginForm from '../components/login/loginForm';
 import SubmitButton from '../components/login/submitButton';
 import GoogleLogin from '../components/login/googleLogin';
 import MoveToRegister from '../components/login/moveToRegister';
 import ErrorMessage from '../components/form/errorMessage';
 import ResetPassword from '../components/login/resetPassword';
+import { LoadableButton } from '../components/commons/buttons';
+import { getUserInfoByEmail } from '../../api';
+import globalUser from '../../userStorage';
 
 export default function LoginScreen({ navigation }: any) {
   const theme = extendTheme({
@@ -61,10 +64,10 @@ export default function LoginScreen({ navigation }: any) {
       height={"full"}
       width={"full"}
     >
-      {errorMessage && 
+      {errorMessage &&
         <Modal
-          style={{maxHeight:"20%", height:"20%", width:"100%", top:"-1.3%"}}
-          _backdrop={{backgroundColor: "transparent"}}
+          style={{ maxHeight: "20%", height: "20%", width: "100%", top: "-1.3%" }}
+          _backdrop={{ backgroundColor: "transparent" }}
           closeOnOverlayClick={true}
           onClose={() => setErrorMessage("")}
           isOpen={errorMessage !== ""}
@@ -86,14 +89,30 @@ export default function LoginScreen({ navigation }: any) {
         password={password}
         setPassword={setPassword}
       />
-      <SubmitButton
-        email={email}
-        password={password}
-        navigation={navigation}
-        setErrorMessage={setErrorMessage}
-        clearFields={cleanFields}
+      <LoadableButton
+        text="Iniciar Sesión"
+        customStyles={{ marginBottom: 40 }}
+        onPress={async () => {
+          const errorMessage = await logInWithEmailAndPassword(email, password);
+          if (!errorMessage) {
+            // get user info from the back and store it on the storage
+            const user = auth.currentUser;
+            if (user === null) {
+              console.error(errorMessage);
+              throw Error("Error al iniciar sesión. Por favor, inténtelo de nuevo más tarde.");
+            }
+            const userInfo = await getUserInfoByEmail(email.toLowerCase(), user);
+            userInfo.googleUser = user;
+            userInfo.role = "Atleta";
+            userInfo.UserMetadata = null;
+            globalUser.setUser(userInfo);
+            navigation.navigate('HomeScreen');
+          } else {
+            throw Error(errorMessage);
+          }
+        }}
       />
-      <GoogleLogin 
+      <GoogleLogin
         navigation={navigation}
         setErrorMessage={setErrorMessage}
       />

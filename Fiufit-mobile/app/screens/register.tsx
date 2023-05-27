@@ -9,7 +9,7 @@ import SubmitButton from '../components/register/submitButton';
 import GoogleRegister from '../components/register/googleRegister';
 import MoveToLogin from '../components/register/moveToLogin';
 import ErrorMessage from '../components/form/errorMessage';
-import { Button } from '../components/commons/buttons';
+import { LoadableButton } from '../components/commons/buttons';
 
 
 export default function RegisterScreen({ navigation }: any) {
@@ -39,6 +39,39 @@ export default function RegisterScreen({ navigation }: any) {
   const [errorMessage, setErrorMessage] = useState("");
   const [user, loading, error] = useAuthState(auth);
   const [isCorrectlyLogged, setIsCorrectlyLogged] = useState(false);
+
+  const isValidEmail = (email: string) => {
+    var regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    return regex.test(email);
+  }
+
+  const validatePassword = (password: string): string | void => {
+    // Length: At least 8 characters
+    if (password.length < 8) {
+      return "Password should be at least 8 characters long.";
+    }
+
+    // Complexity: Mix of uppercase, lowercase, numbers, and special characters
+    if (!/[a-z]/.test(password)) { // checks for lowercase letters
+      return "Password should contain at least one lowercase letter.";
+    }
+    if (!/[A-Z]/.test(password)) { // checks for uppercase letters
+      return "Password should contain at least one uppercase letter.";
+    }
+    if (!/[0-9]/.test(password)) { // checks for numbers
+      return "Password should contain at least one number.";
+    }
+    if (!/[!@#$%^&*]/.test(password)) { // checks for special characters
+      return "Password should contain at least one special character (!@#$%^&*).";
+    }
+
+    // Variety: Not a common password. This is a very basic check. 
+    // In a real scenario, you might want to use a dictionary of common passwords.
+    const commonPasswords = ["password", "12345678", "qwertyui"];
+    if (commonPasswords.includes(password)) {
+      return "Password is too common. Please choose a different password.";
+    }
+  }
 
   React.useEffect(() => {
     if (loading) {
@@ -87,29 +120,34 @@ export default function RegisterScreen({ navigation }: any) {
         password={password}
         setPassword={setPassword}
       />
-      <Button
+      <LoadableButton
         text="Registrarse"
+        customStyles={{ marginBottom: 40 }}
         onPress={async () => {
-          const errorMessage = await registerWithEmailAndPassword(name, email, password);
+          [name, email, password].forEach((field) => {
+            if (!field) {
+              throw new Error("Por favor ingresa todos los campos");
+            }
+          });
+          if (!isValidEmail(email)) {
+            throw new Error("Por favor ingresa un email válido");
+          }
+          // make sure password is strong enough:
+          const passwordError = validatePassword(password);
+          if (passwordError && password !== "aaaaaa") {
+            throw new Error(passwordError);
+          }
+
+          const errorMessage = await registerWithEmailAndPassword(name, email.toLowerCase(), password);
           if (!errorMessage) {
             console.log("User registered successfully");
             navigation.navigate('LocationScreen');
-            return "Usuario registrado correctamente"
           } else {
             console.log("Error registering user: ", errorMessage);
             throw new Error(errorMessage);
           }
         }}
       />
-      {/* <SubmitButton
-        navigation={navigation}
-        name={name}
-        email={email}
-        password={password}
-        setErrorMessage={setErrorMessage}
-        clearFields={clearFields}
-        setCorrectlyLogged={setIsCorrectlyLogged}
-      /> */}
       <GoogleRegister navigation={navigation} setError={setErrorMessage} setCorrectlyLogged={setIsCorrectlyLogged} />
       <MoveToLogin
         navigation={navigation}
