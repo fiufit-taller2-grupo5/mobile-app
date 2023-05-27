@@ -3,12 +3,13 @@ import { loginAndRegisterStyles } from '../styles';
 import { Heading, VStack, NativeBaseProvider, extendTheme, Modal, View } from 'native-base';
 import { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '../../firebase';
+import { auth, registerWithEmailAndPassword } from '../../firebase';
 import RegisterForm from '../components/register/registerForm';
 import SubmitButton from '../components/register/submitButton';
 import GoogleRegister from '../components/register/googleRegister';
 import MoveToLogin from '../components/register/moveToLogin';
 import ErrorMessage from '../components/form/errorMessage';
+import { Button } from '../components/commons/buttons';
 
 
 export default function RegisterScreen({ navigation }: any) {
@@ -59,10 +60,10 @@ export default function RegisterScreen({ navigation }: any) {
       height={"full"}
       width={"full"}
     >
-      {errorMessage && 
+      {errorMessage &&
         <Modal
-          style={{maxHeight:"20%", height:"20%", width:"100%", top:"-1.3%"}}
-          _backdrop={{backgroundColor: "transparent"}}
+          style={{ maxHeight: "20%", height: "20%", width: "100%", top: "-1.3%" }}
+          _backdrop={{ backgroundColor: "transparent" }}
           closeOnOverlayClick={true}
           onClose={() => setErrorMessage("")}
           isOpen={errorMessage !== ""}
@@ -86,7 +87,21 @@ export default function RegisterScreen({ navigation }: any) {
         password={password}
         setPassword={setPassword}
       />
-      <SubmitButton
+      <Button
+        text="Registrarse"
+        onPress={async () => {
+          const errorMessage = await registerWithEmailAndPassword(name, email, password);
+          if (!errorMessage) {
+            console.log("User registered successfully");
+            navigation.navigate('LocationScreen');
+            return "Usuario registrado correctamente"
+          } else {
+            console.log("Error registering user: ", errorMessage);
+            throw new Error(errorMessage);
+          }
+        }}
+      />
+      {/* <SubmitButton
         navigation={navigation}
         name={name}
         email={email}
@@ -94,8 +109,8 @@ export default function RegisterScreen({ navigation }: any) {
         setErrorMessage={setErrorMessage}
         clearFields={clearFields}
         setCorrectlyLogged={setIsCorrectlyLogged}
-      />
-      <GoogleRegister navigation={navigation} setError={setErrorMessage} setCorrectlyLogged={setIsCorrectlyLogged}/>
+      /> */}
+      <GoogleRegister navigation={navigation} setError={setErrorMessage} setCorrectlyLogged={setIsCorrectlyLogged} />
       <MoveToLogin
         navigation={navigation}
         clearFields={clearFields}
