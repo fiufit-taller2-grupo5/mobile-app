@@ -122,9 +122,6 @@ export const loginAndRegisterStyles = StyleSheet.create({
     top: '15%',
   },
   googleImage: {
-    top: "0%",
-    right: "0%",
-    bottom: "0%",
   },
   link: {
     left: "0%",
@@ -148,6 +145,7 @@ export const loginAndRegisterStyles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     textAlign: 'center',
+    marginBottom: 15
   },
   moveToLogin: {
     top: '2%',

@@ -9,10 +9,10 @@ import { signInWithCredential, GoogleAuthProvider } from "firebase/auth";
 
 interface Props {
   navigation: any;
-  setError : (errorMessage: string) => void;
-  setCorrectlyLogged : (isCorrectlyLogged: boolean) => void;
+  setError: (errorMessage: string) => void;
+  setCorrectlyLogged: (isCorrectlyLogged: boolean) => void;
 }
-function getErrorMessage (error: string) : string {
+function getErrorMessage(error: string): string {
   // receive a string like "{"error":"User with name pepe alreasy exists"}" and return the error message
   const errorStr = error.split(':"')[1].split('"}')[0];
   return errorStr;
@@ -39,7 +39,7 @@ export default function GoogleRegister(props: Props) {
             props.navigation.navigate("LocationScreen");
           } else {
             const responseData = await userCreationRes?.text();
-            props.setError(getErrorMessage(responseData? responseData : "Error creating user"));
+            props.setError(getErrorMessage(responseData ? responseData : "Error creating user"));
             auth.signOut();
           }
         }).catch((error) => {
@@ -54,15 +54,22 @@ export default function GoogleRegister(props: Props) {
   }, [response]);
 
   return (
-    <VStack space={8} alignItems="center">
-      <Text style={loginAndRegisterStyles.googleTextOption} >O registrarse con</Text>
-      <TouchableOpacity onPress={() => { promptAsync(); }}>
+    <VStack space={8} alignItems="center" justifyContent={"center"} width={"100%"} height={100}>
+      <TouchableOpacity style={{
+        width: "100%",
+        height: "100%",
+        alignItems: 'center',
+        justifyContent: 'center'
+      }} onPress={() => { promptAsync(); }}>
+        <Text style={loginAndRegisterStyles.googleTextOption}>O registrarse con</Text>
         <Image
+          height={5}
           style={loginAndRegisterStyles.googleImage}
           source={require('../../../assets/images/logos_google-icon.png')}
           alt='google'
         />
       </TouchableOpacity>
     </VStack>
+
   );
 }
