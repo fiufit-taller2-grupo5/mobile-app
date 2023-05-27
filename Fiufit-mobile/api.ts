@@ -128,35 +128,19 @@ export async function getInterests(url: string): Promise<string[] | null> {
 //   return null;
 // }
 
-export async function getResetPasswordUrl(email: string): Promise<string | null> {
-  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/changepassword";
+export async function getResetPasswordEmail(email: string): Promise<void> {
+  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/resetPasswordEmail";
   console.log("getting reset password url: ", url);
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-      },
-      body: JSON.stringify({ email: email }),
-    });
-    if (response.ok) {
-      try {
-        const url_response = await response.json();
-        console.log("reset password url:", url_response);
-        return url_response;
-      } catch (err: any) {
-        console.error(err);
-      }
-    } else {
-      console.error("error getting password reset url: ", await response.json());
-    }
-  } catch (err: any) {
-    console.error("error fetching password reset url: ", err);
-  }
-  return null;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "accept": "*/*",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive",
+    },
+    body: JSON.stringify({ email: email }),
+  });
 }
 
 export async function getUserInfoByEmail(email: string, user: User): Promise<userInfo> {
@@ -441,34 +425,26 @@ export async function addTraining(training: TrainerTraining): Promise<boolean> {
 // export async function getTrainingsRatings(ids:number[]) : Promise<Map<number, number>> {
 
 
-export async function addTrainingReview(trainingId: number, review: trainingReview): Promise<any> {
+export async function addTrainingReview(trainingId: number, review: trainingReview): Promise<void> {
   const user = await globalUser.getUser();
   const userId = user?.id;
   const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/" + trainingId + "/review/" + userId;
   const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + accessToken,
-      },
-      body: JSON.stringify(review),
-    });
-    if (response.ok) {
-      console.log("training review added");
-      return true;
-    } else {
-      console.log("ERROR adding training review");
-      return false;
-    }
-  } catch (err: any) {
-    console.error("error adding training review: ", err);
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "accept": "*/*",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive",
+      "Authorization": "Bearer " + accessToken,
+    },
+    body: JSON.stringify(review),
+  });
+  if (!response.ok) {
+    throw Error("error adding training review")
   }
-  return false
+
 }
 
 export async function getTrainingReviews(trainingId: number): Promise<trainingReview[]> {

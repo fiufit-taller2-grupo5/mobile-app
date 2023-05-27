@@ -4,8 +4,8 @@ import { useState } from "react";
 import ExtraInformationForm from "../components/extraInformation/extraInfomationForm";
 import SubmitButton from "../components/extraInformation/submitButton";
 import MoveToApp from "../components/extraInformation/moveToApp";
-
-
+import { LoadableButton } from "../components/commons/buttons";
+import { updateUserDetails } from "../../userStorage";
 
 export default function ExtraInformationScreen({ navigation, route }: any) {
   const { streetName, streetNumber } = route.params ?? {};
@@ -43,15 +43,8 @@ export default function ExtraInformationScreen({ navigation, route }: any) {
       style={loginAndRegisterStyles.stack}
       height={"full"}
       width={"full"}
-      top="-10%"
     >
-      <Heading
-        mt={"10"}
-        mb={"10"}
-        style={[loginAndRegisterStyles.heading, loginAndRegisterStyles.extraInfoHeading]}
-      >
-        Brindanos más información!
-      </Heading>
+
       <ExtraInformationForm
         date={date}
         setDate={setDate}
@@ -62,14 +55,48 @@ export default function ExtraInformationScreen({ navigation, route }: any) {
         interests={interests}
         setInterests={setInterests}
       />
-      <SubmitButton
-        navigation={navigation}
-        streetName={streetName}
-        streetNumber={streetNumber}
-        date={date}
-        weight={weight}
-        height={height}
-        interests={interests}
+      <LoadableButton
+        text="Continuar"
+        onPress={async () => {
+          if (!streetName) {
+            throw Error("Por favor ingresa el nombre de la calle");
+          }
+
+          if (!streetNumber) {
+            throw Error("Por favor ingresa el numero de la calle");
+          }
+
+          if (!date) {
+            throw Error("Por favor ingresa tu fecha de nacimiento");
+          }
+
+          if (!weight) {
+            throw Error("Por favor ingresa tu peso");
+          }
+
+          if (!height) {
+            throw Error("Por favor ingresa tu altura");
+          }
+
+          if (interests.length === 0) {
+            throw Error("Por favor ingrese al menos un interés");
+          }
+
+          if (date.getDate() > new Date().getDate()) {
+            throw Error("Por favor ingrese una fecha de nacimiento válida");
+          }
+
+          if (weight < 30) {
+            throw Error("Por favor ingrese un peso válido mayor a 30kg");
+          }
+
+          if (height < 30) {
+            throw Error("Por favor ingrese una altura válida mayor a 30cm");
+          }
+
+          updateUserDetails({ location: streetName + streetNumber.toString(10), birthDate: date.toISOString(), weight: weight, height: height, interests: interests });
+          navigation.navigate('HomeScreen');
+        }}
       />
       <MoveToApp
         navigation={navigation}

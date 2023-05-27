@@ -109,10 +109,19 @@ export default function TrainingCard(props: Props) {
             </Stack>
             <HStack alignItems="center" space={4} justifyContent="space-between">
               <HStack alignItems="center">
-                <Text>Tipo: {trainingData.type}</Text>
+                <Text fontWeight={"bold"}>Tipo: </Text>
+                <Text>{trainingData.type}</Text>
               </HStack>
             </HStack>
+            <HStack alignItems="center" space={4} justifyContent="space-between">
+              <HStack alignItems="center">
+                <Text fontWeight={"bold"}>Dificultad: </Text>
+                <Text>{trainingData.difficulty}</Text>
+              </HStack>
+            </HStack>
+            <Text fontWeight={"bold"}>Descripción: </Text>
             <Text>{trainingData.description}</Text>
+            <Text fontWeight={"bold"}>Rutina: </Text>
             <Text fontWeight="400">Rutina del plan de entrenamiento</Text>
           </Stack>
         </Box>
@@ -134,14 +143,18 @@ export default function TrainingCard(props: Props) {
           >
             <Stack p="4" space={0}>
               <View flexDirection={"row"} style={{ justifyContent: "space-between" }}>
-                <Text>{review.comment}</Text>
-                <View flexDirection={"row"}>
-                  <FiveStars
-                    starClicked={review.score}
-                    setStarClicked={undefined} // stars not clickable
-                    areButtons={false}
-                    size={15}
-                  />
+                <View width="80%">
+                  <Text marginRight={0}>{review.comment}</Text>
+                </View>
+                <View flexDirection={"column"} justifyContent="center">
+                  <View flexDirection={"row"}>
+                    <FiveStars
+                      starClicked={review.score}
+                      setStarClicked={undefined} // stars not clickable
+                      areButtons={false}
+                      size={15}
+                    />
+                  </View>
                 </View>
               </View>
 

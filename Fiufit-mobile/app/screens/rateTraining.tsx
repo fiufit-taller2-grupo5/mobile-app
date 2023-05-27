@@ -17,12 +17,12 @@ import { rateTrainingStyles } from "../styles";
 import { addTrainingReview } from "../../api";
 import ErrorMessage from '../components/form/errorMessage';
 import FiveStars from "../components/rateTraining/fiveStars";
+import { LoadableButton } from "../components/commons/buttons";
 
 const theme = extendTheme({
   components: {
     Box: {
       defaultProps: {
-        bg: "#FFFFFF",
       },
     },
   },
@@ -47,27 +47,20 @@ export default function RateTrainingScreen({ route, navigation }: any) {
   };
 
   const handleRateTraining = async () => {
-    setIsLoading(true);
-    console.log(
-      "rate training: " +
-      trainingId +
-      " with rating: " +
-      starClicked +
-      " and comment: " +
-      comment
-    );
-    const response = await addTrainingReview(trainingId, {
+    if (starClicked === 0) {
+      throw Error("Debe seleccionar una puntuación");
+    }
+
+    if (comment === "") {
+      throw Error("Debe ingresar un comentario");
+    }
+
+    await addTrainingReview(trainingId, {
       comment: comment,
       score: starClicked,
     });
-    console.log("response", response);
-    if (response === false) {
-      setErrorMessage("Entrenamiento ya valorado");
-    } else {
-      //TODO handle empty comment or rating
-      setIsLoading(false);
-      navigation.goBack();
-    }
+    navigation.goBack();
+
   };
 
   return (
@@ -75,10 +68,10 @@ export default function RateTrainingScreen({ route, navigation }: any) {
       <View flex={1} backgroundColor="#ffffff">
         <Box height="200" style={rateTrainingStyles.starRatingBox}>
           <VStack space={6} alignItems="center">
-            {errorMessage && 
+            {errorMessage &&
               <Modal
-                style={{maxHeight:"18%", height:"18%", width:"100%", top:"-1.3%"}}
-                _backdrop={{backgroundColor: "transparent"}}
+                style={{ maxHeight: "18%", height: "18%", width: "100%", top: "-1.3%" }}
+                _backdrop={{ backgroundColor: "transparent" }}
                 closeOnOverlayClick={true}
                 onClose={() => {
                   setErrorMessage("");
@@ -125,10 +118,11 @@ export default function RateTrainingScreen({ route, navigation }: any) {
             onChangeText={handleComment}
             marginBottom="60"
           />
-          <Button
-            color="#FF6060"
-            title="Agregar Valoración"
-            onPress={handleRateTraining} />
+          <LoadableButton
+            customStyles={{ backgroundColor: "#FF6060" }}
+            text="Agregar Valoración"
+            onPress={handleRateTraining}
+          />
         </View>
       </View>
     </NativeBaseProvider>

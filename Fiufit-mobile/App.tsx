@@ -24,7 +24,6 @@ import CreateTrainingScreen from './app/screens/createTraining';
 import ChangeLocationScreen from './app/screens/editProfile/changeLocation';
 import FavoritesScreen from './app/screens/favorites';
 import TrainerTrainingsScreen from './app/screens/trainerTrainings';
-import RatingsScreen from './app/screens/ratings';
 import RateTrainingScreen from './app/screens/rateTraining';
 
 const Stack = createNativeStackNavigator();
@@ -105,10 +104,6 @@ export default function App() {
           <Stack.Screen
             name="TrainerTrainingsScreen"
             component={TrainerTrainingsScreen} />
-          <Stack.Screen
-            name="RatingsScreen"
-            component={RatingsScreen}
-            initialParams={{ trainingData: null }} />
           <Stack.Screen
             name="RateTrainingScreen"
             component={RateTrainingScreen} />

@@ -1,7 +1,8 @@
-import { HStack, Text, Link } from "native-base";
+import { HStack, Text, Link, View } from "native-base";
 import { loginAndRegisterStyles } from "../../styles";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
-import { getResetPasswordUrl } from "../../../api";
+import { getResetPasswordEmail } from "../../../api";
+import { LoadableButton, LoadableLink } from "../commons/buttons";
 
 interface Props {
   navigation: any;
@@ -14,22 +15,20 @@ export default function ResetPassword(props: Props) {
   const { navigation, clearFields, setErrorMessage, email } = props;
 
   return (
-    <HStack space={2} top="10%">
-      <Text style={loginAndRegisterStyles.moveToRegister}>Olvidaste tu contraseña?</Text>
-      <Link
-        style={[loginAndRegisterStyles.link, loginAndRegisterStyles.loginLink]}
-        onPress={() => {
-          if (email === "") {
-            setErrorMessage("Por favor ingrese su email");
-            return;
-          }
-          const url = getResetPasswordUrl(email);
-          // TODO: send email with reset password link (from backend)
-        }}
-        _text={{ color: "#BC2666" }}
-      >
-        Recuperar contraseña
-      </Link>
+    <HStack space={2} marginTop={10} height={35}>
+      <View flexDirection={"row"} alignItems="center" justifyContent={"center"} >
+        <Text marginRight={2}>Olvidaste tu contraseña?</Text>
+        <LoadableLink
+          text="Recuperar contraseña"
+          onPress={async () => {
+            if (!email) {
+              throw Error("Por favor ingrese su email");
+            }
+            await getResetPasswordEmail(email);
+            return "revise su casilla de mail para recuperar su contraseña";
+          }}
+        />
+      </View>
     </HStack>
   );
 }

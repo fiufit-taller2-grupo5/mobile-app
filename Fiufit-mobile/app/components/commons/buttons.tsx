@@ -1,4 +1,4 @@
-import { Text, Spinner, Button as NativeBaseButton, View, Modal } from "native-base";
+import { Text, Spinner, Button as NativeBaseButton, View, Link } from "native-base";
 import { CSSProperties, useState } from "react";
 import { StyleProp, StyleSheet, ViewStyle } from "react-native";
 import { useToast } from 'native-base';
@@ -67,3 +67,49 @@ export const LoadableButton = ({ text, customStyles, onPress }: Props) => {
     </>
   );
 }
+
+export const LoadableLink = ({ text, customStyles, onPress }: Props) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const toast = useToast();
+
+  const handleClick = () => {
+    setIsLoading(true);
+    setTimeout(async () => {
+      try {
+        const msg = await onPress();
+        setIsLoading(false);
+        if (msg) {
+          toast.show({
+            description: msg,
+            backgroundColor: "green.600",
+            duration: 3000,
+          })
+        }
+      } catch (e: any) {
+        setIsLoading(false);
+        toast.show({
+          description: e.message,
+          backgroundColor: "red.700",
+          duration: 3000,
+        })
+        console.log(e);
+      }
+    }, 0);
+  }
+
+  const styles = StyleSheet.flatten([customStyles]);
+
+  return (
+    <>
+      <Link
+        style={styles}
+        onPress={handleClick}
+        _text={{ color: "#BC2666" }}
+      >
+        <Text color={"#BC2666"} underline fontSize={"sm"} marginRight={isLoading ? 3 : 0}>{text}</Text>
+        {isLoading && <Spinner color={"#BC2666"} />}
+      </Link>
+    </>
+  );
+}
+
