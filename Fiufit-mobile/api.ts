@@ -97,38 +97,7 @@ export async function getInterests(url: string): Promise<string[] | null> {
 }
 
 
-// export async function getUserDetails(userId:number, user:User) : Promise<UserMetadata | null> {
-//   const accessToken = (user as any).stsTokenManager.accessToken;
-//   const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/" + userId + "/metadata";
-//   try {
-//     const response = await fetch(url, {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//         "accept": "*/*",
-//         "accept-encoding": "gzip, deflate, br",
-//         "connection": "keep-alive",
-//         "Authorization": "Bearer " + accessToken,
-//       },
-//     });
-//     if (response.ok) {
-//       try {
-//         const userDetails = await response.json() ;
-//         console.log("userDetails:", userDetails);
-//         return userDetails;
-//       } catch (err: any) {
-//         console.error(err);
-//       }
-//     } else {
-//       console.info("error getting user details response: ",await response.json());
-//     }
-//   } catch (err: any) {
-//     console.error("error fetching user details: ",err);
-//   }
-//   return null;
-// }
-
-export async function getResetPasswordEmail(email: string): Promise<void> {
+export async function getResetPasswordEmail(email: string): Promise<any> {
   const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/resetPasswordEmail";
   console.log("getting reset password url: ", url);
   const response = await fetch(url, {
@@ -138,9 +107,17 @@ export async function getResetPasswordEmail(email: string): Promise<void> {
       "accept": "*/*",
       "accept-encoding": "gzip, deflate, br",
       "connection": "keep-alive",
+      "password-reset": "true"
     },
     body: JSON.stringify({ email: email }),
   });
+
+  if (!response.ok) {
+    console.log("the response", (await response.json()).error.message);
+    throw Error('No se pudo mandar el mail de reseteo de contraseña');
+  }
+
+  return response;
 }
 
 export async function getUserInfoByEmail(email: string, user: User): Promise<userInfo> {

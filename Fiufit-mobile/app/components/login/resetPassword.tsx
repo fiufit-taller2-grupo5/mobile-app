@@ -24,7 +24,8 @@ export default function ResetPassword(props: Props) {
             if (!email) {
               throw Error("Por favor ingrese su email");
             }
-            await getResetPasswordEmail(email);
+            let response = await getResetPasswordEmail(email);
+            console.log(await response.json());
             return "revise su casilla de mail para recuperar su contraseña";
           }}
         />
