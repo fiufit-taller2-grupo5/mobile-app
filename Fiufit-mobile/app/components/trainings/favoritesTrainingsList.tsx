@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Image, Box, FlatList, HStack, VStack, Text, NativeBaseProvider, Button, Divider, Input, Icon } from "native-base";
+import { Box, FlatList, VStack, NativeBaseProvider, Divider, Input, Icon, HStack, Select, CheckIcon } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import { trainingStyles } from "../../styles"
 import { getFavoriteTrainings, Training } from "../../../api";
 import { RefreshControl } from 'react-native';
 import { TrainingInfoCard } from "./trainingInfoCard";
@@ -10,83 +9,35 @@ interface Props {
   navigation: any;
 };
 
-// interface FavoriteTrainingInfoProps {
-//   navigation: any;
-//   favoriteTraining: Training;
-// };
-
-// const mainImage = (training_type: any) => {
-//   if (training_type === 'Running') return "https://wallpaperaccess.com/thumb/2604922.jpg";
-//   else if (training_type === 'Swimming') return "https://wallpaperaccess.com/thumb/1634055.jpg";
-//   else if (training_type === 'Walking') return "https://wallpaperaccess.com/thumb/654835.jpg";
-//   else if (training_type === 'Biking') return "https://wallpaperaccess.com/thumb/4431599.jpg";
-//   else if (training_type === 'Yoga') return "https://wallpaperaccess.com/thumb/2532294.jpg";
-//   else if (training_type === 'Basketball') return "https://wallpaperaccess.com/thumb/798750.jpg";
-//   else if (training_type === 'Football') return "https://wallpaperaccess.com/thumb/1813065.jpg";
-//   else if (training_type === 'Gymnastics') return "https://wallpaperaccess.com/thumb/2236559.jpg";
-//   else if (training_type === 'Dancing') return "https://wallpaperaccess.com/thumb/1315981.jpg";
-//   else if (training_type === 'Hiking') return "https://wallpaperaccess.com/thumb/7309738.jpg";
-// };
-
-// const FavoriteTrainingsInfo = (props: FavoriteTrainingInfoProps) => {
-//   const { navigation, favoriteTraining } = props;
-//   return <Box backgroundColor="#fff" >
-//     <Button height={150} px="10" py="10" backgroundColor="#fff" onPress={async () => { navigation.navigate('FavoriteTrainingInfoScreen', { trainingData: favoriteTraining }); }}>
-//       <HStack space={[2, 3]} height={70} width={380}>
-//         <Image source={{ uri: mainImage(favoriteTraining.type) }} alt="Alternate Text" size="lg" borderRadius={10} />
-//         <VStack my={1} width={220} height={10} mr={0} ml={1}>
-//           <Text style={trainingStyles.textTitle} color="#000000" text-align="left" bold>
-//             {favoriteTraining.title}
-//           </Text>
-//           <Text fontSize="sm" color="#000000">
-//             {favoriteTraining.description}
-//           </Text>
-//           <Text fontSize="xs" color="#000000">
-//             Dificultad: {favoriteTraining.difficulty}
-//           </Text>
-//         </VStack>
-//       </HStack>
-//       <Divider my={10} mx={1} />
-//     </Button>
-//   </Box>;
-// };
-
 export default function FavoriteTrainingsList(props: Props) {
   const { navigation } = props;
   const [favoriteTrainingsList, setFavoriteTrainingsList] = useState<Training[]>([]);
-  const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState<Training[]>([]);
   const [refreshing, setRefreshing] = useState(true);
+  const [selectedTitle, setTitle] = useState("");
+  const [selectedType, setType] = React.useState("");
+  const [selectedDifficulty, setDifficulty] = React.useState("");
 
-  /*const filterDataByDifficultyOrType = (text: string) => {
-    if (text) {
+  const filterData = () => {
       const filtered = favoriteTrainingsList.filter(
         (item) =>
-          item.difficulty === parseInt(text) ||
-          item.type.toLowerCase().includes(text.toLowerCase())
+          (selectedDifficulty === '' || item.difficulty === parseInt(selectedDifficulty)) &&
+          (selectedType === '' || item.type.toLowerCase().includes(selectedType.toLowerCase())) &&
+          (selectedTitle === '' || item.title.toLowerCase().includes(selectedTitle.toLowerCase()))
       );
       setFilteredData(filtered);
-    }
-    else {
-      setFilteredData(favoriteTrainingsList);
-    }
-  };*/
+  }
 
-  const filterDataByTitle = (text: string) => {
-    if (text) {
-      const filtered = favoriteTrainingsList.filter(
-        (item) =>
-          item.title.toLowerCase().includes(text.toLowerCase())
-      );
-      setFilteredData(filtered);
-    } else {
-      setFilteredData(favoriteTrainingsList);
-    }
+  const handleFilterByTitle = (text: string) => {
+    setTitle(text);
   };
 
-  const handleSearch = (text: string) => {
-    setSearchText(text);
-    filterDataByTitle(text);
+  const handleFilterByDifficulty = (text: string) => {
+    setDifficulty(text);
+  };
+
+  const handleFilterByType = (text: string) => {
+    setType(text);
   };
 
   const getTrainingsList = async () => {
@@ -98,12 +49,12 @@ export default function FavoriteTrainingsList(props: Props) {
     }));
     setFavoriteTrainingsList(favoritesTrainings);
     setRefreshing(false);
-    setFilteredData(favoritesTrainings);
+    filterData();
   }
 
   useEffect(() => {
     getTrainingsList();
-  }, [])
+  }, [selectedTitle, selectedType, selectedDifficulty])
 
   console.log("favoriteTrainingsList:", filteredData)
 
@@ -122,9 +73,9 @@ export default function FavoriteTrainingsList(props: Props) {
       >
         <VStack alignSelf="center">
           <Input
-            placeholder="Search trainings by difficulty or type"
-            onChangeText={handleSearch}
-            value={searchText}
+            placeholder="Search trainings by title"
+            onChangeText={handleFilterByTitle}
+            value={selectedTitle}
             width="100%"
             borderRadius="4"
             fontSize="14"
@@ -139,6 +90,44 @@ export default function FavoriteTrainingsList(props: Props) {
             }
           />
         </VStack>
+        <HStack>
+      <Box maxW="300">
+        <Select selectedValue={selectedType} minWidth="180" maxWidth="190" accessibilityLabel="Choose Type" placeholder="Choose Type" _selectedItem={{
+        bg: "teal.600",
+        endIcon: <CheckIcon size="5" />
+      }} mt={1} onValueChange={handleFilterByType}>
+          <Select.Item label="All types" value="" />
+          <Select.Item label="Running" value="Running" />
+          <Select.Item label="Swimming" value="Swimming" />
+          <Select.Item label="Biking" value="Biking" />
+          <Select.Item label="Yoga" value="Yoga" />
+          <Select.Item label="Basketball" value="Basketball" />
+          <Select.Item label="Football" value="Football" />
+          <Select.Item label="Walking" value="Walking" />
+          <Select.Item label="Gymnastics" value="Gymnastics" />
+          <Select.Item label="Dancing" value="Dancing" />
+          <Select.Item label="Hiking" value="Hiking" />
+        </Select>
+      </Box>
+      <Box maxW="300">
+        <Select selectedValue={selectedDifficulty} minWidth="180" maxWidth="190" accessibilityLabel="Choose Difficulty" placeholder="Choose Difficulty" _selectedItem={{
+        bg: "teal.600",
+        endIcon: <CheckIcon size="5" />
+      }} mt={1} onValueChange={handleFilterByDifficulty}>
+          <Select.Item label="All difficulties" value="" />
+          <Select.Item label="1" value="1" />
+          <Select.Item label="2" value="2" />
+          <Select.Item label="3" value="3" />
+          <Select.Item label="4" value="4" />
+          <Select.Item label="5" value="5" />
+          <Select.Item label="6" value="6" />
+          <Select.Item label="7" value="7" />
+          <Select.Item label="8" value="8" />
+          <Select.Item label="9" value="9" />
+          <Select.Item label="10" value="10" />
+        </Select>
+      </Box>
+    </HStack>
       </VStack>
       <FlatList
         contentContainerStyle={{ flexGrow: 1 }}

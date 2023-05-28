@@ -27,14 +27,13 @@ interface Props {
 export default function TrainingsList(props: Props) {
   const { navigation } = props;
   const [trainingsList, setTrainingsList] = useState<Training[]>([]);
-  const [selectedTitle, setTitle] = useState("");
   const [filteredData, setFilteredData] = useState<Training[]>([]);
   const [refreshing, setRefreshing] = useState(true);
+  const [selectedTitle, setTitle] = useState("");
   const [selectedType, setType] = React.useState("");
   const [selectedDifficulty, setDifficulty] = React.useState("");
 
   const filterData = () => {
-    //if(selectedDifficulty && selectedType) {
       const filtered = trainingsList.filter(
         (item) =>
           (selectedDifficulty === '' || item.difficulty === parseInt(selectedDifficulty)) &&
@@ -42,37 +41,7 @@ export default function TrainingsList(props: Props) {
           (selectedTitle === '' || item.title.toLowerCase().includes(selectedTitle.toLowerCase()))
       );
       setFilteredData(filtered);
-   /* }
-    else if(selectedDifficulty) {
-      const filtered = trainingsList.filter(
-        (item) =>
-          (item.difficulty === parseInt(selectedDifficulty))
-      );
-      setFilteredData(filtered);
-    }
-    else if(selectedType) {
-      const filtered = trainingsList.filter(
-        (item) =>
-          (item.type.toLowerCase().includes(selectedType.toLowerCase()))
-      );
-      setFilteredData(filtered);
-    }
-    else {
-      setFilteredData(trainingsList);
-    }*/
   }
-
-  const filterDataByTitle = (text: string) => {
-    if (text) {
-      const filtered = trainingsList.filter(
-        (item) =>
-          item.title.toLowerCase().includes(text.toLowerCase())
-      );
-      setFilteredData(filtered);
-    } else {
-      setFilteredData(trainingsList);
-    }
-  };
 
   const handleFilterByTitle = (text: string) => {
     setTitle(text);
@@ -183,7 +152,7 @@ export default function TrainingsList(props: Props) {
         contentContainerStyle={{ flexGrow: 1 }}
         data={filteredData}
         marginBottom={0}
-        marginTop={5}
+        marginTop={0}
         renderItem={(training) => (
           <TrainingInfoCard
             trainingData={training.item}
