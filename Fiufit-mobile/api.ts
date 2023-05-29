@@ -12,6 +12,25 @@ const getInternalIdFromResponse = (response: any): string => {
   return res;
 }
 
+export const apiGatewayHealthCheck = async (timestamp: string): Promise<boolean> => {
+  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/health/" + timestamp;
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+    });
+    if (response.ok) {
+      console.log("api gateway health check ok");
+      return true;
+    } else {
+      console.error("api gateway health check error: ", await response.json());
+      return false;
+    }
+  } catch (err: any) {
+    console.error("api gateway health check error: ", err);
+  }
+  return false;
+}
+
 export const createUser = async (user: User, emailRegisterName: string = "default name"): Promise<void | Response> => {
   const data = {
     name: user.displayName ? user.displayName as string : emailRegisterName,

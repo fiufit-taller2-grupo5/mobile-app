@@ -28,7 +28,7 @@ export default function ExtraInformationForm(props: Props) {
   } = props;
 
   return (
-    <VStack space={6} alignItems="center" top={"5%"}>
+    <VStack space={6} alignItems="center">
       <BirthDateForm top={"15%"} date={date} setDate={setDate} />
       <WeightForm top={"0%"} weight={weight} setWeight={setWeight} />
       <HeightForm top={"5%"} height={height} setHeight={setHeight} />
