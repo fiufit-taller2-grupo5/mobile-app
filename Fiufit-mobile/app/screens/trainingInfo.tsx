@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Container, NativeBaseProvider, View } from "native-base";
+import { NativeBaseProvider, View } from "native-base";
 import TrainingCard from "../components/trainings/trainingCard";
 
 export default function TrainingInfoScreen({ route, navigation }: any) {

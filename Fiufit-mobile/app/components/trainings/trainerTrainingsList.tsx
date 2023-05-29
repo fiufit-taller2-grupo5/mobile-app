@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, Box, FlatList, HStack, VStack, Text, NativeBaseProvider, Button, Divider, Input, Icon, View, Select, CheckIcon } from "native-base";
+import { Image, Box, FlatList, HStack, VStack, Text, Button, Divider, Input, Icon, View, Select, CheckIcon } from "native-base";
 import { trainingStyles } from "../../styles"
 import { getTrainerTrainings, Training } from "../../../api";
 import { MaterialIcons } from "@expo/vector-icons";

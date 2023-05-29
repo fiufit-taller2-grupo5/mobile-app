@@ -37,6 +37,8 @@ export default function LocationScreen({ navigation }: any) {
         streetNumber={streetNumber}
         setStreetNumber={setStreetNumber}
         top={"5px"} // Adjust this value as needed
+        streetNameWidth={"3xs"} // Adjust this value as needed
+        streetNumberWidth={"20"} // Adjust this value as needed
       />
       <LoadableButton
         text="Continuar"

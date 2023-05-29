@@ -35,7 +35,6 @@ export type trainingReview = {
 };
 
 export default function RateTrainingScreen({ route, navigation }: any) {
-  // TODO: get training Id from route params
   const { trainingId } = route.params;
   const [comment, setComment] = useState("");
   const [isLoading, setIsLoading] = useState(false); // TODO: use this to show a loading indicator

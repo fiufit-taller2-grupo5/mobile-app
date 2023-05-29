@@ -4,7 +4,7 @@ import { StyleProp, StyleSheet, ViewStyle } from "react-native";
 import { useToast } from 'native-base';
 
 interface Props {
-  onPress: () => Promise<string | void>;
+  onPress: () => Promise<any | void>;
   text: string;
   customStyles?: StyleProp<ViewStyle>;
 }

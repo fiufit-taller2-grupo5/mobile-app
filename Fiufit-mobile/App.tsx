@@ -25,6 +25,7 @@ import ChangeLocationScreen from './app/screens/editProfile/changeLocation';
 import FavoritesScreen from './app/screens/favorites';
 import TrainerTrainingsScreen from './app/screens/trainerTrainings';
 import RateTrainingScreen from './app/screens/rateTraining';
+import EditTrainingScreen from './app/screens/editTraining';
 
 const Stack = createNativeStackNavigator();
 
@@ -107,6 +108,9 @@ export default function App() {
           <Stack.Screen
             name="RateTrainingScreen"
             component={RateTrainingScreen} />
+          <Stack.Screen
+            name="EditTrainingScreen"
+            component={EditTrainingScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

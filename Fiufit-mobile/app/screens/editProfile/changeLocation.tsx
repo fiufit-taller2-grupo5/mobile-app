@@ -46,6 +46,8 @@ export default function ChangeLocationScreen({ navigation }: any) {
         streetNumber={streetNumber}
         setStreetNumber={setStreetNumber}
         top='60%'
+        streetNameWidth='3xs'
+        streetNumberWidth='20'
       />
       <LocationSubmitButton
         navigation={navigation}

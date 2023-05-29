@@ -4,22 +4,20 @@ import {
   Text,
   AspectRatio,
   Box,
-  Center,
   Stack,
   Heading,
   HStack,
   Button,
   View,
   ScrollView,
-  FlatList,
   Divider
 } from "native-base";
-import { AntDesign } from "@expo/vector-icons";
 import { getTrainingReviews, Training } from "../../../api";
 import { useEffect, useState } from "react";
 import { RefreshControl } from "react-native";
 import { trainingReview } from "../../screens/rateTraining";
 import FiveStars from "../rateTraining/fiveStars";
+import globalUser from '../../../userStorage';
 
 interface Props {
   navigation: any;
@@ -56,6 +54,20 @@ export default function TrainingCard(props: Props) {
     setIsRefreshing(false);
   }
 
+  // To distinguish roles
+  const [role, setRole] = useState<string | null>(null);
+  useEffect(() => {
+      const listener = navigation.addListener('focus', () => {
+          async function getCurrentRole() {
+              const role = await globalUser.getRole();
+              setRole(role);
+          }
+          getCurrentRole();
+      });
+      return listener;
+  }, [navigation]);
+  const isAthlete = role === 'Atleta';
+
 
   return (
     <View flexGrow={1}>
@@ -77,7 +89,6 @@ export default function TrainingCard(props: Props) {
                 source={require("../../../assets/images/logo-color.jpg")}
                 alt="image"
                 size={238}
-                // minW={400}
                 width="100%"
               />
             </AspectRatio>
@@ -163,7 +174,7 @@ export default function TrainingCard(props: Props) {
         ))}
 
       </ScrollView>
-      <Button style={{
+      {isAthlete && <Button style={{
         backgroundColor: "#FF6060",
         width: "50%",
         borderRadius: 30,
@@ -173,7 +184,18 @@ export default function TrainingCard(props: Props) {
         onPress={() => navigation.navigate("RateTrainingScreen", { trainingId: trainingData.id })}
       >
         Agregar valoración
-      </Button>
+      </Button>}
+      {!isAthlete && <Button style={{
+        backgroundColor: "#FF6060",
+        width: "50%",
+        borderRadius: 30,
+        left: "22%",
+        bottom: "5%"
+      }}
+        onPress={() => navigation.navigate("EditTrainingScreen", { trainingData: trainingData })}
+      >
+        Editar entrenamiento
+      </Button>}
     </View>
   );
 }
