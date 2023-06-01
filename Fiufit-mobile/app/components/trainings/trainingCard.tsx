@@ -18,6 +18,7 @@ import { RefreshControl } from "react-native";
 import { trainingReview } from "../../screens/rateTraining";
 import FiveStars from "../rateTraining/fiveStars";
 import globalUser from '../../../userStorage';
+import { LoadableButton } from "../commons/buttons";
 
 interface Props {
   navigation: any;
@@ -135,6 +136,21 @@ export default function TrainingCard(props: Props) {
             <Text fontWeight={"bold"}>Rutina: </Text>
             <Text fontWeight="400">Rutina del plan de entrenamiento</Text>
           </Stack>
+          <LoadableButton
+            text="Iniciar"
+            customStyles={{ 
+              backgroundColor: "#FF6060",
+              width: "30%",
+              height: "8%",
+              borderRadius: 30,
+              alignSelf: "center", 
+              top: "0%"
+            }}
+            onPress={async () => {
+              navigation.navigate("TrainingSessionScreen", { trainingInfo: trainingData })
+              return;
+            }}
+          />
         </Box>
         <Divider my={2} mx={0} />
         <Heading size="sm" color={"gray.500"} marginLeft={3} marginY={2}>

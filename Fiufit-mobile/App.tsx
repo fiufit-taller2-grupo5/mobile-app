@@ -9,6 +9,7 @@ import RegisterScreen from './app/screens/register';
 import LoginScreen from './app/screens/login';
 import TrainingInfoScreen from './app/screens/trainingInfo';
 import HomeScreen from './app/screens/home';
+import TrainingSessionScreen from './app/screens/trainingSession';
 import ProfileScreen from './app/screens/profile';
 import UsersScreen from './app/screens/users';
 import TrainingsScreen from './app/screens/trainings';
@@ -111,6 +112,9 @@ export default function App() {
           <Stack.Screen
             name="EditTrainingScreen"
             component={EditTrainingScreen} />
+          <Stack.Screen
+            name="TrainingSessionScreen"
+            component={TrainingSessionScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
