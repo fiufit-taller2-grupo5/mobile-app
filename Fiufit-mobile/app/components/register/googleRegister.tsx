@@ -33,12 +33,12 @@ export default function GoogleRegister(props: Props) {
           console.log('Signed in with Google:', result.user);
           const user = result.user;
           const userCreationRes = await createUser(user);
-          if (userCreationRes && userCreationRes.ok) {
+          if (userCreationRes && userCreationRes.status === 200) {
             console.log("User created successfully google register");
             props.setCorrectlyLogged(true);
             props.navigation.navigate("LocationScreen");
           } else {
-            const responseData = await userCreationRes?.text();
+            const responseData = await userCreationRes?.data;
             props.setError(getErrorMessage(responseData? responseData : "Error creating user"));
             auth.signOut();
           }

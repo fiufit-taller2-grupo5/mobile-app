@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Image, Box, FlatList, HStack, VStack, Text, NativeBaseProvider, Button, Divider, Input, Icon, View } from "native-base";
 import { trainingStyles } from "../../styles"
-import { getTrainerTrainings, Training } from "../../../api";
+import { getTrainings, Training } from "../../../api";
 import { MaterialIcons } from "@expo/vector-icons";
 import { RefreshControl, ActivityIndicator } from 'react-native';
 
@@ -89,7 +89,7 @@ export default function TrainerTrainingsList(props: Props) {
 
   const getTrainingsList = async () => {
     setRefreshing(true);
-    const trainersTrainingsResponse = await getTrainerTrainings();
+    const trainersTrainingsResponse = await getTrainings(true);
     setTrainerTrainingsList(trainersTrainingsResponse);
     setRefreshing(false);
     setFilteredData(trainersTrainingsResponse);

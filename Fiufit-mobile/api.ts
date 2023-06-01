@@ -12,222 +12,175 @@ const getInternalIdFromResponse = (response: any): string => {
   return res;
 }
 
-export const createUser = async (user: User, emailRegisterName: string = "default name"): Promise<void | Response> => {
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+
+const apiBaseUrl = 'https://api-gateway-prod-szwtomas.cloud.okteto.net/';
+
+const axiosInstance = axios.create({
+  baseURL: apiBaseUrl,
+  headers: {
+    'Content-Type': 'application/json',
+    'accept': '*/*',
+    'accept-encoding': 'gzip, deflate, br',
+    'connection': 'keep-alive',
+  },
+});
+
+// try {
+//   // do what you want with axios
+//   // axios.get('https://example.com/some-api');
+// } catch (error) {
+//   // check if the error was thrown from axios
+//   if (axios.isAxiosError(error)) {
+//     // do something
+//     // or just re-throw the error
+//     throw error;
+//   } else {
+//     // do something else
+//     // or creating a new error
+//     throw new Error('different error than axios');
+//   }
+// }
+
+export const createUser = async (user: User, emailRegisterName: string = 'default name'): Promise<void | AxiosResponse> => {
   const data = {
     name: user.displayName ? user.displayName as string : emailRegisterName,
     uid: user.uid,
-    email: user.email as string
+    email: user.email as string,
   };
   const token = (user as any).stsTokenManager.accessToken;
-  console.log("DATA:", data, "token:", token);
+  console.log('DATA:', data, 'token:', token);
+
   try {
-    const response = await fetch("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users", {
-      method: "POST",
+    const response = await axiosInstance.post('/user-service/api/users', data, {
       headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + token,
-        "login-mobile-app": "true"
+        'Authorization': `Bearer ${token}`,
+        'login-mobile-app': 'true',
       },
-      body: JSON.stringify(data),
     });
-    if (response.ok) {
-      try {
-        const userInfo = await response.json();
-
-        // if (userInfo instanceof Error) {
-        //   throw userInfo;
-        // }
-
-        userInfo.googleUser = user;
-        userInfo.role = "Atleta";
-        await globalUser.setUser(userInfo);
-        console.log("user created");
-      } catch (err: any) {
-        console.error(err);
-      }
-    } else {
-      console.warn("ERROR CREATING USER:", await response.json());
-    }
+    const userInfo = response.data;
+    userInfo.googleUser = user;
+    userInfo.role = 'Atleta';
+    await globalUser.setUser(userInfo);
+    console.log('user created');
     return response;
-  } catch (err: any) {
-    console.error(err);
-    alert("CREATE USER ERROR:" + err.message);
-    return err;
-  }
-}
 
-// const response = await fetch('https://jsonplaceholder.typicode.com/comments?' + new URLSearchParams({
-// postId: 1
-// }))
+  } catch (error:any) {
+    if (axios.isAxiosError(error)) {
+      console.warn('ERROR CREATING USER:', error.message, error.response?.data);
+      return error.response;
+    } else {
+      console.error(error);
+      alert('CREATE USER ERROR:' + error.message);
+      return error;
+    }
+  }
+};
+
+// Reusable function for making API requests
+const makeRequest = async <T>(config: AxiosRequestConfig): Promise<T | null> => {
+  try {
+    const response = await axiosInstance(config);
+    return response.data as T;
+  } catch (err: any) {
+    if (axios.isAxiosError(err)) {
+      console.error('Request error:', err.message, err.response);
+    } else {
+      console.error(err);
+    }
+  }
+  
+  return null;
+};
 
 export async function getInterests(url: string): Promise<string[] | null> {
-  console.log("getting interests at url: ", url);
+  console.log('getting interests at url: ', url);
   await globalUser.verifyUserMetadataExists();
   const user = await globalUser.getUser();
   const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + accessToken,
-      },
-    });
-    if (response.ok) {
-      try {
-        const interests = await response.json();
-        console.log("possible interests:", interests);
-        return interests;
-      } catch (err: any) {
-        console.error(err);
-      }
-    } else {
-      console.error("error getting interests response: ", await response.json());
-    }
-  } catch (err: any) {
-    console.error("error fetching interests: ", err);
+
+  const config: AxiosRequestConfig = {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+    },
+    url,
+  };
+
+  const interests = await makeRequest<string[]>(config);
+  if (interests) {
+    console.log('possible interests:', interests);
+    return interests;
   }
   return null;
 }
-
-
-// export async function getUserDetails(userId:number, user:User) : Promise<UserMetadata | null> {
-//   const accessToken = (user as any).stsTokenManager.accessToken;
-//   const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/" + userId + "/metadata";
-//   try {
-//     const response = await fetch(url, {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//         "accept": "*/*",
-//         "accept-encoding": "gzip, deflate, br",
-//         "connection": "keep-alive",
-//         "Authorization": "Bearer " + accessToken,
-//       },
-//     });
-//     if (response.ok) {
-//       try {
-//         const userDetails = await response.json() ;
-//         console.log("userDetails:", userDetails);
-//         return userDetails;
-//       } catch (err: any) {
-//         console.error(err);
-//       }
-//     } else {
-//       console.info("error getting user details response: ",await response.json());
-//     }
-//   } catch (err: any) {
-//     console.error("error fetching user details: ",err);
-//   }
-//   return null;
-// }
 
 export async function getResetPasswordUrl(email: string): Promise<string | null> {
-  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/changepassword";
-  console.log("getting reset password url: ", url);
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-      },
-      body: JSON.stringify({ email: email }),
-    });
-    if (response.ok) {
-      try {
-        const url_response = await response.json();
-        console.log("reset password url:", url_response);
-        return url_response;
-      } catch (err: any) {
-        console.error(err);
-      }
-    } else {
-      console.error("error getting password reset url: ", await response.json());
-    }
-  } catch (err: any) {
-    console.error("error fetching password reset url: ", err);
+  const url = `${apiBaseUrl}/user-service/api/users/changepassword`;
+  console.log('getting reset password url: ', url);
+
+  const config: AxiosRequestConfig = {
+    method: 'POST',
+    headers: {
+    },
+    data: JSON.stringify({ email: email }),
+    url,
+  };
+
+  const urlResponse = await makeRequest<string>(config);
+  if (urlResponse) {
+    console.log('reset password url:', urlResponse);
+    return urlResponse;
   }
   return null;
 }
 
-export async function getUserInfoByEmail(email: string, user: User): Promise<userInfo | Error> {
-  console.log("getting user info by email of user ", user);
-  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/by_email/" + email;
-  const accessToken = (user as any).stsTokenManager.accessToken;
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + accessToken,
-      },
-    });
-    if (response.ok) {
-      try {
-        const user: userInfo = await response.json();
-        return user;
-      } catch (err: any) {
-        console.error(err);
-      }
-    } else {
-      console.warn("error getting user info: ", await response.json());
-    }
-  } catch (err: any) {
-    console.error("error fetching user info: ", err);
+export async function getUserInfoByEmail(email: string, user: User) : Promise<userInfo | Error> {
+  const url = `${apiBaseUrl}/user-service/api/users/email/${email}`;
+  console.log('getting user info by email: ', url);
+
+  const config: AxiosRequestConfig = {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${(user as any).stsTokenManager.accessToken}`,
+    },
+    url,
+  };
+
+  const userInfo = await makeRequest<userInfo>(config);
+  if (userInfo) {
+    console.log('user info:', userInfo);
+    return userInfo;
   }
   return Error("User not found");
 }
 
-// TODO refactor methods to reduce code redundancy
 export async function getUserInfoById(id: number, user: User, userDetails: Boolean): Promise<userInfo | Error> {
-  /// userDetails indicates if the user details are returned or only the essential info
+  let url = `${apiBaseUrl}/user-service/api/users/`;
+  console.log('getting user info by email: ', url);
 
-  console.log("getting user info by id of user ", user);
-  let url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/";
+  // if userDetails is true add id to path params, else add id to query params
   if (userDetails) {
-    url += id; // return user details
+    url = `${url}/${id}`;
   } else {
-    url += "?id=" + id; // return only essential info
+    url = `${url}?id=${id}`;
   }
-  const accessToken = (user as any).stsTokenManager.accessToken;
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + accessToken,
-      },
-    });
-    if (response.ok) {
-      try {
-        const user: userInfo = await response.json();
-        return user;
-      } catch (err: any) {
-        console.error(err);
-      }
-    } else {
-      console.warn("error getting user info: ", await response.json());
-    }
-  } catch (err: any) {
-    console.error("error fetching user info: ", err);
+  const config: AxiosRequestConfig = {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${(user as any).stsTokenManager.accessToken}`,
+    },
+    url,
+  };
+
+  const userInfo = await makeRequest<userInfo>(config);
+  if (userInfo) {
+    console.log('user info:', userInfo);
+    return userInfo;
   }
   return Error("User not found");
 }
+
 
 export interface Training {
   id: number,
@@ -250,259 +203,171 @@ export interface TrainerTraining {
   trainerId?: number,
 }
 
-export async function getTrainings(): Promise<Training[]> {
-  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings";
-  const user = await globalUser.getUser();
-  const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + accessToken,
-      },
-    });
-    if (response.ok) {
-      try {
-        const trainings = await response.json();
-        console.log("Training plans:", trainings);
-        return trainings;
-      } catch (err: any) {
-        console.error(err);
-      }
-    } else {
-      console.error("error getting trainings response: ", await response.json());
-    }
-  } catch (err: any) {
-    console.error("error fetching trainings: ", err);
-  }
-  return [];
-}
-
-export async function getTrainerTrainings(filterRule: string | null = null, filterValue: string | null = null): Promise<Training[]> {
-  let url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings?"
+export async function getTrainings(isTrainer: boolean = false, filterRule: string | null = null, filterValue: string | null = null): Promise<Training[]> {
+  let url = `${apiBaseUrl}/training-service/api/trainings?`;
   const user = await globalUser.getUser();
   const userId = user!.id;
-  if (filterRule !== null && filterValue !== null) {
-    url += new URLSearchParams({ trainer_id: userId.toString(), filterRule: filterValue });
-  } else {
-    url += new URLSearchParams({ trainer_id: userId.toString() });
+  
+  if (isTrainer) {
+    url += `trainer_id=${userId}&`;
   }
+  if (filterRule && filterValue) {
+    url += `${filterRule}=${filterValue}&`;
+  }
+
   const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + accessToken,
-      },
-    });
-    if (response.ok) {
-      try {
-        const trainings = await response.json();
-        // console.log("Trainer training plans:", trainings);
-        return trainings;
-      } catch (err: any) {
-        console.error(err);
-      }
-    } else {
-      console.error("error getting trainings response: ", await response.json());
-    }
-  } catch (err: any) {
-    console.error("error fetching trainings: ", err);
+  
+  const config: AxiosRequestConfig = {
+    method: 'GET',
+    headers: {
+      "Authorization": `Bearer ${accessToken}`,
+    },
+    url,
+  };
+
+  const trainings = await makeRequest<Training[]>(config);
+  if (trainings) {
+    console.log('trainings:', trainings);
+    return trainings;
   }
   return [];
 }
+
 
 export async function getFavoriteTrainings(): Promise<Training[]> {
-  const url = 'https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/favorites/'
   const user = await globalUser.getUser();
   const userId = user?.id;
+  const url = `${apiBaseUrl}/training-service/api/trainings/favorites/${userId}`;
   const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
-  console.log("getting tfavorite rainings at url: ", url + userId);
+  console.log("getting favorite trainings at url: ", url);
   console.log("estoy en getFavoriteTrainings");
-  try {
-    const response = await fetch(url + userId, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + accessToken,
-      },
-    });
-    if (response.ok) {
-      try {
-        const favoriteTrainings = await response.json();
-        console.log("Training plans:", favoriteTrainings);
-        return favoriteTrainings;
-      } catch (err: any) {
-        console.error(err);
-      }
-    } else {
-      console.error("error getting favorite trainings response: ", await response.json());
-    }
-  } catch (err: any) {
-    console.error("error fetching favorite trainings: ", err);
+  
+  const config: AxiosRequestConfig = {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+    },
+    url,
+  };
+
+  const trainings = await makeRequest<Training[]>(config);
+  if (trainings) {
+    console.log('favorite trainings:', trainings);
+    return trainings;
   }
   return [];
 }
 
+
 export async function addFavoriteTraining(trainingPlanId: number): Promise<boolean> {
-  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/";
+  const url = `${apiBaseUrl}/training-service/api/trainings/`;
   const user = await globalUser.getUser();
   const userId = user?.id;
   const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
-  try {
-    const response = await fetch(url + trainingPlanId + '/favorite/' + userId, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + accessToken,
-      }
-    });
-    if (response.ok) {
-      console.log("favorite training added");
-      return true;
-    } else {
-      console.error("error adding favorite training response: ", await response.json());
-      return false;
-    }
-  } catch (err: any) {
-    console.error("error adding favorite training: ", err);
+
+  const config: AxiosRequestConfig = {
+    method: 'POST',
+    headers: {
+      "Authorization": `Bearer ${accessToken}`,
+    },
+    url: `${url}${trainingPlanId}/favorite/${userId}`,
+  };
+
+  const response = await makeRequest<Training>(config);
+  if (response) {
+    console.log('favorite training:', response);
+    return true;
   }
-  return false
+  return false;
 }
+
 
 export async function quitFavoriteTraining(trainingPlanId: number): Promise<boolean> {
-  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/";
+  const url = `${apiBaseUrl}/training-service/api/trainings/`;
   const user = await globalUser.getUser();
   const userId = user?.id;
   const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
-  try {
-    const response = await fetch(url + trainingPlanId + '/favorite/' + userId, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + accessToken,
-      }
-    });
-    if (response.ok) {
-      console.log("favorite training deleted");
-      return true;
-    } else {
-      console.error("error deleting favorite training response: ", await response.json());
-      return false;
-    }
-  } catch (err: any) {
-    console.error("error adding favorite training: ", err);
-  }
-  return false
-}
 
+  const config: AxiosRequestConfig = {
+    method: 'DELETE',
+    headers: {
+      "Authorization": `Bearer ${accessToken}`,
+    },
+    url: `${url}${trainingPlanId}/favorite/${userId}`,
+  };
+
+  const response = await makeRequest<Training>(config);
+  if (response) {
+    console.log('quit favorite training:', response);
+    return true;
+  }
+  return false;
+}
 
 export async function addTraining(training: TrainerTraining): Promise<boolean> {
-  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/";
+  const url = `${apiBaseUrl}/training-service/api/trainings/`;
   const user = await globalUser.getUser();
   const userId = user?.id;
-  training.trainerId = userId;
   const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + accessToken,
-      },
-      body: JSON.stringify(training),
-    });
-    if (response.ok) {
-      console.log("training added");
-      return true;
-    } else {
-      console.error("error adding trainings response: ", await response.json());
-      return false;
-    }
-  } catch (err: any) {
-    console.error("error adding training: ", err);
+  training.trainerId = userId;
+
+  const config: AxiosRequestConfig = {
+    method: 'POST',
+    headers: {
+      "Authorization": `Bearer ${accessToken}`,
+    },
+    url,
+    data: JSON.stringify(training),
+  };
+  
+  const response = await makeRequest<Training>(config);
+  if (response) {
+    console.log('added training:', response);
+    return true;
   }
-  return false
+  return false;
 }
 
-// receives a list of ids and returns a map with the id and a list of ratings for each training
-// export async function getTrainingsRatings(ids:number[]) : Promise<Map<number, number>> {
-
-
-export async function addTrainingReview(trainingId: number, review: trainingReview): Promise<any> {
+export async function addTrainingReview(trainingId: number, review: trainingReview): Promise<Boolean> {
   const user = await globalUser.getUser();
   const userId = user?.id;
-  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/" + trainingId + "/review/" + userId;
   const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + accessToken,
-      },
-      body: JSON.stringify(review),
-    });
-    if (response.ok) {
-      console.log("training review added");
-      return true;
-    } else {
-      console.log("ERROR adding training review");
-      return false;
-    }
-  } catch (err: any) {
-    console.error("error adding training review: ", err);
+  const url = `${apiBaseUrl}/training-service/api/trainings/${trainingId}/review/${userId}`;
+
+  const config: AxiosRequestConfig = {
+    method: 'POST',
+    headers: {
+      "Authorization": `Bearer ${accessToken}`,
+    },
+    url,
+    data: JSON.stringify(review),
+  };
+
+  const response = await makeRequest<Training>(config);
+  if (response) {
+    console.log('added training review:', response);
+    return true;
   }
-  return false
+  return false;
 }
 
 export async function getTrainingReviews(trainingId: number): Promise<trainingReview[]> {
   const user = await globalUser.getUser();
-  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/" + trainingId + "/reviews";
   const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + accessToken,
-      },
-    });
-    if (response.ok) {
-      console.log("getting reviews");
-      return await response.json();
-    } else {
-      console.error("error getting training reviews, response: ", await response.json());
-      return [];
-    }
-  } catch (err: any) {
-    console.error("error getting training reviews: ", err);
+  const url = `${apiBaseUrl}/training-service/api/trainings/${trainingId}/reviews`;
+
+  const config: AxiosRequestConfig = {
+    method: 'GET',
+    headers: {
+      "Authorization": `Bearer ${accessToken}`,
+    },
+    url,
+  };
+
+  const response = await makeRequest<trainingReview[]>(config);
+  if (response) {
+    console.log('training reviews:', response);
+    return response;
   }
-  return []
+  return [];
 }
