@@ -1,102 +1,162 @@
-import { NativeBaseProvider, Text } from "native-base";
+import { NativeBaseProvider, Text, VStack, Icon } from "native-base";
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Container, Box, Progress } from 'native-base';
+import { Box, Progress } from 'native-base';
+import { MaterialCommunityIcons, MaterialIcons, Ionicons } from "@expo/vector-icons";
 
 export default function TrainingSessionScreen({ route, navigation }: any) {
     const { trainingInfo } = route.params;
-    const trainingTitle = 'Entrenamiento 1';
     const steps = 6000;
     const calories = 250;
     const distance = 3.5;
     const elapsedTime = '00:45:30';
     const completionPercentage = 70;
+
     return (
         <NativeBaseProvider>
-    <Container style={styles.container}>
-      <Text style={styles.title}>{trainingTitle}</Text>
-
-      <View style={styles.gridContainer}>
-        <View style={styles.gridRow}>
-          <Box bg="#FF6060" style={styles.gridBox}>
-            <Text style={styles.dashboardText}>{steps}</Text>
-            <Text style={styles.dashboardLabel}>Pasos</Text>
-          </Box>
-
-          <Box bg="#FF6060" style={styles.gridBox}>
-            <Text style={styles.dashboardText}>{calories}</Text>
-            <Text style={styles.dashboardLabel}>Calorías</Text>
-          </Box>
-        </View>
-
-        <View style={styles.gridRow}>
-          <Box bg="#FF6060" style={styles.gridBox}>
-            <Text style={styles.dashboardText}>{distance}</Text>
-            <Text style={styles.dashboardLabel}>Distancia (km)</Text>
-          </Box>
-
-          <Box bg="#FF6060" style={styles.gridBox}>
-            <Text style={styles.dashboardText}>{elapsedTime}</Text>
-            <Text style={styles.dashboardLabel}>Tiempo</Text>
-          </Box>
-        </View>
-      </View>
-      <Progress
-        colorScheme="pink"
-        value={completionPercentage}
-        size="xs"
-        mt={4}
-        mb={2}
-      />
-    </Container>
+            <VStack style={styles.container}>
+                <Text style={styles.title}>{trainingInfo.title}</Text>
+                <View style={styles.descriptionContainer}>
+                <Text style={styles.description}>{trainingInfo.description}</Text>
+                </View>
+                <View style={styles.timeContainer}>
+                <Text style={styles.elapsedTime}>{elapsedTime}</Text>
+                </View>
+                <View style={styles.dataRow}>
+                    <Box bg="#FF6060" style={styles.dataBoxOne}>
+                    <Icon
+                        as={<MaterialIcons name="run-circle"/>}
+                        size={20}
+                        color="#fff"
+                        alignSelf="center"
+                    />
+                        <Text style={styles.dataText}>{steps}</Text>
+                        <Text style={styles.dataLabel}>Pasos</Text>
+                    </Box>
+                    <Box bg="#FF6060" style={styles.dataBoxTwo}>
+                    <Icon
+                        as={<MaterialCommunityIcons name="fire-circle"/>}
+                        size={20}
+                        color="#fff"
+                        alignSelf="center"
+                    />
+                        <Text style={styles.dataText}>{calories}</Text>
+                        <Text style={styles.dataLabel}>Calorías</Text>
+                    </Box>
+                    <Box bg="#FF6060" style={styles.dataBoxThree}>
+                    <Icon
+                        as={<Ionicons name="md-navigate-circle"/>}
+                        size={20}
+                        color="#fff"
+                        alignSelf="center"
+                    />
+                        <Text style={styles.dataText}>{distance} km</Text>
+                        <Text style={styles.dataLabel}>Distancia</Text>
+                    </Box>
+                </View>
+                <Progress
+                    colorScheme="pink"
+                    value={completionPercentage}
+                    size="md"
+                    mt={4}
+                    mb={2}
+                />
+            </VStack>
         </NativeBaseProvider>
     );
 }
+
 const styles = StyleSheet.create({
     container: {
-      flex: 3,
-      paddingRight: 10,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#fff',
-      minWidth: 400,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        padding: 20,
     },
     title: {
-      fontSize: 22,
-      fontWeight: 'bold',
+        fontSize: 40,
+        fontWeight: 'bold',
+        lineHeight: 50, 
+        marginTop: -200, // Mueve el título hacia arriba
     },
-    gridContainer: {
-      flex:1,
-      width: '100%',
-      height: '100%',
-      justifyContent: 'center',
-      alignItems: 'center',
+    description: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        lineHeight: 50, 
     },
-    gridRow: {
-      flexDirection: 'row',
-      width: '80%',
-      marginBottom: 5,
+    elapsedTime: {
+        fontSize: 85,
+        fontWeight: 'bold',
+        justifyContent:'center',
+        marginTop: 100, // Mueve el título hacia arriba
+        lineHeight: 85, // Ajusta el valor según el espacio deseado
     },
-    gridBox: {
-      flex: 3,
-      aspectRatio: 1,
-      borderRadius: 30,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginLeft: 5,
-      height:200,
-      minWidth:150,
+    dataRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 20,
+        marginLeft: 5,
+        marginRight: 10,
     },
-    dashboardText: {
-      fontSize: 26,
-      fontWeight: 'bold',
-      color: '#fff',
-      textAlign: 'center',
+    dataBoxOne: {
+        flex: 1,
+        borderRadius: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 5,
+        height: 200,
+        minWidth: 120,
+        backgroundColor: '#FF5252',
     },
-    dashboardLabel: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      color: '#fff',
-      textAlign: 'center',
+    dataBoxTwo: {
+        flex: 1,
+        borderRadius: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 5,
+        height: 200,
+        minWidth: 120,
+        backgroundColor: '#212121',
     },
-  });
+    dataBoxThree: {
+        flex: 1,
+        borderRadius: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 5,
+        height: 200,
+        minWidth: 120,
+        backgroundColor: '#757575',
+    },
+    dataText: {
+        fontSize: 25,
+        fontWeight: 'bold',
+        color: '#fff',
+        textAlign: 'center',
+        lineHeight: 30, 
+        marginBottom: -10, // Ajusta el valor según el espacio deseado
+    },
+    dataLabel: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: '#fff',
+        textAlign: 'center',
+        lineHeight: 50, 
+    },
+    dataLabelTime: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#000000',
+        lineHeight: 50, 
+    },
+    timeContainer: {
+        alignItems: 'center', // Centra verticalmente el tiempo y su etiqueta
+        marginTop: -80,
+        marginBottom: 20, // Espacio entre el título y el tiempo
+    },
+    descriptionContainer: {
+        alignItems: 'flex-start', // Centra verticalmente el tiempo y su etiqueta
+        marginTop: 10, // Mueve el título hacia arriba
+    },
+});
