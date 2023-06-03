@@ -1,16 +1,16 @@
 import { NativeBaseProvider, Text, VStack, Icon } from "native-base";
-import React from 'react';
+import React from "react";
 import { StyleSheet, View } from 'react-native';
-import { Box, Progress } from 'native-base';
+import { Box } from 'native-base';
 import { MaterialCommunityIcons, MaterialIcons, Ionicons } from "@expo/vector-icons";
+import Stopwatch from "../components/trainings/stopwatch"
+import { LoadableButton } from "../components/commons/buttons";
 
 export default function TrainingSessionScreen({ route, navigation }: any) {
     const { trainingInfo } = route.params;
-    const steps = 6000;
-    const calories = 250;
-    const distance = 3.5;
-    const elapsedTime = '00:45:30';
-    const completionPercentage = 70;
+    const steps = 6000; //Hacerlo con google fit
+    const calories = 250; //Hacerlo con google fit
+    const distance = 3.5; //Hacerlo con google fit
 
     return (
         <NativeBaseProvider>
@@ -20,7 +20,7 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
                 <Text style={styles.description}>{trainingInfo.description}</Text>
                 </View>
                 <View style={styles.timeContainer}>
-                <Text style={styles.elapsedTime}>{elapsedTime}</Text>
+                <Stopwatch />
                 </View>
                 <View style={styles.dataRow}>
                     <Box bg="#FF6060" style={styles.dataBoxOne}>
@@ -54,12 +54,20 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
                         <Text style={styles.dataLabel}>Distancia</Text>
                     </Box>
                 </View>
-                <Progress
-                    colorScheme="pink"
-                    value={completionPercentage}
-                    size="md"
-                    mt={4}
-                    mb={2}
+                <LoadableButton
+                    text="Finalizar entrenamiento"
+                    customStyles={{ 
+                        backgroundColor: "#FF6060",
+                        width: "70%",
+                        height: "8%",
+                        borderRadius: 30,
+                        alignSelf: "center", 
+                        top: "0%"
+                    }}
+                    onPress={async () => {
+                        navigation.navigate("HomeScreen")
+                        return;
+                    }}
                 />
             </VStack>
         </NativeBaseProvider>

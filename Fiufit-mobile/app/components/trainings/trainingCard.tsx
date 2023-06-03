@@ -147,7 +147,7 @@ export default function TrainingCard(props: Props) {
               top: "0%"
             }}
             onPress={async () => {
-              navigation.navigate("TrainingSessionScreen", { trainingInfo: trainingData })
+              navigation.navigate("CountdownTimerScreen", { trainingInfo: trainingData })
               return;
             }}
           />
