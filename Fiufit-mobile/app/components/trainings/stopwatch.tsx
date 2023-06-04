@@ -2,9 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Text } from "native-base";
 import { StyleSheet } from 'react-native';
 
-const Stopwatch = () => {
+const Stopwatch = ({ onTimeChange }: any) => {
     const [time, setTime] = useState(0);
     const [running, setRunning] = useState(false);
+    const formatTime = (ms: number) => {
+        const hours = Math.floor(ms / 3600000);
+        const minutes = Math.floor((ms / 60000) % 60);
+        const seconds = Math.floor((ms / 1000) % 60);
+    
+        return `${("0" + hours).slice(-2)}:${("0" + minutes).slice(-2)}:${("0" + seconds).slice(-2)}`;
+    };
+
     useEffect(() => {
         setRunning(true)
         let interval: string | number | NodeJS.Timeout | undefined;
@@ -17,8 +25,13 @@ const Stopwatch = () => {
         }
         return () => clearInterval(interval);
     }, [running]);
+
+    useEffect(() => {
+        onTimeChange(formatTime(time));
+      }, [time, onTimeChange]);
+
     return (
-      <Text style={styles.elapsedTime}>{("0" + Math.floor((time / 60000) % 60)).slice(-2)}:{("0" + Math.floor((time / 1000) % 60)).slice(-2)}:{("0" + ((time / 10) % 100)).slice(-2)}</Text>
+        <Text style={styles.elapsedTime}>{formatTime(time)}</Text>
     );
   };
 

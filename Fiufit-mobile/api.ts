@@ -1,7 +1,7 @@
 import { User } from "firebase/auth";
 import globalUser, { userInfo } from "./userStorage";
 import { trainingReview } from "./app/screens/rateTraining";
-
+import { trainingSession } from "./app/screens/trainingSession";
 
 const getInternalIdFromResponse = (response: any): string => {
   // receives a response from the backend like "{"status": "User Jdjde with id 10 created"}"
@@ -469,4 +469,31 @@ export async function getTrainingReviews(trainingId: number): Promise<trainingRe
     console.error("error getting training reviews: ", err);
   }
   return []
+}
+
+export async function addTrainingSession(trainingId: number, trainingSession: trainingSession): Promise<void> {
+  const user = await globalUser.getUser();
+  const userId = user?.id;
+  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/" + trainingId + "/user_training/" + userId;
+  const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "Authorization": "Bearer " + accessToken,
+      },
+      body: JSON.stringify(trainingSession),
+    });
+    if (response.ok) {
+      console.log("adding training session");
+    } else {
+      console.error("error adding training session, response: ", await response.json());
+    }
+  } catch (err: any) {
+    console.error("error adding training session: ", err);
+  }
 }

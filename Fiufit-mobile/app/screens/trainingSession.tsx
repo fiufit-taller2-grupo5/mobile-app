@@ -1,17 +1,63 @@
 import { NativeBaseProvider, Text, VStack, Icon } from "native-base";
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from 'react-native';
 import { Box } from 'native-base';
 import { MaterialCommunityIcons, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import Stopwatch from "../components/trainings/stopwatch"
 import { LoadableButton } from "../components/commons/buttons";
+import { BackHandler } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { addTrainingSession } from "../../api";
+
+export type trainingSession = {
+    id?: number;
+    distance: number;
+    duration: number; //cambiar a string
+    steps: number,
+    calories: number,
+    date: Date,
+};
 
 export default function TrainingSessionScreen({ route, navigation }: any) {
     const { trainingInfo } = route.params;
     const steps = 6000; //Hacerlo con google fit
     const calories = 250; //Hacerlo con google fit
-    const distance = 3.5; //Hacerlo con google fit
+    const distance = 3; //Hacerlo con google fit
+    const duration = 10; //Sacarlo y usar durationTime
+    const date = new Date();
+    const [durationTime, setDurationTime] = useState("00:00:00");
+    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' } as const;
 
+    useFocusEffect(
+        React.useCallback(() => {
+            const onBackPress = () => {
+                handleAddTrainingSession();
+                navigation.navigate('HomeScreen'); // Navegar a la HomeScreen al presionar el botón de retroceso
+                return true; // Indicar que se ha manejado el evento del botón de retroceso
+            };
+      
+            // Agregar el listener para el evento de botón de retroceso
+            BackHandler.addEventListener('hardwareBackPress', onBackPress);
+        
+            // Limpiar el listener cuando el componente se desmonte
+            return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+        }, [])
+    );
+
+    const handleAddTrainingSession = async () => {
+        await addTrainingSession(trainingInfo.id, {
+            distance: distance,
+            duration: duration,
+            steps: steps,
+            calories: calories,
+            date: date,
+        });
+    };
+
+    const updateTime = (time: React.SetStateAction<string>) => {
+        setDurationTime(time);
+    };
+    
     return (
         <NativeBaseProvider>
             <VStack style={styles.container}>
@@ -20,7 +66,10 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
                 <Text style={styles.description}>{trainingInfo.description}</Text>
                 </View>
                 <View style={styles.timeContainer}>
-                <Stopwatch />
+                <Stopwatch onTimeChange={updateTime}/>
+                </View>
+                <View style={styles.descriptionContainer}>
+                <Text style={styles.date}>{date.toLocaleDateString('es-AR', options)}</Text>
                 </View>
                 <View style={styles.dataRow}>
                     <Box bg="#FF6060" style={styles.dataBoxOne}>
@@ -65,6 +114,7 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
                         top: "0%"
                     }}
                     onPress={async () => {
+                        handleAddTrainingSession()
                         navigation.navigate("HomeScreen")
                         return;
                     }}
@@ -89,9 +139,17 @@ const styles = StyleSheet.create({
         marginTop: -200, // Mueve el título hacia arriba
     },
     description: {
+        fontSize: 25,
+        fontWeight: 'bold',
+        lineHeight: 30,
+    },
+    date: {
         fontSize: 20,
         fontWeight: 'bold',
-        lineHeight: 50, 
+        lineHeight: 25,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 25,
     },
     elapsedTime: {
         fontSize: 85,
@@ -161,7 +219,6 @@ const styles = StyleSheet.create({
     timeContainer: {
         alignItems: 'center', // Centra verticalmente el tiempo y su etiqueta
         marginTop: -80,
-        marginBottom: 20, // Espacio entre el título y el tiempo
     },
     descriptionContainer: {
         alignItems: 'flex-start', // Centra verticalmente el tiempo y su etiqueta
