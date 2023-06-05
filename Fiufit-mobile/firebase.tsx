@@ -1,19 +1,15 @@
 import { AuthError, AuthRequest, RefreshTokenRequest } from "expo-auth-session";
 import { initializeApp } from "firebase/app";
 import {
-  getAuth,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   signOut,
+  User,
 } from "firebase/auth";
-import { createUser } from "./api";
-import firebase from 'firebase/app';
 
 
 import {
-  connectAuthEmulator,
-  setPersistence,
   initializeAuth,
   getReactNativePersistence,
 } from 'firebase/auth/react-native';
@@ -65,13 +61,13 @@ const logInWithEmailAndPassword = async (email: string, password: string): Promi
 };
 
 const registerWithEmailAndPassword =
-  async (name: string, email: string, password: string): Promise<void | string> => {
+  async (name: string, email: string, password: string, onSucessfullFirebaseRegister: (user: User, name: string) => Promise<void>): Promise<void | string> => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       try {
         console.log("register w email");
-        createUser(user, name);
+        onSucessfullFirebaseRegister(user, name);
       } catch (error: any) {
         alert(error.message);
       }
@@ -132,5 +128,5 @@ export {
   logInWithEmailAndPassword,
   registerWithEmailAndPassword,
   sendPasswordReset,
-  logout, createUser,
+  logout,
 };

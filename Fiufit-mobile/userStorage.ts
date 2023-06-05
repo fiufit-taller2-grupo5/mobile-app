@@ -123,7 +123,7 @@ export class StoredUser {
         await this.verifyUserExists();
         console.log("refreshing token", this.user!.googleUser);
         console.log("current firebase auth user:", auth.currentUser);
-        const newToken = await auth.currentUser?.getIdToken(true)
+        const newToken = await auth.currentUser?.getIdToken(true);
         console.log("new token:", newToken);
         (this.user!.googleUser as any).stsTokenManager.accessToken = newToken;
         await storeUserOnStorage(this.user!);

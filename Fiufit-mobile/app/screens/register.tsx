@@ -5,12 +5,11 @@ import { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, registerWithEmailAndPassword } from '../../firebase';
 import RegisterForm from '../components/register/registerForm';
-import SubmitButton from '../components/register/submitButton';
 import GoogleRegister from '../components/register/googleRegister';
 import MoveToLogin from '../components/register/moveToLogin';
 import ErrorMessage from '../components/form/errorMessage';
 import { LoadableButton } from '../components/commons/buttons';
-
+import { createUser } from '../../api';
 
 export default function RegisterScreen({ navigation }: any) {
   const theme = extendTheme({
@@ -138,7 +137,7 @@ export default function RegisterScreen({ navigation }: any) {
             throw new Error(passwordError);
           }
 
-          const errorMessage = await registerWithEmailAndPassword(name, email.toLowerCase(), password);
+          const errorMessage = await registerWithEmailAndPassword(name, email.toLowerCase(), password, async (user, name) => { await createUser(user, name) });
           if (!errorMessage) {
             console.log("User registered successfully");
             navigation.navigate('LocationScreen');
