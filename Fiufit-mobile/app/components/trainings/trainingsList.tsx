@@ -34,13 +34,13 @@ export default function TrainingsList(props: Props) {
   const [selectedDifficulty, setDifficulty] = React.useState("");
 
   const filterData = () => {
-      const filtered = trainingsList.filter(
-        (item) =>
-          (selectedDifficulty === '' || item.difficulty === parseInt(selectedDifficulty)) &&
-          (selectedType === '' || item.type.toLowerCase().includes(selectedType.toLowerCase())) &&
-          (selectedTitle === '' || item.title.toLowerCase().includes(selectedTitle.toLowerCase()))
-      );
-      setFilteredData(filtered);
+    const filtered = trainingsList.filter(
+      (item) =>
+        (selectedDifficulty === '' || item.difficulty === parseInt(selectedDifficulty)) &&
+        (selectedType === '' || item.type.toLowerCase().includes(selectedType.toLowerCase())) &&
+        (selectedTitle === '' || item.title.toLowerCase().includes(selectedTitle.toLowerCase()))
+    );
+    setFilteredData(filtered);
   }
 
   const handleFilterByTitle = (text: string) => {
@@ -65,12 +65,14 @@ export default function TrainingsList(props: Props) {
 
   const getTrainingsList = async () => {
     setRefreshing(true);
-    const trainingsResponse = await getTrainings();
-    const favoritesTrainingsResponse = await getFavoriteTrainings();
-    let trainings = updateFavoriteStatus(trainingsResponse, favoritesTrainingsResponse);
-    setTrainingsList(trainings);
-    setRefreshing(false);
-    filterData();
+    const trainingList = await getTrainings();
+    if (trainingList.length > 0) {
+      const favoritesTrainingsResponse = await getFavoriteTrainings();
+      let trainings = updateFavoriteStatus(trainingList, favoritesTrainingsResponse);
+      setTrainingsList(trainings);
+      setRefreshing(false);
+      filterData();
+    }
   }
 
   useEffect(() => {
@@ -109,43 +111,43 @@ export default function TrainingsList(props: Props) {
         />
       </VStack>
       <HStack>
-      <Box maxW="300">
-        <Select selectedValue={selectedType} minWidth="180" maxWidth="190" accessibilityLabel="Choose Type" placeholder="Choose Type" _selectedItem={{
-        bg: "teal.600",
-        endIcon: <CheckIcon size="5" />
-      }} mt={1} onValueChange={handleFilterByType}>
-          <Select.Item label="All types" value="" />
-          <Select.Item label="Running" value="Running" />
-          <Select.Item label="Swimming" value="Swimming" />
-          <Select.Item label="Biking" value="Biking" />
-          <Select.Item label="Yoga" value="Yoga" />
-          <Select.Item label="Basketball" value="Basketball" />
-          <Select.Item label="Football" value="Football" />
-          <Select.Item label="Walking" value="Walking" />
-          <Select.Item label="Gymnastics" value="Gymnastics" />
-          <Select.Item label="Dancing" value="Dancing" />
-          <Select.Item label="Hiking" value="Hiking" />
-        </Select>
-      </Box>
-      <Box maxW="300">
-        <Select selectedValue={selectedDifficulty} minWidth="180" maxWidth="190" accessibilityLabel="Choose Difficulty" placeholder="Choose Difficulty" _selectedItem={{
-        bg: "teal.600",
-        endIcon: <CheckIcon size="5" />
-      }} mt={1} onValueChange={handleFilterByDifficulty}>
-          <Select.Item label="All difficulties" value="" />
-          <Select.Item label="1" value="1" />
-          <Select.Item label="2" value="2" />
-          <Select.Item label="3" value="3" />
-          <Select.Item label="4" value="4" />
-          <Select.Item label="5" value="5" />
-          <Select.Item label="6" value="6" />
-          <Select.Item label="7" value="7" />
-          <Select.Item label="8" value="8" />
-          <Select.Item label="9" value="9" />
-          <Select.Item label="10" value="10" />
-        </Select>
-      </Box>
-    </HStack>
+        <Box maxW="300">
+          <Select selectedValue={selectedType} minWidth="180" maxWidth="190" accessibilityLabel="Choose Type" placeholder="Choose Type" _selectedItem={{
+            bg: "teal.600",
+            endIcon: <CheckIcon size="5" />
+          }} mt={1} onValueChange={handleFilterByType}>
+            <Select.Item label="All types" value="" />
+            <Select.Item label="Running" value="Running" />
+            <Select.Item label="Swimming" value="Swimming" />
+            <Select.Item label="Biking" value="Biking" />
+            <Select.Item label="Yoga" value="Yoga" />
+            <Select.Item label="Basketball" value="Basketball" />
+            <Select.Item label="Football" value="Football" />
+            <Select.Item label="Walking" value="Walking" />
+            <Select.Item label="Gymnastics" value="Gymnastics" />
+            <Select.Item label="Dancing" value="Dancing" />
+            <Select.Item label="Hiking" value="Hiking" />
+          </Select>
+        </Box>
+        <Box maxW="300">
+          <Select selectedValue={selectedDifficulty} minWidth="180" maxWidth="190" accessibilityLabel="Choose Difficulty" placeholder="Choose Difficulty" _selectedItem={{
+            bg: "teal.600",
+            endIcon: <CheckIcon size="5" />
+          }} mt={1} onValueChange={handleFilterByDifficulty}>
+            <Select.Item label="All difficulties" value="" />
+            <Select.Item label="1" value="1" />
+            <Select.Item label="2" value="2" />
+            <Select.Item label="3" value="3" />
+            <Select.Item label="4" value="4" />
+            <Select.Item label="5" value="5" />
+            <Select.Item label="6" value="6" />
+            <Select.Item label="7" value="7" />
+            <Select.Item label="8" value="8" />
+            <Select.Item label="9" value="9" />
+            <Select.Item label="10" value="10" />
+          </Select>
+        </Box>
+      </HStack>
     </VStack>
     <View flex={1}>
       <FlatList

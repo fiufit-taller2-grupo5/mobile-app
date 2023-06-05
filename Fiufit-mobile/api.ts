@@ -2,7 +2,53 @@ import { User } from "firebase/auth";
 import globalUser, { userInfo } from "./userStorage";
 import { trainingReview } from "./app/screens/rateTraining";
 import { trainingSession } from "./app/screens/trainingSession";
-import { auth } from "./firebase";
+
+class MyError {
+  message: string;
+  code: number;
+
+  constructor(message: string, code: number) {
+    this.message = message;
+    this.code = code;
+  }
+
+};
+
+type Result<T> = T | MyError;
+
+
+const fetchFromApi = async <T>(path: string, fetchConfig: RequestInit, onSuccess: (response: any) => T): Promise<Result<T>> => {
+  try {
+    const user = await globalUser.getUser();
+    const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
+    fetchConfig.headers = {
+      ...fetchConfig.headers,
+      "Content-Type": "application/json",
+      "accept": "*/*",
+      "accept-encoding": "gzip, deflate, br",
+      "connection": "keep-alive",
+      "Authorization": "Bearer " + accessToken,
+    }
+    const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/" + path;
+    const response = await fetch(url, fetchConfig);
+    const responseJson = await response.json();
+    if (response.ok) {
+      return onSuccess(responseJson);
+    } else {
+      if (responseJson?.error?.code === "auth/id-token-expired") {
+        console.log("token expired:", responseJson.error.message);
+        await globalUser.refreshToken();
+        return await fetchFromApi(url, fetchConfig, onSuccess);
+      } else {
+        console.error("error in request: ", responseJson.error.message);
+        return new MyError(responseJson.error.message, responseJson.error.code);
+      }
+    }
+  } catch (err: any) {
+    console.error("error fetching from api: ", err);
+    return new MyError(err.message, err.code);
+  }
+}
 
 
 const getInternalIdFromResponse = (response: any): string => {
@@ -225,41 +271,21 @@ export interface TrainerTraining {
 }
 
 export async function getTrainings(): Promise<Training[]> {
-  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings";
-  const user = await globalUser.getUser();
-  const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
   try {
-    const response = await fetch(url, {
+    return await fetchFromApi("training-service/api/trainings", {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + accessToken,
-      },
+    }, (response) => {
+      if (response instanceof MyError) {
+        console.error("error fetching trainings: ", response.message);
+        return [];
+      } else {
+        return response;
+      }
     });
-    if (response.ok) {
-      try {
-        const trainings = await response.json();
-        console.log("Training plans:", trainings);
-        return trainings;
-      } catch (err: any) {
-        console.error(err);
-      }
-    } else {
-      const responseJson = await response.json();
-      if (responseJson?.error?.code === "auth/id-token-expired") {
-        console.log("token expired, refreshing");
-        await globalUser.refreshToken();
-        return await getFavoriteTrainings();
-      }
-      console.error("error getting trainings response: ", responseJson);
-    }
   } catch (err: any) {
     console.error("error fetching trainings: ", err);
+    return [];
   }
-  return [];
 }
 
 export async function getTrainerTrainings(filterRule: string | null = null, filterValue: string | null = null): Promise<Training[]> {
@@ -301,46 +327,23 @@ export async function getTrainerTrainings(filterRule: string | null = null, filt
 }
 
 export async function getFavoriteTrainings(): Promise<Training[]> {
-  const url = 'https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings/favorites/'
-  const user = await globalUser.getUser();
-  const userId = user?.id;
-  const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
-  console.log("getting tfavorite rainings at url: ", url + userId);
-  console.log("estoy en getFavoriteTrainings");
-  console.log("the access token is: ", user?.googleUser);
   try {
-    const response = await fetch(url + userId, {
+    const user = await globalUser.getUser();
+    const userId = user?.id;
+    return await fetchFromApi("training-service/api/trainings/favorites/" + userId, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "connection": "keep-alive",
-        "Authorization": "Bearer " + accessToken,
-      },
+    }, (response) => {
+      if (response instanceof MyError) {
+        console.error("error fetching trainings: ", response.message);
+        return [];
+      } else {
+        return response;
+      }
     });
-    if (response.ok) {
-      try {
-        const favoriteTrainings = await response.json();
-        console.log("Training plans:", favoriteTrainings);
-        return favoriteTrainings;
-      } catch (err: any) {
-        console.error(err);
-      }
-    } else {
-      const responseJson = await response.json();
-      if (responseJson?.error?.code === "auth/id-token-expired") {
-        console.log("token expired, refreshing");
-        await globalUser.refreshToken();
-        return await getFavoriteTrainings();
-      }
-      console.log(response.status, response.statusText);
-      console.error("error getting favorite trainings response: ", responseJson);
-    }
   } catch (err: any) {
-    console.error("error fetching favorite trainings: ", err);
+    console.error("error fetching trainings: ", err);
+    return [];
   }
-  return [];
 }
 
 export async function addFavoriteTraining(trainingPlanId: number): Promise<boolean> {
