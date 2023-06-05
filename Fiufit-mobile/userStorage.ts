@@ -1,6 +1,6 @@
 import { User } from "firebase/auth";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { auth } from "./firebase";
 
 export class StoredUser {
     user: userInfo | null;
@@ -25,12 +25,12 @@ export class StoredUser {
         console.log("user metadata:", this.user!.UserMetadata);
         return this.user!.UserMetadata;
     }
-    
+
     async updateDetails() {
         await this.verifyUserMetadataExists();
         await storeUserOnStorage(this.user!);
     }
-    
+
     async verifyUserExists() {
         if (this.user === null) {
             this.user = await getUserFromStorage();
@@ -45,7 +45,7 @@ export class StoredUser {
         const details = await getUserDetails(this.user!.id, this.user!.googleUser);
         console.log("details received:", details, "user stored metadata:", this.user!.UserMetadata)
         if (details === null) {
-            if ( this.user!.UserMetadata === null || this.user!.UserMetadata === undefined) {
+            if (this.user!.UserMetadata === null || this.user!.UserMetadata === undefined) {
                 console.log("creating new empty metadata");
                 this.user!.UserMetadata = {
                     id: this.user!.id,
@@ -55,7 +55,7 @@ export class StoredUser {
                     location: null,
                     interests: []
                 }
-        }
+            }
         } else {
             this.user!.UserMetadata = details;
         }
@@ -113,10 +113,20 @@ export class StoredUser {
         await this.verifyUserExists();
         return this.user!.role;
     }
-    
+
     async logout() {
         this.user = null;
         await AsyncStorage.removeItem('@userInfo');
+    }
+
+    async refreshToken() {
+        await this.verifyUserExists();
+        console.log("refreshing token", this.user!.googleUser);
+        console.log("current firebase auth user:", auth.currentUser);
+        const newToken = await auth.currentUser?.getIdToken(true)
+        console.log("new token:", newToken);
+        (this.user!.googleUser as any).stsTokenManager.accessToken = newToken;
+        await storeUserOnStorage(this.user!);
     }
 }
 
@@ -162,33 +172,33 @@ export type userInfo = {
     UserMetadata: UserMetadata | null
 }
 
-export async function getUserDetails(userId:number, user:User) : Promise<UserMetadata | null> {
+export async function getUserDetails(userId: number, user: User): Promise<UserMetadata | null> {
     const accessToken = (user as any).stsTokenManager.accessToken;
     const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/" + userId + "/metadata";
     try {
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "accept": "*/*",
-          "accept-encoding": "gzip, deflate, br",
-          "connection": "keep-alive",
-          "Authorization": "Bearer " + accessToken,
-        },
-      });
-      if (response.ok) {
-        try {
-          const userDetails = await response.json() ;
-          console.log("userDetails:", userDetails);
-          return userDetails;
-        } catch (err: any) {
-          console.error(err);
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "accept": "*/*",
+                "accept-encoding": "gzip, deflate, br",
+                "connection": "keep-alive",
+                "Authorization": "Bearer " + accessToken,
+            },
+        });
+        if (response.ok) {
+            try {
+                const userDetails = await response.json();
+                console.log("userDetails:", userDetails);
+                return userDetails;
+            } catch (err: any) {
+                console.error(err);
+            }
+        } else {
+            console.info("error getting user details response: ", await response.json());
         }
-      } else {
-        console.info("error getting user details response: ", await response.json());
-      }
     } catch (err: any) {
-      console.error("error fetching user details: ", err);
+        console.error("error fetching user details: ", err);
     }
     return null;
 }
@@ -200,25 +210,25 @@ export const updateUserDetails = async (data: UserMetadata) => {
     const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
     console.log("data:", JSON.stringify(data), "userId:", internal_id);
     try {
-      const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/" + internal_id + "/metadata";
-      const response = await fetch(url, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "accept": "*/*",
-          "accept-encoding": "gzip, deflate, br",
-          "connection": "keep-alive",
-          "Authorization": "Bearer " + accessToken,
-        },
-        body: JSON.stringify(data),
-      });
-      if (response.ok) {
-        console.log("user details updated");
-      } else {
-        console.error(await response.json());
-      }
+        const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/" + internal_id + "/metadata";
+        const response = await fetch(url, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "accept": "*/*",
+                "accept-encoding": "gzip, deflate, br",
+                "connection": "keep-alive",
+                "Authorization": "Bearer " + accessToken,
+            },
+            body: JSON.stringify(data),
+        });
+        if (response.ok) {
+            console.log("user details updated");
+        } else {
+            console.error(await response.json());
+        }
     } catch (err: any) {
-      alert("user details error:" + err.message);
+        alert("user details error:" + err.message);
     }
 };
 

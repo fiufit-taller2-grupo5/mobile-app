@@ -1,4 +1,4 @@
-import { AuthError } from "expo-auth-session";
+import { AuthError, AuthRequest, RefreshTokenRequest } from "expo-auth-session";
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
@@ -6,9 +6,18 @@ import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   signOut,
-  User
 } from "firebase/auth";
 import { createUser } from "./api";
+import firebase from 'firebase/app';
+
+
+import {
+  connectAuthEmulator,
+  setPersistence,
+  initializeAuth,
+  getReactNativePersistence,
+} from 'firebase/auth/react-native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDoN3FOFeaLagniu1nAkyWTbb_4kO4kXBw",
@@ -22,8 +31,12 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-auth.signOut();
+const persistence = getReactNativePersistence(AsyncStorage);
+(persistence as any).type = "LOCAL";
+const auth = initializeAuth(app, {
+  persistence: persistence,
+});
+//auth.signOut();
 let internal_id = "";
 
 const getCauseFromErrorMessage = (s: string): string => {
@@ -34,6 +47,7 @@ const getCauseFromErrorMessage = (s: string): string => {
 
 
 const logInWithEmailAndPassword = async (email: string, password: string): Promise<string | void> => {
+  console.log("logInWithEmailAndPassword auth 1: ", auth);
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;

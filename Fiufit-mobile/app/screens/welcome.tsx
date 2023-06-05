@@ -10,7 +10,8 @@ import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 import { apiGatewayHealthCheck } from '../../api';
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
-
+import * as LocalAuthentication from 'expo-local-authentication';
+import globalUser from '../../userStorage';
 
 export const BACKGROUND_FETCH_TASK = 'background-fetch';
 
@@ -142,6 +143,31 @@ export default function WelcomeScreen({ navigation }: NativeStackScreenProps<any
       }
     }
   });
+
+  React.useEffect(() => {
+    const biometricLogin = async () => {
+      const user = await globalUser.getUser();
+      if (!user) {
+        return;
+      }
+
+      const hasHardware = await LocalAuthentication.hasHardwareAsync();
+      if (!hasHardware) {
+        return;
+      }
+      const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+      if (!isEnrolled) {
+        return;
+      }
+      const { success } = await LocalAuthentication.authenticateAsync();
+      if (success) {
+        console.log("biometric login success", user);
+        navigation.navigate('HomeScreen');
+      }
+    }
+    // biometricLogin();
+  }, [])
+
 
   return <SafeAreaProvider>
     <NativeBaseProvider theme={theme}>

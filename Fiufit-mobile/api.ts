@@ -2,6 +2,8 @@ import { User } from "firebase/auth";
 import globalUser, { userInfo } from "./userStorage";
 import { trainingReview } from "./app/screens/rateTraining";
 import { trainingSession } from "./app/screens/trainingSession";
+import { auth } from "./firebase";
+
 
 const getInternalIdFromResponse = (response: any): string => {
   // receives a response from the backend like "{"status": "User Jdjde with id 10 created"}"
@@ -246,7 +248,13 @@ export async function getTrainings(): Promise<Training[]> {
         console.error(err);
       }
     } else {
-      console.error("error getting trainings response: ", await response.json());
+      const responseJson = await response.json();
+      if (responseJson?.error?.code === "auth/id-token-expired") {
+        console.log("token expired, refreshing");
+        await globalUser.refreshToken();
+        return await getFavoriteTrainings();
+      }
+      console.error("error getting trainings response: ", responseJson);
     }
   } catch (err: any) {
     console.error("error fetching trainings: ", err);
@@ -299,6 +307,7 @@ export async function getFavoriteTrainings(): Promise<Training[]> {
   const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
   console.log("getting tfavorite rainings at url: ", url + userId);
   console.log("estoy en getFavoriteTrainings");
+  console.log("the access token is: ", user?.googleUser);
   try {
     const response = await fetch(url + userId, {
       method: "GET",
@@ -319,7 +328,14 @@ export async function getFavoriteTrainings(): Promise<Training[]> {
         console.error(err);
       }
     } else {
-      console.error("error getting favorite trainings response: ", await response.json());
+      const responseJson = await response.json();
+      if (responseJson?.error?.code === "auth/id-token-expired") {
+        console.log("token expired, refreshing");
+        await globalUser.refreshToken();
+        return await getFavoriteTrainings();
+      }
+      console.log(response.status, response.statusText);
+      console.error("error getting favorite trainings response: ", responseJson);
     }
   } catch (err: any) {
     console.error("error fetching favorite trainings: ", err);

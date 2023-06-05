@@ -13,6 +13,8 @@ import ResetPassword from '../components/login/resetPassword';
 import { LoadableButton } from '../components/commons/buttons';
 import { getUserInfoByEmail } from '../../api';
 import globalUser from '../../userStorage';
+import * as LocalAuthentication from 'expo-local-authentication';
+
 
 export default function LoginScreen({ navigation }: any) {
   const theme = extendTheme({
@@ -39,6 +41,28 @@ export default function LoginScreen({ navigation }: any) {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [user, loading, error] = useAuthState(auth);
+
+  const biometricLogin = async () => {
+    const hasHardware = await LocalAuthentication.hasHardwareAsync();
+    if (!hasHardware) {
+      return;
+    }
+    const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+    if (!isEnrolled) {
+      return;
+    }
+    const { success } = await LocalAuthentication.authenticateAsync();
+    if (success) {
+      const user = await globalUser.getUser();
+      if (user === null) {
+        console.error("Error al iniciar sesión. Por favor, inténtelo de nuevo más tarde.");
+        throw Error("Error al iniciar sesión. Por favor, inténtelo de nuevo más tarde.");
+      } else {
+        console.log("biometric login success", user);
+      }
+      navigation.navigate('HomeScreen');
+    }
+  }
 
   React.useEffect(() => {
     if (loading) {
@@ -110,6 +134,13 @@ export default function LoginScreen({ navigation }: any) {
           } else {
             throw Error(errorMessage);
           }
+        }}
+      />
+      <LoadableButton
+        text="Iniciar Sesión con datos biométricos"
+        customStyles={{ marginBottom: 10 }}
+        onPress={async () => {
+          await biometricLogin();
         }}
       />
       <GoogleLogin
