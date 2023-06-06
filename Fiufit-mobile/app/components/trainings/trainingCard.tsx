@@ -12,7 +12,7 @@ import {
   ScrollView,
   Divider
 } from "native-base";
-import { getTrainingReviews, Training } from "../../../api";
+import { API, Training } from "../../../api";
 import { useEffect, useState } from "react";
 import { RefreshControl } from "react-native";
 import { trainingReview } from "../../screens/rateTraining";
@@ -28,12 +28,13 @@ interface Props {
 export default function TrainingCard(props: Props) {
   const { navigation, trainingData } = props;
 
+  const api = new API(navigation);
 
   const [reviews, setReviews] = useState<trainingReview[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const retrieveTrainingReviews = async () => {
-    const trainingReviews = await getTrainingReviews(trainingData.id);
+    const trainingReviews = await api.getTrainingReviews(trainingData.id);
     // map the training reviews to add an index to each review
     const trainingReviewsWithIndex = trainingReviews.map(
       (review: any, index: number) => {
@@ -58,14 +59,14 @@ export default function TrainingCard(props: Props) {
   // To distinguish roles
   const [role, setRole] = useState<string | null>(null);
   useEffect(() => {
-      const listener = navigation.addListener('focus', () => {
-          async function getCurrentRole() {
-              const role = await globalUser.getRole();
-              setRole(role);
-          }
-          getCurrentRole();
-      });
-      return listener;
+    const listener = navigation.addListener('focus', () => {
+      async function getCurrentRole() {
+        const role = await globalUser.getRole();
+        setRole(role);
+      }
+      getCurrentRole();
+    });
+    return listener;
   }, [navigation]);
   const isAthlete = role === 'Atleta';
 
@@ -138,12 +139,12 @@ export default function TrainingCard(props: Props) {
           </Stack>
           <LoadableButton
             text="Iniciar"
-            customStyles={{ 
+            customStyles={{
               backgroundColor: "#FF6060",
               width: "30%",
               height: "8%",
               borderRadius: 30,
-              alignSelf: "center", 
+              alignSelf: "center",
               top: "0%"
             }}
             onPress={async () => {

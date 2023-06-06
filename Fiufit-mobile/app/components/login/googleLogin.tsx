@@ -6,7 +6,7 @@ import * as Google from 'expo-auth-session/providers/google';
 import { auth } from "../../../firebase";
 import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";
 import globalUser from "../../../userStorage";
-import { getUserInfoByEmail } from "../../../api";
+import { API } from "../../../api";
 
 
 interface Props {
@@ -24,6 +24,8 @@ export default function GoogleLogin(props: Props) {
       "423504146626-mf53940m2vhk31teo1t5ek5q6kjvvc4c.apps.googleusercontent.com",
   });
 
+  const api = new API(props.navigation);
+
   useEffect(() => {
     async function signIn() {
       if (response?.type === "success" && response?.params?.id_token) {
@@ -38,7 +40,7 @@ export default function GoogleLogin(props: Props) {
           }
           // we get the user info from the back to store it on the storage
 
-          const userInfo = await getUserInfoByEmail(user.email, user);
+          const userInfo = await api.getUserInfoByEmail(user.email, user);
           if (userInfo instanceof Error) {
             props.setErrorMessage("No se encuetra actualmente registrado en Fiufit. Por favor, regístrese primero.");
             // logout from firebase

@@ -43,6 +43,7 @@ export default function ChangeInterestsScreen({ navigation }: any) {
         top={"60%"}
         interests={interests}
         setInterests={setInterests}
+        navigation={navigation}
       />
       <SubmitButton
         navigation={navigation}

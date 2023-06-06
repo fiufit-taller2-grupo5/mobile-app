@@ -2,7 +2,7 @@ import { VStack, Heading, NativeBaseProvider } from "native-base";
 import { createTrainingStyles } from "../styles";
 import { useState } from "react";
 import TrainingForm from "../components/trainingInfo/trainingForm";
-import { addTraining } from "../../api";
+import { API } from "../../api";
 import { LoadableButton } from "../components/commons/buttons";
 
 
@@ -24,6 +24,8 @@ export default function CreateTrainingScreen({ navigation }: any) {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [image, setImage] = useState("");
+
+  const api = new API(navigation);
 
   return <NativeBaseProvider>
     <VStack height="full" style={createTrainingStyles.stack}>
@@ -51,16 +53,18 @@ export default function CreateTrainingScreen({ navigation }: any) {
 
       <LoadableButton
         onPress={async () => {
-          addTraining({title: trainingTitle,
+          await api.addTraining({
+            title: trainingTitle,
             description: trainingDescription,
             state: "active",
-            difficulty: trainingDifficulty, 
-            type: trainingType});
+            difficulty: trainingDifficulty,
+            type: trainingType
+          });
           navigation.navigate("HomeScreen");
           return;
         }}
-        text = "Crear"
-        customStyles = {{alignSelf: "center", top: "5%"}}
+        text="Crear"
+        customStyles={{ alignSelf: "center", top: "5%" }}
       />
     </VStack>
   </NativeBaseProvider>;

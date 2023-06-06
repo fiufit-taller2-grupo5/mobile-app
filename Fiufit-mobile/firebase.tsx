@@ -50,7 +50,6 @@ const logInWithEmailAndPassword = async (email: string, password: string): Promi
     const uid = user.uid;
     try {
       const idToken = await user.getIdToken();
-      // TODO: get the user info from the back and show it in the home screen
     } catch (error: any) {
       alert(error.message);
     }
@@ -62,19 +61,10 @@ const logInWithEmailAndPassword = async (email: string, password: string): Promi
 
 const registerWithEmailAndPassword =
   async (name: string, email: string, password: string, onSucessfullFirebaseRegister: (user: User, name: string) => Promise<void>): Promise<void | string> => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      try {
-        console.log("register w email");
-        onSucessfullFirebaseRegister(user, name);
-      } catch (error: any) {
-        alert(error.message);
-      }
-    }
-    catch (error: any) {
-      return getErrorMessage(error);
-    }
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    console.log("registered in firebase");
+    await onSucessfullFirebaseRegister(user, name);
   };
 
 // TODO: handle errors to show to user

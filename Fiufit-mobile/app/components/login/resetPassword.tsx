@@ -1,8 +1,6 @@
 import { HStack, Text, Link, View } from "native-base";
-import { loginAndRegisterStyles } from "../../styles";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
-import { getResetPasswordEmail } from "../../../api";
-import { LoadableButton, LoadableLink } from "../commons/buttons";
+import { API } from "../../../api";
+import { LoadableLink } from "../commons/buttons";
 
 interface Props {
   navigation: any;
@@ -14,6 +12,8 @@ interface Props {
 export default function ResetPassword(props: Props) {
   const { navigation, clearFields, setErrorMessage, email } = props;
 
+  const api = new API(navigation);
+
   return (
     <HStack space={2} marginTop={10} height={35}>
       <View flexDirection={"row"} alignItems="center" justifyContent={"center"} >
@@ -24,8 +24,7 @@ export default function ResetPassword(props: Props) {
             if (!email) {
               throw Error("Por favor ingrese su email");
             }
-            let response = await getResetPasswordEmail(email);
-            console.log(await response.json());
+            await api.getResetPasswordEmail(email);
             return "revise su casilla de mail para recuperar su contraseña";
           }}
         />

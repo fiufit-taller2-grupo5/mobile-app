@@ -9,7 +9,7 @@ import GoogleRegister from '../components/register/googleRegister';
 import MoveToLogin from '../components/register/moveToLogin';
 import ErrorMessage from '../components/form/errorMessage';
 import { LoadableButton } from '../components/commons/buttons';
-import { createUser } from '../../api';
+import { API } from '../../api';
 
 export default function RegisterScreen({ navigation }: any) {
   const theme = extendTheme({
@@ -38,6 +38,8 @@ export default function RegisterScreen({ navigation }: any) {
   const [errorMessage, setErrorMessage] = useState("");
   const [user, loading, error] = useAuthState(auth);
   const [isCorrectlyLogged, setIsCorrectlyLogged] = useState(false);
+
+  const api = new API(navigation);
 
   const isValidEmail = (email: string) => {
     var regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -136,15 +138,14 @@ export default function RegisterScreen({ navigation }: any) {
           if (passwordError && password !== "aaaaaa") {
             throw new Error(passwordError);
           }
-
-          const errorMessage = await registerWithEmailAndPassword(name, email.toLowerCase(), password, async (user, name) => { await createUser(user, name) });
-          if (!errorMessage) {
-            console.log("User registered successfully");
-            navigation.navigate('LocationScreen');
-          } else {
-            console.log("Error registering user: ", errorMessage);
-            throw new Error(errorMessage);
-          }
+          await registerWithEmailAndPassword(
+            name,
+            email.toLowerCase(),
+            password,
+            async (user, name) => {
+              await api.createUser(user, name)
+              navigation.navigate('LocationScreen');
+            });
         }}
       />
       <GoogleRegister navigation={navigation} setError={setErrorMessage} setCorrectlyLogged={setIsCorrectlyLogged} />

@@ -1,18 +1,20 @@
 import { VStack, Checkbox, Text } from "native-base";
 import { useEffect, useState } from "react";
-import useSWR from 'swr';
-import { getInterests } from "../../../api";
+import { API } from "../../../api";
 
 
 interface Props {
   top: string;
   interests: string[];
   setInterests: React.Dispatch<React.SetStateAction<string[]>>;
+  navigation: any;
 }
 
 export default function InterestsForm(props: Props) {
   const { top, interests, setInterests } = props;
   const [interestsData, setInterestsList] = useState<string[]>([]);
+
+  const api = new API(props.navigation);
 
   const handleChange = (interest: string) => {
     console.log(interests, interest);
@@ -25,14 +27,13 @@ export default function InterestsForm(props: Props) {
     });
   }
 
-  // TODO should move this to api.ts?
-  const interestsResponse = useSWR("https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/interests", getInterests);
-
   useEffect(() => {
-    if (interestsResponse.data) {
-      setInterestsList(interestsResponse.data);
+    const getInterests = async () => {
+      const interests = await api.getInterests();
+      setInterestsList(interests);
     }
-  }, [interestsResponse.data]);
+    getInterests();
+  }, []);
 
 
   return (

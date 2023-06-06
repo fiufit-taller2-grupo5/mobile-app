@@ -11,7 +11,7 @@ import MoveToRegister from '../components/login/moveToRegister';
 import ErrorMessage from '../components/form/errorMessage';
 import ResetPassword from '../components/login/resetPassword';
 import { LoadableButton } from '../components/commons/buttons';
-import { getUserInfoByEmail } from '../../api';
+import { API } from '../../api';
 import globalUser from '../../userStorage';
 import * as LocalAuthentication from 'expo-local-authentication';
 
@@ -41,6 +41,8 @@ export default function LoginScreen({ navigation }: any) {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [user, loading, error] = useAuthState(auth);
+
+  const api = new API(navigation);
 
   const biometricLogin = async () => {
     const hasHardware = await LocalAuthentication.hasHardwareAsync();
@@ -125,7 +127,7 @@ export default function LoginScreen({ navigation }: any) {
               console.error(errorMessage);
               throw Error("Error al iniciar sesión. Por favor, inténtelo de nuevo más tarde.");
             }
-            const userInfo = await getUserInfoByEmail(email.toLowerCase(), user);
+            const userInfo = await api.getUserInfoByEmail(email.toLowerCase(), user);
             userInfo.googleUser = user;
             userInfo.role = "Atleta";
             userInfo.UserMetadata = null;

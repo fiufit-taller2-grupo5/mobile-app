@@ -14,7 +14,7 @@ import {
 import { useState } from "react";
 import { Button } from "react-native";
 import { rateTrainingStyles } from "../styles";
-import { addTrainingReview } from "../../api";
+import { API } from "../../api";
 import ErrorMessage from '../components/form/errorMessage';
 import FiveStars from "../components/rateTraining/fiveStars";
 import { LoadableButton } from "../components/commons/buttons";
@@ -41,6 +41,8 @@ export default function RateTrainingScreen({ route, navigation }: any) {
   const [starClicked, setStarClicked] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const api = new API(navigation);
+
   const handleComment = (text: string) => {
     setComment(text);
   };
@@ -54,7 +56,7 @@ export default function RateTrainingScreen({ route, navigation }: any) {
       throw Error("Debe ingresar un comentario");
     }
 
-    await addTrainingReview(trainingId, {
+    await api.addTrainingReview(trainingId, {
       comment: comment,
       score: starClicked,
     });

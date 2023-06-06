@@ -1,11 +1,12 @@
-import { VStack, Text, Image } from "native-base";
+import { VStack, Text, Image, useToast } from "native-base";
 import { TouchableOpacity } from "react-native";
 import { loginAndRegisterStyles } from "../../styles";
 import { useEffect, useState } from "react";
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
-import { auth, createUser } from "../../../firebase";
+import { auth } from "../../../firebase";
 import { signInWithCredential, GoogleAuthProvider } from "firebase/auth";
+import { API } from "../../../api";
 
 interface Props {
   navigation: any;
@@ -25,6 +26,10 @@ export default function GoogleRegister(props: Props) {
       "423504146626-mf53940m2vhk31teo1t5ek5q6kjvvc4c.apps.googleusercontent.com",
   });
 
+  const toast = useToast();
+
+  const api = new API(props.navigation);
+
   useEffect(() => {
     async function signUp() {
       if (response?.type === "success" && response?.params?.id_token) {
@@ -32,18 +37,15 @@ export default function GoogleRegister(props: Props) {
         await signInWithCredential(auth, credential).then(async (result) => {
           console.log('Signed in with Google:', result.user);
           const user = result.user;
-          const userCreationRes = await createUser(user);
-          if (userCreationRes && userCreationRes.ok) {
-            console.log("User created successfully google register");
-            props.setCorrectlyLogged(true);
-            props.navigation.navigate("LocationScreen");
-          } else {
-            const responseData = await userCreationRes?.text();
-            props.setError(getErrorMessage(responseData ? responseData : "Error creating user"));
-            auth.signOut();
-          }
+          await api.createUser(user);
+          props.setCorrectlyLogged(true);
+          props.navigation.navigate("LocationScreen");
         }).catch((error) => {
-          console.error('Error signing in with Google:', error);
+          toast.show({
+            description: error.message,
+            backgroundColor: "red.700",
+            duration: 3000,
+          })
         });
 
       } else if (response?.type === "error") {

@@ -1,12 +1,20 @@
 import { User } from "firebase/auth";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from "./firebase";
+import { API } from "./api";
 
 export class StoredUser {
     user: userInfo | null;
+    navigation: any;
+    api?: API
 
     constructor() {
         this.user = null;
+    }
+
+    setNavigation(navigation: any) {
+        this.navigation = navigation;
+        this.api = new API(navigation);
     }
 
     async setUser(user: userInfo) {
@@ -42,7 +50,7 @@ export class StoredUser {
 
     async verifyUserMetadataExists() {
         await this.verifyUserExists();
-        const details = await getUserDetails(this.user!.id, this.user!.googleUser);
+        const details = await this.api!.getUserMetadata(this.user!.id);
         console.log("details received:", details, "user stored metadata:", this.user!.UserMetadata)
         if (details === null) {
             if (this.user!.UserMetadata === null || this.user!.UserMetadata === undefined) {
@@ -66,35 +74,35 @@ export class StoredUser {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.weight = weight;
         await storeUserOnStorage(this.user!);
-        await updateUserDetails(this.user!.UserMetadata!);
+        await this.api?.updateUserMetadata(this.user!.UserMetadata!);
     }
 
     async setHeight(height: number) {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.height = height;
         await storeUserOnStorage(this.user!);
-        await updateUserDetails(this.user!.UserMetadata!);
+        await this.api?.updateUserMetadata(this.user!.UserMetadata!);
     }
 
     async setBirthdate(birthdate: string) {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.birthDate = birthdate;
         await storeUserOnStorage(this.user!);
-        await updateUserDetails(this.user!.UserMetadata!);
+        await this.api?.updateUserMetadata(this.user!.UserMetadata!);
     }
 
     async setLocation(location: string) {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.location = location;
         await storeUserOnStorage(this.user!);
-        await updateUserDetails(this.user!.UserMetadata!);
+        await this.api?.updateUserMetadata(this.user!.UserMetadata!);
     }
 
     async setInterests(interests: string[]) {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.interests = interests;
         await storeUserOnStorage(this.user!);
-        await updateUserDetails(this.user!.UserMetadata!);
+        await this.api?.updateUserMetadata(this.user!.UserMetadata!);
     }
 
     async setRole(role: string) {
@@ -172,65 +180,6 @@ export type userInfo = {
     UserMetadata: UserMetadata | null
 }
 
-export async function getUserDetails(userId: number, user: User): Promise<UserMetadata | null> {
-    const accessToken = (user as any).stsTokenManager.accessToken;
-    const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/" + userId + "/metadata";
-    try {
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "accept": "*/*",
-                "accept-encoding": "gzip, deflate, br",
-                "connection": "keep-alive",
-                "Authorization": "Bearer " + accessToken,
-            },
-        });
-        if (response.ok) {
-            try {
-                const userDetails = await response.json();
-                console.log("userDetails:", userDetails);
-                return userDetails;
-            } catch (err: any) {
-                console.error(err);
-            }
-        } else {
-            console.info("error getting user details response: ", await response.json());
-        }
-    } catch (err: any) {
-        console.error("error fetching user details: ", err);
-    }
-    return null;
-}
-
-export const updateUserDetails = async (data: UserMetadata) => {
-    const user = await globalUser.getUser();
-    const internal_id = user!.id;
-    data.id = internal_id;
-    const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
-    console.log("data:", JSON.stringify(data), "userId:", internal_id);
-    try {
-        const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/" + internal_id + "/metadata";
-        const response = await fetch(url, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "accept": "*/*",
-                "accept-encoding": "gzip, deflate, br",
-                "connection": "keep-alive",
-                "Authorization": "Bearer " + accessToken,
-            },
-            body: JSON.stringify(data),
-        });
-        if (response.ok) {
-            console.log("user details updated");
-        } else {
-            console.error(await response.json());
-        }
-    } catch (err: any) {
-        alert("user details error:" + err.message);
-    }
-};
 
 const globalUser = new StoredUser();
 

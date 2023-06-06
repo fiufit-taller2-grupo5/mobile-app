@@ -47,7 +47,7 @@ export default function ProfileScreen(props: Props) {
   };
 
   const dailyStepsTarget = 10000;
-  const dailyDistanceTarget = 2500;
+  const dailyDistanceTarget = 10000;
   const dailyCaloriesTarget = 2000;
   const data = {
     labels: ["Pasos", "Distancia", "Calorías"], // optional

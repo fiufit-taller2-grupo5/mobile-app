@@ -32,7 +32,7 @@ export default function ExtraInformationForm(props: Props) {
       <BirthDateForm top={"15%"} date={date} setDate={setDate} />
       <WeightForm top={"0%"} weight={weight} setWeight={setWeight} />
       <HeightForm top={"5%"} height={height} setHeight={setHeight} />
-      <InterestsForm top={"10%"} interests={interests} setInterests={setInterests} />
+      <InterestsForm top={"10%"} interests={interests} setInterests={setInterests} navigation />
     </VStack>
   );
 }

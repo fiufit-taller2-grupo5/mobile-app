@@ -145,6 +145,9 @@ export default function WelcomeScreen({ navigation }: NativeStackScreenProps<any
   });
 
   React.useEffect(() => {
+
+    globalUser.setNavigation(navigation)
+
     const biometricLogin = async () => {
       const user = await globalUser.getUser();
       if (!user) {

@@ -5,8 +5,7 @@ import ExtraInformationForm from "../components/extraInformation/extraInfomation
 import SubmitButton from "../components/extraInformation/submitButton";
 import MoveToApp from "../components/extraInformation/moveToApp";
 import { LoadableButton } from "../components/commons/buttons";
-import { updateUserDetails } from "../../userStorage";
-
+import { API } from "../../api";
 export default function ExtraInformationScreen({ navigation, route }: any) {
   const { streetName, streetNumber } = route.params ?? {};
 
@@ -29,6 +28,8 @@ export default function ExtraInformationScreen({ navigation, route }: any) {
   const [weight, setWeight] = useState(50);
   const [height, setHeight] = useState(150);
   const [interests, setInterests] = useState<string[]>([]);
+
+  const api = new API(navigation);
 
   const clearFields = () => {
     setDate(new Date());
@@ -94,7 +95,7 @@ export default function ExtraInformationScreen({ navigation, route }: any) {
             throw Error("Por favor ingrese una altura válida mayor a 30cm");
           }
 
-          updateUserDetails({ location: streetName + streetNumber.toString(10), birthDate: date.toISOString(), weight: weight, height: height, interests: interests });
+          api.updateUserMetadata({ location: streetName + streetNumber.toString(10), birthDate: date.toISOString(), weight: weight, height: height, interests: interests });
           navigation.navigate('HomeScreen');
         }}
       />

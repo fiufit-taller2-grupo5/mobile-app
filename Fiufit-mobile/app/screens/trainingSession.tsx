@@ -7,7 +7,7 @@ import Stopwatch from "../components/trainings/stopwatch"
 import { LoadableButton } from "../components/commons/buttons";
 import { BackHandler } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { addTrainingSession } from "../../api";
+import { API } from "../../api";
 
 export type trainingSession = {
     id?: number;
@@ -28,6 +28,8 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
     const [durationTime, setDurationTime] = useState("00:00:00");
     const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' } as const;
 
+    const api = new API(navigation);
+
     useFocusEffect(
         React.useCallback(() => {
             const onBackPress = () => {
@@ -35,17 +37,17 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
                 navigation.navigate('HomeScreen'); // Navegar a la HomeScreen al presionar el botón de retroceso
                 return true; // Indicar que se ha manejado el evento del botón de retroceso
             };
-      
+
             // Agregar el listener para el evento de botón de retroceso
             BackHandler.addEventListener('hardwareBackPress', onBackPress);
-        
+
             // Limpiar el listener cuando el componente se desmonte
             return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
         }, [])
     );
 
     const handleAddTrainingSession = async () => {
-        await addTrainingSession(trainingInfo.id, {
+        await api.addTrainingSession(trainingInfo.id, {
             distance: distance,
             duration: duration,
             steps: steps,
@@ -57,60 +59,60 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
     const updateTime = (time: React.SetStateAction<string>) => {
         setDurationTime(time);
     };
-    
+
     return (
         <NativeBaseProvider>
             <VStack style={styles.container}>
                 <Text style={styles.title}>{trainingInfo.title}</Text>
                 <View style={styles.descriptionContainer}>
-                <Text style={styles.description}>{trainingInfo.description}</Text>
+                    <Text style={styles.description}>{trainingInfo.description}</Text>
                 </View>
                 <View style={styles.timeContainer}>
-                <Stopwatch onTimeChange={updateTime}/>
+                    <Stopwatch onTimeChange={updateTime} />
                 </View>
                 <View style={styles.descriptionContainer}>
-                <Text style={styles.date}>{date.toLocaleDateString('es-AR', options)}</Text>
+                    <Text style={styles.date}>{date.toLocaleDateString('es-AR', options)}</Text>
                 </View>
                 <View style={styles.dataRow}>
                     <Box bg="#FF6060" style={styles.dataBoxOne}>
-                    <Icon
-                        as={<MaterialIcons name="run-circle"/>}
-                        size={20}
-                        color="#fff"
-                        alignSelf="center"
-                    />
+                        <Icon
+                            as={<MaterialIcons name="run-circle" />}
+                            size={20}
+                            color="#fff"
+                            alignSelf="center"
+                        />
                         <Text style={styles.dataText}>{steps}</Text>
                         <Text style={styles.dataLabel}>Pasos</Text>
                     </Box>
                     <Box bg="#FF6060" style={styles.dataBoxTwo}>
-                    <Icon
-                        as={<MaterialCommunityIcons name="fire-circle"/>}
-                        size={20}
-                        color="#fff"
-                        alignSelf="center"
-                    />
+                        <Icon
+                            as={<MaterialCommunityIcons name="fire-circle" />}
+                            size={20}
+                            color="#fff"
+                            alignSelf="center"
+                        />
                         <Text style={styles.dataText}>{calories}</Text>
                         <Text style={styles.dataLabel}>Calorías</Text>
                     </Box>
                     <Box bg="#FF6060" style={styles.dataBoxThree}>
-                    <Icon
-                        as={<Ionicons name="md-navigate-circle"/>}
-                        size={20}
-                        color="#fff"
-                        alignSelf="center"
-                    />
+                        <Icon
+                            as={<Ionicons name="md-navigate-circle" />}
+                            size={20}
+                            color="#fff"
+                            alignSelf="center"
+                        />
                         <Text style={styles.dataText}>{distance} km</Text>
                         <Text style={styles.dataLabel}>Distancia</Text>
                     </Box>
                 </View>
                 <LoadableButton
                     text="Finalizar entrenamiento"
-                    customStyles={{ 
+                    customStyles={{
                         backgroundColor: "#FF6060",
                         width: "70%",
                         height: "8%",
                         borderRadius: 30,
-                        alignSelf: "center", 
+                        alignSelf: "center",
                         top: "0%"
                     }}
                     onPress={async () => {
@@ -135,7 +137,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 40,
         fontWeight: 'bold',
-        lineHeight: 50, 
+        lineHeight: 50,
         marginTop: -200, // Mueve el título hacia arriba
     },
     description: {
@@ -154,7 +156,7 @@ const styles = StyleSheet.create({
     elapsedTime: {
         fontSize: 85,
         fontWeight: 'bold',
-        justifyContent:'center',
+        justifyContent: 'center',
         marginTop: 100, // Mueve el título hacia arriba
         lineHeight: 85, // Ajusta el valor según el espacio deseado
     },
@@ -200,7 +202,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#fff',
         textAlign: 'center',
-        lineHeight: 30, 
+        lineHeight: 30,
         marginBottom: -10, // Ajusta el valor según el espacio deseado
     },
     dataLabel: {
@@ -208,13 +210,13 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#fff',
         textAlign: 'center',
-        lineHeight: 50, 
+        lineHeight: 50,
     },
     dataLabelTime: {
         fontSize: 16,
         fontWeight: 'bold',
         color: '#000000',
-        lineHeight: 50, 
+        lineHeight: 50,
     },
     timeContainer: {
         alignItems: 'center', // Centra verticalmente el tiempo y su etiqueta

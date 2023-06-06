@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, VStack, HStack, Button, Text, Image, Divider, Icon } from 'native-base';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { trainingStyles } from "../../styles";
-import { addFavoriteTraining, API, quitFavoriteTraining } from '../../../api';
+import { API } from '../../../api';
 
 const mainImage = (training_type: any) => {
   if (training_type === "Running")

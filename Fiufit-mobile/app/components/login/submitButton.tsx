@@ -1,7 +1,7 @@
-import { View, Button} from "native-base";
+import { View, Button } from "native-base";
 import { loginAndRegisterStyles } from "../../styles";
 import { auth, logInWithEmailAndPassword } from '../../../firebase';
-import { getUserInfoByEmail } from "../../../api";
+import { API } from "../../../api";
 import globalUser from "../../../userStorage";
 
 
@@ -16,8 +16,10 @@ interface Props {
 export default function SubmitButton(props: Props) {
   const { navigation, email, password, setErrorMessage, clearFields } = props;
 
+  const api = new API(navigation);
+
   return (
-    <View style={{height: 50, width: "100%", alignItems: "center"}}>
+    <View style={{ height: 50, width: "100%", alignItems: "center" }}>
       <Button
         style={[loginAndRegisterStyles.button, loginAndRegisterStyles.loginAndRegisterButton]}
         onPress={async () => {
@@ -30,7 +32,7 @@ export default function SubmitButton(props: Props) {
               console.error("Error signing in with email: user is null");
               return;
             }
-            const userInfo = await getUserInfoByEmail(email, user);
+            const userInfo = await api.getUserInfoByEmail(email, user);
             if (userInfo instanceof Error) {
               // user is not registered in the app
               setErrorMessage("No se encuetra actualmente registrado en Fiufit. Por favor, regístrese primero.");
@@ -42,7 +44,7 @@ export default function SubmitButton(props: Props) {
             userInfo.googleUser = user;
             userInfo.role = "Atleta";
             userInfo.UserMetadata = null;
-            
+
             globalUser.setUser(userInfo);
             clearFields();
             navigation.navigate('HomeScreen');
@@ -50,7 +52,7 @@ export default function SubmitButton(props: Props) {
             setErrorMessage(errorMessage);
           }
         }}
-        _text={{color: "#FFFFFF", fontSize: "20px", fontWeight: "bold"}}
+        _text={{ color: "#FFFFFF", fontSize: "20px", fontWeight: "bold" }}
       >
         Iniciar sesión
       </Button>
