@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, VStack, HStack, Button, Text, Image, Divider, Icon } from 'native-base';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { trainingStyles } from "../../styles";
-import { addFavoriteTraining, quitFavoriteTraining } from '../../../api';
+import { addFavoriteTraining, API, quitFavoriteTraining } from '../../../api';
 
 const mainImage = (training_type: any) => {
   if (training_type === "Running")
@@ -35,6 +35,9 @@ export const TrainingInfoCard = ({
   navigateToScreen
 }: any) => {
 
+  const api = new API(navigation);
+
+
   const [isFavorite, setTrainingFavorite] = useState<Boolean>(
     trainingData.isFavorite || false
   );
@@ -47,11 +50,11 @@ export const TrainingInfoCard = ({
 
     if (isFavorite) {
       setTrainingFavorite(false);
-      await quitFavoriteTraining(trainingData.id);
+      await api.quitFavoriteTraining(trainingData.id);
       onRemoveFavorite();
     } else {
       setTrainingFavorite(true);
-      await addFavoriteTraining(trainingData.id);
+      await api.addFavoriteTraining(trainingData.id);
     }
   }
 

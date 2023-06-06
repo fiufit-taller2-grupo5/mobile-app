@@ -40,10 +40,9 @@ const fetchFromApi = async <T>(path: string, fetchConfig: RequestInit, onSuccess
         console.log("token expired:", responseJson.error.message);
         await globalUser.refreshToken();
         return await fetchFromApi(url, fetchConfig, onSuccess);
-
       } else {
-        console.error("error in request: ", responseJson.error.message);
-        return new ApiError(responseJson.error.message, responseJson.error.code);
+        console.error("error in request: ", responseJson);
+        return new ApiError(responseJson.message, response.status);
       }
     }
   } catch (err: any) {
@@ -272,18 +271,20 @@ export interface TrainerTraining {
   trainerId?: number,
 }
 
-export async function getTrainings(): Promise<Training[]> {
+export async function getTrainings(navigation: any): Promise<Training[]> {
   try {
-    return await fetchFromApi("training-service/api/trainings", {
+    const result = await fetchFromApi("training-service/api/trainings", {
       method: "GET",
-    }, (response) => {
-      if (response instanceof ApiError) {
-        console.error("error fetching trainings: ", response.message);
-        return [];
-      } else {
-        return response;
+    }, (response: Training[]) => response);
+    if (result instanceof ApiError) {
+      console.error("error fetching trainings: ", result);
+      if (result.code === 403) {
+        navigation.navigate("WelcomeScreen");
       }
-    });
+      return [];
+    } else {
+      return result;
+    }
   } catch (err: any) {
     console.error("error fetching trainings: ", err);
     return [];
@@ -516,5 +517,319 @@ export async function addTrainingSession(trainingId: number, trainingSession: tr
     }
   } catch (err: any) {
     console.error("error adding training session: ", err);
+  }
+}
+
+export class API {
+  navigation: any;
+  constructor(navigation: any) {
+    this.navigation = navigation;
+  }
+
+  async fetchFromApi<T, V>(path: string, fetchConfig: RequestInit, onSuccess: (response: any) => T, onError: (error: ApiError) => V): Promise<T | V> {
+    try {
+      const user = await globalUser.getUser();
+      const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
+      fetchConfig.headers = {
+        ...fetchConfig.headers,
+        "Content-Type": "application/json",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br",
+        "connection": "keep-alive",
+        "Authorization": "Bearer " + accessToken,
+      }
+      const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/" + path;
+      console.log("fetching from api: ", url, fetchConfig);
+      const response = await fetch(url, fetchConfig);
+      const responseJson = await response.json();
+      if (response.ok) {
+        return onSuccess(responseJson);
+      } else {
+        if (responseJson?.error?.code === "auth/id-token-expired") {
+          console.log("token expired:", responseJson.error.message);
+          await globalUser.refreshToken();
+          return await this.fetchFromApi(url, fetchConfig, onSuccess, onError);
+        } else {
+          console.error("error in request: ", responseJson);
+          if (response.status === 403) {
+            this.navigation.navigate("WelcomeScreen");
+          }
+          const error = new ApiError(responseJson.message, response.status);
+          return onError(error);
+        }
+      }
+    } catch (err: any) {
+      console.error("error fetching from api: ", err);
+      const error = new ApiError(err.message, err.code);
+      return onError(error);
+    }
+  }
+
+  async createUser(user: User, emailRegisterName: string = "default name"): Promise<void | Response> {
+    return await this.fetchFromApi("user-service/api/users",
+      {
+        method: "POST",
+        headers: {
+          "login-mobile-app": "true"
+        },
+      },
+      async (response: any) => {
+        try {
+          const userInfo = await response.json();
+          userInfo.googleUser = user;
+          userInfo.role = "Atleta";
+          await globalUser.setUser(userInfo);
+        } catch (err: any) {
+          console.error(err);
+        }
+      },
+      (error: ApiError) => {
+        console.error("error creating user:", error);
+      }
+    );
+  }
+
+  async getInterests(url: string): Promise<string[]> {
+    return await this.fetchFromApi(
+      "https://api-gateway-prod-szwtomas.cloud.okteto.net/user-service/api/users/interests",
+      { method: "GET" },
+      (response: string[]) => response,
+      (error: ApiError) => {
+        console.log("error getting interests:", error);
+        return [];
+      }
+    );
+  }
+
+  async getResetPasswordEmail(email: string): Promise<void> {
+    return await this.fetchFromApi(
+      "user-service/api/users/resetPasswordEmail",
+      {
+        method: "POST",
+        headers: {
+          "password-reset": "true"
+        },
+        body: JSON.stringify({ email: email }),
+      },
+      (response: any) => {
+        console.log("reset password email sent");
+      }
+      ,
+      (error: ApiError) => {
+        console.log("error sending reset password email:", error);
+        throw error;
+      }
+    );
+  }
+
+  async getUserInfoByEmail(email: string, user: User): Promise<userInfo> {
+    return await this.fetchFromApi(
+      "user-service/api/users/by_email/" + email,
+      { method: "GET" },
+      (response: userInfo) => response,
+      (error: ApiError) => {
+        console.log("error getting user info by email:", error);
+        throw error;
+      }
+    );
+  }
+
+  async getUserInfoById(id: number, user: User, userDetails: Boolean): Promise<userInfo> {
+    return await this.fetchFromApi(
+      "user-service/api/users/" + id + "?userDetails=" + userDetails,
+      { method: "GET" },
+      (response: userInfo) => response,
+      (error: ApiError) => {
+        console.log("error getting user info by id:", error);
+        throw error;
+      }
+    );
+  }
+
+  async getTrainingsRatings(ids: number[]): Promise<Map<number, number>> {
+    return await this.fetchFromApi(
+      "training-service/api/trainings/ratings?ids=" + ids,
+      { method: "GET" },
+      (response: Map<number, number>) => response,
+      (error: ApiError) => {
+        console.log("error getting trainings ratings:", error);
+        return new Map<number, number>();
+      }
+    );
+  }
+
+  async addTraining(training: TrainerTraining): Promise<void> {
+    return await this.fetchFromApi(
+      "training-service/api/trainings/",
+      {
+        method: "POST",
+        body: JSON.stringify(training),
+      },
+      (response: any) => {
+        console.log("training added");
+      },
+      (error: ApiError) => {
+        console.log("error adding training:", error);
+        throw error;
+      }
+    );
+  }
+
+  async getTrainerTrainings(filterRule: string | null = null, filterValue: string | null = null): Promise<Training[]> {
+    let url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/training-service/api/trainings?"
+    const user = await globalUser.getUser();
+    const userId = user!.id;
+    if (filterRule !== null && filterValue !== null) {
+      url += new URLSearchParams({ trainer_id: userId.toString(), filterRule: filterValue });
+    } else {
+      url += new URLSearchParams({ trainer_id: userId.toString() });
+    }
+    return await this.fetchFromApi(
+      url,
+      { method: "GET" },
+      (response: Training[]) => response,
+      (error: ApiError) => {
+        console.log("error getting trainer trainings:", error);
+        return [];
+      }
+    );
+  }
+
+  async addTrainingReview(trainingId: number, review: trainingReview): Promise<void> {
+    const user = await globalUser.getUser();
+    const userId = user?.id;
+    return await this.fetchFromApi(
+      "training-service/api/trainings/" + trainingId + "/review/" + userId,
+      {
+        method: "POST",
+        body: JSON.stringify(review),
+      },
+      (response: any) => {
+        console.log("training review added");
+      },
+      (error: ApiError) => {
+        console.log("error adding training review:", error);
+        throw error;
+      }
+    );
+  }
+
+  async getTrainingReviews(trainingId: number): Promise<trainingReview[]> {
+    return await this.fetchFromApi(
+      "training-service/api/trainings/" + trainingId + "/reviews",
+      { method: "GET" },
+      (response: trainingReview[]) => response,
+      (error: ApiError) => {
+        console.log("error getting training reviews:", error);
+        return [];
+      }
+    );
+  }
+
+  async addTrainingSession(trainingId: number, trainingSession: trainingSession): Promise<void> {
+    const user = await globalUser.getUser();
+    const userId = user?.id;
+    return await this.fetchFromApi(
+      "training-service/api/trainings/" + trainingId + "/user_training/" + userId,
+      {
+        method: "POST",
+        body: JSON.stringify(trainingSession),
+      },
+      (response: any) => {
+        console.log("training session added");
+      },
+      (error: ApiError) => {
+        console.log("error adding training session:", error);
+        throw error;
+      }
+    );
+  }
+
+  async getTrainingSessions(trainingId: number): Promise<trainingSession[]> {
+    const user = await globalUser.getUser();
+    const userId = user?.id;
+    return await this.fetchFromApi(
+      "training-service/api/trainings/" + trainingId + "/user_training/" + userId,
+      { method: "GET" },
+      (response: trainingSession[]) => response,
+      (error: ApiError) => {
+        console.log("error getting training sessions:", error);
+        return [];
+      }
+    );
+  }
+
+  async getTrainingSession(trainingId: number, sessionId: number): Promise<trainingSession> {
+    const user = await globalUser.getUser();
+    const userId = user?.id;
+    return await this.fetchFromApi(
+      "training-service/api/trainings/" + trainingId + "/user_training/" + userId + "/" + sessionId,
+      { method: "GET" },
+      (response: trainingSession) => response,
+      (error: ApiError) => {
+        console.log("error getting training session:", error);
+        throw error;
+      }
+    );
+  }
+
+  async getTrainings(): Promise<Training[]> {
+    return await this.fetchFromApi(
+      "training-service/api/trainings",
+      { method: "GET" },
+      (response: Training[]) => response,
+      (error: ApiError) => {
+        console.log("error getting trainings:", error);
+        return [];
+      }
+    );
+  }
+
+  async getFavoriteTrainings(): Promise<Training[]> {
+    const user = await globalUser.getUser();
+    const userId = user?.id;
+    return await this.fetchFromApi(
+      "training-service/api/trainings/favorites/" + userId,
+      { method: "GET" },
+      (response: Training[]) => response,
+      (error: ApiError) => {
+        console.log("error getting favorite trainings:", error);
+        return [];
+      }
+    );
+  }
+
+  async addFavoriteTraining(trainingPlanId: number): Promise<boolean> {
+    const user = await globalUser.getUser();
+    const userId = user?.id;
+    return await this.fetchFromApi(
+      "training-service/api/trainings/" + trainingPlanId + '/favorite/' + userId,
+      { method: "POST" },
+      (response: any) => {
+        console.log("favorite training added");
+        return true;
+      },
+      (error: ApiError) => {
+        console.log("error adding favorite training:", error);
+        return false;
+      }
+    );
+  }
+
+  async quitFavoriteTraining(trainingPlanId: number): Promise<boolean> {
+    const user = await globalUser.getUser();
+    const userId = user?.id;
+    return await this.fetchFromApi(
+      "training-service/api/trainings/" + trainingPlanId + '/favorite/' + userId,
+      { method: "DELETE" },
+      (response: any) => {
+        console.log("favorite training deleted");
+        return true;
+      },
+      (error: ApiError) => {
+        console.log("error deleting favorite training:", error);
+        return false;
+      }
+    );
   }
 }

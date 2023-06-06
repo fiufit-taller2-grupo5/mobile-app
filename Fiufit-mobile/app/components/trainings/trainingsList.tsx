@@ -12,6 +12,7 @@ import {
   Select,
 } from "native-base";
 import {
+  API,
   getFavoriteTrainings,
   getTrainings,
   Training,
@@ -27,12 +28,13 @@ interface Props {
 
 export default function TrainingsList(props: Props) {
   const { navigation } = props;
-  const [trainingsList, setTrainingsList] = useState<Training[]>([]);
   const [filteredData, setFilteredData] = useState<Training[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [selectedTitle, setTitle] = useState("");
   const [selectedType, setType] = React.useState("");
   const [selectedDifficulty, setDifficulty] = React.useState("");
+
+  const api = new API(navigation);
 
   const filterData = (unfilteredTrainingsList: Training[]) => {
     const filtered = unfilteredTrainingsList.filter(
@@ -68,16 +70,14 @@ export default function TrainingsList(props: Props) {
   const getTrainingsList = async () => {
     setRefreshing(true);
     if (props.onlyFavorites) {
-      const favoritesTrainingsResponse = await getFavoriteTrainings();
+      const favoritesTrainingsResponse = await api.getFavoriteTrainings();
       let trainings = updateFavoriteStatus(favoritesTrainingsResponse, favoritesTrainingsResponse);
-      setTrainingsList(trainings);
       filterData(trainings);
     } else {
-      const trainingList = await getTrainings();
+      const trainingList = await api.getTrainings();
       if (trainingList.length > 0) {
-        const favoritesTrainingsResponse = await getFavoriteTrainings();
+        const favoritesTrainingsResponse = await api.getFavoriteTrainings();
         let trainings = updateFavoriteStatus(trainingList, favoritesTrainingsResponse);
-        setTrainingsList(trainings);
         filterData(trainings);
       }
     }
