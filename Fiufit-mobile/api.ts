@@ -3,7 +3,7 @@ import globalUser, { userInfo } from "./userStorage";
 import { trainingReview } from "./app/screens/rateTraining";
 import { trainingSession } from "./app/screens/trainingSession";
 
-class MyError {
+class ApiError {
   message: string;
   code: number;
 
@@ -14,7 +14,7 @@ class MyError {
 
 };
 
-type Result<T> = T | MyError;
+type Result<T> = T | ApiError;
 
 
 const fetchFromApi = async <T>(path: string, fetchConfig: RequestInit, onSuccess: (response: any) => T): Promise<Result<T>> => {
@@ -30,6 +30,7 @@ const fetchFromApi = async <T>(path: string, fetchConfig: RequestInit, onSuccess
       "Authorization": "Bearer " + accessToken,
     }
     const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/" + path;
+    console.log("fetching from api: ", url, fetchConfig);
     const response = await fetch(url, fetchConfig);
     const responseJson = await response.json();
     if (response.ok) {
@@ -39,14 +40,15 @@ const fetchFromApi = async <T>(path: string, fetchConfig: RequestInit, onSuccess
         console.log("token expired:", responseJson.error.message);
         await globalUser.refreshToken();
         return await fetchFromApi(url, fetchConfig, onSuccess);
+
       } else {
         console.error("error in request: ", responseJson.error.message);
-        return new MyError(responseJson.error.message, responseJson.error.code);
+        return new ApiError(responseJson.error.message, responseJson.error.code);
       }
     }
   } catch (err: any) {
     console.error("error fetching from api: ", err);
-    return new MyError(err.message, err.code);
+    return new ApiError(err.message, err.code);
   }
 }
 
@@ -275,7 +277,7 @@ export async function getTrainings(): Promise<Training[]> {
     return await fetchFromApi("training-service/api/trainings", {
       method: "GET",
     }, (response) => {
-      if (response instanceof MyError) {
+      if (response instanceof ApiError) {
         console.error("error fetching trainings: ", response.message);
         return [];
       } else {
@@ -333,7 +335,7 @@ export async function getFavoriteTrainings(): Promise<Training[]> {
     return await fetchFromApi("training-service/api/trainings/favorites/" + userId, {
       method: "GET",
     }, (response) => {
-      if (response instanceof MyError) {
+      if (response instanceof ApiError) {
         console.error("error fetching trainings: ", response.message);
         return [];
       } else {

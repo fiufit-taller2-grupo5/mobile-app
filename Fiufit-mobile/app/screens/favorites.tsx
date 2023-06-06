@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Container, NativeBaseProvider, View } from 'native-base';
-import FavoritesTrainingsList from '../components/trainings/favoritesTrainingsList';
+import { View } from 'native-base';
+import TrainingsList from '../components/trainings/trainingsList';
 
 export default function FavoritesScreen({ navigation }: any) {
     return <View style={{ flex: 1 }} backgroundColor="#fff">
-        <FavoritesTrainingsList navigation={navigation} />
+        <TrainingsList navigation={navigation} onlyFavorites />
     </View>;
 }
