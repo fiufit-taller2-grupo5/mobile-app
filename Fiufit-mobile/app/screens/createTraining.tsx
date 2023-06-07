@@ -21,6 +21,7 @@ export default function CreateTrainingScreen({ navigation }: any) {
   // TODO: agregar estos al button
   const [streetName, setStreetName] = useState("");
   const [streetNumber, setStreetNumber] = useState(0);
+  const [weekDays, setWeekDays] = useState<string[]>([]);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [image, setImage] = useState("");
@@ -43,6 +44,8 @@ export default function CreateTrainingScreen({ navigation }: any) {
         setStreetName={setStreetName}
         streetNumber={streetNumber}
         setStreetNumber={setStreetNumber}
+        weekDays={weekDays}
+        setWeekDays={setWeekDays}
         startTime={startTime}
         setStartTime={setStartTime}
         endTime={endTime}

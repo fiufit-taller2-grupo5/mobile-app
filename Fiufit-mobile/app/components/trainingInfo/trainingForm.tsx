@@ -1,10 +1,12 @@
-import { VStack, Text } from "native-base"
+import { VStack, Text, HStack } from "native-base"
 import { createTrainingStyles } from "../../styles"
 import TitleInput from "./titleInput";
 import DescriptionInput from "./descriptionInput";
 import TypeInput from "./typeInput";
+import TimePicker from "./timeInput";
 import DifficultyInput from "./difficultyInput";
 import LocationForm from "../metadata/locationForm";
+import WeekDayInput from "./weekdayInput";
 
 
 interface Props {
@@ -20,6 +22,8 @@ interface Props {
   setStreetName: (streetName: string) => void;
   streetNumber: number;
   setStreetNumber: (streetNumber: number) => void;
+  weekDays: string[];
+  setWeekDays: React.Dispatch<React.SetStateAction<string[]>>;
   startTime: string;
   setStartTime: (startTime: string) => void;
   endTime: string;
@@ -32,8 +36,9 @@ export default function TrainingForm(props: Props) {
   const {
     trainingTitle, setTrainingTitle, trainingDescription, setTrainingDescription,
     trainingType, setTrainingType, trainingDifficulty, setTrainingDifficulty,
-    streetName, setStreetName, streetNumber, setStreetNumber, startTime, setStartTime,
-    endTime, setEndTime, image, setImage } = props;
+    streetName, setStreetName, streetNumber, setStreetNumber, weekDays, setWeekDays,
+    startTime, setStartTime, endTime, setEndTime, image, setImage } = props;
+
   return (
     <VStack space={1} alignItems={"center"} style={createTrainingStyles.stack}>
       <Text 
@@ -77,9 +82,11 @@ export default function TrainingForm(props: Props) {
       <Text 
         style={[createTrainingStyles.text, createTrainingStyles.descriptionText]}
       >Franja horaria</Text>
-      <Text>
-        TODO: implement
-      </Text>
+      <HStack>
+        <WeekDayInput weekDays={weekDays} setWeekDays={setWeekDays}/>
+        <TimePicker placeholderText="Hora inicio" selectedTime={startTime} setSelectedTime={setStartTime}/>
+        <TimePicker placeholderText="Hora fin" selectedTime={endTime} setSelectedTime={setEndTime}/>
+      </HStack>
       <Text 
         style={[createTrainingStyles.text, createTrainingStyles.descriptionText]}
       >Imagen</Text>
