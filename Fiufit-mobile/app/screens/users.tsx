@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Container, Text, NativeBaseProvider, extendTheme, View } from 'native-base';
+import UsersList from '../components/users/usersList';
 
-export default function UsersScreen() {
+export default function UsersScreen({ navigation }: any) {
     const theme = extendTheme({
         components: {
             Text: {
@@ -17,7 +18,9 @@ export default function UsersScreen() {
 
     return <NativeBaseProvider theme={theme}>
         <View flex={1} style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: "white" }}>
-            <Text>Users Screen</Text>
+            <UsersList
+                navigation
+            />
         </View>
     </NativeBaseProvider>;
 }

@@ -13,8 +13,6 @@ import {
 } from "native-base";
 import {
   API,
-  getFavoriteTrainings,
-  getTrainings,
   Training,
 } from "../../../api";
 import { MaterialIcons } from "@expo/vector-icons";

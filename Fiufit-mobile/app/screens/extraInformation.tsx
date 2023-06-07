@@ -2,7 +2,6 @@ import { NativeBaseProvider, VStack, Heading, extendTheme } from "native-base";
 import { loginAndRegisterStyles } from "../styles";
 import { useState } from "react";
 import ExtraInformationForm from "../components/extraInformation/extraInfomationForm";
-import SubmitButton from "../components/extraInformation/submitButton";
 import MoveToApp from "../components/extraInformation/moveToApp";
 import { LoadableButton } from "../components/commons/buttons";
 import { API } from "../../api";

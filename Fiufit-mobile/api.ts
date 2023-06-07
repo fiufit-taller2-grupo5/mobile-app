@@ -61,6 +61,7 @@ export class API {
       console.log("fetching from api: ", url, fetchConfig);
       const response = await fetch(url, fetchConfig);
       const responseJson = await response.json();
+      console.log("got response:", responseJson);
       if (response.ok) {
         return onSuccess(responseJson);
       } else {
@@ -82,6 +83,18 @@ export class API {
       const error = new ApiError(err.message, err.code);
       return onError(error);
     }
+  }
+
+  async getUsers(): Promise<userInfo[]> {
+    return await this.fetchFromApi(
+      "user-service/api/users",
+      { method: "GET" },
+      (response: userInfo[]) => response,
+      (error: ApiError) => {
+        console.log("error getting users:", error);
+        return [];
+      }
+    );
   }
 
   async createUser(user: User, emailRegisterName: string = "default name"): Promise<void> {
