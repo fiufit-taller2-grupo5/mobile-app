@@ -13,7 +13,8 @@ export default function InboxList(props: Props) {
         fullName: 'Afreen Khan',
         timeStamp: '12:47 PM',
         recentText: 'Good Day!',
-        avatarUrl: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
+        avatarUrl: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+        messages: [{id: 1, text: 'Hola como estas', createdAt: new Date(), senderId: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba', senderName: 'Afreen Khan'}]
     }, {
         id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
         fullName: 'Sujita Mathur',
