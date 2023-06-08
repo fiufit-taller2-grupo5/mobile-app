@@ -44,8 +44,18 @@ export class API {
 
   async fetchFromApi<T, V>(path: string, fetchConfig: RequestInit, onSuccess: (response: any) => T, onError: (error: ApiError) => V): Promise<T | V> {
     try {
-      const user = await globalUser.getUser();
-      const accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
+      let hasAuthHeader = false;
+      for (const header in fetchConfig.headers) {
+        if (header.toLowerCase() === "authorization") {
+          hasAuthHeader = true;
+          break;
+        }
+      }
+      let accessToken = "";
+      if (!hasAuthHeader) {
+        const user = await globalUser.getUser();
+        accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
+      }
       fetchConfig.headers = {
         "Content-Type": "application/json",
         "accept": "*/*",
@@ -171,9 +181,15 @@ export class API {
   }
 
   async getUserInfoByEmail(email: string, user: User): Promise<userInfo> {
+    const accessToken = (user as any).stsTokenManager.accessToken;
     return await this.fetchFromApi(
       "user-service/api/users/by_email/" + email,
-      { method: "GET" },
+      {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + accessToken,
+        }
+      },
       (response: userInfo) => response,
       (error: ApiError) => {
         console.log("error getting user info by email:", error);

@@ -5,7 +5,6 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useState } from 'react';
 import { auth, logInWithEmailAndPassword } from '../../firebase';
 import LoginForm from '../components/login/loginForm';
-import SubmitButton from '../components/login/submitButton';
 import GoogleLogin from '../components/login/googleLogin';
 import MoveToRegister from '../components/login/moveToRegister';
 import ErrorMessage from '../components/form/errorMessage';
