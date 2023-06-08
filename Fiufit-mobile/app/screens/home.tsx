@@ -7,6 +7,7 @@ import globalUser from '../../userStorage';
 import TrainingsScreen from './trainings';
 import ProfileScreen from './profile';
 import UsersScreen from './users';
+import InboxScreen from './inbox';
 import FavoritesScreen from './favorites';
 import TrainerTrainingsScreen from './trainerTrainings';
 
@@ -47,6 +48,16 @@ export default function HomeScreen({ navigation }: any) {
                     {
                         tabBarLabel: 'Users', tabBarIcon: ({ color, size }) => (
                             <FontAwesome5 name='users' color={color} size={size} />),
+                        tabBarActiveTintColor: '#FF6060'
+                    }
+                }
+            />
+            <Tab.Screen
+                name="Inbox" component={InboxScreen}
+                options={
+                    {
+                        tabBarLabel: 'Inbox', tabBarIcon: ({ color, size }) => (
+                            <FontAwesome5 name='inbox' color={color} size={size} />),
                         tabBarActiveTintColor: '#FF6060'
                     }
                 }

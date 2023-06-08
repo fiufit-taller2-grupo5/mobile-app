@@ -14,6 +14,7 @@ import ProfileScreen from './app/screens/profile';
 import UsersScreen from './app/screens/users';
 import TrainingsScreen from './app/screens/trainings';
 import LocationScreen from './app/screens/locationScreen';
+import InboxScreen from './app/screens/inbox';
 import CountdownTimerScreen from './app/screens/countdownTimerScreen';
 import ExtraInformationScreen from './app/screens/extraInformation';
 import ChangeNameScreen from './app/screens/editProfile/changeName';
@@ -68,6 +69,9 @@ export default function App() {
           <Stack.Screen
             name="UsersScreen"
             component={UsersScreen} />
+          <Stack.Screen
+            name="InboxScreen"
+            component={InboxScreen} />
           <Stack.Screen
             name="TrainingsScreen"
             component={TrainingsScreen} />
