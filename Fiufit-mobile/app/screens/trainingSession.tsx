@@ -8,11 +8,13 @@ import { LoadableButton } from "../components/commons/buttons";
 import { BackHandler } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { API } from "../../api";
+import { Alert } from 'react-native';
+import GoogleFit from 'react-native-google-fit'
 
 export type trainingSession = {
     id?: number;
     distance: number;
-    duration: number; //cambiar a string
+    durationTime: string;
     steps: number,
     calories: number,
     date: Date,
@@ -20,21 +22,57 @@ export type trainingSession = {
 
 export default function TrainingSessionScreen({ route, navigation }: any) {
     const { trainingInfo } = route.params;
-    const steps = 6000; //Hacerlo con google fit
-    const calories = 250; //Hacerlo con google fit
-    const distance = 3; //Hacerlo con google fit
-    const duration = 10; //Sacarlo y usar durationTime
+
+    const [steps, setSteps] = useState(0);
+    const [calories, setCalories] = useState(0);
+    const [distance, setDistance] = useState(0);
     const date = new Date();
     const [durationTime, setDurationTime] = useState("00:00:00");
-    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' } as const;
 
+    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' } as const;
     const api = new API(navigation);
+
+    const getGoogleFitData = async (startTime: string, endTime: string) => {
+        const today = new Date();
+        const [startHours, startMinutes, startSeconds] = startTime.split(":").map(part => parseInt(part, 10));
+        const [endHours, endMinutes, endSeconds] = endTime.split(":").map(part => parseInt(part, 10));
+
+        const startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), startHours, startMinutes, startSeconds, 0);
+        const endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), endHours, endMinutes, endSeconds, 999);
+      
+        const options = {
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString(),
+        };
+      
+        try {
+            const res = await GoogleFit.getDailyStepCountSamples(options);
+            if (res.length > 0) {
+                const totalSteps = res[0].steps[0].value;
+                setSteps(totalSteps);
+            }
+          
+            const caloriesRes = await GoogleFit.getDailyCalorieSamples(options);
+            if (caloriesRes.length > 0) {
+              const calories = caloriesRes[0].calorie;
+              setCalories(calories);
+            }
+          
+            const distanceRes = await GoogleFit.getDailyDistanceSamples(options);
+            if (distanceRes.length > 0) {
+              const distance = distanceRes[0].distance;
+              setDistance(distance);
+            }
+          } catch (error) {
+            console.log('Error fetching Google Fit data:', error);
+          }
+      };
 
     useFocusEffect(
         React.useCallback(() => {
+            getGoogleFitData("00:00:00",durationTime);
             const onBackPress = () => {
                 handleAddTrainingSession();
-                navigation.navigate('HomeScreen'); // Navegar a la HomeScreen al presionar el botón de retroceso
                 return true; // Indicar que se ha manejado el evento del botón de retroceso
             };
 
@@ -46,15 +84,31 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
         }, [])
     );
 
-    const handleAddTrainingSession = async () => {
-        await api.addTrainingSession(trainingInfo.id, {
-            distance: distance,
-            duration: duration,
-            steps: steps,
-            calories: calories,
-            date: date,
-        });
-    };
+    const handleAddTrainingSession = () => {
+        Alert.alert(
+          'Confirmación',
+          'Si continúa, el entrenamiento terminará. ¿Seguro desea terminarlo?',
+          [
+            {
+              text: 'Cancelar',
+              style: 'cancel',
+            },
+            {
+              text: 'Terminar',
+              onPress: async () => {
+                await api.addTrainingSession(trainingInfo.id, {
+                  distance: distance,
+                  durationTime: durationTime,
+                  steps: steps,
+                  calories: calories,
+                  date: date,
+                });
+                navigation.navigate('HomeScreen');
+              },
+            },
+          ]
+        );
+      };
 
     const updateTime = (time: React.SetStateAction<string>) => {
         setDurationTime(time);
@@ -117,7 +171,6 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
                     }}
                     onPress={async () => {
                         handleAddTrainingSession()
-                        navigation.navigate("HomeScreen")
                         return;
                     }}
                 />
@@ -135,13 +188,13 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     title: {
-        fontSize: 40,
+        fontSize: 25,
         fontWeight: 'bold',
         lineHeight: 50,
-        marginTop: -200, // Mueve el título hacia arriba
+        marginTop: -100, // Mueve el título hacia arriba
     },
     description: {
-        fontSize: 25,
+        fontSize: 23,
         fontWeight: 'bold',
         lineHeight: 30,
     },
@@ -176,6 +229,7 @@ const styles = StyleSheet.create({
         height: 200,
         minWidth: 120,
         backgroundColor: '#FF5252',
+        marginBottom: 100, //probar que funcione
     },
     dataBoxTwo: {
         flex: 1,
