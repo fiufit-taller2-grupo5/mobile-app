@@ -8,6 +8,7 @@ import WelcomeScreen from './app/screens/welcome';
 import RegisterScreen from './app/screens/register';
 import LoginScreen from './app/screens/login';
 import TrainingInfoScreen from './app/screens/trainingInfo';
+import InboxInfoScreen from './app/screens/inboxInfo';
 import HomeScreen from './app/screens/home';
 import TrainingSessionScreen from './app/screens/trainingSession';
 import ProfileScreen from './app/screens/profile';
@@ -84,6 +85,9 @@ export default function App() {
           <Stack.Screen
             name="TrainingInfoScreen"
             component={TrainingInfoScreen} />
+          <Stack.Screen
+            name="InboxInfoScreen"
+            component={InboxInfoScreen} />
           <Stack.Screen
             name="ChangeNameScreen"
             component={ChangeNameScreen} />
