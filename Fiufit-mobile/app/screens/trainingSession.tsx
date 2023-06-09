@@ -44,25 +44,44 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
           startDate: startDate.toISOString(),
           endDate: endDate.toISOString(),
         };
-      
+
+        const updateStepCount = () => {
+            GoogleFit.getDailyStepCountSamples(options)
+              .then(stepData => {
+                setSteps(stepData.reduce((total, sample) => total + sample.steps[0].value, 0));
+              })
+              .catch(err => {
+                console.error("error updating step count: ", err);
+              });
+        };
+        setInterval(updateStepCount, 5000); 
+
+        const updateCaloriesCount = () => {
+            GoogleFit.getDailyCalorieSamples(options)
+              .then(caloriesData => {
+                setCalories(caloriesData.reduce((total, sample) => total + sample.calorie, 0));
+              })
+              .catch(err => {
+                console.error("error updating calorie count: ", err);
+              });
+        };
+        setInterval(updateCaloriesCount, 5000);
+
+        const updateDistanceCount = () => {
+            GoogleFit.getDailyDistanceSamples(options)
+              .then(distanceData => {
+                setDistance(distanceData.reduce((total, sample) => total + sample.distance, 0));
+              })
+              .catch(err => {
+                console.error("error updating distance count: ", err);
+              });
+        };
+        setInterval(updateDistanceCount, 5000);
+
         try {
-            const res = await GoogleFit.getDailyStepCountSamples(options);
-            if (res.length > 0) {
-                const totalSteps = res[0].steps[0].value;
-                setSteps(totalSteps);
-            }
-          
-            const caloriesRes = await GoogleFit.getDailyCalorieSamples(options);
-            if (caloriesRes.length > 0) {
-              const calories = caloriesRes[0].calorie;
-              setCalories(calories);
-            }
-          
-            const distanceRes = await GoogleFit.getDailyDistanceSamples(options);
-            if (distanceRes.length > 0) {
-              const distance = distanceRes[0].distance;
-              setDistance(distance);
-            }
+            updateStepCount();
+            //updateCaloriesCount();
+            //updateDistanceCount();
           } catch (error) {
             console.log('Error fetching Google Fit data:', error);
           }
@@ -70,7 +89,7 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
 
     useFocusEffect(
         React.useCallback(() => {
-            //getGoogleFitData("00:00:00",durationTime);
+            getGoogleFitData("00:00:00",duration);
             const onBackPress = () => {
                 handleAddTrainingSession();
                 return true; // Indicar que se ha manejado el evento del botón de retroceso
