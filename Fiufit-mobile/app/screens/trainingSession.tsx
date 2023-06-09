@@ -14,7 +14,7 @@ import GoogleFit from 'react-native-google-fit'
 export type trainingSession = {
     id?: number;
     distance: number;
-    durationTime: string;
+    duration: string;
     steps: number,
     calories: number,
     date: Date,
@@ -23,11 +23,11 @@ export type trainingSession = {
 export default function TrainingSessionScreen({ route, navigation }: any) {
     const { trainingInfo } = route.params;
 
-    const [steps, setSteps] = useState(0);
-    const [calories, setCalories] = useState(0);
-    const [distance, setDistance] = useState(0);
+    const [steps, setSteps] = useState(1); //cambiar a 0
+    const [calories, setCalories] = useState(1); //cambiar a 0
+    const [distance, setDistance] = useState(1); //cambiar a 0
     const date = new Date();
-    const [durationTime, setDurationTime] = useState("00:00:00");
+    const [duration, setDuration] = useState("00:00:00");
 
     const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' } as const;
     const api = new API(navigation);
@@ -70,7 +70,7 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
 
     useFocusEffect(
         React.useCallback(() => {
-            getGoogleFitData("00:00:00",durationTime);
+            //getGoogleFitData("00:00:00",durationTime);
             const onBackPress = () => {
                 handleAddTrainingSession();
                 return true; // Indicar que se ha manejado el evento del botón de retroceso
@@ -98,20 +98,20 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
               onPress: async () => {
                 await api.addTrainingSession(trainingInfo.id, {
                   distance: distance,
-                  durationTime: durationTime,
+                  duration: duration,
                   steps: steps,
                   calories: calories,
                   date: date,
-                });
+                })
                 navigation.navigate('HomeScreen');
               },
             },
           ]
         );
       };
-
+    
     const updateTime = (time: React.SetStateAction<string>) => {
-        setDurationTime(time);
+        setDuration(time);
     };
 
     return (
@@ -170,7 +170,7 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
                         top: "0%"
                     }}
                     onPress={async () => {
-                        handleAddTrainingSession()
+                        handleAddTrainingSession();
                         return;
                     }}
                 />
