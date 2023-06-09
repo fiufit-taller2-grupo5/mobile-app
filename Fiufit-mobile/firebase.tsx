@@ -1,4 +1,4 @@
-import { AuthError, AuthRequest, RefreshTokenRequest } from "expo-auth-session";
+import { AuthError } from "expo-auth-session";
 import { initializeApp } from "firebase/app";
 import {
   signInWithEmailAndPassword,
@@ -7,6 +7,9 @@ import {
   signOut,
   User,
 } from "firebase/auth";
+
+import { initializeFirestore } from "firebase/firestore";
+
 
 
 import {
@@ -24,6 +27,7 @@ const firebaseConfig = {
   appId: "1:423504146626:web:6a2efab8c617ea5965cb5b",
   measurementId: "G-260WD4NMWQ"
 };
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -112,9 +116,14 @@ const getErrorMessage = (error: AuthError): string => {
   }
 }
 
+const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true
+})
+
 
 export {
   auth,
+  db,
   logInWithEmailAndPassword,
   registerWithEmailAndPassword,
   sendPasswordReset,

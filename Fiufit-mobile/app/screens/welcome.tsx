@@ -12,8 +12,9 @@ import { apiGatewayHealthCheck } from '../../api';
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
 import * as LocalAuthentication from 'expo-local-authentication';
 import globalUser from '../../userStorage';
-
+import { db } from '../../firebase';
 export const BACKGROUND_FETCH_TASK = 'background-fetch';
+import { collection, getDocs, collectionGroup, doc, addDoc } from 'firebase/firestore';
 
 TaskManager.defineTask(BACKGROUND_FETCH_TASK, async (data) => {
   console.log(data)
@@ -61,7 +62,19 @@ export const BackgroundFetchData = () => {
   const [status, setStatus] = React.useState<BackgroundFetch.BackgroundFetchStatus | null>(null);
 
   React.useEffect(() => {
-    checkStatusAsync();
+    const testing = async () => {
+      console.log("testing db", db);
+
+      const querySnapshot = await getDocs(collectionGroup(db, 'chats'));
+      console.log("querySnapshot", querySnapshot.size);
+
+      querySnapshot.forEach((doc) => {
+        console.log(`the document ${doc.id} => ${JSON.stringify(doc.data())}`);
+      });
+
+    }
+    testing();
+    //checkStatusAsync();
   }, []);
 
   const checkStatusAsync = async () => {
@@ -169,6 +182,7 @@ export default function WelcomeScreen({ navigation }: NativeStackScreenProps<any
       }
     }
     // biometricLogin();
+
   }, [])
 
 

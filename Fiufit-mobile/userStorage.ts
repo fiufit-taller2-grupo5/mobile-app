@@ -1,7 +1,7 @@
-import { User } from "firebase/auth";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from "./firebase";
 import { API } from "./api";
+import { getUserFromStorage, storeUserOnStorage, userInfo, UserMetadata } from "./asyncStorageAPI";
 
 export class StoredUser {
     user: userInfo | null;
@@ -36,6 +36,12 @@ export class StoredUser {
 
     async updateDetails() {
         await this.verifyUserMetadataExists();
+        await storeUserOnStorage(this.user!);
+    }
+
+    async updateUserMetadata(metadata: UserMetadata) {
+        await this.verifyUserExists();
+        this.user!.UserMetadata = metadata;
         await storeUserOnStorage(this.user!);
     }
 
@@ -137,49 +143,6 @@ export class StoredUser {
         await storeUserOnStorage(this.user!);
     }
 }
-
-async function storeUserOnStorage(user: userInfo) {
-    try {
-        const jsonValue = JSON.stringify(user);
-        console.log("Storing user in local storage: ", jsonValue);
-        await AsyncStorage.setItem('@userInfo', jsonValue);
-    } catch (e) {
-        console.log("Error storing user in local storage: ", e);
-    }
-}
-
-async function getUserFromStorage(): Promise<userInfo | null> {
-    try {
-        const jsonValue = await AsyncStorage.getItem('@userInfo');
-        console.log("Getting user from local storage: ", jsonValue);
-        return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (e) {
-        console.log("Error getting user from local storage: ", e);
-        return null;
-    }
-}
-
-export type UserMetadata = {
-    id?: number | null,
-    weight: number | null,
-    height: number | null,
-    birthDate: string | null,
-    location: string | null,
-    interests: string[]
-}
-
-export type userInfo = {
-    id: number,
-    email: string,
-    name: string,
-    createdAt: string,
-    updatedAt: string,
-    state: string,
-    role: string,
-    googleUser: User,
-    UserMetadata: UserMetadata | null
-}
-
 
 const globalUser = new StoredUser();
 

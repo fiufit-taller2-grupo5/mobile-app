@@ -1,8 +1,8 @@
 import { User } from "firebase/auth";
-import globalUser, { userInfo, UserMetadata } from "./userStorage";
 import { trainingReview } from "./app/screens/rateTraining";
 import { trainingSession } from "./app/screens/trainingSession";
 import { auth } from "./firebase";
+import { getUserFromStorage, storeUserOnStorage, refreshToken, userInfo, UserMetadata } from "./asyncStorageAPI";
 
 class ApiError {
   message: string;
@@ -53,7 +53,7 @@ export class API {
       }
       let accessToken = "";
       if (!hasAuthHeader) {
-        const user = await globalUser.getUser();
+        const user = await getUserFromStorage();
         accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
       }
       fetchConfig.headers = {
@@ -65,7 +65,7 @@ export class API {
         ...fetchConfig.headers,
       }
       // use localhost if running locally, otherwise use the api gateway
-      const localUrl = "https://3b37-190-19-109-11.ngrok-free.app/" + path;
+      const localUrl = "https://a4f5-190-19-109-11.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       console.log("fetching from api: ", url, fetchConfig);
@@ -77,7 +77,7 @@ export class API {
       } else {
         if (responseJson?.error?.code === "auth/id-token-expired") {
           console.log("token expired:", responseJson.error.message);
-          await globalUser.refreshToken();
+          await refreshToken();
           return await this.fetchFromApi(url, fetchConfig, onSuccess, onError);
         } else {
           console.error("error in request: ", responseJson);
@@ -126,10 +126,9 @@ export class API {
       async (userInfo: userInfo) => {
         try {
           console.log("userInfo", userInfo);
-          console.log("globalUser", globalUser);
           userInfo.googleUser = user;
           userInfo.role = "Atleta";
-          await globalUser.setUser(userInfo);
+          await storeUserOnStorage(userInfo);
         } catch (error: any) {
           console.error("error reading response from creating user", error);
           auth.signOut();
@@ -241,7 +240,7 @@ export class API {
 
   async getTrainerTrainings(filterRule: string | null = null, filterValue: string | null = null): Promise<Training[]> {
     let url = "training-service/api/trainings?"
-    const user = await globalUser.getUser();
+    const user = await getUserFromStorage();
     const userId = user!.id;
     if (filterRule !== null && filterValue !== null) {
       url += new URLSearchParams({ trainer_id: userId.toString(), filterRule: filterValue });
@@ -260,7 +259,7 @@ export class API {
   }
 
   async addTrainingReview(trainingId: number, review: trainingReview): Promise<void> {
-    const user = await globalUser.getUser();
+    const user = await getUserFromStorage();
     const userId = user?.id;
     return await this.fetchFromApi(
       "training-service/api/trainings/" + trainingId + "/review/" + userId,
@@ -291,7 +290,7 @@ export class API {
   }
 
   async addTrainingSession(trainingId: number, trainingSession: trainingSession): Promise<void> {
-    const user = await globalUser.getUser();
+    const user = await getUserFromStorage();
     const userId = user?.id;
     return await this.fetchFromApi(
       "training-service/api/trainings/" + trainingId + "/user_training/" + userId,
@@ -310,7 +309,7 @@ export class API {
   }
 
   async getTrainingSessions(trainingId: number): Promise<trainingSession[]> {
-    const user = await globalUser.getUser();
+    const user = await getUserFromStorage();
     const userId = user?.id;
     return await this.fetchFromApi(
       "training-service/api/trainings/" + trainingId + "/user_training/" + userId,
@@ -324,7 +323,7 @@ export class API {
   }
 
   async getTrainingSession(trainingId: number, sessionId: number): Promise<trainingSession> {
-    const user = await globalUser.getUser();
+    const user = await getUserFromStorage();
     const userId = user?.id;
     return await this.fetchFromApi(
       "training-service/api/trainings/" + trainingId + "/user_training/" + userId + "/" + sessionId,
@@ -350,7 +349,7 @@ export class API {
   }
 
   async getFavoriteTrainings(): Promise<Training[]> {
-    const user = await globalUser.getUser();
+    const user = await getUserFromStorage();
     const userId = user?.id;
     return await this.fetchFromApi(
       "training-service/api/trainings/favorites/" + userId,
@@ -364,7 +363,7 @@ export class API {
   }
 
   async addFavoriteTraining(trainingPlanId: number): Promise<boolean> {
-    const user = await globalUser.getUser();
+    const user = await getUserFromStorage();
     const userId = user?.id;
     return await this.fetchFromApi(
       "training-service/api/trainings/" + trainingPlanId + '/favorite/' + userId,
@@ -394,7 +393,7 @@ export class API {
   }
 
   async updateUserMetadata(data: UserMetadata): Promise<void> {
-    const user = await globalUser.getUser();
+    const user = await getUserFromStorage();
     const userId = user?.id;
     const url = "user-service/api/users/" + userId + "/metadata";
     return await this.fetchFromApi(
@@ -414,7 +413,7 @@ export class API {
   }
 
   async quitFavoriteTraining(trainingPlanId: number): Promise<boolean> {
-    const user = await globalUser.getUser();
+    const user = await getUserFromStorage();
     const userId = user?.id;
     return await this.fetchFromApi(
       "training-service/api/trainings/" + trainingPlanId + '/favorite/' + userId,

@@ -1,6 +1,6 @@
 import { Box, Link } from "native-base";
 import { loginAndRegisterStyles } from "../../styles";
-import { updateUserDetails } from "../../../userStorage";
+import globalUser from "../../../userStorage";
 
 
 interface Props {
@@ -18,14 +18,14 @@ export default function MoveToApp(props: Props) {
       <Link
         style={[loginAndRegisterStyles.link, loginAndRegisterStyles.extraInfoLink]}
         isUnderlined={false}
-        onPress={() => {
-          updateUserDetails({ location: streetName+streetNumber.toString(10), birthDate: null, weight: null, height: null, interests: [] })
+        onPress={async () => {
+          await globalUser.updateUserMetadata({ location: streetName + streetNumber.toString(10), birthDate: null, weight: null, height: null, interests: [] })
           navigation.navigate('HomeScreen');
           clearFields();
         }}
-        _text={{color: "#FF6060", fontSize: "20px", fontWeight: "medium"}}
+        _text={{ color: "#FF6060", fontSize: "20px", fontWeight: "medium" }}
       >
-       Omitir
+        Omitir
       </Link>
     </Box>
   );
