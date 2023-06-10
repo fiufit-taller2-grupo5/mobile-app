@@ -7,6 +7,7 @@ import TimePicker from "./timeInput";
 import DifficultyInput from "./difficultyInput";
 import LocationForm from "../metadata/locationForm";
 import WeekDayInput from "./weekdayInput";
+import ImageInput from "./inputImage";  // <ImageInput image={image} setImage={setImage}/>
 
 
 interface Props {
@@ -28,8 +29,8 @@ interface Props {
   setStartTime: (startTime: string) => void;
   endTime: string;
   setEndTime: (endTime: string) => void;
-  image: string;
-  setImage: (image: string) => void;
+  image: any;
+  setImage: (image: any) => void;
 }
 
 export default function TrainingForm(props: Props) {

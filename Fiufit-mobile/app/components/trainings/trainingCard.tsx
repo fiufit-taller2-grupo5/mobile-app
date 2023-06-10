@@ -10,7 +10,8 @@ import {
   Button,
   View,
   ScrollView,
-  Divider
+  Divider,
+  Link
 } from "native-base";
 import { API, Training } from "../../../api";
 import { useEffect, useState } from "react";
@@ -115,11 +116,20 @@ export default function TrainingCard(props: Props) {
             </View>
           </View>
           <Stack p="4" space={3}>
-            <Stack space={2}>
+            <HStack space={2}>
               <Heading size="md" ml="-1">
                 {trainingData.title}
               </Heading>
-            </Stack>
+              <Link
+                style={{left:"50%"}}
+                onPress={() => {
+                  navigation.navigate("MapScreen", { altitude: -34.61315, latitude: -58.37723 });
+                  console.log("TODO: receive values from backend")
+                }}
+              >
+                Ver en mapa
+              </Link>
+            </HStack>
             <HStack alignItems="center" space={4} justifyContent="space-between">
               <HStack alignItems="center">
                 <Text fontWeight={"bold"}>Tipo: </Text>

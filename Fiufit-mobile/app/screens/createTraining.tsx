@@ -24,7 +24,7 @@ export default function CreateTrainingScreen({ navigation }: any) {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
     // TODO: agregar este al button
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null);
 
   const api = new API(navigation);
 

@@ -30,6 +30,7 @@ import FavoritesScreen from './app/screens/favorites';
 import TrainerTrainingsScreen from './app/screens/trainerTrainings';
 import RateTrainingScreen from './app/screens/rateTraining';
 import EditTrainingScreen from './app/screens/editTraining';
+import MapScreen from './app/screens/map';
 
 const Stack = createNativeStackNavigator();
 
@@ -127,6 +128,9 @@ export default function App() {
           <Stack.Screen
             name="CountdownTimerScreen"
             component={CountdownTimerScreen} />
+          <Stack.Screen
+            name="MapScreen"
+            component={MapScreen}/>
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

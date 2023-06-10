@@ -336,3 +336,18 @@ export const editProfileStyles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
 });
+
+export const mapStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  map: {
+    width: '100%',
+    height: '100%',
+  },
+  button: {
+    bottom: "20%",
+    right: "-30%",
+    width: '30%',
+  }
+});
