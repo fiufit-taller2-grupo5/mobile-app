@@ -3,6 +3,8 @@ import TrainingForm from "../components/trainingInfo/trainingForm";
 import { useState } from "react";
 import { createTrainingStyles } from "../styles";
 import { LoadableButton } from "../components/commons/buttons";
+import globalUser from "../../userStorage";
+import { API } from "../../api";
 
 
 interface Props {
@@ -14,16 +16,21 @@ export default function EditTrainingScreen(props: Props) {
   const { navigation, route } = props;
   const { trainingData } = route.params;
 
+  const address = trainingData.location.split(" ");
+  const weekDaysList = trainingData.days.split(",");
   const [trainingTitle, setTrainingTitle] = useState(trainingData.title);
   const [trainingDescription, setTrainingDescription] = useState(trainingData.description);
   const [trainingType, setTrainingType] = useState(trainingData.type);
   const [trainingDifficulty, setTrainingDifficulty] = useState(trainingData.difficulty);
-  // TODO agregar estos (falta back)
-  const [streetName, setStreetName] = useState("");
-  const [streetNumber, setStreetNumber] = useState(0);
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [streetName, setStreetName] = useState(address[0]);
+  const [streetNumber, setStreetNumber] = useState(parseInt(address[1]));
+  const [weekDays, setWeekDays] = useState(weekDaysList);
+  const [startTime, setStartTime] = useState(trainingData.start);
+  const [endTime, setEndTime] = useState(trainingData.end);
+    // TODO agregar estos (falta back) y usar trainingData.image
   const [image, setImage] = useState("");
+
+  const api = new API(navigation);
 
   return <NativeBaseProvider>
     <VStack height="full" style={createTrainingStyles.stack}>
@@ -41,6 +48,8 @@ export default function EditTrainingScreen(props: Props) {
         setStreetName={setStreetName}
         streetNumber={streetNumber}
         setStreetNumber={setStreetNumber}
+        weekDays={weekDays}
+        setWeekDays={setWeekDays}
         startTime={startTime}
         setStartTime={setStartTime}
         endTime={endTime}
@@ -51,7 +60,18 @@ export default function EditTrainingScreen(props: Props) {
 
       <LoadableButton
         onPress={async () => {
-          console.log("TODO: editar training con el backend")
+          await api.updateTraining({
+            title: trainingTitle,
+            description: trainingDescription,
+            state: "active",
+            difficulty: trainingDifficulty,
+            type: trainingType,
+            location: streetName + " " + streetNumber.toString(10),
+            start: startTime,
+            end: endTime,
+            days: weekDays.toString(),
+            trainerId: globalUser.user?.id || 0
+          }, trainingData.id);
           navigation.navigate("HomeScreen");
           return;
         }}

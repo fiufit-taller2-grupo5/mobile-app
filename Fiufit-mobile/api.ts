@@ -252,6 +252,23 @@ export class API {
     );
   }
 
+  async updateTraining(training: TrainerTraining, trainingId: number): Promise<void> {
+    return await this.fetchFromApi(
+      "training-service/api/trainings/" + trainingId,
+      {
+        method: "PUT",
+        body: JSON.stringify(training),
+      },
+      (response: any) => {
+        console.log("training updated");
+      },
+      (error: ApiError) => {
+        console.log("error updating training:", error);
+        throw error;
+      }
+    );
+  }
+
   async getTrainerTrainings(filterRule: string | null = null, filterValue: string | null = null): Promise<Training[]> {
     let url = "training-service/api/trainings?"
     const user = await getUserFromStorage();

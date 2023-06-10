@@ -137,7 +137,7 @@ export default function TrainingCard(props: Props) {
             <Text fontWeight={"bold"}>Rutina: </Text>
             <Text fontWeight="400">Rutina del plan de entrenamiento</Text>
           </Stack>
-          <LoadableButton
+          {isAthlete && <LoadableButton
             text="Iniciar"
             customStyles={{
               backgroundColor: "#FF6060",
@@ -151,7 +151,7 @@ export default function TrainingCard(props: Props) {
               navigation.navigate("CountdownTimerScreen", { trainingInfo: trainingData })
               return;
             }}
-          />
+          />}
         </Box>
         <Divider my={2} mx={0} />
         <Heading size="sm" color={"gray.500"} marginLeft={3} marginY={2}>
