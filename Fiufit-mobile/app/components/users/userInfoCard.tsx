@@ -3,7 +3,7 @@ import { Box, VStack, HStack, Button, Text, Image, Divider, Icon } from 'native-
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { trainingStyles } from "../../styles";
 import { API } from '../../../api';
-import { userInfo } from '../../../userStorage';
+import { userInfo } from '../../../asyncStorageAPI';
 
 const mainImage = (training_type: any) => {
   if (training_type === "Running")
@@ -50,7 +50,7 @@ export const UserInfoCard = ({
         py="10"
         backgroundColor="#fff"
         onPress={async () => {
-          navigation.navigate(navigateToScreen, { userData });
+          navigation.navigate(navigateToScreen, { userId: userData.id });
         }}
       >
         <HStack
@@ -76,28 +76,6 @@ export const UserInfoCard = ({
             <Divider mx={1} />
 
           </VStack>
-          {/* <VStack my={1} width={30} height={10} mr={0} ml={1}>
-            {canSetFavorite && (
-              <>
-                <Button backgroundColor="#fff" onPress={handleFavorite}>
-                  <Icon
-                    as={<MaterialCommunityIcons name={isFavorite ? "heart" : "heart-outline"} />}
-                    size={6}
-                    color="#FF6060"
-                    alignSelf="center"
-                  />
-                </Button>
-                <Button backgroundColor="#fff" onPress={async () => { console.log("click"); }}>
-                  <Icon
-                    as={<MaterialCommunityIcons name={isRated ? "star" : "star-outline"} />}
-                    size={6}
-                    color="#FFD27D"
-                    alignSelf="center"
-                  />
-                </Button>
-              </>
-            )}
-          </VStack> */}
         </HStack>
       </Button>
     </Box>

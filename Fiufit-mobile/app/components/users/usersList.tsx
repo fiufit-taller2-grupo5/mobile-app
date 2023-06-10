@@ -16,7 +16,7 @@ import {
 } from "../../../api";
 import { MaterialIcons } from "@expo/vector-icons";
 import { RefreshControl } from 'react-native';
-import { userInfo } from "../../../userStorage";
+import { userInfo } from "../../../asyncStorageAPI";
 import { UserInfoCard } from "./userInfoCard";
 
 

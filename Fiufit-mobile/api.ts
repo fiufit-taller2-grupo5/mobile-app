@@ -46,6 +46,10 @@ export interface TrainerTraining {
   trainerId: number,
 }
 
+export interface CompleteUserTraining extends trainingSession {
+  trainingData: Training,
+}
+
 export class API {
   navigation: any;
   constructor(navigation: any) {
@@ -75,7 +79,7 @@ export class API {
         ...fetchConfig.headers,
       }
       // use localhost if running locally, otherwise use the api gateway
-      const localUrl = "https://a4f5-190-19-109-11.ngrok-free.app/" + path;
+      const localUrl = "https://4df8-2800-810-54f-818e-3d72-a82d-80c2-9209.sa.ngrok.io/" + path;
       const prod = "https://api-gateway-prod-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       console.log("fetching from api: ", url, fetchConfig);
@@ -217,11 +221,11 @@ export class API {
     );
   }
 
-  async getUserInfoById(id: number, user: User, userDetails: Boolean): Promise<userInfo> {
+  async getUserInfoById(id: number): Promise<userInfo & UserMetadata> {
     return await this.fetchFromApi(
-      "user-service/api/users/" + id + "?userDetails=" + userDetails,
+      "user-service/api/users/" + id,
       { method: "GET" },
-      (response: userInfo) => response,
+      (response: userInfo & UserMetadata) => response,
       (error: ApiError) => {
         console.log("error getting user info by id:", error);
         throw error;
@@ -378,11 +382,9 @@ export class API {
     );
   }
 
-  async getTrainingSessions(trainingId: number): Promise<trainingSession[]> {
-    const user = await getUserFromStorage();
-    const userId = user?.id;
+  async getUserTrainingSessions(userId: number): Promise<trainingSession[]> {
     return await this.fetchFromApi(
-      "training-service/api/trainings/" + trainingId + "/user_training/" + userId,
+      "training-service/api/trainings/user_training/" + userId,
       { method: "GET" },
       (response: trainingSession[]) => response,
       (error: ApiError) => {
@@ -391,6 +393,28 @@ export class API {
       }
     );
   }
+
+  async getCompleteUserTrainingSessions(userId: number): Promise<CompleteUserTraining[]> {
+    // get user training sessions and then for each session get training data
+    const sessions = await this.getUserTrainingSessions(userId);
+    const trainings = await this.getTrainings();
+    const trainingsMap = new Map<number, Training>();
+    trainings.forEach(training => {
+      trainingsMap.set(training.id, training);
+    });
+    const completeUserTrainings: CompleteUserTraining[] = [];
+    sessions.forEach(session => {
+      const training = trainingsMap.get(session.trainingPlanId);
+      if (training !== undefined) {
+        completeUserTrainings.push({
+          ...session,
+          trainingData: training,
+        });
+      }
+    });
+    return completeUserTrainings;
+  }
+  
 
   async getTrainingSession(trainingId: number, sessionId: number): Promise<trainingSession> {
     const user = await getUserFromStorage();

@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { trainingStyles } from "../../styles";
 import { API } from '../../../api';
 
-const mainImage = (training_type: any) => {
+export const trainingMainImage = (training_type: any) => {
   if (training_type === "Running")
     return "https://wallpaperaccess.com/thumb/2604922.jpg";
   else if (training_type === "Swimming")
@@ -32,7 +32,8 @@ export const TrainingInfoCard = ({
   canSetFavorite = false,
   onRemoveFavorite = () => { },
   navigation,
-  navigateToScreen
+  navigateToScreen,
+  userTrainingData = null
 }: any) => {
 
   const api = new API(navigation);
@@ -75,7 +76,7 @@ export const TrainingInfoCard = ({
           height={70}
         >
           <Image
-            source={{ uri: mainImage(trainingData.type) }}
+            source={{ uri: trainingMainImage(trainingData.type) }}
             alt="Alternate Text"
             size="lg"
             borderRadius={10}
@@ -95,6 +96,11 @@ export const TrainingInfoCard = ({
             <Text fontSize="xs" color="#000000">
               Dificultad: {trainingData.difficulty}
             </Text>
+            {userTrainingData && (
+              <Text fontSize="xs" color="#000000">
+                completed on {userTrainingData.date.to as string}
+              </Text>
+            )}
           </VStack>
           <VStack my={1} width={30} height={10} mr={0} ml={1}>
             {canSetFavorite && (

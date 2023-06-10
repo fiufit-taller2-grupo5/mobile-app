@@ -351,3 +351,23 @@ export const mapStyles = StyleSheet.create({
     width: '30%',
   }
 });
+
+export const userProfileStyles = StyleSheet.create({
+  mainBox: {
+    width: '80%',
+    height: '100%',
+    backgroundColor: '#ffffff',
+    margin: '15%',
+    borderColor: '#FF6060',
+  },
+  text: {
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    fontWeight: '800',
+    fontSize: 25,
+    lineHeight: 35,
+    textAlign: 'center',
+    alignSelf: 'center',
+
+  },
+});

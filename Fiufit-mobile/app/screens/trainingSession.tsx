@@ -18,6 +18,7 @@ export type trainingSession = {
     steps: number,
     calories: number,
     date: Date,
+    trainingPlanId: number,
 };
 
 export default function TrainingSessionScreen({ route, navigation }: any) {
@@ -171,6 +172,7 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
                                 steps: steps,
                                 calories: calories,
                                 date: date,
+                                trainingPlanId: trainingInfo.trainingPlanId,
                             })
                             tickers.forEach(ticker => {
                                 clearInterval(ticker);

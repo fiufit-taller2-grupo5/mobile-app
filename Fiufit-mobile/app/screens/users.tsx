@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Container, Text, NativeBaseProvider, extendTheme, View } from 'native-base';
 import UsersList from '../components/users/usersList';
 
-export default function UsersScreen({ navigation }: any) {
+export default function UsersScreen({ navigation}: { navigation: any}) {
     const theme = extendTheme({
         components: {
             Text: {
@@ -19,7 +19,7 @@ export default function UsersScreen({ navigation }: any) {
     return <NativeBaseProvider theme={theme}>
         <View flex={1} style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: "white" }}>
             <UsersList
-                navigation
+                navigation={navigation}
             />
         </View>
     </NativeBaseProvider>;
