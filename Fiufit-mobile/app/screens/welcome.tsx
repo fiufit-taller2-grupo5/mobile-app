@@ -12,9 +12,7 @@ import { apiGatewayHealthCheck } from '../../api';
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
 import * as LocalAuthentication from 'expo-local-authentication';
 import globalUser from '../../userStorage';
-import { db } from '../../firebase';
 export const BACKGROUND_FETCH_TASK = 'background-fetch';
-import { collection, getDocs, collectionGroup, doc, addDoc, onSnapshot, query, where } from 'firebase/firestore';
 
 TaskManager.defineTask(BACKGROUND_FETCH_TASK, async (data) => {
   console.log(data)

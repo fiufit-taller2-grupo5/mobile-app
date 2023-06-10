@@ -33,7 +33,8 @@ export interface TrainerTraining {
   state: string,
   difficulty: number,
   type: string,
-  trainerId?: number,
+  location: string,
+  trainerId: number,
 }
 
 export class API {
@@ -90,7 +91,7 @@ export class API {
           };
           return await this.fetchFromApi(path, newFetchConfig, onSuccess, onError);
         } else {
-          console.log("error in request: ", responseJson);
+          console.error("error in request: ", responseJson);
           if (response.status === 403) {
             this.navigation.navigate("WelcomeScreen");
           }

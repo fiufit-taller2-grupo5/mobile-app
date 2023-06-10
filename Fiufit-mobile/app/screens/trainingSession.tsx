@@ -10,7 +10,6 @@ import { useFocusEffect } from '@react-navigation/native';
 import { API } from "../../api";
 import { Alert } from 'react-native';
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
-import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
 export type trainingSession = {
     id?: number;
@@ -191,75 +190,6 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
             ]
         );
     };
-
-    useEffect(() => {
-        const permissionChecks = async () => {
-            try {
-                const res = await check(PERMISSIONS.ANDROID.ACTIVITY_RECOGNITION);
-                console.log("check permissions response", res);
-                if (res !== RESULTS.GRANTED) {
-                    const res2 = await request(PERMISSIONS.ANDROID.ACTIVITY_RECOGNITION);
-                    console.log("request permissions response", res2);
-                    if (res2 === "granted") {
-                        const allScopes: string[] = Object.values(Scopes);
-
-                        const options = {
-                            scopes: allScopes as Scopes[],
-                        }
-                        GoogleFit.authorize(options)
-                            .then(async authResult => {
-                                if (authResult.success) {
-                                    console.log("AUTH_SUCCESS");
-                                    GoogleFit.startRecording(data => {
-                                        console.log("recording data", data);
-                                    }, ["step"])
-                                    let res = await GoogleFit.getDailySteps();
-                                    console.log(res);
-                                } else {
-                                    console.log("AUTH_DENIED", authResult.message);
-                                }
-                            })
-                            .catch(() => {
-                                console.log("AUTH_ERROR");
-                            })
-
-                    }
-                } else {
-                    const allScopes: string[] = Object.values(Scopes);
-
-                    const options = {
-                        scopes: allScopes as Scopes[],
-                    }
-                    GoogleFit.authorize(options)
-                        .then(async authResult => {
-                            if (authResult.success) {
-                                console.log("AUTH_SUCCESS");
-                                GoogleFit.startRecording(data => {
-                                    console.log("recording data", data);
-                                }, ["step"])
-                                let res = await GoogleFit.getDailySteps();
-                                console.log(res);
-                            } else {
-                                console.log("AUTH_DENIED", authResult.message);
-                            }
-                        })
-                        .catch(() => {
-                            console.log("AUTH_ERROR");
-                        })
-                }
-            } catch (err) {
-                console.log(err);
-            }
-
-        }
-
-        permissionChecks();
-
-
-        return () => {
-            GoogleFit.unsubscribeListeners();
-        }
-    }, [])
 
     const updateTime = (time: React.SetStateAction<string>) => {
         setDuration(time);

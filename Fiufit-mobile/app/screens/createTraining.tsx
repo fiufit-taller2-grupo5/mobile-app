@@ -62,7 +62,9 @@ export default function CreateTrainingScreen({ navigation }: any) {
             state: "active",
             difficulty: trainingDifficulty,
             type: trainingType,
-            trainerId: globalUser.user?.id
+            location: "siempre viva 123", //no hardcodearla, 
+            // FALLA PORQUE FALTAN MAS CAMPOS; FIJARSE EL LOG ERROR. AHÏ DICE QUE FALTA
+            trainerId: globalUser.user?.id || 0
           });
           navigation.navigate("HomeScreen");
           return;
