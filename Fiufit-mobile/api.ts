@@ -4,6 +4,7 @@ import { trainingSession } from "./app/screens/trainingSession";
 import { auth } from "./firebase";
 import { getUserFromStorage, storeUserOnStorage, refreshToken, userInfo, UserMetadata } from "./asyncStorageAPI";
 
+
 export class ApiError {
   message: string;
   code: number;
@@ -22,6 +23,11 @@ export interface Training {
   state: string,
   difficulty?: number,
   type: string,
+  location: string,
+  start: string,
+  end: string,
+  days: string,
+  trainerId: number,
   trainer_id: number,
   isFavorite?: boolean,
   meanRating?: number,
@@ -236,11 +242,20 @@ export class API {
   }
 
   async addTraining(training: TrainerTraining): Promise<void> {
+    // TODO use to send image to backend
+    // const formData = new FormData();
+    // formData.append("image", {uri: imageUri});
+    // formData.append(JSON.stringify(training), '');
+    // body: formData
+
     return await this.fetchFromApi(
       "training-service/api/trainings/",
       {
         method: "POST",
         body: JSON.stringify(training),
+        // headers: {
+        //   'Content-Type': 'multipart/form-data',
+        // }
       },
       (response: any) => {
         console.log("training added");
@@ -250,6 +265,31 @@ export class API {
         throw error;
       }
     );
+  }
+
+  async getCoordinates(location: string) : Promise<any> {
+    const location_split = location.split(' ');
+    const streetName = location_split[0];
+    const streetNumber = location_split[1];
+    const address = streetNumber.toString() + ' ' + streetName + ", Buenos Aires" + ", Argentina";
+
+    const key = process.env.GOOGLE_MAPS_API_KEY;
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+          address
+        )}&key=${key}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        const coords = data.results[0].geometry.location;
+        return [coords.lat, coords.lng];
+      }
+    } catch (err: any) {
+      console.log("error fetching from api: ", err);
+      const error = new ApiError(err.message, err.code);
+      throw error;
+    }
   }
 
   async updateTraining(training: TrainerTraining, trainingId: number): Promise<void> {

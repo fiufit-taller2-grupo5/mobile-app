@@ -122,9 +122,9 @@ export default function TrainingCard(props: Props) {
               </Heading>
               <Link
                 style={{left:"50%"}}
-                onPress={() => {
-                  navigation.navigate("MapScreen", { marker_longitude: -58.37723, marker_latitude: -34.61315 });
-                  console.log("TODO: receive values from backend")
+                onPress={async () => {
+                  const coordinates = await api.getCoordinates(trainingData.location);
+                  navigation.navigate("MapScreen", { marker_longitude: coordinates[1], marker_latitude: coordinates[0] });
                 }}
               >
                 Ver en mapa
@@ -144,8 +144,14 @@ export default function TrainingCard(props: Props) {
             </HStack>
             <Text fontWeight={"bold"}>Descripción: </Text>
             <Text>{trainingData.description}</Text>
-            <Text fontWeight={"bold"}>Rutina: </Text>
-            <Text fontWeight="400">Rutina del plan de entrenamiento</Text>
+            <Text fontWeight={"bold"}>Horarios: </Text>
+            <HStack>
+              <Text>{trainingData.days}</Text>
+              <Text>:</Text>
+              <Text>{trainingData.start}</Text>
+              <Text>-</Text>
+              <Text>{trainingData.end}</Text>
+            </HStack>
           </Stack>
           {isAthlete && <LoadableButton
             text="Iniciar"

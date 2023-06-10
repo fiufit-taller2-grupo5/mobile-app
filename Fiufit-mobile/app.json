@@ -40,7 +40,7 @@
       "package": "com.fiufit.app",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyBObUy_kyqJOP_IXaE2Ql0bsLYOoJnUzxM"
+          "apiKey": "${process.env.GOOGLE_MAPS_API_KEY}"
         }
       }
     },

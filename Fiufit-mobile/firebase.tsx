@@ -1,5 +1,5 @@
 import { AuthError } from "expo-auth-session";
-import { initializeApp } from "firebase/app";
+import firebase, { initializeApp } from "firebase/app";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -7,11 +7,7 @@ import {
   signOut,
   User,
 } from "firebase/auth";
-
 import { initializeFirestore } from "firebase/firestore";
-
-
-
 import {
   initializeAuth,
   getReactNativePersistence,
@@ -91,6 +87,11 @@ const logout = async () => {
     alert(err.message);
   }
 };
+
+// TODO fix and use to retrieve image from firebase storage
+// const getImage = (imageUrl: string) => {
+//   return firebase.storage().refFromURL(imageUrl).getDownloadURL();
+// }
 
 const getErrorMessage = (error: AuthError): string => {
   switch (getCauseFromErrorMessage(error.code)) {
