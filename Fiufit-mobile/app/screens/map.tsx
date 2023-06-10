@@ -10,15 +10,8 @@ interface Props {
 
 export default function MapScreen(props: Props) {
   const { route } = props;
-  const { marker_altitude, marker_latitude } = route.params;
+  const { marker_longitude, marker_latitude } = route.params;
   const [region, setRegion] = useState(getInitialRegion());
-
-  function getCoordinates() {
-    return {
-      latitude: marker_altitude,
-      longitude: marker_latitude,
-    }
-  }
 
   function getInitialRegion() {
     return {
@@ -53,7 +46,10 @@ export default function MapScreen(props: Props) {
           provider={PROVIDER_GOOGLE}
         >
           <Marker
-            coordinate={getCoordinates()}
+            coordinate={{
+              longitude: marker_longitude,
+              latitude: marker_latitude
+            }}  
           />
         </MapView>
       </View>

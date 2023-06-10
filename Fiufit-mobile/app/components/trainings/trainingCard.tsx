@@ -123,7 +123,7 @@ export default function TrainingCard(props: Props) {
               <Link
                 style={{left:"50%"}}
                 onPress={() => {
-                  navigation.navigate("MapScreen", { altitude: -34.61315, latitude: -58.37723 });
+                  navigation.navigate("MapScreen", { marker_longitude: -58.37723, marker_latitude: -34.61315 });
                   console.log("TODO: receive values from backend")
                 }}
               >
