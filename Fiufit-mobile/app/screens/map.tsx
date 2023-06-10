@@ -15,8 +15,8 @@ export default function MapScreen(props: Props) {
 
   function getInitialRegion() {
     return {
-      latitude: -34.61315,
-      longitude: -58.37723,
+      latitude: marker_latitude,
+      longitude: marker_longitude,
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     };
