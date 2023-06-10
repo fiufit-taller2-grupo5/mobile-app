@@ -14,13 +14,13 @@ import * as LocalAuthentication from 'expo-local-authentication';
 import globalUser from '../../userStorage';
 import { db } from '../../firebase';
 export const BACKGROUND_FETCH_TASK = 'background-fetch';
-import { collection, getDocs, collectionGroup, doc, addDoc } from 'firebase/firestore';
+import { collection, getDocs, collectionGroup, doc, addDoc, onSnapshot, query, where } from 'firebase/firestore';
 
 TaskManager.defineTask(BACKGROUND_FETCH_TASK, async (data) => {
   console.log(data)
   const now = Date.now();
   console.log(`Got background fetch call at date: ${new Date(now).toISOString()}`);
-  apiGatewayHealthCheck(new Date(now).toISOString())
+  //apiGatewayHealthCheck(new Date(now).toISOString())
   if (!GoogleFit.isAuthorized) {
     const allScopes: string[] = Object.values(Scopes);
     const options = {
@@ -61,21 +61,7 @@ export const BackgroundFetchData = () => {
   const [isRegistered, setIsRegistered] = React.useState(false);
   const [status, setStatus] = React.useState<BackgroundFetch.BackgroundFetchStatus | null>(null);
 
-  React.useEffect(() => {
-    const testing = async () => {
-      console.log("testing db", db);
 
-      const querySnapshot = await getDocs(collectionGroup(db, 'chats'));
-      console.log("querySnapshot", querySnapshot.size);
-
-      querySnapshot.forEach((doc) => {
-        console.log(`the document ${doc.id} => ${JSON.stringify(doc.data())}`);
-      });
-
-    }
-    testing();
-    //checkStatusAsync();
-  }, []);
 
   const checkStatusAsync = async () => {
     const status = await BackgroundFetch.getStatusAsync();

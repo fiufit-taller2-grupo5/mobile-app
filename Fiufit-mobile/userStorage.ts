@@ -56,9 +56,11 @@ export class StoredUser {
 
     async verifyUserMetadataExists() {
         await this.verifyUserExists();
-        const details = await this.api!.getUserMetadata(this.user!.id);
-        console.log("details received:", details, "user stored metadata:", this.user!.UserMetadata)
-        if (details === null) {
+        try {
+            const details = await this.api!.getUserMetadata(this.user!.id);
+            this.user!.UserMetadata = details;
+            console.log("details received:", details, "user stored metadata:", this.user!.UserMetadata)
+        } catch (err) {
             if (this.user!.UserMetadata === null || this.user!.UserMetadata === undefined) {
                 console.log("creating new empty metadata");
                 this.user!.UserMetadata = {
@@ -70,9 +72,8 @@ export class StoredUser {
                     interests: []
                 }
             }
-        } else {
-            this.user!.UserMetadata = details;
         }
+
         console.log("user metadata after verifying:", this.user!.UserMetadata);
     }
 
@@ -130,6 +131,7 @@ export class StoredUser {
 
     async logout() {
         this.user = null;
+        await auth.signOut();
         await AsyncStorage.removeItem('@userInfo');
     }
 

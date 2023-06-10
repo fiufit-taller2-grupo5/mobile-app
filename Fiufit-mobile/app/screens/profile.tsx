@@ -5,6 +5,7 @@ import { ProgressChart } from "react-native-chart-kit";
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
 import React, { useEffect, useState } from 'react';
 import globalUser from '../../userStorage';
+import { LoadableButton } from '../components/commons/buttons';
 
 const screens = ['ChangeNameScreen', 'ChangeHeightScreen', 'ChangeWeightScreen', 'ChangeDateScreen', 'ChangeInterestsScreen', 'ChangeLocationScreen', 'ChangeRoleScreen']
 
@@ -132,6 +133,7 @@ export default function ProfileScreen(props: Props) {
         GoogleFit.authorize(options)
           .then(authResult => {
             if (authResult.success) {
+
               console.log("AUTH_SUCCESS");
               updateDailyActivity();
             } else {
@@ -233,5 +235,24 @@ export default function ProfileScreen(props: Props) {
           </Box>}
         keyExtractor={item => item.name}
       />
-    </View></View>;
+
+    </View>
+    <View
+      style={{
+        borderTopWidth: 1, borderTopColor: '#e06666', paddingTop: 10,
+        marginVertical: 10,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+      }}
+    >
+      <LoadableButton
+        customStyles={{ width: 200 }}
+        onPress={async () => {
+          await globalUser.logout();
+          navigation.navigate('LoginScreen');
+        }}
+        text={"Cerrar sesión"}
+      />
+    </View>
+  </View>;
 }

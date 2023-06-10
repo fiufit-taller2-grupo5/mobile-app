@@ -4,7 +4,7 @@ import { trainingSession } from "./app/screens/trainingSession";
 import { auth } from "./firebase";
 import { getUserFromStorage, storeUserOnStorage, refreshToken, userInfo, UserMetadata } from "./asyncStorageAPI";
 
-class ApiError {
+export class ApiError {
   message: string;
   code: number;
 
@@ -78,9 +78,19 @@ export class API {
         if (responseJson?.error?.code === "auth/id-token-expired") {
           console.log("token expired:", responseJson.error.message);
           await refreshToken();
-          return await this.fetchFromApi(url, fetchConfig, onSuccess, onError);
+          const user = await getUserFromStorage();
+          accessToken = (user!.googleUser as any).stsTokenManager.accessToken;
+          // we use the same fetchConfig with the new token
+          const newFetchConfig = {
+            ...fetchConfig,
+            headers: {
+              ...fetchConfig.headers,
+              "Authorization": "Bearer " + accessToken
+            }
+          };
+          return await this.fetchFromApi(path, newFetchConfig, onSuccess, onError);
         } else {
-          console.error("error in request: ", responseJson);
+          console.log("error in request: ", responseJson);
           if (response.status === 403) {
             this.navigation.navigate("WelcomeScreen");
           }
@@ -89,7 +99,7 @@ export class API {
         }
       }
     } catch (err: any) {
-      console.error("error fetching from api: ", err);
+      console.log("error fetching from api: ", err);
       const error = new ApiError(err.message, err.code);
       return onError(error);
     }
@@ -302,7 +312,6 @@ export class API {
         console.log("training session added");
       },
       (error: ApiError) => {
-        console.log("error adding training session:", error);
         throw error;
       }
     );

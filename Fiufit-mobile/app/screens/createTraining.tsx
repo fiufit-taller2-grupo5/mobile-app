@@ -4,7 +4,7 @@ import { useState } from "react";
 import TrainingForm from "../components/trainingInfo/trainingForm";
 import { API } from "../../api";
 import { LoadableButton } from "../components/commons/buttons";
-
+import globalUser from "../../userStorage";
 
 export type Training = {
   name: string,
@@ -61,7 +61,8 @@ export default function CreateTrainingScreen({ navigation }: any) {
             description: trainingDescription,
             state: "active",
             difficulty: trainingDifficulty,
-            type: trainingType
+            type: trainingType,
+            trainerId: globalUser.user?.id
           });
           navigation.navigate("HomeScreen");
           return;
