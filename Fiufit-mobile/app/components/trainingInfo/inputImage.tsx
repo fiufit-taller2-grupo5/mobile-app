@@ -1,6 +1,6 @@
 import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
-import { View, Button, Image } from 'react-native';
+import { View, Button, Image, Text } from 'native-base';
 
 
 interface Props {
@@ -9,8 +9,7 @@ interface Props {
 }
 
 export default function ImageInput(props: Props) {
-  // const { image, setImage } = props;
-  const [image, setImage] = useState("");
+  const { image, setImage } = props;
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -20,18 +19,17 @@ export default function ImageInput(props: Props) {
       aspect: [4, 3],
       quality: 1,
     });
-
-    console.log(result);
-
-    if (!result.canceled) {
+    
+    if (result.assets !== null) {
       setImage(result.assets[0].uri);
     }
   };
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Button title="Pick an image from camera roll" onPress={pickImage} />
-      {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+    <View>
+      <Button variant='ghost' onPress={pickImage}>
+        <Text>{image === "" ? "Seleccioná una imagen" : "Toca para modificar"}</Text>
+      </Button>
     </View>
   );
 }

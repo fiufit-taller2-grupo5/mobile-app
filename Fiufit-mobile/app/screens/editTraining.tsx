@@ -76,7 +76,7 @@ export default function EditTrainingScreen(props: Props) {
           return;
         }}
         text = "Guardar"
-        customStyles = {{alignSelf: "center", top: "5%"}}
+        customStyles = {{alignSelf: "center", top: "2%"}}
       />
     </VStack>
   </NativeBaseProvider>;

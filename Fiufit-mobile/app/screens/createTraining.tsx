@@ -72,7 +72,7 @@ export default function CreateTrainingScreen({ navigation }: any) {
           return;
         }}
         text="Crear"
-        customStyles={{ alignSelf: "center", top: "5%" }}
+        customStyles={{ alignSelf: "center", top: "2%" }}
       />
     </VStack>
   </NativeBaseProvider>;

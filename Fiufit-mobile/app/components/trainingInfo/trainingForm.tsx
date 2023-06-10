@@ -91,9 +91,7 @@ export default function TrainingForm(props: Props) {
       <Text 
         style={[createTrainingStyles.text, createTrainingStyles.descriptionText]}
       >Imagen</Text>
-      <Text>
-        TODO: implement
-      </Text>
+        <ImageInput image={image} setImage={setImage}/>
     </VStack>
   )
 }
