@@ -37,7 +37,12 @@
         "foregroundImage": "./assets/images/logo.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.fiufit.app"
+      "package": "com.fiufit.app",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBObUy_kyqJOP_IXaE2Ql0bsLYOoJnUzxM"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/images/logo.png"

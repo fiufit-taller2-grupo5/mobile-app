@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { NativeBaseProvider, extendTheme, View } from 'native-base';
 import { mapStyles } from "../styles";
 
@@ -50,6 +50,7 @@ export default function MapScreen(props: Props) {
           style={mapStyles.map}
           region={region}
           onRegionChange={onRegionChange}
+          provider={PROVIDER_GOOGLE}
         >
           <Marker
             coordinate={getCoordinates()}
