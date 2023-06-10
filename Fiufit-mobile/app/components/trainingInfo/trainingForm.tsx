@@ -77,7 +77,7 @@ export default function TrainingForm(props: Props) {
         setStreetNumber={setStreetNumber}
         top="0%"
         streetNameWidth="3xs"
-        streetNumberWidth="25"
+        streetNumberWidth="38"
       />
       <Text 
         style={[createTrainingStyles.text, createTrainingStyles.descriptionText]}

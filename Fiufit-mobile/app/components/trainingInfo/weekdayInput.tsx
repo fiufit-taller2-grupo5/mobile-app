@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Button, Checkbox, Modal, VStack } from 'native-base';
 
 
-const weekDaysData = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+const weekDaysData = ['Monday', 'Tuesday', 'Wednesday', 'Thursdar', 'Friday', 'Saturday', 'Sunday'];
 
 interface Props {
   weekDays: string[];

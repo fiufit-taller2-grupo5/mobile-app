@@ -56,7 +56,6 @@ export default function CreateTrainingScreen({ navigation }: any) {
 
       <LoadableButton
         onPress={async () => {
-          console.log("days inyo string ACA: ", weekDays.toString());
           await api.addTraining({
             title: trainingTitle,
             description: trainingDescription,
