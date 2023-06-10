@@ -18,12 +18,12 @@ export default function CreateTrainingScreen({ navigation }: any) {
   const [trainingDescription, setTrainingDescription] = useState("");
   const [trainingType, setTrainingType] = useState("");
   const [trainingDifficulty, setTrainingDifficulty] = useState(0);
-  // TODO: agregar estos al button
   const [streetName, setStreetName] = useState("");
   const [streetNumber, setStreetNumber] = useState(0);
   const [weekDays, setWeekDays] = useState<string[]>([]);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+    // TODO: agregar este al button
   const [image, setImage] = useState("");
 
   const api = new API(navigation);
@@ -56,14 +56,17 @@ export default function CreateTrainingScreen({ navigation }: any) {
 
       <LoadableButton
         onPress={async () => {
+          console.log("days inyo string ACA: ", weekDays.toString());
           await api.addTraining({
             title: trainingTitle,
             description: trainingDescription,
             state: "active",
             difficulty: trainingDifficulty,
             type: trainingType,
-            location: "siempre viva 123", //no hardcodearla, 
-            // FALLA PORQUE FALTAN MAS CAMPOS; FIJARSE EL LOG ERROR. AHÏ DICE QUE FALTA
+            location: streetName + " " + streetNumber.toString(10),
+            start: startTime,
+            end: endTime,
+            days: weekDays.toString(),
             trainerId: globalUser.user?.id || 0
           });
           navigation.navigate("HomeScreen");

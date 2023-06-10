@@ -34,6 +34,9 @@ export interface TrainerTraining {
   difficulty: number,
   type: string,
   location: string,
+  start: string,
+  end: string,
+  days: string,
   trainerId: number,
 }
 
