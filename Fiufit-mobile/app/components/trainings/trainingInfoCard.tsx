@@ -98,7 +98,8 @@ export const TrainingInfoCard = ({
             </Text>
             {userTrainingData && (
               <Text fontSize="xs" color="#000000">
-                completed on {userTrainingData.date.to as string}
+                Completado el {(userTrainingData.date as Date).toISOString().split('T')[0]}
+                {/* 2023-06-10T22:46:18.808000 */}
               </Text>
             )}
           </VStack>

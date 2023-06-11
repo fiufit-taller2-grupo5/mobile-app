@@ -354,20 +354,19 @@ export const mapStyles = StyleSheet.create({
 
 export const userProfileStyles = StyleSheet.create({
   mainBox: {
-    width: '80%',
+    width: '100%',
     height: '100%',
     backgroundColor: '#ffffff',
-    margin: '15%',
-    borderColor: '#FF6060',
   },
   text: {
     fontFamily: 'Roboto',
     fontStyle: 'normal',
     fontWeight: '800',
-    fontSize: 25,
+    fontSize: 20,
     lineHeight: 35,
     textAlign: 'center',
     alignSelf: 'center',
-
+    
   },
+  
 });

@@ -53,55 +53,53 @@ export default function UserInfoScreen({ route, navigation }: any) {
 
   return (
     <NativeBaseProvider theme={theme}>
-      <View
-        flex={1}
-        style={{
-          // justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "white",
-        }}
-      >
         <Box
           style={userProfileStyles.mainBox}
-          borderBottomWidth="1"
-          borderColor="#eaeaea"
-          borderTopRadius="30px"
         >
-          <Text style={editProfileStyles.text}>{userData?.name}</Text>
-          <HStack space={2}>
-            <Text _dark={{ color: "warmGray.50" }} color="coolGray.800" bold>
+          <Text style={[editProfileStyles.text, {marginTop:'10%'}]}>{userData?.name}</Text>
+          <HStack
+            space={2}
+            style={{ marginTop: "5%", marginRight: "10%", marginLeft: "10%" }}
+          >
+            <Text
+              style={userProfileStyles.text}
+              _dark={{ color: "warmGray.50" }}
+              color="coolGray.800"
+              bold
+            >
               {"Intereses: "}
             </Text>
             <Spacer />
             <Text
               fontSize="md"
-              _dark={{ color: "warmGray.50" }}
-              color="coolGray.800"
-              alignSelf="flex-start"
+              color="coolGray.700"
+              // alignSelf="flex-start"
+              top={"2%"}
             >
               {userData?.interests.join(", ")}
             </Text>
           </HStack>
-          <Text style={userProfileStyles.text}>Sesiones de Entrenamiento</Text>
+          <Text style={[userProfileStyles.text, { marginTop: "7%" }]}>
+            Sesiones de Entrenamiento
+          </Text>
+          <Box style={{ marginTop: "5%", height: "68%" }}>
           <FlatList
-            contentContainerStyle={{ flexGrow: 1 }}
+            contentContainerStyle={{ flexGrow: 1}}
             data={userTrainings}
-            marginBottom={0}
-            marginTop={10}
             renderItem={(training) => (
               <TrainingInfoCard
                 trainingData={training.item.trainingData}
-                canSetFavorite = {false}
+                canSetFavorite={false}
                 navigation={navigation}
                 navigateToScreen="TrainingInfoScreen"
-                userTrainingData = {training.item}
+                userTrainingData={training.item}
               />
             )}
             keyExtractor={(training) => training.id?.toString() as string}
             // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getTrainingsList} />}
           ></FlatList>
+          </Box>
         </Box>
-      </View>
     </NativeBaseProvider>
   );
 }
