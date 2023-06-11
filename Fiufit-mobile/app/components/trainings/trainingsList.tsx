@@ -9,6 +9,7 @@ import {
   View,
   CheckIcon,
   Select,
+  HStack,
 } from "native-base";
 import {
   API,
@@ -142,85 +143,87 @@ export default function TrainingsList(props: Props) {
     getTrainingsList();
   }, [selectedTitle, selectedType, selectedDifficulty, selectedDistance])
 
-  return (<View flex={1} backgroundColor="#fff">
-    <VStack
-      paddingY={2}
-      paddingX={4}
-      w="100%"
-      backgroundColor="#fff"
-      divider={
-        <Box px="2">
-          <Divider />
-        </Box>
-      }
-    >
-      <VStack alignSelf="center">
-        <Input
-          placeholder="Search trainings by title"
-          onChangeText={handleFilterByTitle}
-          value={selectedTitle}
-          width="100%"
-          borderRadius="4"
-          fontSize="14"
-          InputLeftElement={
-            <Icon
-              m="2"
-              ml="3"
-              size="6"
-              color="gray.400"
-              as={<MaterialIcons name="search" />}
-            />
-          }
-        />
+  return (
+    <>
+      <VStack
+        paddingY={2}
+        paddingX={4}
+        w="100%"
+        backgroundColor="#fff"
+      >
+        <VStack alignSelf="center" paddingY={2}
+          paddingX={4}>
+          <Input
+            placeholder="Search trainings by title"
+            onChangeText={handleFilterByTitle}
+            value={selectedTitle}
+            width="100%"
+            borderRadius="4"
+            fontSize="14"
+            InputLeftElement={
+              <Icon
+                m="2"
+                ml="3"
+                size="6"
+                color="gray.400"
+                as={<MaterialIcons name="search" />}
+              />
+            }
+          />
+        </VStack>
+        <HStack>
+          <Box maxW="300">
+            <Select selectedValue={selectedType} minWidth="120" maxWidth="190" accessibilityLabel="Choose Type" placeholder="Choose Type" _selectedItem={{
+              bg: "teal.600",
+              endIcon: <CheckIcon size="2" />
+            }} mt={1} onValueChange={handleFilterByType}>
+              <Select.Item label="All types" value="" />
+              <Select.Item label="Running" value="Running" />
+              <Select.Item label="Swimming" value="Swimming" />
+              <Select.Item label="Biking" value="Biking" />
+              <Select.Item label="Yoga" value="Yoga" />
+              <Select.Item label="Basketball" value="Basketball" />
+              <Select.Item label="Football" value="Football" />
+              <Select.Item label="Walking" value="Walking" />
+              <Select.Item label="Gymnastics" value="Gymnastics" />
+              <Select.Item label="Dancing" value="Dancing" />
+              <Select.Item label="Hiking" value="Hiking" />
+            </Select>
+          </Box>
+          <Box maxW="300">
+            <Select selectedValue={selectedDifficulty} minWidth="120" maxWidth="190" accessibilityLabel="Choose Difficulty" placeholder="Choose Difficulty" _selectedItem={{
+              bg: "teal.600",
+              endIcon: <CheckIcon size="2" />
+            }} mt={1} onValueChange={handleFilterByDifficulty}>
+              <Select.Item label="All difficulties" value="" />
+              <Select.Item label="1" value="1" />
+              <Select.Item label="2" value="2" />
+              <Select.Item label="3" value="3" />
+              <Select.Item label="4" value="4" />
+              <Select.Item label="5" value="5" />
+              <Select.Item label="6" value="6" />
+              <Select.Item label="7" value="7" />
+              <Select.Item label="8" value="8" />
+              <Select.Item label="9" value="9" />
+              <Select.Item label="10" value="10" />
+            </Select>
+          </Box>
+          <Box maxW="300">
+            <Select selectedValue={selectedDistance.toString()} minWidth="120" maxWidth="190" accessibilityLabel="Choose Distance" placeholder="Choose Distance" _selectedItem={{
+              bg: "teal.600",
+              endIcon: <CheckIcon size="2" />
+            }} mt={1} onValueChange={handleFilterByDistance}>
+              <Select.Item label="All distances" value="0" />
+              <Select.Item label="1km" value="1" />
+              <Select.Item label="3km" value="3" />
+              <Select.Item label="5km" value="5" />
+              <Select.Item label="10km" value="10" />
+              <Select.Item label="15km" value="15" />
+              <Select.Item label="20km" value="20" />
+            </Select>
+          </Box>
+        </HStack>
       </VStack>
-      <View>
-        <Select selectedValue={selectedType} accessibilityLabel="Choose Type" placeholder="Choose Type" _selectedItem={{
-          bg: "#FF6060",
-          endIcon: <CheckIcon size="5" />
-        }} mt={1} onValueChange={handleFilterByType}>
-          <Select.Item label="All types" value="" />
-          <Select.Item label="Running" value="Running" />
-          <Select.Item label="Swimming" value="Swimming" />
-          <Select.Item label="Biking" value="Biking" />
-          <Select.Item label="Yoga" value="Yoga" />
-          <Select.Item label="Basketball" value="Basketball" />
-          <Select.Item label="Football" value="Football" />
-          <Select.Item label="Walking" value="Walking" />
-          <Select.Item label="Gymnastics" value="Gymnastics" />
-          <Select.Item label="Dancing" value="Dancing" />
-          <Select.Item label="Hiking" value="Hiking" />
-        </Select>
-        <Select selectedValue={selectedDifficulty} accessibilityLabel="Choose Difficulty" placeholder="Choose Difficulty" _selectedItem={{
-          bg: "#FF6060",
-          endIcon: <CheckIcon size="5" />
-        }} mt={1} onValueChange={handleFilterByDifficulty}>
-          <Select.Item label="All difficulties" value="" />
-          <Select.Item label="1" value="1" />
-          <Select.Item label="2" value="2" />
-          <Select.Item label="3" value="3" />
-          <Select.Item label="4" value="4" />
-          <Select.Item label="5" value="5" />
-          <Select.Item label="6" value="6" />
-          <Select.Item label="7" value="7" />
-          <Select.Item label="8" value="8" />
-          <Select.Item label="9" value="9" />
-          <Select.Item label="10" value="10" />
-        </Select>
-        <Select selectedValue={selectedDistance.toString()} accessibilityLabel="Choose Distance" placeholder="Choose Distance" _selectedItem={{
-          bg: "#FF6060",
-          endIcon: <CheckIcon size="5" />
-        }} mt={1} onValueChange={handleFilterByDistance}>
-          <Select.Item label="All distances" value="0" />
-          <Select.Item label="1km" value="1" />
-          <Select.Item label="3km" value="3" />
-          <Select.Item label="5km" value="5" />
-          <Select.Item label="10km" value="10" />
-          <Select.Item label="15km" value="15" />
-          <Select.Item label="20km" value="20" />
-        </Select>
-      </View>
-    </VStack>
-    <View flex={1}>
       <FlatList
         contentContainerStyle={{ flexGrow: 1 }}
         data={filteredData}
@@ -236,7 +239,8 @@ export default function TrainingsList(props: Props) {
         )}
         keyExtractor={(training) => training.id.toString()}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => {getTrainingsList()}} />}
-      ></FlatList></View>
-  </View>
+      >
+      </FlatList>
+      </>
   );
 }
