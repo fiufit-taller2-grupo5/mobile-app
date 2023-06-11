@@ -10,6 +10,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { API } from "../../api";
 import { Alert } from 'react-native';
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
+import { share } from "../../shareUtils";
 
 export type trainingSession = {
     id?: number;

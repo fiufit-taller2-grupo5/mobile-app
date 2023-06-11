@@ -15,11 +15,12 @@ import {
 } from "native-base";
 import { API, Training } from "../../../api";
 import { useEffect, useState } from "react";
-import { RefreshControl } from "react-native";
+import { RefreshControl, Share } from "react-native";
 import { trainingReview } from "../../screens/rateTraining";
 import FiveStars from "../rateTraining/fiveStars";
 import globalUser from '../../../userStorage';
 import { LoadableButton } from "../commons/buttons";
+import { ShareButton } from "./shareButton";
 
 interface Props {
   navigation: any;
@@ -33,6 +34,13 @@ export default function TrainingCard(props: Props) {
 
   const [reviews, setReviews] = useState<trainingReview[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  
+  const shareTitle = "Entrenamiento: " + trainingData.title;
+  const shareMessage = 
+    "¡Hola! Te comparto este entrenamiento de Fiufit: " + trainingData.title + ".\n\n" + 
+    trainingData.description + ".\n\n" +  
+    "Horarios: " + trainingData.days + ": " + trainingData.start + "-" + trainingData.end
+    + "\n\n¡Descarga Fiufit y entrena conmigo!";
 
   const retrieveTrainingReviews = async () => {
     const trainingReviews = await api.getTrainingReviews(trainingData.id);
@@ -168,6 +176,7 @@ export default function TrainingCard(props: Props) {
               return;
             }}
           />}
+          <ShareButton title={shareTitle} message={shareMessage} />
         </Box>
         <Divider my={2} mx={0} />
         <Heading size="sm" color={"gray.500"} marginLeft={3} marginY={2}>
@@ -229,6 +238,7 @@ export default function TrainingCard(props: Props) {
       >
         Editar entrenamiento
       </Button>}
+      
     </View>
   );
 }
