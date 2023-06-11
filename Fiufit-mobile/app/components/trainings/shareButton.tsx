@@ -8,14 +8,13 @@ export const ShareButton = (props: { title: string, message: string }) => {
             style={{
                 position: "absolute",
                 bottom: 0,
-                right: 0,
+                right: '2%',
                 borderRadius: 50,
                 backgroundColor: "#ffffff",
-                borderColor: "#FF6060",
-                borderWidth: 2,
+                margin: '1%',
             }}
             onPress={() => share(props.title, props.message)}
         >
-            <MaterialIcons name="share" size={30} color="#9DB2BF" />
+            <MaterialIcons name="share" size={30} color="#474E68"/>
         </Button>
 }
