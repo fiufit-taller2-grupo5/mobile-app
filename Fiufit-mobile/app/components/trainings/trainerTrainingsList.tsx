@@ -77,21 +77,20 @@ export default function TrainerTrainingsList(props: Props) {
   const api = new API(navigation);
 
   const getUserLocation = async () => {
-    if (userLatitude !== 0 || userLongitude !== 0) {
-      return;
+    if (userLatitude && userLatitude !== 0 || userLongitude && userLongitude !== 0) {
+      return [userLatitude, userLongitude];
     }
     if (!globalUser.user) {
       return;
     }
     const user = await api.getUserInfoById(globalUser.user.id);
-    console.log("USER: ", user);
     if (user) {
       const userLocation = user.location;
       if (userLocation) {
         const coordinates = await api.getCoordinates(userLocation);
-        console.log("COORDINATES: ", coordinates);
-        setUserLatitude(coordinates.latitude);
-        setUserLongitude(coordinates.longitude);
+        setUserLatitude(coordinates[0]);
+        setUserLongitude(coordinates[1]);
+        return coordinates;
       }
     }
   }
@@ -124,8 +123,9 @@ export default function TrainerTrainingsList(props: Props) {
         (selectedDifficulty === '' || item.difficulty === parseInt(selectedDifficulty)) &&
         (selectedType === '' || item.type.toLowerCase().includes(selectedType.toLowerCase())) &&
         (selectedTitle === '' || item.title.toLowerCase().includes(selectedTitle.toLowerCase())) &&
-        (selectedDistance === 0 || getDistanceFromLatLonInKm(userLatitude ? userLatitude : 0,
-                                    userLongitude ? userLongitude : 0, item.latitude ? item.latitude : 0,
+        (selectedDistance === 0 || getDistanceFromLatLonInKm(userLatitude ? userLatitude :0,
+                                    userLongitude ? userLongitude : 0,
+                                    item.latitude ? item.latitude : 0,
                                     item.longitude ? item.longitude : 0) <= selectedDistance)
     );
     setFilteredData(filtered);
@@ -149,10 +149,15 @@ export default function TrainerTrainingsList(props: Props) {
 
   const getTrainingsList = async () => {
     setRefreshing(true);
+    const coordinates = await getUserLocation();
+    if (!coordinates) {
+      return;
+    }
     const trainersTrainingsResponse = await api.getTrainerTrainings();
     setTrainerTrainingsList(trainersTrainingsResponse);
     setRefreshing(false);
     filterData();
+    setRefreshing(false);
   }
 
   useEffect(() => {
