@@ -136,10 +136,13 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
                     duration: 3000,
                 })
                 getGoogleFitData("00:00:00", "03:00:00");
-                const onBackPress = () => {
-                    handleAddTrainingSession();
-                    return true; // Indicar que se ha manejado el evento del botón de retroceso
-                };
+
+                if(navigation.getCurrentRoute().name === 'TrainingSessionScreen') {
+                    const onBackPress = () => {
+                        handleAddTrainingSession();
+                        return true; // Indicar que se ha manejado el evento del botón de retroceso
+                    };     
+                }
 
                 // Agregar el listener para el evento de botón de retroceso
                 BackHandler.addEventListener('hardwareBackPress', onBackPress);
