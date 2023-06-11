@@ -151,7 +151,7 @@ export default function TrainingCard(props: Props) {
                   if (!trainingData.latitude || !trainingData.longitude) {
                     coordinates = await api.getCoordinates(trainingData.location);
                   } else {
-                    coordinates = [trainingData.latitude, trainingData.longitude];
+                    coordinates = [parseFloat(trainingData.latitude), parseFloat(trainingData.longitude)];
                   }
                   navigation.navigate("MapScreen", { marker_longitude: coordinates[1], marker_latitude: coordinates[0] });
                 }}
