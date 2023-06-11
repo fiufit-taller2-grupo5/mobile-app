@@ -76,7 +76,7 @@ export default function UserInfoScreen({ route, navigation }: any) {
               // alignSelf="flex-start"
               top={"2%"}
             >
-              {userData?.interests.join(", ")}
+              {userData?.interests?.join(", ")}
             </Text>
           </HStack>
           <Text style={[userProfileStyles.text, { marginTop: "7%" }]}>

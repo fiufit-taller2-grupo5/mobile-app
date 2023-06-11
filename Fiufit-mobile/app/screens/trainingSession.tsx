@@ -151,46 +151,49 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
     );
 
     const handleAddTrainingSession = () => {
-        Alert.alert(
-            'Confirmación',
-            'Si continúa, el entrenamiento terminará. ¿Seguro desea terminarlo?',
-            [
-                {
-                    text: 'Cancelar',
-                    style: 'cancel',
-                },
-                {
-                    text: 'Terminar',
-                    onPress: async () => {
-                        console.log(trainingInfo.id, distance, duration, steps, calories, date);
-
-                        try {
-
-                            await api.addTrainingSession(trainingInfo.id, {
-                                distance: distance,
-                                duration: duration,
-                                steps: steps,
-                                calories: calories,
-                                date: date,
-                                trainingPlanId: trainingInfo.trainingPlanId,
-                            })
-                            tickers.forEach(ticker => {
-                                clearInterval(ticker);
-                            });
-                            navigation.navigate('HomeScreen');
-                        } catch (err: any) {
-                            tickers.forEach(ticker => {
-                                clearInterval(ticker);
-                            });
-                            Alert.alert(
-                                'Error',
-                                err.message,
-                            );
-                        }
+        if (navigation.isFocused()) { 
+            Alert.alert(
+                'Confirmación',
+                'Si continúa, el entrenamiento terminará. ¿Seguro desea terminarlo?',
+                [
+                    {
+                        text: 'Cancelar',
+                        style: 'cancel',
                     },
-                },
-            ]
-        );
+                    {
+                        text: 'Terminar',
+                        onPress: async () => {
+                            console.log(trainingInfo.id, distance, duration, steps, calories, date);
+                            try {
+                                await api.addTrainingSession(trainingInfo.id, {
+                                    distance: distance,
+                                    duration: duration,
+                                    steps: steps,
+                                    calories: calories,
+                                    date: date,
+                                    trainingPlanId: trainingInfo.trainingPlanId,
+                                })
+                                tickers.forEach(ticker => {
+                                    clearInterval(ticker);
+                                });
+                                navigation.navigate('HomeScreen');
+                            } catch (err: any) {
+                                tickers.forEach(ticker => {
+                                    clearInterval(ticker);
+                                });
+                                Alert.alert(
+                                    'Error',
+                                    err.message,
+                                );
+                            }
+                        },
+                    },
+                ]
+            );
+        }
+        else {
+            navigation.goBack();
+        }
     };
 
     const updateTime = (time: React.SetStateAction<string>) => {
