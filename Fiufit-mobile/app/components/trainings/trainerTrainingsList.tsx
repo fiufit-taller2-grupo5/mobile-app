@@ -100,8 +100,6 @@ export default function TrainerTrainingsList(props: Props) {
   };
 
   const getDistanceFromLatLonInKm = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-    console.log("User Lat: ", lat1, "User Lon: ", lon1);
-    console.log("Training Lat: ", lat2, "Training Lon: ", lon2);
     if (lat1 === 0 || lon1 === 0 || lat2 === 0 || lon2 === 0) {
       return selectedDistance + 1;
     }
@@ -113,7 +111,6 @@ export default function TrainerTrainingsList(props: Props) {
               Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c;
-    console.log("Distancia en km ", distance);
     return distance;
   }
 
@@ -125,8 +122,8 @@ export default function TrainerTrainingsList(props: Props) {
         (selectedTitle === '' || item.title.toLowerCase().includes(selectedTitle.toLowerCase())) &&
         (selectedDistance === 0 || getDistanceFromLatLonInKm(userLatitude ? userLatitude :0,
                                     userLongitude ? userLongitude : 0,
-                                    item.latitude ? item.latitude : 0,
-                                    item.longitude ? item.longitude : 0) <= selectedDistance)
+                                    item.latitude ? parseFloat(item.latitude) : 0,
+                                    item.longitude ? parseFloat(item.longitude) : 0) <= selectedDistance)
     );
     setFilteredData(filtered);
   }
