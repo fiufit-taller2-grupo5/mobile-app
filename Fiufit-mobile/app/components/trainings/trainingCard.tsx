@@ -145,9 +145,14 @@ export default function TrainingCard(props: Props) {
                 {trainingData.title}
               </Heading>
               <Link
-                style={{left:"45%"}}
+                style={{ top: "3%" }}
                 onPress={async () => {
-                  const coordinates = await api.getCoordinates(trainingData.location);
+                  let coordinates = [];
+                  if (!trainingData.latitude || !trainingData.longitude) {
+                    coordinates = await api.getCoordinates(trainingData.location);
+                  } else {
+                    coordinates = [trainingData.latitude, trainingData.longitude];
+                  }
                   navigation.navigate("MapScreen", { marker_longitude: coordinates[1], marker_latitude: coordinates[0] });
                 }}
               >
