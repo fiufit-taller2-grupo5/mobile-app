@@ -15,7 +15,7 @@ import {
 } from "native-base";
 import { API, Training } from "../../../api";
 import { useEffect, useState } from "react";
-import { RefreshControl, Share } from "react-native";
+import { RefreshControl } from "react-native";
 import { trainingReview } from "../../screens/rateTraining";
 import FiveStars from "../rateTraining/fiveStars";
 import globalUser from '../../../userStorage';

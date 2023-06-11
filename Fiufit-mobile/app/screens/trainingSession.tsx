@@ -1,5 +1,5 @@
 import { NativeBaseProvider, Text, VStack, Icon, useToast } from "native-base";
-import React, { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { StyleSheet, View } from 'react-native';
 import { Box } from 'native-base';
 import { MaterialCommunityIcons, MaterialIcons, Ionicons } from "@expo/vector-icons";
@@ -10,7 +10,6 @@ import { useFocusEffect } from '@react-navigation/native';
 import { API } from "../../api";
 import { Alert } from 'react-native';
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
-import { share } from "../../shareUtils";
 
 export type trainingSession = {
     id?: number;
@@ -120,7 +119,7 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
     };
 
     useFocusEffect(
-        React.useCallback(() => {
+        useCallback(() => {
             const allScopes: string[] = Object.values(Scopes);
 
             const options = {
