@@ -136,13 +136,10 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
                     duration: 3000,
                 })
                 getGoogleFitData("00:00:00", "03:00:00");
-
-                if(navigation.getCurrentRoute().name === 'TrainingSessionScreen') {
-                    const onBackPress = () => {
-                        handleAddTrainingSession();
-                        return true; // Indicar que se ha manejado el evento del botón de retroceso
-                    };     
-                }
+                const onBackPress = () => {
+                    handleAddTrainingSession();
+                    return true; // Indicar que se ha manejado el evento del botón de retroceso
+                };
 
                 // Agregar el listener para el evento de botón de retroceso
                 BackHandler.addEventListener('hardwareBackPress', onBackPress);
@@ -154,46 +151,49 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
     );
 
     const handleAddTrainingSession = () => {
-        Alert.alert(
-            'Confirmación',
-            'Si continúa, el entrenamiento terminará. ¿Seguro desea terminarlo?',
-            [
-                {
-                    text: 'Cancelar',
-                    style: 'cancel',
-                },
-                {
-                    text: 'Terminar',
-                    onPress: async () => {
-                        console.log(trainingInfo.id, distance, duration, steps, calories, date);
-
-                        try {
-
-                            await api.addTrainingSession(trainingInfo.id, {
-                                distance: distance,
-                                duration: duration,
-                                steps: steps,
-                                calories: calories,
-                                date: date,
-                                trainingPlanId: trainingInfo.trainingPlanId,
-                            })
-                            tickers.forEach(ticker => {
-                                clearInterval(ticker);
-                            });
-                            navigation.navigate('HomeScreen');
-                        } catch (err: any) {
-                            tickers.forEach(ticker => {
-                                clearInterval(ticker);
-                            });
-                            Alert.alert(
-                                'Error',
-                                err.message,
-                            );
-                        }
+        if (navigation.isFocused()) { 
+            Alert.alert(
+                'Confirmación',
+                'Si continúa, el entrenamiento terminará. ¿Seguro desea terminarlo?',
+                [
+                    {
+                        text: 'Cancelar',
+                        style: 'cancel',
                     },
-                },
-            ]
-        );
+                    {
+                        text: 'Terminar',
+                        onPress: async () => {
+                            console.log(trainingInfo.id, distance, duration, steps, calories, date);
+                            try {
+                                await api.addTrainingSession(trainingInfo.id, {
+                                    distance: distance,
+                                    duration: duration,
+                                    steps: steps,
+                                    calories: calories,
+                                    date: date,
+                                    trainingPlanId: trainingInfo.trainingPlanId,
+                                })
+                                tickers.forEach(ticker => {
+                                    clearInterval(ticker);
+                                });
+                                navigation.navigate('HomeScreen');
+                            } catch (err: any) {
+                                tickers.forEach(ticker => {
+                                    clearInterval(ticker);
+                                });
+                                Alert.alert(
+                                    'Error',
+                                    err.message,
+                                );
+                            }
+                        },
+                    },
+                ]
+            );
+        }
+        else {
+            navigation.goBack();
+        }
     };
 
     const updateTime = (time: React.SetStateAction<string>) => {
