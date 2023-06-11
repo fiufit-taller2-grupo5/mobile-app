@@ -79,10 +79,10 @@ export class API {
         ...fetchConfig.headers,
       }
       // use localhost if running locally, otherwise use the api gateway
-      const localUrl = "https://f3d0-2800-810-54f-818e-3d72-a82d-80c2-9209.sa.ngrok.io/" + path;
+      const localUrl = "https://6feb-190-18-10-180.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
-      console.log("fetching from api: ", url, fetchConfig);
+      // console.log("fetching from api: ", url, fetchConfig);
       const response = await fetch(url, fetchConfig);
       const responseJson = await response.json();
       console.log("got response:", responseJson);
@@ -522,6 +522,74 @@ export class API {
       }
     );
   }
+
+  async followUser(followedUserId: number): Promise<boolean> {
+    const user = await getUserFromStorage();
+    const userId = user?.id;
+    return await this.fetchFromApi(
+      "user-service/api/users/follow",
+      { method: "POST", 
+      body: JSON.stringify({ id: userId, followedId: followedUserId }) },
+      (response: any) => {
+        console.log("user followed");
+        // user.
+        return true;
+      },
+      (error: ApiError) => {
+        console.log("error following user:", error);
+        return false;
+      }
+    );
+  }
+
+  async unfollowUser(followedUserId: number): Promise<boolean> {
+    const user = await getUserFromStorage();
+    const userId = user?.id;
+    return await this.fetchFromApi(
+      "user-service/api/users/unfollow",
+      { method: "POST", 
+      body: JSON.stringify({ id: userId, followedId: followedUserId }) },
+      (response: any) => {
+        console.log("user unfollowed");
+        return true;
+      },
+      (error: ApiError) => {
+        console.log("error unfollowing user:", error);
+        return false;
+      }
+    );
+  }
+
+  async getFollowedUsers(userId:number): Promise<userInfo[]> {
+    return await this.fetchFromApi(
+      "user-service/api/users/" + userId + "/following",
+      { method: "GET" },
+      (response: userInfo[]) => {
+        console.log("followed users:", response);
+        return response
+      },
+      (error: ApiError) => {
+        console.log("error getting followed users:", error);
+        return [];
+      }
+    );
+  }
+
+  async getFollowers(userId:number): Promise<userInfo[]> {
+    return await this.fetchFromApi(
+      "user-service/api/users/" + userId + "/followers",
+      { method: "GET" },
+      (response: userInfo[]) => {
+        console.log("followers:", response);
+        return response
+      },
+      (error: ApiError) => {
+        console.log("error getting followers:", error);
+        return [];
+      }
+    );
+  }
+    
 }
 
 

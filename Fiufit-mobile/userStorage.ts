@@ -28,6 +28,11 @@ export class StoredUser {
         return this.user;
     }
 
+    async getUserId() {
+        await this.verifyUserExists();
+        return this.user!.id;
+    }
+
     async getUserMetadata() {
         await this.verifyUserMetadataExists();
         console.log("user metadata:", this.user!.UserMetadata);
