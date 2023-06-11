@@ -82,7 +82,7 @@ export default function ExtraInformationScreen({ navigation, route }: any) {
             throw Error("Por favor ingrese al menos un interés");
           }
 
-          if (date.getDate() > new Date().getDate()) {
+          if (date > new Date()) {
             throw Error("Por favor ingrese una fecha de nacimiento válida");
           }
 

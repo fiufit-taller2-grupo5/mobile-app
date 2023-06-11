@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Box, VStack, HStack, Button, Text, Image, Divider, Icon } from 'native-base';
+import { Box, VStack, HStack, Button, Text, Image, Divider, Icon, Spacer } from 'native-base';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { trainingStyles } from "../../styles";
 import { API } from '../../../api';
 import { userInfo } from '../../../asyncStorageAPI';
+import { FollowButton } from './followButton';
 
 const mainImage = (training_type: any) => {
   if (training_type === "Running")
@@ -32,12 +33,18 @@ interface UserInfoCardProps {
   navigation: any;
   userData: userInfo;
   navigateToScreen: string;
+  isFollowed: boolean;
+  onFollow: () => Promise<void>;
+  onUnfollow: () => Promise<void>;
 }
 
 export const UserInfoCard = ({
   userData,
   navigation,
-  navigateToScreen
+  navigateToScreen,
+  isFollowed,
+  onFollow,
+  onUnfollow,
 }: UserInfoCardProps) => {
 
   const api = new API(navigation);
@@ -54,7 +61,7 @@ export const UserInfoCard = ({
         }}
       >
         <HStack
-          space={[0, 0]}
+          space={'sm'}
           justifyContent="space-between"
           height={60}
         >
@@ -65,6 +72,7 @@ export const UserInfoCard = ({
             borderRadius={10}
           /> */}
           <VStack width={"100%"} height={10} mr={0} ml={0}>
+            <HStack>
             <Text
               style={trainingStyles.textTitle}
               color="#000000"
@@ -73,8 +81,15 @@ export const UserInfoCard = ({
             >
               {userData.name}
             </Text>
+            <Spacer />
+            <FollowButton
+                userId={userData.id}
+                following={isFollowed}
+                onFollow={ () => onFollow()}
+                onUnfollow={ () => onUnfollow()}
+              />
+            </HStack>
             <Divider mx={1} />
-
           </VStack>
         </HStack>
       </Button>

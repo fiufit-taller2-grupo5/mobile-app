@@ -20,8 +20,8 @@ export type userInfo = {
   updatedAt: string,
   state: string,
   role: string,
-  googleUser: User,
-  UserMetadata: UserMetadata | null
+  googleUser?: User,
+  UserMetadata?: UserMetadata
 }
 
 
