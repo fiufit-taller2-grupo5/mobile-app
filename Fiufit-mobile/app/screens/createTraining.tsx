@@ -6,6 +6,7 @@ import { API } from "../../api";
 import { LoadableButton } from "../components/commons/buttons";
 import globalUser from "../../userStorage";
 
+
 export type Training = {
   name: string,
   description: string,

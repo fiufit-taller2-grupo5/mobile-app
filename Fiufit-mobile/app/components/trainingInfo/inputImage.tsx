@@ -1,6 +1,5 @@
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
-import { View, Button, Image, Text } from 'native-base';
+import { View, Button, Text } from 'native-base';
 
 
 interface Props {

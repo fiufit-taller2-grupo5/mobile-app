@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   FlatList,
-  HStack,
   VStack,
   Divider,
   Icon,
@@ -18,6 +17,8 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { RefreshControl } from 'react-native';
 import { TrainingInfoCard } from "./trainingInfoCard";
+import globalUser from '../../../userStorage';
+
 
 interface Props {
   navigation: any;
@@ -29,10 +30,56 @@ export default function TrainingsList(props: Props) {
   const [filteredData, setFilteredData] = useState<Training[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [selectedTitle, setTitle] = useState("");
-  const [selectedType, setType] = React.useState("");
-  const [selectedDifficulty, setDifficulty] = React.useState("");
+  const [selectedType, setType] = useState("");
+  const [selectedDifficulty, setDifficulty] = useState("");
+  const [selectedDistance, setDistance] = useState(0);
+  const [userLatitude, setUserLatitude] = useState(0);
+  const [userLongitude, setUserLongitude] = useState(0);
+
 
   const api = new API(navigation);
+
+  const getUserLocation = async () => {
+    if (userLatitude && userLatitude !== 0 || userLongitude && userLongitude !== 0) {
+      return [userLatitude, userLongitude];
+    }
+    if (!globalUser.user) {
+      return;
+    }
+    const user = await api.getUserInfoById(globalUser.user.id);
+    if (user) {
+      const userLocation = user.location;
+      if (userLocation) {
+        const coordinates = await api.getCoordinates(userLocation);
+        setUserLatitude(coordinates[0]);
+        setUserLongitude(coordinates[1]);
+        return coordinates;
+      }
+    }
+  }
+
+  const deg2rad = (degrees: number): number => {
+    return degrees * (Math.PI / 180);
+  };
+
+  const getDistanceFromLatLonInKm = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    console.log("User Lat: ", lat1, "User Lon: ", lon1);
+    console.log("Training Lat: ", lat2, "Training Lon: ", lon2);
+    if (lat1 === 0 || lon1 === 0 || lat2 === 0 || lon2 === 0) {
+      return selectedDistance + 1;
+    }
+    const R = 6371; // Radius of the earth in km
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    console.log("Distancia en km ", distance);
+    return distance;
+  }
+
 
   const filterData = (unfilteredTrainingsList: Training[]) => {
     const filtered = unfilteredTrainingsList.filter(
@@ -40,6 +87,10 @@ export default function TrainingsList(props: Props) {
         (selectedDifficulty === '' || item.difficulty === parseInt(selectedDifficulty)) &&
         (selectedType === '' || item.type.toLowerCase().includes(selectedType.toLowerCase())) &&
         (selectedTitle === '' || item.title.toLowerCase().includes(selectedTitle.toLowerCase())) &&
+        (selectedDistance === 0 || getDistanceFromLatLonInKm(userLatitude ? userLatitude :0,
+                                    userLongitude ? userLongitude : 0,
+                                    item.latitude ? item.latitude : 0,
+                                    item.longitude ? item.longitude : 0) <= selectedDistance) &&
         (!props.onlyFavorites || item.isFavorite)
     );
     setFilteredData(filtered);
@@ -57,6 +108,10 @@ export default function TrainingsList(props: Props) {
     setType(text);
   };
 
+  const handleFilterByDistance = (text: string) => {
+    setDistance(parseInt(text));
+  };
+
   function updateFavoriteStatus(trainingResponse: Training[], favoriteTrainingResponse: Training[]): Training[] {
     const favoriteTrainingIds = new Set(favoriteTrainingResponse.map(training => training.id));
     return trainingResponse.map(training => ({
@@ -67,6 +122,10 @@ export default function TrainingsList(props: Props) {
 
   const getTrainingsList = async () => {
     setRefreshing(true);
+    const coordinates = await getUserLocation();
+    if (!coordinates) {
+      return;
+    }
     if (props.onlyFavorites) {
       const favoritesTrainingsResponse = await api.getFavoriteTrainings();
       let trainings = updateFavoriteStatus(favoritesTrainingsResponse, favoritesTrainingsResponse);
@@ -84,11 +143,7 @@ export default function TrainingsList(props: Props) {
 
   useEffect(() => {
     getTrainingsList();
-  }, [selectedTitle, selectedType, selectedDifficulty])
-
-  useEffect(() => {
-    getTrainingsList();
-  }, [])
+  }, [selectedTitle, selectedType, selectedDifficulty, selectedDistance])
 
   return (<View flex={1} backgroundColor="#fff">
     <VStack
@@ -154,6 +209,18 @@ export default function TrainingsList(props: Props) {
           <Select.Item label="9" value="9" />
           <Select.Item label="10" value="10" />
         </Select>
+        <Select selectedValue={selectedDistance.toString()} accessibilityLabel="Choose Distance" placeholder="Choose Distance" _selectedItem={{
+          bg: "#FF6060",
+          endIcon: <CheckIcon size="5" />
+        }} mt={1} onValueChange={handleFilterByDistance}>
+          <Select.Item label="All distances" value="0" />
+          <Select.Item label="1km" value="1" />
+          <Select.Item label="3km" value="3" />
+          <Select.Item label="5km" value="5" />
+          <Select.Item label="10km" value="10" />
+          <Select.Item label="15km" value="15" />
+          <Select.Item label="20km" value="20" />
+        </Select>
       </View>
     </VStack>
     <View flex={1}>
@@ -171,7 +238,7 @@ export default function TrainingsList(props: Props) {
           />
         )}
         keyExtractor={(training) => training.id.toString()}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getTrainingsList} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => {getTrainingsList()}} />}
       ></FlatList></View>
   </View>
   );

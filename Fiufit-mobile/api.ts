@@ -27,6 +27,8 @@ export interface Training {
   start: string,
   end: string,
   days: string,
+  latitude?: number,
+  longitude?: number,
   trainerId: number,
   trainer_id: number,
   isFavorite?: boolean,
@@ -43,6 +45,8 @@ export interface TrainerTraining {
   start: string,
   end: string,
   days: string,
+  latitude?: number,
+  longitude?: number,
   trainerId: number,
 }
 
@@ -251,6 +255,9 @@ export class API {
     // formData.append("image", {uri: imageUri});
     // formData.append(JSON.stringify(training), '');
     // body: formData
+    const coordinates = await this.getCoordinates(training.location);
+    training.latitude = coordinates[0];
+    training.longitude = coordinates[1];
 
     return await this.fetchFromApi(
       "training-service/api/trainings/",

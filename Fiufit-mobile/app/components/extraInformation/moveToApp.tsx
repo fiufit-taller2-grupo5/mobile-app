@@ -19,7 +19,7 @@ export default function MoveToApp(props: Props) {
         style={[loginAndRegisterStyles.link, loginAndRegisterStyles.extraInfoLink]}
         isUnderlined={false}
         onPress={async () => {
-          await globalUser.updateUserMetadata({ location: streetName + streetNumber.toString(10), birthDate: null, weight: null, height: null, interests: [] })
+          await globalUser.updateUserMetadata({ location: streetName + ' ' + streetNumber.toString(10), birthDate: null, weight: null, height: null, interests: [] })
           navigation.navigate('HomeScreen');
           clearFields();
         }}

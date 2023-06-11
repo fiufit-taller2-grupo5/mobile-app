@@ -12,7 +12,6 @@ import {
   Modal
 } from "native-base";
 import { useState } from "react";
-import { Button } from "react-native";
 import { rateTrainingStyles } from "../styles";
 import { API } from "../../api";
 import ErrorMessage from '../components/form/errorMessage';
@@ -30,6 +29,7 @@ const theme = extendTheme({
 
 export type trainingReview = {
   id?: number; // only for listing reviews on trainingCard
+  userId?: number;
   comment: string;
   score: number;
 };

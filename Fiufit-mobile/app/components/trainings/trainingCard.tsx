@@ -22,6 +22,7 @@ import globalUser from '../../../userStorage';
 import { LoadableButton } from "../commons/buttons";
 import { ShareButton } from "./shareButton";
 
+
 interface Props {
   navigation: any;
   trainingData: Training;
@@ -33,6 +34,7 @@ export default function TrainingCard(props: Props) {
   const api = new API(navigation);
 
   const [reviews, setReviews] = useState<trainingReview[]>([]);
+  const [userReview, setUserReview] = useState<any[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   
   const shareTitle = "Entrenamiento: " + trainingData.title;
@@ -51,6 +53,20 @@ export default function TrainingCard(props: Props) {
       }
     );
     setReviews(trainingReviewsWithIndex);
+    retrieveUsersFromReviews();
+  };
+
+  const retrieveUsersFromReviews = async () => {
+    const users = await Promise.all(
+      reviews.map(async (review) => {
+        if (!review.userId) {
+          return;
+        }
+        const user = await api.getUserInfoById(review.userId);
+        return user;
+      })
+    );
+    setUserReview(users);
   };
 
   useEffect(() => {
@@ -129,9 +145,14 @@ export default function TrainingCard(props: Props) {
                 {trainingData.title}
               </Heading>
               <Link
-                style={{left:"50%"}}
+                style={{ top: "3%" }}
                 onPress={async () => {
-                  const coordinates = await api.getCoordinates(trainingData.location);
+                  let coordinates = [];
+                  if (!trainingData.latitude || !trainingData.longitude) {
+                    coordinates = await api.getCoordinates(trainingData.location);
+                  } else {
+                    coordinates = [trainingData.latitude, trainingData.longitude];
+                  }
                   navigation.navigate("MapScreen", { marker_longitude: coordinates[1], marker_latitude: coordinates[0] });
                 }}
               >
@@ -195,6 +216,13 @@ export default function TrainingCard(props: Props) {
             paddingX={2}
           >
             <Stack p="4" space={0}>
+              <Link
+                _text={{fontWeight: "bold"}}
+                isUnderlined={false}
+                onPress={() => navigation.navigate("UserInfoScreen", { userId: review.userId })}
+              >
+                {review.userId && userReview.length !== 0 ? userReview[review.userId] : "User id: " + review.userId }
+              </Link>
               <View flexDirection={"row"} style={{ justifyContent: "space-between" }}>
                 <View width="80%">
                   <Text marginRight={0}>{review.comment}</Text>
