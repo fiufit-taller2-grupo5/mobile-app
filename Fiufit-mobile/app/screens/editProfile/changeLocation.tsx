@@ -15,7 +15,7 @@ export default function ChangeLocationScreen({ navigation }: any) {
   useEffect(() => {
     async function updateLocation() {
       if (streetName !== "" && streetNumber !== 0) {
-        const location = streetName + streetNumber;
+        const location = streetName + " " + streetNumber.toString();
         globalUser.setLocation(location);
       }
     }

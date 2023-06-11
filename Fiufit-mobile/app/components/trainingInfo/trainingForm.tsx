@@ -7,7 +7,7 @@ import TimePicker from "./timeInput";
 import DifficultyInput from "./difficultyInput";
 import LocationForm from "../metadata/locationForm";
 import WeekDayInput from "./weekdayInput";
-import ImageInput from "./inputImage";  // <ImageInput image={image} setImage={setImage}/>
+import ImageInput from "./inputImage";
 
 
 interface Props {

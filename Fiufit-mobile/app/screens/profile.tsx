@@ -1,4 +1,4 @@
-import { Box, Text, NativeBaseProvider, extendTheme, FlatList, HStack, Spacer, Link, Button, View } from 'native-base';
+import { Box, Text, extendTheme, FlatList, HStack, Spacer, Button, View } from 'native-base';
 import { editProfileStyles } from '../styles';
 import { AntDesign } from '@expo/vector-icons';
 import { ProgressChart } from "react-native-chart-kit";

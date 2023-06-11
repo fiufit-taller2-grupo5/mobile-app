@@ -94,7 +94,7 @@ export default function ExtraInformationScreen({ navigation, route }: any) {
             throw Error("Por favor ingrese una altura válida mayor a 30cm");
           }
 
-          api.updateUserMetadata({ location: streetName + streetNumber.toString(10), birthDate: date.toISOString(), weight: weight, height: height, interests: interests });
+          api.updateUserMetadata({ location: streetName + ' ' + streetNumber.toString(10), birthDate: date.toISOString(), weight: weight, height: height, interests: interests });
           navigation.navigate('HomeScreen');
         }}
       />
