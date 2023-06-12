@@ -1,29 +1,38 @@
-import { Avatar, Box, HStack, Pressable, VStack, Text, Spacer } from "native-base";
+import { Box, HStack, Pressable, VStack, Text, Spacer } from "native-base";
 import { API } from '../../../api';
+import { ChatMetadata } from "./inboxList";
+import { Avatar } from "react-native-gifted-chat";
+import globalUser from "../../../userStorage";
+
+interface InboxInfoCardProps {
+    chatMetadata: ChatMetadata;
+    navigation: any;
+    navigateToScreen: string;
+}
 
 export const InboxInfoCard = ({
-    messageData,
+    chatMetadata,
     navigation,
     navigateToScreen
-  }: any) => {
+}: InboxInfoCardProps) => {
     const api = new API(navigation);
     return (
-    <Box>
-        <Pressable onPress={async () => {
-            navigation.navigate(navigateToScreen, { messageData });
-            }} bg= 'white'>
-            <Box pl="4" pr="5" py="2">
-            <HStack alignItems="center" space={3}>
-                <Avatar size="48px" source={{ uri: messageData.avatarUrl }} />
-                <VStack>
-                <Text color="coolGray.800" bold> {messageData.fullName} </Text>
-                <Text color="coolGray.600"> {messageData.recentText} </Text>
-                </VStack>
-                <Spacer />
-                <Text fontSize="xs" color="coolGray.800" alignSelf="flex-start"> {messageData.timeStamp} </Text>
-            </HStack>
-            </Box>
-        </Pressable>
-    </Box>
+        <Box>
+            <Pressable onPress={async () => {
+                navigation.navigate(navigateToScreen, { chatMetadata });
+            }} bg='white'>
+                <Box pl="4" pr="5" py="2">
+                    <HStack alignItems="center" space={3}>
+                        <Avatar currentMessage={chatMetadata.lastMessage as any} />
+                        <VStack>
+                            <Text color="coolGray.800" bold> {chatMetadata.lastMessage.user.name} </Text>
+                            <Text color="coolGray.600"> {chatMetadata.lastMessage.text} </Text>
+                        </VStack>
+                        <Spacer />
+                        <Text fontSize="xs" color="coolGray.800" alignSelf="flex-start"> {chatMetadata.lastMessage.createdAt} </Text>
+                    </HStack>
+                </Box>
+            </Pressable>
+        </Box>
     );
 };

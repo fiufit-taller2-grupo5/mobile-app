@@ -1,76 +1,84 @@
 import { GiftedChat, IMessage } from 'react-native-gifted-chat';
-import { useState } from "react";
-import { addDoc, collection, query, where, onSnapshot } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { addDoc, collection, query, where, onSnapshot, doc, getDocs, orderBy, updateDoc } from "firebase/firestore";
 import { db } from "../../../firebase";
+import { ChatMetadata } from './inboxList';
+import { View, Text } from 'native-base';
+import { ActivityIndicator } from 'react-native';
+
 
 interface Props {
   navigation: any;
-  inboxData: any;
+  chatMetadata: ChatMetadata;
 }
 
-/*Componente que contiene al chat que presiona el usuario*/
-
 export default function InboxCard(props: Props) {
-  const { navigation, inboxData } = props;
 
+  const { navigation, chatMetadata } = props;
+  const [loading, setLoading] = useState(true);
+  const messagesCollectionRef = collection(db, "chats", chatMetadata._id, "messages")
+  const [messages, setMessages] = useState<IMessage[]>([]);
 
-  async function addChat(user1: string, user2: string) {
-    const docData = {
-      participants: [user1, user2],
-      messages: []
-    };
+  useEffect(() => {
 
-    try {
-      const docRef = await addDoc(collection(db, "chats"), docData);
-      console.log("Chat document created with ID: ", docRef.id);
-    } catch (e) {
-      console.log("Error adding chat document: ", e);
-    }
-  }
-  function listenForChatChanges(user1: string, user2: string) {
-    const chatsRef = collection(db, "chats");
-
-    const q = query(chatsRef,
-      where("participants", "array-contains-any", [user1, user2]),
-    );
-
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      querySnapshot.docChanges().forEach((change) => {
-        if (change.type === "added") {
-          console.log("New chat document:", change.doc.id, change.doc.data());
-        } else if (change.type === "modified") {
-          console.log("Modified chat document:", change.doc.id, change.doc.data());
-        } else if (change.type === "removed") {
-          console.log("Removed chat document:", change.doc.id);
-        }
+    const getMessagesFromDB = async () => {
+      const q = query(messagesCollectionRef, orderBy("createdAt", "desc"));
+      const querySnapshot = await getDocs(q);
+      const messages = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        data.createdAt = data.createdAt.toDate();
+        console.log("data: ", data);
+        return data;
       });
+
+      setMessages(messages as IMessage[]);
+      setLoading(false);
+    }
+
+    const unsubscribe = onSnapshot(messagesCollectionRef, (data) => {
+      getMessagesFromDB();
     });
 
-    // Call unsubscribe() when you no longer want to listen for changes
-    // return unsubscribe;
-  }
+    getMessagesFromDB();
+    return () => unsubscribe();
+  }, []);
 
-  const [messages, setMessages] = useState<IMessage[]>(() => {
-    return inboxData.messages.map((message: any) => ({
-      _id: message.id,
-      text: message.text,
-      createdAt: new Date(message.createdAt),
-      user: {
-        _id: message.senderId,
-        name: message.senderName,
-        avatar: 'https://example.com/avatar.png',
-      },
-    }));
-  });
 
-  const onSend = (newMessages: IMessage[]) => {
-    setMessages((previousMessages: IMessage[] | undefined) => GiftedChat.append(previousMessages, newMessages));
+  const onSend = async (newMessages: IMessage[]) => {
+    try {
+      console.log("new messages to add: ", newMessages)
+      if (messages.findIndex((message) => message._id === newMessages[0]._id) !== -1) {
+        return;
+      }
+
+      await addDoc(collection(db, "chats", chatMetadata._id, "messages"), newMessages[0]);
+      const docRef = doc(db, 'chats', chatMetadata._id);
+      await updateDoc(docRef, {
+        lastMessage: newMessages[0]
+      });
+    } catch (e) {
+      console.log("error: ", e);
+    }
   };
 
   return (
-    <GiftedChat
-      messages={messages}
-      onSend={onSend}
-    />
+    <>
+      {
+        loading ?
+          <View
+            flex={1}
+            justifyContent="center"
+            alignItems="center"
+
+          >
+            <ActivityIndicator size="large" color="#ff6060" />
+          </View> :
+          <GiftedChat
+            messages={messages}
+            user={{ _id: chatMetadata._currentUserId, name: chatMetadata.participants[chatMetadata._currentUserId].name }}
+            onSend={onSend}
+          />
+      }
+    </>
   );
 }

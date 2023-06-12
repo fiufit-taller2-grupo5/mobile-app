@@ -278,7 +278,7 @@ export class API {
     );
   }
 
-  async getCoordinates(location: string) : Promise<any> {
+  async getCoordinates(location: string): Promise<any> {
     const location_split = location.split(' ');
     const streetName = location_split[0];
     const streetNumber = location_split[1];
@@ -421,7 +421,7 @@ export class API {
     });
     return completeUserTrainings;
   }
-  
+
 
   async getTrainingSession(trainingId: number, sessionId: number): Promise<trainingSession> {
     const user = await getUserFromStorage();
