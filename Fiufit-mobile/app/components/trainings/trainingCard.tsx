@@ -53,7 +53,8 @@ export default function TrainingCard(props: Props) {
       }
     );
     setReviews(trainingReviewsWithIndex);
-    retrieveUsersFromReviews();
+    const users = await retrieveUsersFromReviews();
+    setUserReview(users);
   };
 
   const retrieveUsersFromReviews = async () => {
@@ -67,6 +68,7 @@ export default function TrainingCard(props: Props) {
       })
     );
     setUserReview(users);
+    return users;
   };
 
   useEffect(() => {
@@ -221,7 +223,7 @@ export default function TrainingCard(props: Props) {
                 isUnderlined={false}
                 onPress={() => navigation.navigate("UserInfoScreen", { userId: review.userId })}
               >
-                {review.userId && userReview.length !== 0 ? userReview[review.userId] : "User id: " + review.userId }
+                {review.userId && userReview.length !== 0 ? userReview.filter((user) => user.id == review.userId)[0].name : "Cargando.."}
               </Link>
               <View flexDirection={"row"} style={{ justifyContent: "space-between" }}>
                 <View width="80%">
