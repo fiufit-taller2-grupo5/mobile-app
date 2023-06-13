@@ -31,7 +31,6 @@ import TrainerTrainingsScreen from './app/screens/trainerTrainings';
 import RateTrainingScreen from './app/screens/rateTraining';
 import EditTrainingScreen from './app/screens/editTraining';
 import MapScreen from './app/screens/map';
-import UserInfoScreen from './app/screens/userTrainings';
 import SelectedUsersScreen from './app/screens/SelectedUsers';
 import UserTrainingsScreen from './app/screens/userTrainings';
 

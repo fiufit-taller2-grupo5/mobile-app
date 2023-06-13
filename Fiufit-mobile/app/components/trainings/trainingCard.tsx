@@ -26,10 +26,11 @@ import { ShareButton } from "./shareButton";
 interface Props {
   navigation: any;
   trainingData: Training;
+  trainingImage: string;
 }
 
 export default function TrainingCard(props: Props) {
-  const { navigation, trainingData } = props;
+  const { navigation, trainingData, trainingImage } = props;
 
   const api = new API(navigation);
 
@@ -117,7 +118,7 @@ export default function TrainingCard(props: Props) {
           <View>
             <AspectRatio w="100%" ratio={16 / 10}>
               <Image
-                source={require("../../../assets/images/logo-color.jpg")}
+                source={trainingImage !== "" ?  { uri: trainingImage } : require("../../../assets/images/logo-color.jpg")}
                 alt="image"
                 size={238}
                 width="100%"

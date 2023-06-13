@@ -57,20 +57,7 @@ export default function CreateTrainingScreen({ navigation }: any) {
 
       <LoadableButton
         onPress={async () => {
-          console.log("start time", startTime);
-          console.log("end time", endTime);
-          console.log("week days", weekDays);
-          console.log("street name", streetName);
-          console.log("street number", streetNumber);
-          console.log("training title", trainingTitle);
-          console.log("training description", trainingDescription);
-          console.log("training type", trainingType);
-          console.log("training difficulty", trainingDifficulty);
-          console.log("image", image);
-          console.log("trainer id", globalUser.user?.id);
-
-
-          await api.addTraining({
+          const trainingId = await api.addTraining({
             title: trainingTitle,
             description: trainingDescription,
             state: "active",
@@ -82,6 +69,9 @@ export default function CreateTrainingScreen({ navigation }: any) {
             days: weekDays.join(", "),
             trainerId: globalUser.user?.id || 0
           });
+          if (image) {
+            await api.addImageTraining(trainingId, image);
+          }
           navigation.navigate("HomeScreen");
           return;
         }}

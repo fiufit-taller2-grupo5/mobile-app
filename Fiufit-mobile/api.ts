@@ -249,12 +249,7 @@ export class API {
     );
   }
 
-  async addTraining(training: TrainerTraining): Promise<void> {
-    // TODO use to send image to backend
-    // const formData = new FormData();
-    // formData.append("image", {uri: imageUri});
-    // formData.append(JSON.stringify(training), '');
-    // body: formData
+  async addTraining(training: TrainerTraining): Promise<number> {
     const coordinates = await this.getCoordinates(training.location);
     training.latitude = coordinates[0].toString();
     training.longitude = coordinates[1].toString();
@@ -264,15 +259,63 @@ export class API {
       {
         method: "POST",
         body: JSON.stringify(training),
-        // headers: {
-        //   'Content-Type': 'multipart/form-data',
-        // }
       },
       (response: any) => {
         console.log("training added");
+        return response.id;
       },
       (error: ApiError) => {
         console.log("error adding training:", error);
+        throw error;
+      }
+    );
+  }
+
+  async addImageTraining(trainingId: number, image: any): Promise<void> {
+    const name = image.split('/').pop();
+    let type = image.split('.').pop();
+    if (type === "jpg") {
+      type = "jpeg";
+    }
+    const formData = new FormData();
+    formData.append('file', {
+      uri: image,
+      type: 'image/' + type,
+      name: name,
+    } as any);
+    return await this.fetchFromApi(
+      "training-service/api/trainings/" + trainingId + "/image",
+      {
+        method: "PUT",
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      },
+      (response: any) => {
+        console.log("image added");
+      },
+      (error: ApiError) => {
+        console.log("error adding image:", error);
+        throw error;
+      }
+    );
+  }
+
+  async getImageTraining(trainingId: number): Promise<string> {
+    return await this.fetchFromApi(
+      "training-service/api/trainings/" + trainingId + "/image",
+      { method: "GET" },
+      (response: Array<any>) => {
+        if (response.length >= 1) {
+          const lastImage = response.pop();
+          return lastImage.fileUrl;
+        } else {
+          return "";
+        }
+      },
+      (error: ApiError) => {
+        console.log("error getting training image:", error);
         throw error;
       }
     );
