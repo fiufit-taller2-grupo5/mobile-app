@@ -24,7 +24,7 @@ export default function CreateTrainingScreen({ navigation }: any) {
   const [weekDays, setWeekDays] = useState<string[]>([]);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-    // TODO: agregar este al button
+  // TODO: agregar este al button
   const [image, setImage] = useState(null);
 
   const api = new API(navigation);
@@ -57,6 +57,19 @@ export default function CreateTrainingScreen({ navigation }: any) {
 
       <LoadableButton
         onPress={async () => {
+          console.log("start time", startTime);
+          console.log("end time", endTime);
+          console.log("week days", weekDays);
+          console.log("street name", streetName);
+          console.log("street number", streetNumber);
+          console.log("training title", trainingTitle);
+          console.log("training description", trainingDescription);
+          console.log("training type", trainingType);
+          console.log("training difficulty", trainingDifficulty);
+          console.log("image", image);
+          console.log("trainer id", globalUser.user?.id);
+
+
           await api.addTraining({
             title: trainingTitle,
             description: trainingDescription,
@@ -66,7 +79,7 @@ export default function CreateTrainingScreen({ navigation }: any) {
             location: streetName + " " + streetNumber.toString(10),
             start: startTime,
             end: endTime,
-            days: weekDays.toString(),
+            days: weekDays.join(", "),
             trainerId: globalUser.user?.id || 0
           });
           navigation.navigate("HomeScreen");

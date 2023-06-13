@@ -83,7 +83,7 @@ export class API {
         ...fetchConfig.headers,
       }
       // use localhost if running locally, otherwise use the api gateway
-      const localUrl = "https://6feb-190-18-10-180.ngrok-free.app/" + path;
+      const localUrl = "https://9a6b-190-18-10-180.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       // console.log("fetching from api: ", url, fetchConfig);
@@ -535,8 +535,10 @@ export class API {
     const userId = user?.id;
     return await this.fetchFromApi(
       "user-service/api/users/follow",
-      { method: "POST", 
-      body: JSON.stringify({ id: userId, followedId: followedUserId }) },
+      {
+        method: "POST",
+        body: JSON.stringify({ id: userId, followedId: followedUserId })
+      },
       (response: any) => {
         console.log("user followed");
         // user.
@@ -554,8 +556,10 @@ export class API {
     const userId = user?.id;
     return await this.fetchFromApi(
       "user-service/api/users/unfollow",
-      { method: "POST", 
-      body: JSON.stringify({ id: userId, followedId: followedUserId }) },
+      {
+        method: "POST",
+        body: JSON.stringify({ id: userId, followedId: followedUserId })
+      },
       (response: any) => {
         console.log("user unfollowed");
         return true;
@@ -567,7 +571,7 @@ export class API {
     );
   }
 
-  async getFollowedUsers(userId:number): Promise<userInfo[]> {
+  async getFollowedUsers(userId: number): Promise<userInfo[]> {
     return await this.fetchFromApi(
       "user-service/api/users/" + userId + "/following",
       { method: "GET" },
@@ -582,7 +586,7 @@ export class API {
     );
   }
 
-  async getFollowers(userId:number): Promise<userInfo[]> {
+  async getFollowers(userId: number): Promise<userInfo[]> {
     return await this.fetchFromApi(
       "user-service/api/users/" + userId + "/followers",
       { method: "GET" },
@@ -596,7 +600,7 @@ export class API {
       }
     );
   }
-    
+
 }
 
 

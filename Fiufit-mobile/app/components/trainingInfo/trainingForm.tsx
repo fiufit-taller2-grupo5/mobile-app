@@ -42,7 +42,7 @@ export default function TrainingForm(props: Props) {
 
   return (
     <VStack space={1} alignItems={"center"} style={createTrainingStyles.stack}>
-      <Text 
+      <Text
         style={[createTrainingStyles.text, createTrainingStyles.titleText]}
       >Nombre</Text>
       <TitleInput
@@ -54,21 +54,21 @@ export default function TrainingForm(props: Props) {
       >Descripción</Text>
       <DescriptionInput
         trainingDescription={trainingDescription}
-        setTrainingDescription={setTrainingDescription}/>
-      <Text 
+        setTrainingDescription={setTrainingDescription} />
+      <Text
         style={[createTrainingStyles.text, createTrainingStyles.descriptionText]}
       >Tipo</Text>
       <TypeInput
         trainingType={trainingType}
-        setTrainingType={setTrainingType}/>
-      <Text 
+        setTrainingType={setTrainingType} />
+      <Text
         style={[createTrainingStyles.text, createTrainingStyles.descriptionText]}
       >Dificultad</Text>
       <DifficultyInput
         trainingDifficulty={trainingDifficulty}
         setTrainingDifficulty={setTrainingDifficulty}
       />
-      <Text 
+      <Text
         style={[createTrainingStyles.text, createTrainingStyles.descriptionText]}
       >Ubicación</Text>
       <LocationForm
@@ -80,18 +80,18 @@ export default function TrainingForm(props: Props) {
         streetNameWidth="3xs"
         streetNumberWidth="38"
       />
-      <Text 
+      <Text
         style={[createTrainingStyles.text, createTrainingStyles.descriptionText]}
       >Franja horaria</Text>
       <HStack>
-        <WeekDayInput weekDays={weekDays} setWeekDays={setWeekDays}/>
-        <TimePicker placeholderText="Hora inicio" selectedTime={startTime} setSelectedTime={setStartTime}/>
-        <TimePicker placeholderText="Hora fin" selectedTime={endTime} setSelectedTime={setEndTime}/>
+        <WeekDayInput weekDays={weekDays} setWeekDays={setWeekDays} />
+        <TimePicker placeholderText="Hora inicio" selectedTime={startTime} setSelectedTime={setStartTime} />
+        <TimePicker placeholderText="Hora fin" selectedTime={endTime} setSelectedTime={setEndTime} />
       </HStack>
-      <Text 
+      <Text
         style={[createTrainingStyles.text, createTrainingStyles.descriptionText]}
       >Imagen</Text>
-        <ImageInput image={image} setImage={setImage}/>
+      <ImageInput image={image} setImage={setImage} />
     </VStack>
   )
 }

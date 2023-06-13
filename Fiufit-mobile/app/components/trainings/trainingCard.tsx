@@ -36,12 +36,14 @@ export default function TrainingCard(props: Props) {
   const [reviews, setReviews] = useState<trainingReview[]>([]);
   const [userReview, setUserReview] = useState<any[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  
+
   const shareTitle = "Entrenamiento: " + trainingData.title;
-  const shareMessage = 
-    "¡Hola! Te comparto este entrenamiento de Fiufit: " + trainingData.title + ".\n\n" + 
-    trainingData.description + ".\n\n" +  
-    "Horarios: " + trainingData.days + ": " + trainingData.start + "-" + trainingData.end
+  const shareMessage =
+    "¡Hola! Te comparto este entrenamiento de Fiufit: *" + trainingData.title + "*\n\n" +
+    "*Descripción*: " +
+    trainingData.description + "\n\n" +
+    "*Horarios*: " + trainingData.days + " a las " + trainingData.start + "-" + trainingData.end +
+    "\n\n*Ubicación*: " + trainingData.location
     + "\n\n¡Descarga Fiufit y entrena conmigo!";
 
   const retrieveTrainingReviews = async () => {
@@ -177,8 +179,7 @@ export default function TrainingCard(props: Props) {
             <Text>{trainingData.description}</Text>
             <Text fontWeight={"bold"}>Horarios: </Text>
             <HStack>
-              <Text>{trainingData.days}</Text>
-              <Text>:</Text>
+              <Text>{trainingData.days} a las </Text>
               <Text>{trainingData.start}</Text>
               <Text>-</Text>
               <Text>{trainingData.end}</Text>
@@ -219,7 +220,7 @@ export default function TrainingCard(props: Props) {
           >
             <Stack p="4" space={0}>
               <Link
-                _text={{fontWeight: "bold"}}
+                _text={{ fontWeight: "bold" }}
                 isUnderlined={false}
                 onPress={() => navigation.navigate("UserInfoScreen", { userId: review.userId })}
               >
@@ -268,7 +269,7 @@ export default function TrainingCard(props: Props) {
       >
         Editar entrenamiento
       </Button>}
-      
+
     </View>
   );
 }

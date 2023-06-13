@@ -19,6 +19,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { RefreshControl } from 'react-native';
 import { TrainingInfoCard } from "./trainingInfoCard";
 import globalUser from '../../../userStorage';
+import { LoadableButton } from "../commons/buttons";
 
 
 interface Props {
@@ -36,6 +37,7 @@ export default function TrainingsList(props: Props) {
   const [selectedDistance, setDistance] = useState(0);
   const [userLatitude, setUserLatitude] = useState(0);
   const [userLongitude, setUserLongitude] = useState(0);
+  const [role, setRole] = useState("Atleta");
 
 
   const api = new API(navigation);
@@ -71,8 +73,8 @@ export default function TrainingsList(props: Props) {
     const dLat = deg2rad(lat2 - lat1);
     const dLon = deg2rad(lon2 - lon1);
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c;
     return distance;
@@ -85,10 +87,10 @@ export default function TrainingsList(props: Props) {
         (selectedDifficulty === '' || item.difficulty === parseInt(selectedDifficulty)) &&
         (selectedType === '' || item.type.toLowerCase().includes(selectedType.toLowerCase())) &&
         (selectedTitle === '' || item.title.toLowerCase().includes(selectedTitle.toLowerCase())) &&
-        (selectedDistance === 0 || getDistanceFromLatLonInKm(userLatitude ? userLatitude :0,
-                                    userLongitude ? userLongitude : 0,
-                                    item.latitude ? parseFloat(item.latitude) : 0,
-                                    item.longitude ? parseFloat(item.longitude) : 0) <= selectedDistance) &&
+        (selectedDistance === 0 || getDistanceFromLatLonInKm(userLatitude ? userLatitude : 0,
+          userLongitude ? userLongitude : 0,
+          item.latitude ? parseFloat(item.latitude) : 0,
+          item.longitude ? parseFloat(item.longitude) : 0) <= selectedDistance) &&
         (!props.onlyFavorites || item.isFavorite)
     );
     setFilteredData(filtered);
@@ -119,22 +121,25 @@ export default function TrainingsList(props: Props) {
   }
 
   const getTrainingsList = async () => {
+    console.log("trying to fetch training list");
     setRefreshing(true);
-    const coordinates = await getUserLocation();
-    if (!coordinates) {
-      return;
-    }
-    if (props.onlyFavorites) {
-      const favoritesTrainingsResponse = await api.getFavoriteTrainings();
-      let trainings = updateFavoriteStatus(favoritesTrainingsResponse, favoritesTrainingsResponse);
-      filterData(trainings);
-    } else {
-      const trainingList = await api.getTrainings();
-      if (trainingList.length > 0) {
+
+    try {
+      const coordinates = await getUserLocation();
+      if (props.onlyFavorites) {
         const favoritesTrainingsResponse = await api.getFavoriteTrainings();
-        let trainings = updateFavoriteStatus(trainingList, favoritesTrainingsResponse);
+        let trainings = updateFavoriteStatus(favoritesTrainingsResponse, favoritesTrainingsResponse);
         filterData(trainings);
+      } else {
+        const trainingList = await api.getTrainings();
+        if (trainingList.length > 0) {
+          const favoritesTrainingsResponse = await api.getFavoriteTrainings();
+          let trainings = updateFavoriteStatus(trainingList, favoritesTrainingsResponse);
+          filterData(trainings);
+        }
       }
+    } catch (e: any) {
+      console.error(e.message);
     }
     setRefreshing(false);
   }
@@ -142,6 +147,18 @@ export default function TrainingsList(props: Props) {
   useEffect(() => {
     getTrainingsList();
   }, [selectedTitle, selectedType, selectedDifficulty, selectedDistance])
+
+  const getUserRule = async () => {
+    const userRole = await globalUser.getRole();
+    setRole(userRole);
+  }
+
+
+  useEffect(() => {
+    getUserRule();
+    getTrainingsList();
+  }, [])
+
 
   return (
     <>
@@ -224,6 +241,16 @@ export default function TrainingsList(props: Props) {
           </Box>
         </HStack>
       </VStack>
+      {
+        role === "Entrenador" &&
+        <View style={{ display: "flex", alignItems: 'flex-end', paddingHorizontal: 15 }}>
+          <LoadableButton
+            customStyles={{ width: "100%" }}
+            text="Crear nuevo"
+            onPress={async () => { navigation.navigate('CreateTrainingScreen'); }}
+          />
+        </View>
+      }
       <FlatList
         contentContainerStyle={{ flexGrow: 1 }}
         data={filteredData}
@@ -238,9 +265,9 @@ export default function TrainingsList(props: Props) {
           />
         )}
         keyExtractor={(training) => training.id.toString()}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => {getTrainingsList()}} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { getTrainingsList() }} />}
       >
       </FlatList>
-      </>
+    </>
   );
 }

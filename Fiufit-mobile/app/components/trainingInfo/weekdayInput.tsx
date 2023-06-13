@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Button, Checkbox, Modal, VStack } from 'native-base';
 
 
-const weekDaysData = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const weekDaysData = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
 
 interface Props {
   weekDays: string[];
@@ -12,21 +12,23 @@ interface Props {
 export default function WeekDayInput(props: Props) {
   const { weekDays, setWeekDays } = props;
   const [isVisible, setIsVisible] = useState(false);
+  const [selectedWeekDays, setSelectedWeekDays] = useState<string[]>(weekDays);
 
   const showPicker = () => {
     setIsVisible(true);
   };
 
   const hidePicker = () => {
+    setWeekDays(selectedWeekDays);
     setIsVisible(false);
   };
 
   const handleChange = (weekDay: string) => {
-    setWeekDays((prevWeekDays) => {
-      if (prevWeekDays.includes(weekDay)) {
-        return prevWeekDays.filter((item) => item !== weekDay);
+    setSelectedWeekDays((prev) => {
+      if (prev.includes(weekDay)) {
+        return prev.filter((day) => day !== weekDay);
       } else {
-        return [...prevWeekDays, weekDay];
+        return [...prev, weekDay];
       }
     });
   }
@@ -34,7 +36,10 @@ export default function WeekDayInput(props: Props) {
   return (
     <View>
       <Button onPress={showPicker} backgroundColor={"white"}>
-        <Text>{weekDays.length > 0 ? weekDays.join(", ") : "Días"}</Text>
+        {selectedWeekDays.map((weekDay) => <Text>
+          {weekDay}
+        </Text>)}
+        {selectedWeekDays.length === 0 && <Text>Seleccionar Días</Text>}
       </Button>
 
       {isVisible &&
@@ -47,7 +52,7 @@ export default function WeekDayInput(props: Props) {
                     colorScheme='rose'
                     key={weekDay}
                     value={weekDay}
-                    isChecked={weekDays.includes(weekDay)}
+                    isChecked={selectedWeekDays.includes(weekDay)}
                     mr={"12"}
                     onChange={() => { handleChange(weekDay); }}
                     alignSelf={"center"}
@@ -58,8 +63,8 @@ export default function WeekDayInput(props: Props) {
                   </Checkbox>
                 );
               })}
-              <Button backgroundColor={"#FF6060"} 
-                style={{borderRadius:30, alignSelf: "center"}}
+              <Button backgroundColor={"#FF6060"}
+                style={{ borderRadius: 30, alignSelf: "center" }}
                 _text={{ color: "#FFFFFF", fontSize: "14px", fontWeight: "bold" }}
                 onPress={hidePicker}
                 width={"50%"}

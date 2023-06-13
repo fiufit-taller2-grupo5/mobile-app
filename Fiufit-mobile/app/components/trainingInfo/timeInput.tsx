@@ -22,12 +22,13 @@ export default function TimePicker(props: Props) {
     setIsVisible(false);
   };
 
-  const handleConfirm = (time : any) => {
-    const formattedTime = `${time.getHours()}:${time.getMinutes()}`;
+  const handleConfirm = (time: Date) => {
+    const hours = time.getHours().toString().padStart(2, '0');
+    const minutes = time.getMinutes().toString().padStart(2, '0');
+    const formattedTime = `${hours}:${minutes}`;
     setSelectedTime(formattedTime);
     hidePicker();
   };
-
   return (
     <Container>
       <Button onPress={showPicker} backgroundColor={"white"}>
