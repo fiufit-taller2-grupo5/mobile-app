@@ -91,14 +91,14 @@ export const TrainingInfoCard = ({
             >
               {trainingData.title}
             </Text>
-            <Text fontSize="sm" color="#000000">
+            <Text paddingLeft = {15} fontSize="sm" color="#000000">
               {trainingData.description}
             </Text>
-            <Text fontSize="xs" color="#000000">
+            <Text paddingLeft = {15} fontSize="xs" color="#000000">
               Dificultad: {trainingData.difficulty}
             </Text>
             {userTrainingData && (
-              <Text fontSize="xs" color="#000000">
+              <Text paddingLeft = {15} fontSize="xs" color="#000000">
                 Completado el 
                 {/* {(userTrainingData.date as Date).toISOString().split('T')[0]} */}
                 {/* 2023-06-10T22:46:18.808000 */}
