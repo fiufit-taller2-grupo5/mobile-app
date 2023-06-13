@@ -31,6 +31,7 @@ export interface Training {
   longitude?: string,
   trainerId: number,
   trainer_id: number,
+  multimedia?: Array<any>,
   isFavorite?: boolean,
   meanRating?: number,
 }
@@ -47,6 +48,7 @@ export interface TrainerTraining {
   days: string,
   latitude?: string,
   longitude?: string,
+  multimedia?: Array<any>,
   trainerId: number,
 }
 
@@ -83,7 +85,7 @@ export class API {
         ...fetchConfig.headers,
       }
       // use localhost if running locally, otherwise use the api gateway
-      const localUrl = "https://1ac6-181-89-16-142.ngrok-free.app/" + path;
+      const localUrl = "https://afb2-181-89-16-142.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       // console.log("fetching from api: ", url, fetchConfig);
@@ -297,25 +299,6 @@ export class API {
       },
       (error: ApiError) => {
         console.log("error adding image:", error);
-        throw error;
-      }
-    );
-  }
-
-  async getImageTraining(trainingId: number): Promise<string> {
-    return await this.fetchFromApi(
-      "training-service/api/trainings/" + trainingId + "/image",
-      { method: "GET" },
-      (response: Array<any>) => {
-        if (response.length >= 1) {
-          const lastImage = response.pop();
-          return lastImage.fileUrl;
-        } else {
-          return "";
-        }
-      },
-      (error: ApiError) => {
-        console.log("error getting training image:", error);
         throw error;
       }
     );

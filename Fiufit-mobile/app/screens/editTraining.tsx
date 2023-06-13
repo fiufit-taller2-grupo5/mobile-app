@@ -27,8 +27,7 @@ export default function EditTrainingScreen(props: Props) {
   const [weekDays, setWeekDays] = useState(weekDaysList);
   const [startTime, setStartTime] = useState(trainingData.start);
   const [endTime, setEndTime] = useState(trainingData.end);
-    // TODO agregar estos (falta back) y usar trainingData.image
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null);
 
   const api = new API(navigation);
 
@@ -72,6 +71,9 @@ export default function EditTrainingScreen(props: Props) {
             days: weekDays.toString(),
             trainerId: globalUser.user?.id || 0
           }, trainingData.id);
+          if (image) {
+            await api.addImageTraining(trainingData.id, image);
+          }
           navigation.navigate("HomeScreen");
           return;
         }}

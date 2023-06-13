@@ -37,7 +37,6 @@ export default function TrainingsList(props: Props) {
   const [userLatitude, setUserLatitude] = useState(0);
   const [userLongitude, setUserLongitude] = useState(0);
   const [role, setRole] = useState("Atleta");
-  const [images, setImages] = useState<Map<number, string>>(new Map());
 
 
   const api = new API(navigation);
@@ -126,22 +125,8 @@ export default function TrainingsList(props: Props) {
     }));
   }
 
-  const getTrainingImages = async () => {
-    const trainingImages = images;
-    filteredData.forEach(async (training) => {
-      const trainingImage = await api.getImageTraining(training.id);
-      if (trainingImage) {
-        trainingImages.set(training.id, trainingImage);
-      }
-    });
-    setImages(trainingImages);
-    console.log("IMAGES: ", trainingImages);
-  }
-
   const getTrainingsList = async () => {
-    console.log("trying to fetch training list");
     setRefreshing(true);
-
     try {
       await getUserLocation();
       if (props.onlyFavorites) {
@@ -156,7 +141,6 @@ export default function TrainingsList(props: Props) {
           filterData(trainings);
         }
       }
-      await getTrainingImages();
     } catch (e: any) {
       console.error(e.message);
     }
@@ -277,7 +261,6 @@ export default function TrainingsList(props: Props) {
         renderItem={(training) => (
           <TrainingInfoCard
             trainingData={training.item}
-            trainingImage={images.has(training.item.id) ? images.get(training.item.id) : ""}
             canSetFavorite
             navigation={navigation}
             navigateToScreen="TrainingInfoScreen"

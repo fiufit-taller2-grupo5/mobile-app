@@ -2,15 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Button, Checkbox, Modal, VStack } from 'native-base';
 
 
-const weekDaysData = [
-  {day: 'lunes', id: 0},
-  {day: 'martes', id: 1},
-  {day: 'miercoles', id: 2},
-  {day: 'jueves', id: 3},
-  {day: 'viernes', id: 4},
-  {day: 'sabado', id: 5},
-  {day: 'domingo', id: 6},
-];
+const weekDaysData = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo']
 
 interface Props {
   weekDays: string[];
@@ -20,14 +12,14 @@ interface Props {
 export default function WeekDayInput(props: Props) {
   const { weekDays, setWeekDays } = props;
   const [isVisible, setIsVisible] = useState(false);
-  const [selectedWeekDays, setSelectedWeekDays] = useState<any[]>([]);
+  const [selectedWeekDays, setSelectedWeekDays] = useState<string[]>([]);
 
   const showPicker = () => {
     setIsVisible(true);
   };
 
   const hidePicker = () => {
-    setWeekDays(selectedWeekDays.map((weekDay) => weekDay.day));
+    setWeekDays(selectedWeekDays.map((weekDay) => weekDay));
     setIsVisible(false);
   };
 
@@ -44,8 +36,8 @@ export default function WeekDayInput(props: Props) {
   return (
     <View>
       <Button onPress={showPicker} backgroundColor={"white"}>
-        {selectedWeekDays.map((weekDay) => <Text>
-          {weekDay.day}
+        {selectedWeekDays.map((weekDay) => <Text key={weekDay}>
+          {weekDay}
         </Text>)}
         {selectedWeekDays.length === 0 && <Text>Seleccionar Días</Text>}
       </Button>
@@ -54,23 +46,21 @@ export default function WeekDayInput(props: Props) {
         <Modal isOpen={isVisible}>
           <View backgroundColor={"#FFFFFF"} width={"70%"} height={"45%"}>
             <VStack space={4} marginTop={"10%"}>
-              {weekDaysData.map((weekDay) => {
-                return (
-                  <Checkbox
-                    colorScheme='rose'
-                    key={weekDay.id}
-                    value={weekDay.day}
-                    isChecked={selectedWeekDays.includes(weekDay)}
-                    mr={"12"}
-                    onChange={() => { handleChange(weekDay); }}
-                    alignSelf={"center"}
-                  >
-                    <Text width={"20"}>
-                      {weekDay.day}
-                    </Text>
-                  </Checkbox>
-                );
-              })}
+              {weekDaysData.map((weekDay) =>
+                <Checkbox
+                  colorScheme='rose'
+                  key={weekDay}
+                  value={weekDay}
+                  isChecked={selectedWeekDays.includes(weekDay)}
+                  mr={"12"}
+                  onChange={() => { handleChange(weekDay); }}
+                  alignSelf={"center"}
+                >
+                  <Text key={weekDay} width={"20"}>
+                    {weekDay}
+                  </Text>
+                </Checkbox>
+              )}
               <Button backgroundColor={"#FF6060"}
                 style={{ borderRadius: 30, alignSelf: "center" }}
                 _text={{ color: "#FFFFFF", fontSize: "14px", fontWeight: "bold" }}

@@ -3,11 +3,11 @@ import { NativeBaseProvider, View } from "native-base";
 import TrainingCard from "../components/trainings/trainingCard";
 
 export default function TrainingInfoScreen({ route, navigation }: any) {
-  const { trainingData, trainingImage } = route.params;
+  const { trainingData } = route.params;
   return (
     <NativeBaseProvider>
       <View flex={1} backgroundColor={"#ffffff"}>
-        <TrainingCard navigation={navigation} trainingData={trainingData} trainingImage={trainingImage} />
+        <TrainingCard navigation={navigation} trainingData={trainingData} />
       </View>
     </NativeBaseProvider>
   );

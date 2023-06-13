@@ -26,11 +26,10 @@ import { ShareButton } from "./shareButton";
 interface Props {
   navigation: any;
   trainingData: Training;
-  trainingImage: string;
 }
 
 export default function TrainingCard(props: Props) {
-  const { navigation, trainingData, trainingImage } = props;
+  const { navigation, trainingData } = props;
 
   const api = new API(navigation);
 
@@ -100,7 +99,6 @@ export default function TrainingCard(props: Props) {
   }, [navigation]);
   const isAthlete = role === 'Atleta';
 
-
   return (
     <View flexGrow={1}>
       <ScrollView
@@ -118,7 +116,7 @@ export default function TrainingCard(props: Props) {
           <View>
             <AspectRatio w="100%" ratio={16 / 10}>
               <Image
-                source={trainingImage !== "" ?  { uri: trainingImage } : require("../../../assets/images/logo-color.jpg")}
+                source={(trainingData.multimedia && trainingData.multimedia.length >= 1) ? { uri: trainingData.multimedia.at(-1).fileUrl } : require("../../../assets/images/logo-color.jpg")}
                 alt="image"
                 size={238}
                 width="100%"

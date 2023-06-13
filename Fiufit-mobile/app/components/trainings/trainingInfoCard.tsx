@@ -29,7 +29,6 @@ export const trainingMainImage = (training_type: any) => {
 
 export const TrainingInfoCard = ({
   trainingData,
-  trainingImage,
   canSetFavorite = false,
   onRemoveFavorite = () => { },
   navigation,
@@ -68,7 +67,7 @@ export const TrainingInfoCard = ({
         py="10"
         backgroundColor="#fff"
         onPress={async () => {
-          navigation.navigate(navigateToScreen, { trainingData, trainingImage });
+          navigation.navigate(navigateToScreen, { trainingData });
         }}
       >
         <HStack
@@ -77,7 +76,7 @@ export const TrainingInfoCard = ({
           height={70}
         >
           <Image
-            source={{ uri: trainingImage === "" ? trainingMainImage(trainingData.type) : trainingImage }}
+            source={{ uri: (trainingData.multimedia && trainingData.multimedia.length >=1) ? trainingData.multimedia.at(-1).fileUrl : trainingMainImage(trainingData.type) }}
             alt="Alternate Text"
             size="lg"
             borderRadius={10}
