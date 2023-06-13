@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Container, Text, NativeBaseProvider, extendTheme, View } from 'native-base';
+import { NativeBaseProvider, extendTheme, View } from 'native-base';
 import UsersList from '../components/users/usersList';
 
-export default function UsersScreen({ navigation}: { navigation: any}) {
+export default function UsersScreen({ navigation }: { navigation: any }) {
     const theme = extendTheme({
         components: {
             Text: {

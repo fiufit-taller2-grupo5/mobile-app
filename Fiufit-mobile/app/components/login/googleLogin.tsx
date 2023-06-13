@@ -50,7 +50,7 @@ export default function GoogleLogin(props: Props) {
           // we store the user info on the storage
           userInfo.googleUser = user;
           userInfo.role = "Atleta";
-          userInfo.UserMetadata = null;
+          userInfo.UserMetadata = undefined;
 
           globalUser.setUser(userInfo);
           console.log('Signed in with Google:', userInfo);

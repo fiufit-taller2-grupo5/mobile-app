@@ -1,11 +1,11 @@
 import { Text, Spinner, Button as NativeBaseButton, View, Link } from "native-base";
-import { CSSProperties, useState } from "react";
+import { Component, CSSProperties, ReactElement, useState } from "react";
 import { StyleProp, StyleSheet, ViewStyle } from "react-native";
 import { useToast } from 'native-base';
 
 interface Props {
   onPress: () => Promise<any | void>;
-  text: string;
+  text: string | ReactElement;
   customStyles?: StyleProp<ViewStyle>;
 }
 
@@ -59,7 +59,7 @@ export const LoadableButton = ({ text, customStyles, onPress }: Props) => {
       <NativeBaseButton onPress={handleClick} style={styles}>
         <View flexGrow={1} justifyContent={"space-around"} flexDirection={"row"} >
           <View width={"100%"} flexGrow={1} justifyContent={"center"} flexDirection={"row"} >
-            <Text color={"#FFFFFF"} bold fontSize={"md"} marginRight={isLoading ? 3 : 0}>{text}</Text>
+            <Text color={"#FFFFFF"} bold fontSize={"md"} marginRight={isLoading ? 3 : 0} alignItems="center" justifyContent="center">{text}</Text>
             {isLoading && <Spinner color={"#FFFFFF"} />}
           </View>
         </View>

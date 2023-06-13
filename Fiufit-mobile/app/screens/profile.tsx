@@ -191,6 +191,35 @@ export default function ProfileScreen(props: Props) {
   return <View style={{ flex: 1 }} backgroundColor="#fff">
     <Box style={editProfileStyles.nameBox}>
       <Text style={editProfileStyles.text}>{userInformation[0]}</Text>
+      <View height={20} flexDirection="row" alignItems="center" justifyContent="space-evenly">
+        <LoadableButton
+          customStyles={{ width: 125 }}
+          onPress={async () => { }}
+          text={
+            <>
+              <Text fontWeight={"bold"}>10 Trainings</Text>
+            </>
+          }
+        />
+        <LoadableButton
+          customStyles={{ width: 125 }}
+          onPress={async () => { }}
+          text={
+            <>
+              <Text fontWeight={"bold"}>40 Followers</Text>
+            </>
+          }
+        />
+        <LoadableButton
+          customStyles={{ width: 125 }}
+          onPress={async () => { }}
+          text={
+            <>
+              <Text fontWeight={"bold"}>Following 23</Text>
+            </>
+          }
+        />
+      </View>
       <ProgressChart
         absolute
         data={data}
