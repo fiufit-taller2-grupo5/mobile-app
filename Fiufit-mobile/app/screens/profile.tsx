@@ -6,6 +6,7 @@ import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
 import React, { useEffect, useState } from 'react';
 import globalUser from '../../userStorage';
 import { LoadableButton } from '../components/commons/buttons';
+import TrainingsList from '../components/trainings/trainingsList';
 
 const screens = ['ChangeNameScreen', 'ChangeHeightScreen', 'ChangeWeightScreen', 'ChangeDateScreen', 'ChangeInterestsScreen', 'ChangeLocationScreen', 'ChangeRoleScreen']
 
@@ -231,57 +232,10 @@ export default function ProfileScreen(props: Props) {
         hideLegend={false}
       />
     </Box>
-
-    <View flex={1} style={{ borderTopWidth: 1, borderTopColor: '#e06666', padding: 5 }}>
-      <FlatList
-        contentContainerStyle={{ flexGrow: 1 }}
-        data={fields} renderItem={({ item }) =>
-          <Box
-            borderBottomWidth="1"
-            borderColor="#eaeaea"
-            px="6"
-            py="6"
-            borderTopRadius="30px"
-          >
-            <HStack>
-              <Text _dark={{ color: "warmGray.50" }} color="#FF6060" bold>
-                {item.name}
-              </Text>
-              <Spacer />
-              <HStack space={2}>
-                <Text fontSize="md" _dark={{ color: "warmGray.50" }} color="coolGray.800" alignSelf="flex-start">
-                  {userInformation[item.id]}
-                </Text>
-                <Button backgroundColor="#ffffff" size={5} alignSelf="center"
-                  onPress={async () => {
-                    const value = userInformation[item.id];
-                    navigation.navigate(screens[item.id], { value });
-                  }}>
-                  <AntDesign name="arrowright" size={15} color="#707070" />
-                </Button>
-              </HStack>
-            </HStack>
-          </Box>}
-        keyExtractor={item => item.name}
-      />
-
-    </View>
-    <View
-      style={{
-        borderTopWidth: 1, borderTopColor: '#e06666', paddingTop: 10,
-        marginVertical: 10,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-      }}
-    >
-      <LoadableButton
-        customStyles={{ width: 200 }}
-        onPress={async () => {
-          await globalUser.logout();
-          navigation.navigate('LoginScreen');
-        }}
-        text={"Cerrar sesión"}
-      />
-    </View>
+    <Text style={editProfileStyles.favTrainings} fontSize={13}>Entrenamientos Favoritos</Text>
+    <TrainingsList
+      onlyFavorites
+      navigation={navigation}
+    />
   </View>;
 }

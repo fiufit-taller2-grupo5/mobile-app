@@ -301,6 +301,16 @@ export const editProfileStyles = StyleSheet.create({
     alignSelf: 'center',
     color: '#FF6060',
   },
+  favTrainings: {
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    fontWeight: '800',
+    fontSize: 20,
+    lineHeight: 35,
+    textAlign: 'center',
+    alignSelf: 'center',
+    color: '#FF6060',
+  },
   nameBox: {
     width: '100%',
     fontSize: 30,

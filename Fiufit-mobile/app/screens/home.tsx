@@ -10,6 +10,7 @@ import UsersScreen from './users';
 import InboxScreen from './inbox';
 import FavoritesScreen from './favorites';
 import TrainerTrainingsScreen from './trainerTrainings';
+import SettingsScreen from './settings';
 
 const Tab = createBottomTabNavigator();
 
@@ -99,6 +100,16 @@ export default function HomeScreen({ navigation }: any) {
                     }
                 }
                 name="Profile" component={ProfileScreen}
+            />
+            <Tab.Screen
+                options={
+                    {
+                        tabBarLabel: 'Settings', tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons name='cog' color={color} size={size} />),
+                        tabBarActiveTintColor: '#FF6060'
+                    }
+                }
+                name="Settings" component={SettingsScreen}
             />
         </Tab.Navigator>
     </NativeBaseProvider>;

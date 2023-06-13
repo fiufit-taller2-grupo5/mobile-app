@@ -10,7 +10,11 @@ import {
   CheckIcon,
   Select,
   HStack,
+  ArrowDownIcon,
+  ChevronDownIcon,
 } from "native-base";
+import { AntDesign } from "@expo/vector-icons";
+
 import {
   API,
   Training,
@@ -166,10 +170,9 @@ export default function TrainingsList(props: Props) {
         paddingY={2}
         paddingX={4}
         w="100%"
-        backgroundColor="#fff"
       >
         <VStack alignSelf="center" paddingY={2}
-          paddingX={4}>
+          paddingX={0}>
           <Input
             placeholder="Search trainings by title"
             onChangeText={handleFilterByTitle}
@@ -188,12 +191,15 @@ export default function TrainingsList(props: Props) {
             }
           />
         </VStack>
-        <HStack>
-          <Box maxW="300">
-            <Select selectedValue={selectedType} minWidth="120" maxWidth="190" accessibilityLabel="Choose Type" placeholder="Choose Type" _selectedItem={{
-              bg: "teal.600",
-              endIcon: <CheckIcon size="2" />
-            }} mt={1} onValueChange={handleFilterByType}>
+        <View
+          flexDir={"row"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+          width={"100%"}>
+          <View flex={0.8} paddingRight={2}>
+            <Select selectedValue={selectedType} accessibilityLabel="Choose Type" placeholder="Choose Type"
+              dropdownIcon={<View paddingRight={2}><ChevronDownIcon /></View>}
+              mt={1} onValueChange={handleFilterByType}>
               <Select.Item label="All types" value="" />
               <Select.Item label="Running" value="Running" />
               <Select.Item label="Swimming" value="Swimming" />
@@ -206,12 +212,10 @@ export default function TrainingsList(props: Props) {
               <Select.Item label="Dancing" value="Dancing" />
               <Select.Item label="Hiking" value="Hiking" />
             </Select>
-          </Box>
-          <Box maxW="300">
-            <Select selectedValue={selectedDifficulty} minWidth="120" maxWidth="190" accessibilityLabel="Choose Difficulty" placeholder="Choose Difficulty" _selectedItem={{
-              bg: "teal.600",
-              endIcon: <CheckIcon size="2" />
-            }} mt={1} onValueChange={handleFilterByDifficulty}>
+          </View>
+          <View flex={1} paddingRight={2}>
+            <Select selectedValue={selectedDifficulty} dropdownIcon={<View paddingRight={2}><ChevronDownIcon /></View>}
+              accessibilityLabel="Choose Difficulty" placeholder="Choose Difficulty" mt={1} onValueChange={handleFilterByDifficulty}>
               <Select.Item label="All difficulties" value="" />
               <Select.Item label="1" value="1" />
               <Select.Item label="2" value="2" />
@@ -224,12 +228,10 @@ export default function TrainingsList(props: Props) {
               <Select.Item label="9" value="9" />
               <Select.Item label="10" value="10" />
             </Select>
-          </Box>
-          <Box maxW="300">
-            <Select selectedValue={selectedDistance.toString()} minWidth="120" maxWidth="190" accessibilityLabel="Choose Distance" placeholder="Choose Distance" _selectedItem={{
-              bg: "teal.600",
-              endIcon: <CheckIcon size="2" />
-            }} mt={1} onValueChange={handleFilterByDistance}>
+          </View>
+          <View flex={1}>
+            <Select selectedValue={selectedDistance.toString()} dropdownIcon={<View paddingRight={2}><ChevronDownIcon /></View>}
+              accessibilityLabel="Choose Distance" placeholder="Choose Distance" mt={1} onValueChange={handleFilterByDistance}>
               <Select.Item label="All distances" value="0" />
               <Select.Item label="1km" value="1" />
               <Select.Item label="3km" value="3" />
@@ -238,8 +240,9 @@ export default function TrainingsList(props: Props) {
               <Select.Item label="15km" value="15" />
               <Select.Item label="20km" value="20" />
             </Select>
-          </Box>
-        </HStack>
+          </View>
+
+        </View>
       </VStack>
       {
         role === "Entrenador" &&
