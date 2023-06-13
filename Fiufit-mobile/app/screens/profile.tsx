@@ -8,7 +8,7 @@ import { LoadableButton } from '../components/commons/buttons';
 import TrainingsList from '../components/trainings/trainingsList';
 import { API } from '../../api';
 import { userInfo } from '../../asyncStorageAPI';
-
+import { MaterialIcons } from "@expo/vector-icons";
 
 interface Props {
   navigation: any;
@@ -181,6 +181,10 @@ export default function ProfileScreen(props: Props) {
     navigation.navigate("SelectedUsersScreen", { isFollowers: false, userId: user!.id });
   }
 
+  const onPressInbox = () => {
+    navigation.navigate("InboxInfoScreen", {}); // Esta roto porque falta pasar la metadata
+  }
+
   console.log(userId, globalUser.user?.id);
 
 
@@ -223,6 +227,18 @@ export default function ProfileScreen(props: Props) {
             </>
           }
         />
+        {userId != undefined && <Button
+              style={{
+                  bottom: 0,
+                  right: '2%',
+                  borderRadius: 50,
+                  backgroundColor: "#ffffff",
+                  margin: '2%',
+              }}
+              onPress={async () => { onPressInbox() }}
+          >
+          <MaterialIcons name="inbox" size={30} color="#000000"/>
+        </Button>}
       </View>
       {
         (!userId || userId === globalUser.user?.id) &&
