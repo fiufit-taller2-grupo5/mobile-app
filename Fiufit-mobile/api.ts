@@ -83,7 +83,7 @@ export class API {
         ...fetchConfig.headers,
       }
       // use localhost if running locally, otherwise use the api gateway
-      const localUrl = "https://9a6b-190-18-10-180.ngrok-free.app/" + path;
+      const localUrl = "https://1ac6-181-89-16-142.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       // console.log("fetching from api: ", url, fetchConfig);
@@ -249,12 +249,7 @@ export class API {
     );
   }
 
-  async addTraining(training: TrainerTraining): Promise<void> {
-    // TODO use to send image to backend
-    // const formData = new FormData();
-    // formData.append("image", {uri: imageUri});
-    // formData.append(JSON.stringify(training), '');
-    // body: formData
+  async addTraining(training: TrainerTraining): Promise<number> {
     const coordinates = await this.getCoordinates(training.location);
     training.latitude = coordinates[0].toString();
     training.longitude = coordinates[1].toString();
@@ -264,15 +259,59 @@ export class API {
       {
         method: "POST",
         body: JSON.stringify(training),
-        // headers: {
-        //   'Content-Type': 'multipart/form-data',
-        // }
       },
       (response: any) => {
         console.log("training added");
+        return response.id;
       },
       (error: ApiError) => {
         console.log("error adding training:", error);
+        throw error;
+      }
+    );
+  }
+
+  async addImageTraining(trainingId: number, image: any): Promise<void> {
+    const name = image.split('/').pop();
+    const formData = new FormData();
+    formData.append('file', {
+      uri: image,
+      type: 'image/jpeg',
+      name: name + '.jpg',
+    } as any);
+    return await this.fetchFromApi(
+      "training-service/api/trainings/" + trainingId + "/image",
+      {
+        method: "PUT",
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      },
+      (response: any) => {
+        console.log("image added");
+      },
+      (error: ApiError) => {
+        console.log("error adding image:", error);
+        throw error;
+      }
+    );
+  }
+
+  async getImageTraining(trainingId: number): Promise<string> {
+    return await this.fetchFromApi(
+      "training-service/api/trainings/" + trainingId + "/image",
+      { method: "GET" },
+      (response: Array<any>) => {
+        if (response.length >= 1) {
+          const lastImage = response.pop();
+          return lastImage.fileUrl;
+        } else {
+          return "";
+        }
+      },
+      (error: ApiError) => {
+        console.log("error getting training image:", error);
         throw error;
       }
     );

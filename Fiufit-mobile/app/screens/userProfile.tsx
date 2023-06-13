@@ -14,6 +14,7 @@ import { editProfileStyles, userProfileStyles } from "../styles";
 import { TrainingInfoCard } from "../components/trainings/trainingInfoCard";
 
 
+// TODO delete
 export default function UserInfoScreen({ route, navigation }: any) {
   const theme = extendTheme({
     components: {
