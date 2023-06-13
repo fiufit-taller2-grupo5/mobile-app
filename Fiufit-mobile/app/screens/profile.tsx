@@ -9,6 +9,7 @@ import TrainingsList from '../components/trainings/trainingsList';
 import { API } from '../../api';
 import { userInfo } from '../../asyncStorageAPI';
 import { MaterialIcons } from "@expo/vector-icons";
+import { FollowButton } from '../components/users/followButton';
 
 interface Props {
   navigation: any;
@@ -18,6 +19,7 @@ interface Props {
 export default function ProfileScreen(props: Props) {
   const { navigation, route } = props;
   const userId = route?.params?.userId;
+  const isFollowed = route?.params?.isFollowed;
 
   const [dailySteps, setDailySteps] = useState(0);
   const [dailyDistance, setDailyDistance] = useState(0);
@@ -28,7 +30,8 @@ export default function ProfileScreen(props: Props) {
   const [userFollowingCount, setUserFollowingCount] = useState<number | null>(null);
 
   const [user, setUser] = useState<userInfo | null>();
-
+  const api = new API(navigation);
+  
   const chartConfig = {
     backgroundGradientFromOpacity: 0,
     backgroundGradientToOpacity: 0,
@@ -156,7 +159,7 @@ export default function ProfileScreen(props: Props) {
         } else {
           user = await globalUser.getUser();
         }
-        console.log("user", user);
+        console.log("USER -----------:", user);
         setUser(user);
         if (user) {
           setName(user.name);
@@ -173,7 +176,7 @@ export default function ProfileScreen(props: Props) {
     return unsubscribe;
   }, [navigation]);
 
-  const onPressFollowers = async () => {
+  const onPressFollowers = () => {
     navigation.navigate("SelectedUsersScreen", { isFollowers: true, userId: user!.id });
   }
 
@@ -185,12 +188,28 @@ export default function ProfileScreen(props: Props) {
     navigation.navigate("InboxInfoScreen", {}); // Esta roto porque falta pasar la metadata
   }
 
+  const onFollow = async (userId:number) => {
+    await api.followUser(userId);
+  };
+
+  const onUnfollow = async (userId:number) => {
+    await api.unfollowUser(userId);
+  };
+
   console.log(userId, globalUser.user?.id);
 
 
   return <NativeBaseProvider><View style={{ flex: 1 }} backgroundColor="#fff">
     <Box style={editProfileStyles.nameBox}>
       <Text style={editProfileStyles.text}>{name}</Text>
+      <View flexDirection={"row"} width={'100%'} justifyContent={"space-evenly"}>
+        {userId != undefined && <FollowButton
+          userId={userId}
+          following={isFollowed}
+          onFollow={() => onFollow(userId)}
+          onUnfollow={() => onUnfollow(userId)}
+        />}
+      </View>
       <View height={20} flexDirection="row" alignItems="center" justifyContent="space-evenly">
         {userId === undefined && <LoadableButton
           customStyles={{
@@ -240,6 +259,7 @@ export default function ProfileScreen(props: Props) {
           <MaterialIcons name="inbox" size={30} color="#000000"/>
         </Button>}
       </View>
+      
       {
         (!userId || userId === globalUser.user?.id) &&
         <ProgressChart

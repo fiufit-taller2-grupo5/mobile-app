@@ -36,7 +36,7 @@ export const UserInfoCard = ({
 
           onPress={async () => {
             console.log("xd")
-            navigation.navigate(navigateToScreen, { userId: userData.id });
+            navigation.navigate(navigateToScreen, { userId: userData.id, isFollowed: isFollowed });
           }}
         >
           {userData.name}
