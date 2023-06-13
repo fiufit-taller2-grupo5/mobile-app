@@ -47,6 +47,7 @@ export default function UsersList(props: Props) {
       setRefreshing(false);
     } else if (!useSelectedUsers) {
       let allUsers = await api.getUsers();
+      allUsers = allUsers.filter((item) => item.id !== user?.id);
       let followedUsers = await api.getFollowedUsers(user!.id);
       console.log("SHOWING ALL USERS", allUsers)
       setUsers(allUsers);
