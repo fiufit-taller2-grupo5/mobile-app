@@ -88,6 +88,18 @@ export default function UsersList(props: Props) {
     };
   }, [props]);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      try {
+        getUsersList();
+      } catch (error) {
+        console.log(error);
+      }
+    });
+    return unsubscribe;
+  }, [navigation]);
+  
+
   const onFollow = async (userId: number) => {
     await api.followUser(userId);
   };

@@ -31,7 +31,7 @@ import TrainerTrainingsScreen from './app/screens/trainerTrainings';
 import RateTrainingScreen from './app/screens/rateTraining';
 import EditTrainingScreen from './app/screens/editTraining';
 import MapScreen from './app/screens/map';
-import SelectedUsersScreen from './app/screens/SelectedUsers';
+import SelectedUsersScreen from './app/screens/selectedUsers';
 import UserTrainingsScreen from './app/screens/userTrainings';
 
 const Stack = createNativeStackNavigator();
