@@ -172,6 +172,13 @@ export default function ProfileScreen(props: Props) {
     return unsubscribe;
   }, [navigation]);
 
+  const onPressFollowers = () => {
+    navigation.navigate("SelectedUsersScreen", { isFollowers: true , userId: userId});
+  }
+
+  const onPressFollowing = () => {
+    navigation.navigate("SelectedUsersScreen", { isFollowers: false, userId: userId });
+  }
 
   console.log(userId, globalUser.user?.id);
 
@@ -193,7 +200,7 @@ export default function ProfileScreen(props: Props) {
         />}
         <LoadableButton
           customStyles={{ width: 125 }}
-          onPress={async () => { }}
+          onPress={async () => { onPressFollowers()}}
           text={
             <>
               <Text fontWeight={"bold"}>{userFollowersCount} Seguidores</Text>
@@ -202,7 +209,7 @@ export default function ProfileScreen(props: Props) {
         />
         <LoadableButton
           customStyles={{ width: 125 }}
-          onPress={async () => { }}
+          onPress={async () => { onPressFollowing()}}
           text={
             <>
               <Text fontWeight={"bold"}>{userFollowingCount} Siguiendo</Text>

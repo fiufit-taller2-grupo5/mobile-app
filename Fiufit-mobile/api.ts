@@ -578,7 +578,7 @@ export class API {
       "user-service/api/users/" + userId + "/following",
       { method: "GET" },
       (response: userInfo[]) => {
-        console.log("followed users:", response);
+        // console.log("followed users:", response);
         return response
       },
       (error: ApiError) => {

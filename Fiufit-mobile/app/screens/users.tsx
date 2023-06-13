@@ -20,6 +20,7 @@ export default function UsersScreen({ navigation }: { navigation: any }) {
         <View flex={1} style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: "white" }}>
             <UsersList
                 navigation={navigation}
+                selectedUsers={[]}
             />
         </View>
     </NativeBaseProvider>;

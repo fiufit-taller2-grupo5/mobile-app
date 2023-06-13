@@ -18,10 +18,11 @@ import globalUser from "../../../userStorage";
 
 interface Props {
   navigation: any;
+  selectedUsers: userInfo[];
 }
 
 export default function UsersList(props: Props) {
-  const { navigation } = props;
+  const { navigation, selectedUsers } = props;
   const [users, setUsers] = useState<userInfo[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<userInfo[]>([]);
   const [followedUsers, setFollowedUsers] = useState<userInfo[]>([]);
@@ -35,6 +36,18 @@ export default function UsersList(props: Props) {
   const getUsersList = async () => {
     setRefreshing(true);
     const user = await globalUser.getUser();
+
+    if (selectedUsers.length > 0) {
+      console.log("SHOWING ONLY SELECTED USERS");
+      let followedUsers = await api.getFollowedUsers(user!.id);
+      setUsers(selectedUsers);
+      setFollowedUsers(followedUsers);
+      setFilteredUsers(selectedUsers);
+      setRefreshing(false);
+      return;
+    }
+    console.log("SHOWING ALL USERS");
+
     let allUsers = await api.getUsers();
     let followedUsers = await api.getFollowedUsers(user!.id);
     setUsers(allUsers);
