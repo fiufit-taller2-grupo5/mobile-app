@@ -83,14 +83,6 @@ export default function HomeScreen({ navigation }: any) {
                 }
                 name="Trainings" component={TrainerTrainingsScreen}
             />}
-            {isAthlete && <Tab.Screen
-                options={{
-                    tabBarLabel: 'Favorites', tabBarIcon: ({ color, size }) => (
-                        <MaterialCommunityIcons name='heart' color={color} size={size} />),
-                    tabBarActiveTintColor: '#FF6060'
-                }}
-                name="Favorites" component={FavoritesScreen}
-            />}
             <Tab.Screen
                 options={
                     {

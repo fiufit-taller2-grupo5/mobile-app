@@ -194,7 +194,11 @@ export default function ProfileScreen(props: Props) {
       <Text style={editProfileStyles.text}>{userInformation[0]}</Text>
       <View height={20} flexDirection="row" alignItems="center" justifyContent="space-evenly">
         <LoadableButton
-          customStyles={{ width: 125 }}
+          // textColor={"#FF6060"}
+          customStyles={{
+            width: 125,
+            //backgroundColor: "#FFFFFF",
+          }}
           onPress={async () => { }}
           text={
             <>
@@ -234,6 +238,7 @@ export default function ProfileScreen(props: Props) {
     </Box>
     <Text style={editProfileStyles.favTrainings} fontSize={13}>Entrenamientos Favoritos</Text>
     <TrainingsList
+      userId={globalUser.user?.id}
       onlyFavorites
       navigation={navigation}
     />

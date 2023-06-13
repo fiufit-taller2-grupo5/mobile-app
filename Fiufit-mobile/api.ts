@@ -449,9 +449,11 @@ export class API {
     );
   }
 
-  async getFavoriteTrainings(): Promise<Training[]> {
+  async getFavoriteTrainings(userId?: number): Promise<Training[]> {
     const user = await getUserFromStorage();
-    const userId = user?.id;
+    if (!userId) {
+      userId = user?.id;
+    }
     return await this.fetchFromApi(
       "training-service/api/trainings/favorites/" + userId,
       { method: "GET" },

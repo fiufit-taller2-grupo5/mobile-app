@@ -29,6 +29,7 @@ import { LoadableButton } from "../commons/buttons";
 interface Props {
   navigation: any;
   onlyFavorites?: boolean;
+  userId?: number;
 }
 
 export default function TrainingsList(props: Props) {
@@ -50,10 +51,16 @@ export default function TrainingsList(props: Props) {
     if (userLatitude && userLatitude !== 0 || userLongitude && userLongitude !== 0) {
       return [userLatitude, userLongitude];
     }
-    if (!globalUser.user) {
+    if (!globalUser.user || !props.userId) {
       return;
     }
-    const user = await api.getUserInfoById(globalUser.user.id);
+    let user;
+    if (props.userId) {
+      user = await api.getUserInfoById(props.userId);
+    } else {
+      user = await api.getUserInfoById(globalUser.user.id);
+    }
+
     if (user) {
       const userLocation = user.location;
       if (userLocation) {
@@ -131,13 +138,13 @@ export default function TrainingsList(props: Props) {
     try {
       const coordinates = await getUserLocation();
       if (props.onlyFavorites) {
-        const favoritesTrainingsResponse = await api.getFavoriteTrainings();
+        const favoritesTrainingsResponse = await api.getFavoriteTrainings(props.userId);
         let trainings = updateFavoriteStatus(favoritesTrainingsResponse, favoritesTrainingsResponse);
         filterData(trainings);
       } else {
         const trainingList = await api.getTrainings();
         if (trainingList.length > 0) {
-          const favoritesTrainingsResponse = await api.getFavoriteTrainings();
+          const favoritesTrainingsResponse = await api.getFavoriteTrainings(props.userId);
           let trainings = updateFavoriteStatus(trainingList, favoritesTrainingsResponse);
           filterData(trainings);
         }
