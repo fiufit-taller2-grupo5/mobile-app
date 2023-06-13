@@ -273,11 +273,15 @@ export class API {
 
   async addImageTraining(trainingId: number, image: any): Promise<void> {
     const name = image.split('/').pop();
+    let type = image.split('.').pop();
+    if (type === "jpg") {
+      type = "jpeg";
+    }
     const formData = new FormData();
     formData.append('file', {
       uri: image,
-      type: 'image/jpeg',
-      name: name + '.jpg',
+      type: 'image/' + type,
+      name: name,
     } as any);
     return await this.fetchFromApi(
       "training-service/api/trainings/" + trainingId + "/image",
