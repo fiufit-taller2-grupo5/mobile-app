@@ -24,9 +24,9 @@ export default function ProfileScreen(props: Props) {
   const [dailyDistance, setDailyDistance] = useState(0);
   const [dailyCalories, setDailyCalories] = useState(0);
 
-  const [userTrainingsCount, setUserTrainingsCount] = useState(0);
-  const [userFollowersCount, setUserFollowersCount] = useState(0);
-  const [userFollowingCount, setUserFollowingCount] = useState(0);
+  const [userTrainingsCount, setUserTrainingsCount] = useState<number | null>(null);
+  const [userFollowersCount, setUserFollowersCount] = useState<number | null>(null);
+  const [userFollowingCount, setUserFollowingCount] = useState<number | null>(null);
 
   const [user, setUser] = useState<userInfo | null>();
 
@@ -175,7 +175,7 @@ export default function ProfileScreen(props: Props) {
   }, [navigation]);
 
   const onPressFollowers = async () => {
-    navigation.navigate("SelectedUsersScreen", { isFollowers: true , userId: user!.id });
+    navigation.navigate("SelectedUsersScreen", { isFollowers: true, userId: user!.id });
   }
 
   const onPressFollowing = () => {
@@ -191,18 +191,22 @@ export default function ProfileScreen(props: Props) {
       <View height={20} flexDirection="row" alignItems="center" justifyContent="space-evenly">
         {userId === undefined && <LoadableButton
           customStyles={{
-            width: 125,
+            width: 130,
           }}
+          hideTextWhileLoading
+          overrideLoading={userTrainingsCount === null}
           onPress={async () => { }}
           text={
             <>
-              <Text fontWeight={"bold"}>{userTrainingsCount} Entrenamientos</Text>
+              <Text fontWeight={"bold"}>{userTrainingsCount} Sesiones</Text>
             </>
           }
         />}
         <LoadableButton
-          customStyles={{ width: 125 }}
-          onPress={async () => { onPressFollowers()}}
+          hideTextWhileLoading
+          customStyles={{ width: 130 }}
+          overrideLoading={userFollowersCount === null}
+          onPress={async () => { onPressFollowers() }}
           text={
             <>
               <Text fontWeight={"bold"}>{userFollowersCount} Seguidores</Text>
@@ -210,8 +214,10 @@ export default function ProfileScreen(props: Props) {
           }
         />
         <LoadableButton
-          customStyles={{ width: 125 }}
-          onPress={async () => { onPressFollowing()}}
+          hideTextWhileLoading
+          customStyles={{ width: 130 }}
+          overrideLoading={userFollowingCount === null}
+          onPress={async () => { onPressFollowing() }}
           text={
             <>
               <Text fontWeight={"bold"}>{userFollowingCount} Siguiendo</Text>

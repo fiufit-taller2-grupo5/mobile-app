@@ -8,6 +8,8 @@ interface Props {
   text: string | ReactElement;
   customStyles?: StyleProp<ViewStyle>;
   textColor?: string;
+  overrideLoading?: boolean;
+  hideTextWhileLoading?: boolean;
 }
 
 const baseStyles = StyleSheet.create({
@@ -24,7 +26,7 @@ const baseStyles = StyleSheet.create({
   },
 });
 
-export const LoadableButton = ({ text, customStyles, textColor, onPress }: Props) => {
+export const LoadableButton = ({ text, customStyles, textColor, overrideLoading, hideTextWhileLoading, onPress }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
 
@@ -60,8 +62,8 @@ export const LoadableButton = ({ text, customStyles, textColor, onPress }: Props
       <NativeBaseButton onPress={(e) => handleClick(e)} style={styles}>
         <View flexGrow={1} justifyContent={"space-around"} flexDirection={"row"} >
           <View width={"100%"} flexGrow={1} justifyContent={"center"} flexDirection={"row"} >
-            <Text color={textColor ? textColor : "#FFFFFF"} bold fontSize={"md"} marginRight={isLoading ? 3 : 0} alignItems="center" justifyContent="center">{text}</Text>
-            {isLoading && <Spinner color={textColor ? textColor : "#FFFFFF"} />}
+            <Text color={textColor ? textColor : "#FFFFFF"} bold fontSize={"md"} marginRight={isLoading ? 3 : 0} alignItems="center" justifyContent="center">{(isLoading || overrideLoading) && hideTextWhileLoading ? "" : text}</Text>
+            {(isLoading || overrideLoading) && <Spinner color={textColor ? textColor : "#FFFFFF"} />}
           </View>
         </View>
       </NativeBaseButton>
