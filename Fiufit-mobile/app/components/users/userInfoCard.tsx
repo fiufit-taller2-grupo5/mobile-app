@@ -55,11 +55,12 @@ export const UserInfoCard = ({
       <HStack>
         <Text
           style={trainingStyles.textTitle}
-          color="#000000"
+          color="red.200"
           text-align="left"
           bold
 
-          onPressOut={async () => {
+          onPress={async () => {
+            console.log("xd")
             navigation.navigate(navigateToScreen, { userId: userData.id });
           }}
         >

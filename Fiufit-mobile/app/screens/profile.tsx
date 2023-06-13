@@ -1,4 +1,4 @@
-import { Box, Text, extendTheme, FlatList, HStack, Spacer, Button, View } from 'native-base';
+import { Box, Text, extendTheme, FlatList, HStack, Spacer, Button, View, NativeBaseProvider } from 'native-base';
 import { editProfileStyles } from '../styles';
 import { AntDesign } from '@expo/vector-icons';
 import { ProgressChart } from "react-native-chart-kit";
@@ -7,38 +7,23 @@ import React, { useEffect, useState } from 'react';
 import globalUser from '../../userStorage';
 import { LoadableButton } from '../components/commons/buttons';
 import TrainingsList from '../components/trainings/trainingsList';
+import { API } from '../../api';
+import { userInfo } from '../../asyncStorageAPI';
 
-const screens = ['ChangeNameScreen', 'ChangeHeightScreen', 'ChangeWeightScreen', 'ChangeDateScreen', 'ChangeInterestsScreen', 'ChangeLocationScreen', 'ChangeRoleScreen']
-
-const fields = [
-  { name: "Nombre completo", id: 0 }, // no hay endpoint para cambiar esto
-  { name: "Altura", id: 1 },
-  { name: "Peso", id: 2 },
-  { name: "Fecha de nacimiento", id: 3 },
-  { name: "Intereses", id: 4 },
-  { name: "Dirección", id: 5 },
-  { name: "Rol", id: 6 }, // se guarda en el contexto
-];
 
 interface Props {
   navigation: any;
+  route: any;
 }
 
 export default function ProfileScreen(props: Props) {
-  const { navigation } = props;
+  const { navigation, route } = props;
+  const { userId } = route.params;
+
   const [dailySteps, setDailySteps] = useState(0);
   const [dailyDistance, setDailyDistance] = useState(0);
   const [dailyCalories, setDailyCalories] = useState(0);
 
-  const theme = extendTheme({
-    components: {
-      Box: {
-        defaultProps: {
-          bg: '#fff',
-        }
-      }
-    }
-  });
 
   const chartConfig = {
     backgroundGradientFromOpacity: 0,
@@ -153,35 +138,21 @@ export default function ProfileScreen(props: Props) {
 
   }, []);
 
-  const [userInformation, setUserInformation] = useState(["", "", "", "", "", "", ""]);
+  const [name, setName] = useState("");
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       const getUserInfo = async () => {
-        const userInfoStored = await globalUser.getUser();
-
-        if (userInfoStored === null) {
-          return;
+        let user: userInfo | undefined | null;
+        if (userId) {
+          const api = new API(navigation);
+          user = await api.getUserInfoById(userId);
+        } else {
+          user = await globalUser.getUser();
         }
-
-        const details = await globalUser.getUserMetadata();
-        console.log("details:", details);
-
-        if (details === null || details === undefined) { // if the user has skipped the registration form
-          setUserInformation([userInfoStored.name, "", "", "", "", "", userInfoStored!.role]);
-          return;
-        }
-
-        const interests = details!.interests
-
-        let birthdate = details!.birthDate; // from "2000-09-22T17:43:38.879Z" to "22/09/2000"
-        if (birthdate !== null) {
-          birthdate = birthdate.split('T')[0].split('-').reverse().join('/');
-        }
-
-        console.log("there is user info stored:", userInfoStored, "details:", details, "interests:", interests);
-        if (userInfoStored && details && interests) {
-          setUserInformation([userInfoStored.name, details.height?.toString() ?? "", details.weight?.toString() ?? "", birthdate ?? "", interests.join(', '), details.location ?? "", userInfoStored.role]);
+        console.log("user", user);
+        if (user) {
+          setName(user.name);
         }
       }
       getUserInfo();
@@ -189,15 +160,13 @@ export default function ProfileScreen(props: Props) {
     return unsubscribe;
   }, [navigation]);
 
-  return <View style={{ flex: 1 }} backgroundColor="#fff">
+  return <NativeBaseProvider><View style={{ flex: 1 }} backgroundColor="#fff">
     <Box style={editProfileStyles.nameBox}>
-      <Text style={editProfileStyles.text}>{userInformation[0]}</Text>
+      <Text style={editProfileStyles.text}>{name}</Text>
       <View height={20} flexDirection="row" alignItems="center" justifyContent="space-evenly">
         <LoadableButton
-          // textColor={"#FF6060"}
           customStyles={{
             width: 125,
-            //backgroundColor: "#FFFFFF",
           }}
           onPress={async () => { }}
           text={
@@ -225,16 +194,19 @@ export default function ProfileScreen(props: Props) {
           }
         />
       </View>
-      <ProgressChart
-        absolute
-        data={data}
-        width={380}
-        height={260}
-        strokeWidth={25}
-        radius={25}
-        chartConfig={chartConfig}
-        hideLegend={false}
-      />
+      {
+        (!userId || userId === globalUser.user?.id) &&
+        <ProgressChart
+          absolute
+          data={data}
+          width={380}
+          height={260}
+          strokeWidth={25}
+          radius={25}
+          chartConfig={chartConfig}
+          hideLegend={false}
+        />
+      }
     </Box>
     <Text style={editProfileStyles.favTrainings} fontSize={13}>Entrenamientos Favoritos</Text>
     <TrainingsList
@@ -242,5 +214,5 @@ export default function ProfileScreen(props: Props) {
       onlyFavorites
       navigation={navigation}
     />
-  </View>;
+  </View></NativeBaseProvider>;
 }

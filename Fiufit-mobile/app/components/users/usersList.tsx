@@ -136,7 +136,7 @@ export default function UsersList(props: Props) {
               <UserInfoCard
                 userData={user.item}
                 navigation={navigation}
-                navigateToScreen="UserInfoScreen"
+                navigateToScreen="ProfileScreen"
                 isFollowed={followedUsers.some(
                   (followedUser) => followedUser.id === user.item.id
                 )
