@@ -55,7 +55,6 @@ export const UserInfoCard = ({
       <HStack>
         <Text
           style={trainingStyles.textTitle}
-          color="red.200"
           text-align="left"
           bold
 

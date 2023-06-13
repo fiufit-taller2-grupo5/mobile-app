@@ -18,11 +18,15 @@ interface Props {
 
 export default function ProfileScreen(props: Props) {
   const { navigation, route } = props;
-  const { userId } = route.params;
+  const userId = route?.params?.userId;
 
   const [dailySteps, setDailySteps] = useState(0);
   const [dailyDistance, setDailyDistance] = useState(0);
   const [dailyCalories, setDailyCalories] = useState(0);
+
+  const [userTrainingsCount, setUserTrainingsCount] = useState(0);
+  const [userFollowersCount, setUserFollowersCount] = useState(0);
+  const [userFollowingCount, setUserFollowingCount] = useState(0);
 
 
   const chartConfig = {
@@ -134,7 +138,9 @@ export default function ProfileScreen(props: Props) {
       }
     }
 
-    testGoogleFit();
+    if (!userId) {
+      testGoogleFit();
+    }
 
   }, []);
 
@@ -142,10 +148,10 @@ export default function ProfileScreen(props: Props) {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
+      const api = new API(navigation);
       const getUserInfo = async () => {
         let user: userInfo | undefined | null;
         if (userId) {
-          const api = new API(navigation);
           user = await api.getUserInfoById(userId);
         } else {
           user = await globalUser.getUser();
@@ -153,6 +159,12 @@ export default function ProfileScreen(props: Props) {
         console.log("user", user);
         if (user) {
           setName(user.name);
+          const trainingSessions = await api.getUserTrainingSessions(user.id);
+          setUserTrainingsCount(trainingSessions.length);
+          const followers = await api.getFollowers(user.id);
+          setUserFollowersCount(followers.length);
+          const following = await api.getFollowedUsers(user.id);
+          setUserFollowingCount(following.length);
         }
       }
       getUserInfo();
@@ -160,18 +172,31 @@ export default function ProfileScreen(props: Props) {
     return unsubscribe;
   }, [navigation]);
 
+
+  console.log(userId, globalUser.user?.id);
+
+
   return <NativeBaseProvider><View style={{ flex: 1 }} backgroundColor="#fff">
     <Box style={editProfileStyles.nameBox}>
       <Text style={editProfileStyles.text}>{name}</Text>
       <View height={20} flexDirection="row" alignItems="center" justifyContent="space-evenly">
-        <LoadableButton
+        {userId === undefined && <LoadableButton
           customStyles={{
             width: 125,
           }}
           onPress={async () => { }}
           text={
             <>
-              <Text fontWeight={"bold"}>10 Trainings</Text>
+              <Text fontWeight={"bold"}>{userTrainingsCount} Entrenamientos</Text>
+            </>
+          }
+        />}
+        <LoadableButton
+          customStyles={{ width: 125 }}
+          onPress={async () => { }}
+          text={
+            <>
+              <Text fontWeight={"bold"}>{userFollowersCount} Seguidores</Text>
             </>
           }
         />
@@ -180,16 +205,7 @@ export default function ProfileScreen(props: Props) {
           onPress={async () => { }}
           text={
             <>
-              <Text fontWeight={"bold"}>40 Followers</Text>
-            </>
-          }
-        />
-        <LoadableButton
-          customStyles={{ width: 125 }}
-          onPress={async () => { }}
-          text={
-            <>
-              <Text fontWeight={"bold"}>Following 23</Text>
+              <Text fontWeight={"bold"}>{userFollowingCount} Siguiendo</Text>
             </>
           }
         />
@@ -210,7 +226,7 @@ export default function ProfileScreen(props: Props) {
     </Box>
     <Text style={editProfileStyles.favTrainings} fontSize={13}>Entrenamientos Favoritos</Text>
     <TrainingsList
-      userId={globalUser.user?.id}
+      userId={userId ? userId : globalUser.user?.id}
       onlyFavorites
       navigation={navigation}
     />
