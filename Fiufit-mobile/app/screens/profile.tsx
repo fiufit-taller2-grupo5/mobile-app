@@ -194,7 +194,7 @@ export default function ProfileScreen(props: Props) {
           }}
           hideTextWhileLoading
           overrideLoading={userTrainingsCount === null}
-          onPress={async () => { }}
+          onPress={async () => { navigation.navigate("UserTrainingsScreen");}}
           text={
             <>
               <Text fontWeight={"bold"}>{userTrainingsCount} Sesiones</Text>

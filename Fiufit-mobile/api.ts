@@ -83,7 +83,7 @@ export class API {
         ...fetchConfig.headers,
       }
       // use localhost if running locally, otherwise use the api gateway
-      const localUrl = "https://9a6b-190-18-10-180.ngrok-free.app/" + path;
+      const localUrl = "https://1ac6-181-89-16-142.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       // console.log("fetching from api: ", url, fetchConfig);
@@ -578,7 +578,6 @@ export class API {
       "user-service/api/users/" + userId + "/following",
       { method: "GET" },
       (response: userInfo[]) => {
-        // console.log("followed users:", response);
         return response
       },
       (error: ApiError) => {

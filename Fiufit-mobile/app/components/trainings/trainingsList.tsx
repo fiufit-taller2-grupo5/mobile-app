@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from "react";
 import {
-  Box,
   FlatList,
   VStack,
-  Divider,
   Icon,
   Input,
   View,
-  CheckIcon,
   Select,
-  HStack,
-  ArrowDownIcon,
   ChevronDownIcon,
 } from "native-base";
-import { AntDesign } from "@expo/vector-icons";
 
 import {
   API,
