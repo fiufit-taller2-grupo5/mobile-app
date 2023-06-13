@@ -9,6 +9,8 @@ import TrainingsList from '../components/trainings/trainingsList';
 import { API } from '../../api';
 import { userInfo } from '../../asyncStorageAPI';
 import { MaterialIcons } from "@expo/vector-icons";
+import { collection, query, where, getDocs, addDoc, getDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
 import { FollowButton } from '../components/users/followButton';
 
 interface Props {
@@ -31,7 +33,7 @@ export default function ProfileScreen(props: Props) {
 
   const [user, setUser] = useState<userInfo | null>();
   const api = new API(navigation);
-  
+
   const chartConfig = {
     backgroundGradientFromOpacity: 0,
     backgroundGradientToOpacity: 0,
@@ -184,15 +186,64 @@ export default function ProfileScreen(props: Props) {
     navigation.navigate("SelectedUsersScreen", { isFollowers: false, userId: user!.id });
   }
 
-  const onPressInbox = () => {
-    navigation.navigate("InboxInfoScreen", {}); // Esta roto porque falta pasar la metadata
+  const onPressInbox = async () => {
+    try {
+      const user = await globalUser.getUser();
+      const chatsRef = collection(db, "chats");
+      const q = query(
+        chatsRef,
+        where("participantIds", "array-contains", [user!.id, userId].sort().join("_")),
+      );
+
+      const querySnapshot = await getDocs(q);
+      const chatsMetadata = querySnapshot.docs.map(doc => {
+        console.log("doc data: ", doc.data());
+        console.log("doc id: ", doc.id);
+        const data = doc.data();
+        data.lastMessage.createdAt = data.lastMessage.createdAt.toDate().toLocaleDateString();
+        data._id = doc.id;
+        data._currentUserId = user?.id;
+        return data;
+      });
+
+      if (chatsMetadata.length > 0) {
+        navigation.navigate("InboxInfoScreen", { chatMetadata: chatsMetadata[0] });
+      } else {
+        const participants: any = {};
+        participants[user!.id] = { name: user!.name };
+        participants[userId] = { name: name };
+
+        const chat = {
+          participants: participants,
+          parcitipantIds: [user!.id, userId].sort().join("_"),
+          lastMessage: {
+            _id: "",
+            text: "Inicia la conversación!",
+            createdAt: new Date(),
+          }
+        }
+
+        const docRef = await addDoc(collection(db, "chats"), chat);
+        const chatMetadata = await getDoc(docRef);
+
+        const data: any = chatMetadata.data();
+        data._id = chatMetadata.id;
+        data._currentUserId = user?.id;
+
+        console.log("chat metaadta", data);
+        navigation.navigate("InboxInfoScreen", { chatMetadata: data });
+      }
+    }
+    catch (e) {
+      console.log(e);
+    }
   }
 
-  const onFollow = async (userId:number) => {
+  const onFollow = async (userId: number) => {
     await api.followUser(userId);
   };
 
-  const onUnfollow = async (userId:number) => {
+  const onUnfollow = async (userId: number) => {
     await api.unfollowUser(userId);
   };
 
@@ -217,7 +268,7 @@ export default function ProfileScreen(props: Props) {
           }}
           hideTextWhileLoading
           overrideLoading={userTrainingsCount === null}
-          onPress={async () => { navigation.navigate("UserTrainingsScreen");}}
+          onPress={async () => { navigation.navigate("UserTrainingsScreen"); }}
           text={
             <>
               <Text fontWeight={"bold"}>{userTrainingsCount} Sesiones</Text>
@@ -246,20 +297,20 @@ export default function ProfileScreen(props: Props) {
             </>
           }
         />
-        {userId != undefined && <Button
-              style={{
-                  bottom: 0,
-                  right: '2%',
-                  borderRadius: 50,
-                  backgroundColor: "#ffffff",
-                  margin: '2%',
-              }}
-              onPress={async () => { onPressInbox() }}
-          >
-          <MaterialIcons name="inbox" size={30} color="#000000"/>
+        {userId !== undefined && <Button
+          style={{
+            bottom: 0,
+            right: '2%',
+            borderRadius: 50,
+            backgroundColor: "#ffffff",
+            margin: '2%',
+          }}
+          onPress={async () => { onPressInbox() }}
+        >
+          <MaterialIcons name="inbox" size={30} color="#000000" />
         </Button>}
       </View>
-      
+
       {
         (!userId || userId === globalUser.user?.id) &&
         <ProgressChart

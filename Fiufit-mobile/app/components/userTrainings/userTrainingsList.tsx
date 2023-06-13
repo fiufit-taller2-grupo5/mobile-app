@@ -70,6 +70,7 @@ export default function UserTrainingsList(props: Props) {
     try {
       const userTrainingsList = await api.getCompleteUserTrainingSessions(await globalUser.getUserId());
       if (userTrainingsList.length > 0) {
+        console.log("userTrainingsList: ", userTrainingsList[0].id, userTrainingsList[1].id)
         filterData(userTrainingsList);
       }
     } catch (e: any) {
@@ -156,8 +157,8 @@ export default function UserTrainingsList(props: Props) {
 
         </View>
       </VStack>
-      { filteredData.length > 0 && <FlatList
-        contentContainerStyle={{ flexGrow: 1}}
+      {<FlatList
+        contentContainerStyle={{ flexGrow: 1 }}
         data={filteredData}
         marginBottom={0}
         marginTop={0}
@@ -168,7 +169,7 @@ export default function UserTrainingsList(props: Props) {
             navigateToScreen="TrainingInfoScreen"
           />
         )}
-        keyExtractor={(userTraining) => userTraining.trainingData.id.toString()}
+        keyExtractor={(userTraining, i) => userTraining.id?.toString() || i.toString()}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { getUserTrainingsList() }} />}
       >
       </FlatList>}

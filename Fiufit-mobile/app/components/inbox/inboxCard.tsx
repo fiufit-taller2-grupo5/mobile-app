@@ -15,6 +15,7 @@ interface Props {
 export default function InboxCard(props: Props) {
 
   const { navigation, chatMetadata } = props;
+  console.log("received chatmetadata: ", chatMetadata)
   const [loading, setLoading] = useState(true);
   const messagesCollectionRef = collection(db, "chats", chatMetadata._id, "messages")
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -30,6 +31,8 @@ export default function InboxCard(props: Props) {
         console.log("data: ", data);
         return data;
       });
+
+      console.log("metadta id: ", chatMetadata._id)
 
       setMessages(messages as IMessage[]);
       setLoading(false);

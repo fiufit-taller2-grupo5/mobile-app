@@ -46,9 +46,11 @@ export default function InboxList(props: Props) {
         const q = query(chatsRef, where(`participants.${user?.id}`, "!=", null));
         const querySnapshot = await getDocs(q);
         const chatsMetadata = querySnapshot.docs.map(doc => {
-            console.log("doc: ", doc.data());
+            console.log("a veeeer el doc: ", doc.data());
             const data = doc.data();
-            data.lastMessage.createdAt = data.lastMessage.createdAt.toDate().toLocaleDateString();
+            if (data.lastMessage) {
+                data.lastMessage.createdAt = data.lastMessage?.createdAt?.toDate()?.toLocaleDateString();
+            }
             data._id = doc.id;
             data._currentUserId = user?.id;
             return data;

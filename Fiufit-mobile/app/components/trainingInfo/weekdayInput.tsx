@@ -3,13 +3,13 @@ import { View, Text, Button, Checkbox, Modal, VStack } from 'native-base';
 
 
 const weekDaysData = [
-  {day: 'lunes', id: 0},
-  {day: 'martes', id: 1},
-  {day: 'miercoles', id: 2},
-  {day: 'jueves', id: 3},
-  {day: 'viernes', id: 4},
-  {day: 'sabado', id: 5},
-  {day: 'domingo', id: 6},
+  { day: 'lunes', id: 0 },
+  { day: 'martes', id: 1 },
+  { day: 'miercoles', id: 2 },
+  { day: 'jueves', id: 3 },
+  { day: 'viernes', id: 4 },
+  { day: 'sabado', id: 5 },
+  { day: 'domingo', id: 6 },
 ];
 
 interface Props {
@@ -58,7 +58,7 @@ export default function WeekDayInput(props: Props) {
                 return (
                   <Checkbox
                     colorScheme='rose'
-                    key={weekDay.id}
+                    key={weekDay.day}
                     value={weekDay.day}
                     isChecked={selectedWeekDays.includes(weekDay)}
                     mr={"12"}

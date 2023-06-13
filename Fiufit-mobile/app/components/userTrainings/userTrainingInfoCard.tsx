@@ -48,65 +48,54 @@ export const UserTrainingInfoCard = (props: Props) => {
 
   const api = new API(navigation);
 
-  return (
-    <View backgroundColor="#fff">
-      <Button
-        height={170}
-        px="10"
-        py="10"
-        justifyContent={"center"}
-        backgroundColor="#fff"
-        onPress={async () => {
-          navigation.navigate(navigateToScreen, {
-            trainingData: userTraining.trainingData,
-          });
-        }}
+  return <Box backgroundColor="#fff" style={{ height: 160 }}>
+    <Button
+      height={190}
+      px="10"
+      py="10"
+      backgroundColor="#fff"
+      onPress={async () => {
+        // navigation.navigate(navigateToScreen, { userTraining.trainingData, trainingImage });
+      }}
+    >
+      <HStack
+        justifyContent="space-between"
+        height={100}
       >
-        <View
-          height={40}
-          flexDirection="row"
-          paddingTop={10}
-          justifyContent={"space-evenly"}
-        >
-          <Image
-            source={{ uri: trainingMainImage(userTraining.trainingData.type) }}
-            alt="Alternate Text"
-            size="lg"
-            borderRadius={10}
-          />
-          <View
-            width={80}
-            flexDirection="column"
-            alignItems="center"
-            // justifyContent="space-evenly"
+        <Image
+          source={{ uri: trainingMainImage(userTraining.trainingData.type) }}
+          alt="Alternate Text"
+          size="lg"
+          borderRadius={10}
+        />
+        <VStack width={220} >
+          <Text
+            style={trainingStyles.textTitle}
+            color="#000000"
+            text-align="left"
+            bold
           >
-            <Text
-              style={trainingStyles.textTitle}
-              color="#000000"
-              text-align="left"
-              bold
-            >
-              {userTraining.trainingData.title}
-            </Text>
-            <Text fontSize="xs" color="#000000">
-              Duración de la sesión: {userTraining.duration} min
-            </Text>
-            <Text fontSize="xs" color="#000000">
-              Pasos: {userTraining.steps}
-            </Text>
-            <Text fontSize="xs" color="#000000">
-              Calorías: {userTraining.calories} kcal
-            </Text>
-            <Text fontSize="xs" color="#000000">
-              Fecha: {"fechafehcafehcafehca"}
-            </Text>
-            <Text fontSize="xs" color="#000000">
-              Distancia: {userTraining.distance} m
-            </Text>
-          </View>
-        </View>
-        <Divider my={10} mx={1} />
-      </Button>
-    </View>
-  );
+            {userTraining.trainingData.title}
+          </Text>
+          <Text paddingLeft={15} fontSize="sm" color="#000000">
+            {userTraining.trainingData.description}
+          </Text>
+          <Text paddingLeft={15} fontSize="xs" color="#000000">
+            Calorías: {userTraining.calories}
+          </Text>
+          <Text paddingLeft={15} fontSize="xs" color="#000000">
+            Distancia: {userTraining.distance}
+          </Text>
+          <Text paddingLeft={15} fontSize="xs" color="#000000">
+            Duración: {userTraining.duration}
+          </Text>
+          <Text paddingLeft={15} fontSize="xs" color="#000000">
+            Fecha: {userTraining.date}
+          </Text>
+
+        </VStack>
+      </HStack>
+      <Divider my={10} mx={1} />
+    </Button>
+  </Box>
 };

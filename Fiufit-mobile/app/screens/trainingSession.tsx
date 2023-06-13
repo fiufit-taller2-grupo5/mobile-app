@@ -17,7 +17,7 @@ export type trainingSession = {
     duration: string;
     steps: number,
     calories: number,
-    date: Date,
+    date: string,
     trainingPlanId: number,
 };
 
@@ -151,7 +151,7 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
     );
 
     const handleAddTrainingSession = () => {
-        if (navigation.isFocused()) { 
+        if (navigation.isFocused()) {
             Alert.alert(
                 'Confirmación',
                 'Si continúa, el entrenamiento terminará. ¿Seguro desea terminarlo?',
@@ -170,7 +170,7 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
                                     duration: duration,
                                     steps: steps,
                                     calories: calories,
-                                    date: date,
+                                    date: date.toISOString(), // cehquear esto
                                     trainingPlanId: trainingInfo.trainingPlanId,
                                 })
                                 tickers.forEach(ticker => {
