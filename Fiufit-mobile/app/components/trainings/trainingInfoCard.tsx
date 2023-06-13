@@ -33,7 +33,6 @@ export const TrainingInfoCard = ({
   onRemoveFavorite = () => { },
   navigation,
   navigateToScreen,
-  userTrainingData = null
 }: any) => {
 
   const api = new API(navigation);
@@ -96,13 +95,6 @@ export const TrainingInfoCard = ({
             <Text paddingLeft = {15} fontSize="xs" color="#000000">
               Dificultad: {trainingData.difficulty}
             </Text>
-            {userTrainingData && (
-              <Text paddingLeft = {15} fontSize="xs" color="#000000">
-                Completado el 
-                {/* {(userTrainingData.date as Date).toISOString().split('T')[0]} */}
-                {/* 2023-06-10T22:46:18.808000 */}
-              </Text>
-            )}
           </VStack>
           <VStack my={1} width={30} height={10} mr={0} ml={1}>
             {canSetFavorite && (

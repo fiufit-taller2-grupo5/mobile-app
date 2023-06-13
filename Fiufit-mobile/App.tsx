@@ -31,7 +31,8 @@ import TrainerTrainingsScreen from './app/screens/trainerTrainings';
 import RateTrainingScreen from './app/screens/rateTraining';
 import EditTrainingScreen from './app/screens/editTraining';
 import MapScreen from './app/screens/map';
-import SelectedUsersScreen from './app/screens/SelectedUsers';
+import SelectedUsersScreen from './app/screens/selectedUsers';
+import UserTrainingsScreen from './app/screens/userTrainings';
 
 const Stack = createNativeStackNavigator();
 
@@ -132,6 +133,9 @@ export default function App() {
           <Stack.Screen
             name="MapScreen"
             component={MapScreen}/>
+          <Stack.Screen
+            name="UserTrainingsScreen"
+            component={UserTrainingsScreen} />
           <Stack.Screen
             name="SelectedUsersScreen"
             component={SelectedUsersScreen} />

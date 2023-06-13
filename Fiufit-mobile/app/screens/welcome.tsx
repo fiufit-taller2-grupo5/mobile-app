@@ -12,7 +12,9 @@ import { apiGatewayHealthCheck } from '../../api';
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
 import * as LocalAuthentication from 'expo-local-authentication';
 import globalUser from '../../userStorage';
+import InboxNotifications from '../components/inbox/inboxNotifications';
 export const BACKGROUND_FETCH_TASK = 'background-fetch';
+
 
 TaskManager.defineTask(BACKGROUND_FETCH_TASK, async (data) => {
   console.log(data)
@@ -86,6 +88,8 @@ export const BackgroundFetchData = () => {
     }
 
   }, []);
+
+  //console.log(process.env.GOOGLE_MAPS_API_KEY)
 
   return (
     <View>

@@ -142,7 +142,7 @@ export default function TrainingsList(props: Props) {
         }
       }
     } catch (e: any) {
-      console.error(e.message);
+      console.error("error getting training list", e.message);
     }
     setRefreshing(false);
   }
