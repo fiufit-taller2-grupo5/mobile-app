@@ -8,7 +8,6 @@ import TrainingsScreen from './trainings';
 import ProfileScreen from './profile';
 import UsersScreen from './users';
 import InboxScreen from './inbox';
-import FavoritesScreen from './favorites';
 import TrainerTrainingsScreen from './trainerTrainings';
 import SettingsScreen from './settings';
 

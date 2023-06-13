@@ -1,6 +1,5 @@
-import { Box, Text, extendTheme, FlatList, HStack, Spacer, Button, View, NativeBaseProvider } from 'native-base';
+import { Box, Text, View, NativeBaseProvider } from 'native-base';
 import { editProfileStyles } from '../styles';
-import { AntDesign } from '@expo/vector-icons';
 import { ProgressChart } from "react-native-chart-kit";
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
 import React, { useEffect, useState } from 'react';

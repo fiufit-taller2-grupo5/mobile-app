@@ -222,7 +222,7 @@ export default function TrainingCard(props: Props) {
               <Link
                 _text={{ fontWeight: "bold" }}
                 isUnderlined={false}
-                onPress={() => navigation.navigate("UserInfoScreen", { userId: review.userId })}
+                onPress={() => navigation.navigate("ProfileScreen", { userId: review.userId })}
               >
                 {review.userId && userReview.length !== 0 ? userReview.filter((user) => user.id == review.userId)[0].name : "Cargando.."}
               </Link>

@@ -1,15 +1,9 @@
 import {
   Box,
-  VStack,
   HStack,
-  Button,
   Text,
-  Image,
-  Divider,
-  Icon,
   extendTheme,
   NativeBaseProvider,
-  View,
   Spacer,
   FlatList,
 } from "native-base";
@@ -18,6 +12,7 @@ import { API, CompleteUserTraining } from "../../api";
 import { useEffect, useState } from "react";
 import { editProfileStyles, userProfileStyles } from "../styles";
 import { TrainingInfoCard } from "../components/trainings/trainingInfoCard";
+
 
 export default function UserInfoScreen({ route, navigation }: any) {
   const theme = extendTheme({
@@ -32,7 +27,7 @@ export default function UserInfoScreen({ route, navigation }: any) {
       },
     },
   });
-  const { userId, navigateToScreen } = route.params;
+  const { userId } = route.params;
   const api = new API(route.navigation);
   const [userData, setUserData] = useState<userInfo & UserMetadata>();
   const [userTrainings, setUserTrainings] = useState<CompleteUserTraining[]>();
