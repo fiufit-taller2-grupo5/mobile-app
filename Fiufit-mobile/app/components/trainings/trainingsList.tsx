@@ -156,7 +156,7 @@ export default function TrainingsList(props: Props) {
           filterData(trainings);
         }
       }
-      getTrainingImages();
+      await getTrainingImages();
     } catch (e: any) {
       console.error(e.message);
     }
