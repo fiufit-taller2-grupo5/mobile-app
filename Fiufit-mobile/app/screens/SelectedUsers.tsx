@@ -3,7 +3,6 @@ import UsersList from '../components/users/usersList';
 import { userInfo } from '../../asyncStorageAPI';
 import { useEffect, useState } from 'react';
 import { API } from '../../api';
-import globalUser from '../../userStorage';
 
 
 export default function SelectedUsersScreen({ route, navigation }: any) {
@@ -20,10 +19,10 @@ export default function SelectedUsersScreen({ route, navigation }: any) {
             }
         }
     });
-    const { isFollowers, userId} = route.params; // isFollowers is true if the list is for followers, false if it is for followed users
-    const [users, setUsers] = useState<userInfo[]>([]);
+    const { isFollowers, userId } = route.params;
+    const [users, setUsers] = useState<userInfo[] | null>([]);
     const api = new API(navigation);
-    
+
     const getUsersList = async () => {
         let users: userInfo[] = [];
         if (isFollowers) {
@@ -32,23 +31,30 @@ export default function SelectedUsersScreen({ route, navigation }: any) {
             users = await api.getFollowedUsers(parseInt(userId));
         }
         setUsers(users);
-      };
+    };
+
 
     useEffect(() => {
-        try {
-          getUsersList();
-        } catch (error) {
-          console.log(error);
-        }
-    }, []);
+        const unsubscribe = navigation.addListener('focus', () => {
+            try {
+                getUsersList();
+            } catch (error) {
+                console.log(error);
+            }
+        });
+        return unsubscribe;
+    }, [navigation]);
 
 
+
+    console.log("holaaa", users);
 
     return <NativeBaseProvider theme={theme}>
         <View flex={1} style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: "white" }}>
             <UsersList
                 navigation={navigation}
-                selectedUsers={users}
+                selectedUsers={users !== null ? users : undefined}
+                useSelectedUsers
             />
         </View>
     </NativeBaseProvider>;

@@ -18,11 +18,12 @@ import globalUser from "../../../userStorage";
 
 interface Props {
   navigation: any;
-  selectedUsers: userInfo[];
+  useSelectedUsers?: boolean;
+  selectedUsers?: userInfo[];
 }
 
 export default function UsersList(props: Props) {
-  const { navigation, selectedUsers } = props;
+  const { navigation, selectedUsers, useSelectedUsers } = props;
   const [users, setUsers] = useState<userInfo[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<userInfo[]>([]);
   const [followedUsers, setFollowedUsers] = useState<userInfo[]>([]);
@@ -36,24 +37,23 @@ export default function UsersList(props: Props) {
   const getUsersList = async () => {
     setRefreshing(true);
     const user = await globalUser.getUser();
-
-    if (selectedUsers.length > 0) {
-      console.log("SHOWING ONLY SELECTED USERS");
+    if (useSelectedUsers && selectedUsers) {
+      console.log("SHOWING ONLY SELECTED USERS", selectedUsers);
+      console.log("china", user?.id);
       let followedUsers = await api.getFollowedUsers(user!.id);
       setUsers(selectedUsers);
       setFollowedUsers(followedUsers);
       setFilteredUsers(selectedUsers);
       setRefreshing(false);
-      return;
+    } else if (!useSelectedUsers) {
+      let allUsers = await api.getUsers();
+      let followedUsers = await api.getFollowedUsers(user!.id);
+      console.log("SHOWING ALL USERS", allUsers)
+      setUsers(allUsers);
+      setFollowedUsers(followedUsers);
+      setFilteredUsers(allUsers);
+      setRefreshing(false);
     }
-    console.log("SHOWING ALL USERS");
-
-    let allUsers = await api.getUsers();
-    let followedUsers = await api.getFollowedUsers(user!.id);
-    setUsers(allUsers);
-    setFollowedUsers(followedUsers);
-    setFilteredUsers(allUsers);
-    setRefreshing(false);
   };
 
   useEffect(() => {
@@ -85,7 +85,7 @@ export default function UsersList(props: Props) {
         clearTimeout(timeoutIdRef.current);
       }
     };
-  }, []);
+  }, [props]);
 
   const onFollow = async (userId: number) => {
     await api.followUser(userId);
@@ -95,6 +95,9 @@ export default function UsersList(props: Props) {
     await api.unfollowUser(userId);
   };
 
+  console.log("users", users);
+  console.log("selected", selectedUsers);
+  console.log("filteredUsers", filteredUsers);
 
   return (
     <View flex={1} backgroundColor="#fff">
