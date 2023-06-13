@@ -28,6 +28,7 @@ export default function ProfileScreen(props: Props) {
   const [userFollowersCount, setUserFollowersCount] = useState(0);
   const [userFollowingCount, setUserFollowingCount] = useState(0);
 
+  const [user, setUser] = useState<userInfo | null>();
 
   const chartConfig = {
     backgroundGradientFromOpacity: 0,
@@ -157,6 +158,7 @@ export default function ProfileScreen(props: Props) {
           user = await globalUser.getUser();
         }
         console.log("user", user);
+        setUser(user);
         if (user) {
           setName(user.name);
           const trainingSessions = await api.getUserTrainingSessions(user.id);
@@ -172,12 +174,12 @@ export default function ProfileScreen(props: Props) {
     return unsubscribe;
   }, [navigation]);
 
-  const onPressFollowers = () => {
-    navigation.navigate("SelectedUsersScreen", { isFollowers: true , userId: userId});
+  const onPressFollowers = async () => {
+    navigation.navigate("SelectedUsersScreen", { isFollowers: true , userId: user!.id });
   }
 
   const onPressFollowing = () => {
-    navigation.navigate("SelectedUsersScreen", { isFollowers: false, userId: userId });
+    navigation.navigate("SelectedUsersScreen", { isFollowers: false, userId: user!.id });
   }
 
   console.log(userId, globalUser.user?.id);

@@ -20,17 +20,16 @@ export default function SelectedUsersScreen({ route, navigation }: any) {
             }
         }
     });
-    const { isFollowers, userId } = route.params; // isFollowers is true if the list is for followers, false if it is for followed users
+    const { isFollowers, userId} = route.params; // isFollowers is true if the list is for followers, false if it is for followed users
     const [users, setUsers] = useState<userInfo[]>([]);
     const api = new API(navigation);
     
     const getUsersList = async () => {
-        const user = await globalUser.getUser();
         let users: userInfo[] = [];
         if (isFollowers) {
-            users = await api.getFollowers(user!.id);
+            users = await api.getFollowers(parseInt(userId));
         } else {
-            users = await api.getFollowedUsers(user!.id);
+            users = await api.getFollowedUsers(parseInt(userId));
         }
         setUsers(users);
       };
