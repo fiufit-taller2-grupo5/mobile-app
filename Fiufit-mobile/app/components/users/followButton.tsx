@@ -1,5 +1,6 @@
 import { Button } from "native-base";
 import { useEffect, useState } from "react";
+import { LoadableButton } from "../commons/buttons";
 
 type FollowButtonProps = {
   userId: number;
@@ -8,8 +9,7 @@ type FollowButtonProps = {
   onUnfollow: (userId: number) => Promise<void>;
 };
 
-export const FollowButton = ({ userId, following, onFollow, onUnfollow }:FollowButtonProps) => {
-  const [loading, setLoading] = useState(false);
+export const FollowButton = ({ userId, following, onFollow, onUnfollow }: FollowButtonProps) => {
   const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
@@ -17,33 +17,25 @@ export const FollowButton = ({ userId, following, onFollow, onUnfollow }:FollowB
   }, [following]);
 
   const follow = async () => {
-    setLoading(true);
-    setIsFollowing(true);
     await onFollow(userId);
-    setLoading(false);
+    setIsFollowing(true);
   };
 
   const unfollow = async () => {
-    setLoading(true);
-    setIsFollowing(false);
     await onUnfollow(userId);
-    setLoading(false);
+    setIsFollowing(false);
   };
 
 
   return (
-    <Button
+    <LoadableButton
       onPress={isFollowing ? unfollow : follow}
-      isLoading={loading}
-      variant="outline"
-      colorScheme={isFollowing ? "secondary" : "primary"}
-      size="sm"
-      _text={{
-        color: isFollowing ? "secondary.500" : "primary.500",
-        fontWeight: "bold",
+      text={isFollowing ? "Unfollow" : "Follow"}
+      textColor={isFollowing ? "#c2c0c0" : "#FF6060"}
+      customStyles={{
+        width: 130,
+        backgroundColor: "#FFFFFF",
       }}
-    >
-      {isFollowing ? "Unfollow" : "Follow"}
-    </Button>
+    />
   );
 };

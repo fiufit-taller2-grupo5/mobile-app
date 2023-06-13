@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, VStack, HStack, Button, Text, Image, Divider, Icon, Spacer } from 'native-base';
+import { Box, VStack, HStack, Button, Text, Image, Divider, View, Spacer } from 'native-base';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { trainingStyles } from "../../styles";
 import { API } from '../../../api';
@@ -8,7 +8,7 @@ import { FollowButton } from './followButton';
 
 const mainImage = (training_type: any) => {
   if (training_type === "Running")
-    return "https://wallpaperaccess.com/thumb/2604922.jpg";
+    return "https://wallpaperaccess.com/thumb/2804922.jpg";
   else if (training_type === "Swimming")
     return "https://wallpaperaccess.com/thumb/1634055.jpg";
   else if (training_type === "Walking")
@@ -50,50 +50,30 @@ export const UserInfoCard = ({
   const api = new API(navigation);
 
   return (
-    <Box backgroundColor="#fff" style={{ height: 60 }}>
-      <Button
-        height={60}
-        px="10"
-        py="10"
-        backgroundColor="#fff"
-        onPress={async () => {
-          navigation.navigate(navigateToScreen, { userId: userData.id });
-        }}
-      >
-        <HStack
-          space={'sm'}
-          justifyContent="space-between"
-          height={60}
+    <View style={{ height: 80, width: "100%", paddingHorizontal: 10 }} justifyContent="center" alignItems={"center"}>
+
+      <HStack>
+        <Text
+          style={trainingStyles.textTitle}
+          color="#000000"
+          text-align="left"
+          bold
+
+          onPressOut={async () => {
+            navigation.navigate(navigateToScreen, { userId: userData.id });
+          }}
         >
-          {/* <Image
-            source={{ uri: mainImage(userData.type) }}
-            alt="Alternate Text"
-            size="lg"
-            borderRadius={10}
-          /> */}
-          <VStack width={"100%"} height={10} mr={0} ml={0}>
-            <HStack>
-            <Text
-              style={trainingStyles.textTitle}
-              color="#000000"
-              text-align="left"
-              bold
-            >
-              {userData.name}
-            </Text>
-            <Spacer />
-            <FollowButton
-                userId={userData.id}
-                following={isFollowed}
-                onFollow={ () => onFollow()}
-                onUnfollow={ () => onUnfollow()}
-              />
-            </HStack>
-            <Divider mx={1} />
-          </VStack>
-        </HStack>
-      </Button>
-    </Box>
+          {userData.name}
+        </Text>
+        <Spacer />
+        <FollowButton
+          userId={userData.id}
+          following={isFollowed}
+          onFollow={() => onFollow()}
+          onUnfollow={() => onUnfollow()}
+        />
+      </HStack>
+    </View>
   );
 };
 

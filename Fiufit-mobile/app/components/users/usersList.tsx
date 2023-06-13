@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Box,
   FlatList,
@@ -11,11 +11,10 @@ import {
 } from "native-base";
 import { API } from "../../../api";
 import { MaterialIcons } from "@expo/vector-icons";
-import { RefreshControl } from "react-native";
+import { ActivityIndicator, RefreshControl } from "react-native";
 import { userInfo } from "../../../asyncStorageAPI";
 import { UserInfoCard } from "./userInfoCard";
 import globalUser from "../../../userStorage";
-import { OnlyFollowedButton } from "./onlyFollowedButton";
 
 interface Props {
   navigation: any;
@@ -25,48 +24,54 @@ export default function UsersList(props: Props) {
   const { navigation } = props;
   const [users, setUsers] = useState<userInfo[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<userInfo[]>([]);
+  const [followedUsers, setFollowedUsers] = useState<userInfo[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [nameInput, setNameInput] = useState("");
-  const [followedUsers, setFollowedUsers] = useState<userInfo[]>([]);
-  const [followedUsersSet, setFollowedUsersSet] = useState<Set<number>>(
-    new Set()
-  );
-  const [onlyFollowed, setOnlyFollowed] = useState(false);
+  const [inputLoading, setInputLoading] = useState(false);
+  const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
+
   const api = new API(navigation);
 
   const getUsersList = async () => {
     setRefreshing(true);
+    const user = await globalUser.getUser();
     let allUsers = await api.getUsers();
-    const userId = await globalUser.getUserId();
-    let followedUsers = await api.getFollowedUsers(userId);
-    console.log("FOLOWED USERS:", followedUsers);
-    let followedUsersSet = new Set<number>(
-      followedUsers.map((user) => user.id)
-    );
-    setFollowedUsers(followedUsers);
-    setFollowedUsersSet(followedUsersSet);
+    let followedUsers = await api.getFollowedUsers(user!.id);
     setUsers(allUsers);
+    setFollowedUsers(followedUsers);
     setFilteredUsers(allUsers);
-    updateFilterOnlyFollowed();
     setRefreshing(false);
   };
 
   useEffect(() => {
-    const filtered = users.filter(
-      (item) =>
-        nameInput === "" ||
-        item.name.toLowerCase().includes(nameInput.toLowerCase())
-    );
-    setFilteredUsers(filtered);
+
+    if (timeoutIdRef.current) {
+      clearTimeout(timeoutIdRef.current);
+    }
+    timeoutIdRef.current = setTimeout(() => {
+      const filtered = users.filter(
+        (item) =>
+          nameInput === "" ||
+          item.name.toLowerCase().includes(nameInput.toLowerCase())
+      );
+      setFilteredUsers(filtered);
+      setInputLoading(false);
+    }, 500);
+
   }, [nameInput]);
 
   useEffect(() => {
     try {
       getUsersList();
-      updateFilterOnlyFollowed();
     } catch (error) {
       console.log(error);
     }
+
+    return () => {
+      if (timeoutIdRef.current) {
+        clearTimeout(timeoutIdRef.current);
+      }
+    };
   }, []);
 
   const onFollow = async (userId: number) => {
@@ -77,34 +82,6 @@ export default function UsersList(props: Props) {
     await api.unfollowUser(userId);
   };
 
-  const onOnlyFollowed = () => {
-    setRefreshing(true);
-    setOnlyFollowed(!onlyFollowed);
-    if (!onlyFollowed) {
-      setFilteredUsers(users);
-      setRefreshing(false);
-    } else {
-      updateFilterOnlyFollowed();
-    }
-    setRefreshing(false);
-  };
-
-  const updateFilterOnlyFollowed = () => {
-    setRefreshing(true);
-    if (!onlyFollowed) {
-      return;
-    }
-    if (followedUsersSet.size === 0) {
-      setFilteredUsers([]);
-    } else {
-      const filtered = users.filter((user) =>
-        followedUsersSet.has(user.id)
-      );
-      setFilteredUsers(filtered);
-    }
-    setRefreshing(false);
-  };
-  
 
   return (
     <View flex={1} backgroundColor="#fff">
@@ -121,8 +98,9 @@ export default function UsersList(props: Props) {
       >
         <VStack alignSelf="center">
           <Input
-            placeholder="Search Users by Name"
+            placeholder="Buscar por nombre"
             onChangeText={(text) => {
+              setInputLoading(true);
               setNameInput(text);
             }}
             value={nameInput}
@@ -138,8 +116,12 @@ export default function UsersList(props: Props) {
                 as={<MaterialIcons name="search" />}
               />
             }
+            InputRightElement={
+              inputLoading ? <ActivityIndicator color={"#c2c0c0"} size="small" style={{
+                paddingRight: 10
+              }} /> : undefined
+            }
           />
-          <OnlyFollowedButton onPress={() => onOnlyFollowed()} onlyFollowed={onlyFollowed}/>
         </VStack>
         <View></View>
       </VStack>
@@ -155,9 +137,12 @@ export default function UsersList(props: Props) {
                 userData={user.item}
                 navigation={navigation}
                 navigateToScreen="UserInfoScreen"
-                isFollowed={followedUsersSet.has(user.item.id)}
-                onFollow={ () => onFollow(user.item.id)}
-                onUnfollow={ () => onUnfollow(user.item.id)}
+                isFollowed={followedUsers.some(
+                  (followedUser) => followedUser.id === user.item.id
+                )
+                }
+                onFollow={() => onFollow(user.item.id)}
+                onUnfollow={() => onUnfollow(user.item.id)}
               />
             </HStack>
           )}

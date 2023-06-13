@@ -1,12 +1,13 @@
 import { Text, Spinner, Button as NativeBaseButton, View, Link } from "native-base";
 import { Component, CSSProperties, ReactElement, useState } from "react";
-import { StyleProp, StyleSheet, ViewStyle } from "react-native";
+import { GestureResponderEvent, StyleProp, StyleSheet, ViewStyle } from "react-native";
 import { useToast } from 'native-base';
 
 interface Props {
   onPress: () => Promise<any | void>;
   text: string | ReactElement;
   customStyles?: StyleProp<ViewStyle>;
+  textColor?: string;
 }
 
 const baseStyles = StyleSheet.create({
@@ -23,11 +24,11 @@ const baseStyles = StyleSheet.create({
   },
 });
 
-export const LoadableButton = ({ text, customStyles, onPress }: Props) => {
+export const LoadableButton = ({ text, customStyles, textColor, onPress }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
 
-  const handleClick = () => {
+  const handleClick = (e: GestureResponderEvent) => {
     setIsLoading(true);
     setTimeout(async () => {
       try {
@@ -56,11 +57,11 @@ export const LoadableButton = ({ text, customStyles, onPress }: Props) => {
 
   return (
     <>
-      <NativeBaseButton onPress={handleClick} style={styles}>
+      <NativeBaseButton onPress={(e) => handleClick(e)} style={styles}>
         <View flexGrow={1} justifyContent={"space-around"} flexDirection={"row"} >
           <View width={"100%"} flexGrow={1} justifyContent={"center"} flexDirection={"row"} >
-            <Text color={"#FFFFFF"} bold fontSize={"md"} marginRight={isLoading ? 3 : 0} alignItems="center" justifyContent="center">{text}</Text>
-            {isLoading && <Spinner color={"#FFFFFF"} />}
+            <Text color={textColor ? textColor : "#FFFFFF"} bold fontSize={"md"} marginRight={isLoading ? 3 : 0} alignItems="center" justifyContent="center">{text}</Text>
+            {isLoading && <Spinner color={textColor ? textColor : "#FFFFFF"} />}
           </View>
         </View>
       </NativeBaseButton>

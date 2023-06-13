@@ -179,7 +179,8 @@ export const trainingStyles = StyleSheet.create({
   textTitle: {
     fontFamily: 'Roboto',
     fontStyle: 'normal',
-    fontSize: 20,
+    fontSize: 16,
+    paddingLeft: 15
   }
 });
 
@@ -366,7 +367,7 @@ export const userProfileStyles = StyleSheet.create({
     lineHeight: 35,
     textAlign: 'center',
     alignSelf: 'center',
-    
+
   },
-  
+
 });
