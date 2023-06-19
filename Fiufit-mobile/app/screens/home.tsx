@@ -1,5 +1,4 @@
 import { NativeBaseProvider } from 'native-base';
-import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -41,7 +40,7 @@ export default function HomeScreen({ navigation }: any) {
     const isAthlete = role === 'Atleta';
 
     return <NativeBaseProvider>
-        <Tab.Navigator screenOptions={screenOptions}>
+        <Tab.Navigator screenOptions={screenOptions} initialRouteName='Trainings'>
             <Tab.Screen
                 name="Users" component={UsersScreen}
                 options={
