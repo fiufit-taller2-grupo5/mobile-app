@@ -32,6 +32,7 @@ export default function ProfileScreen(props: Props) {
   const [userFollowingCount, setUserFollowingCount] = useState<number | null>(null);
 
   const [user, setUser] = useState<userInfo | null>();
+  const [role, setRole] = useState("Atleta");
   const api = new API(navigation);
 
   const chartConfig = {
@@ -51,7 +52,6 @@ export default function ProfileScreen(props: Props) {
   };
 
   useEffect(() => {
-
     const updateDailyActivity = async () => {
       updateDailySteps();
       updateDailyDistance();
@@ -172,6 +172,10 @@ export default function ProfileScreen(props: Props) {
           const following = await api.getFollowedUsers(user.id);
           setUserFollowingCount(following.length);
         }
+      }
+      if(user) {
+        setRole(user.role);
+        console.log("role: ", role);
       }
       getUserInfo();
     });
@@ -325,11 +329,12 @@ export default function ProfileScreen(props: Props) {
         />
       }
     </Box>
-    <Text style={editProfileStyles.favTrainings} fontSize={13}>Entrenamientos Favoritos</Text>
-    <TrainingsList
+    { role === "Atleta" && <Text style={editProfileStyles.favTrainings} fontSize={13}>Entrenamientos Favoritos</Text> }
+    { role === "Atleta" && <TrainingsList
       userId={userId ? userId : globalUser.user?.id}
       onlyFavorites
       navigation={navigation}
     />
+    }
   </View></NativeBaseProvider>;
 }

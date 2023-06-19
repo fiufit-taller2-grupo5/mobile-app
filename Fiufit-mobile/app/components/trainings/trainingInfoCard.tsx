@@ -30,6 +30,7 @@ export const trainingMainImage = (training_type: any) => {
 export const TrainingInfoCard = ({
   trainingData,
   canSetFavorite = false,
+  userRole,
   onRemoveFavorite = () => { },
   navigation,
   navigateToScreen,
@@ -97,7 +98,7 @@ export const TrainingInfoCard = ({
             </Text>
           </VStack>
           <VStack my={1} width={30} height={10} mr={0} ml={1}>
-            {canSetFavorite && (
+            {canSetFavorite && userRole === "Atleta" && (
               <>
                 <Button backgroundColor="#fff" onPress={handleFavorite}>
                   <Icon
