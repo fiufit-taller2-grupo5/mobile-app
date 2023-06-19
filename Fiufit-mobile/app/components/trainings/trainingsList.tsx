@@ -7,8 +7,9 @@ import {
   View,
   Select,
   ChevronDownIcon,
-} from "native-base";
-
+  Button,
+} from 'native-base';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {
   API,
   Training,
@@ -36,6 +37,7 @@ export default function TrainingsList(props: Props) {
   const [selectedDistance, setDistance] = useState(0);
   const [userLatitude, setUserLatitude] = useState(0);
   const [userLongitude, setUserLongitude] = useState(0);
+  const [resetFilters, setResetFilters] = useState(false);
   const [role, setRole] = useState("Atleta");
 
 
@@ -132,13 +134,23 @@ export default function TrainingsList(props: Props) {
       if (props.onlyFavorites) {
         const favoritesTrainingsResponse = await api.getFavoriteTrainings(props.userId);
         let trainings = updateFavoriteStatus(favoritesTrainingsResponse, favoritesTrainingsResponse);
-        filterData(trainings);
+        if (resetFilters) {
+          setFilteredData(trainings);
+          setResetFilters(false);
+        } else {
+          filterData(trainings);
+        }
       } else {
         const trainingList = await api.getTrainings();
         if (trainingList.length > 0) {
           const favoritesTrainingsResponse = await api.getFavoriteTrainings(props.userId);
           let trainings = updateFavoriteStatus(trainingList, favoritesTrainingsResponse);
-          filterData(trainings);
+          if (resetFilters) {
+            setFilteredData(trainings);
+            setResetFilters(false);
+          } else {
+            filterData(trainings);
+          }
         }
       }
     } catch (e: any) {
@@ -229,6 +241,7 @@ export default function TrainingsList(props: Props) {
             </Select>
           </View>
           <View flex={1}>
+            
             <Select selectedValue={selectedDistance.toString()} dropdownIcon={<View paddingRight={2}><ChevronDownIcon /></View>}
               accessibilityLabel="Choose Distance" placeholder="Choose Distance" mt={1} onValueChange={handleFilterByDistance}>
               <Select.Item label="All distances" value="0" />
@@ -239,8 +252,27 @@ export default function TrainingsList(props: Props) {
               <Select.Item label="15km" value="15" />
               <Select.Item label="20km" value="20" />
             </Select>
+            
           </View>
-
+          <Button
+            backgroundColor="#fff"
+            variant="ghost"
+            size="xs"
+            onPress={() => {
+              setResetFilters(true);
+              setType(""); // Restablecer a la etiqueta predeterminada
+              setDifficulty(""); // Restablecer a la etiqueta predeterminada
+              setDistance(0); // Restablecer a la etiqueta predeterminada
+            }}
+            ml={2}
+          >
+            <Icon
+                as={<MaterialCommunityIcons name={ "undo" } />}
+                size={6}
+                color="#000000"
+                alignSelf="center"
+            />
+          </Button>
         </View>
       </VStack>
       {
@@ -262,6 +294,7 @@ export default function TrainingsList(props: Props) {
           <TrainingInfoCard
             trainingData={training.item}
             canSetFavorite
+            userRole={role}
             navigation={navigation}
             navigateToScreen="TrainingInfoScreen"
           />
