@@ -146,7 +146,7 @@ export default function TrainingsList(props: Props) {
           const favoritesTrainingsResponse = await api.getFavoriteTrainings(props.userId);
           let trainings = updateFavoriteStatus(trainingList, favoritesTrainingsResponse);
           if (resetFilters) {
-            setFilteredData(trainingList);
+            setFilteredData(trainings);
             setResetFilters(false);
           } else {
             filterData(trainings);
