@@ -1,4 +1,4 @@
-import { Box, Text, View, NativeBaseProvider, Button } from 'native-base';
+import { Box, Text, View, NativeBaseProvider, Button, Image, HStack } from 'native-base';
 import { editProfileStyles } from '../styles';
 import { ProgressChart } from "react-native-chart-kit";
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
@@ -21,7 +21,6 @@ interface Props {
 export default function ProfileScreen(props: Props) {
   const { navigation, route } = props;
   const userId = route?.params?.userId;
-  const isFollowed = route?.params?.isFollowed;
 
   const [dailySteps, setDailySteps] = useState(0);
   const [dailyDistance, setDailyDistance] = useState(0);
@@ -30,6 +29,8 @@ export default function ProfileScreen(props: Props) {
   const [userTrainingsCount, setUserTrainingsCount] = useState<number | null>(null);
   const [userFollowersCount, setUserFollowersCount] = useState<number | null>(null);
   const [userFollowingCount, setUserFollowingCount] = useState<number | null>(null);
+
+  const [following, setFollowing] = useState(false);
 
   const [user, setUser] = useState<userInfo | null>();
   const [role, setRole] = useState("Atleta");
@@ -168,12 +169,13 @@ export default function ProfileScreen(props: Props) {
           const trainingSessions = await api.getUserTrainingSessions(user.id);
           setUserTrainingsCount(trainingSessions.length);
           const followers = await api.getFollowers(user.id);
+          setFollowing(followers.find((follower) => follower.id === globalUser.user?.id) !== undefined);
           setUserFollowersCount(followers.length);
           const following = await api.getFollowedUsers(user.id);
           setUserFollowingCount(following.length);
         }
       }
-      if(user) {
+      if (user) {
         setRole(user.role);
         console.log("role: ", role);
       }
@@ -257,10 +259,28 @@ export default function ProfileScreen(props: Props) {
   return <NativeBaseProvider><View style={{ flex: 1 }} backgroundColor="#fff">
     <Box style={editProfileStyles.nameBox}>
       <Text style={editProfileStyles.text}>{name}</Text>
+      <View
+        alignItems={"center"}
+        justifyContent="space-between"
+        height={100}
+        margin={2}
+      >
+        <Image
+          source={{ uri: "https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg" }}
+          alt="Alternate Text"
+          size="lg"
+          borderRadius={10}
+        />
+      </View>
       <View flexDirection={"row"} width={'100%'} justifyContent={"space-evenly"}>
         {userId != undefined && <FollowButton
+          customStyles={{
+            borderColor: "#FF6060",
+            borderWidth: 1,
+          }}
+          forceLoading={userFollowersCount === null}
           userId={userId}
-          following={isFollowed}
+          following={following}
           onFollow={() => onFollow(userId)}
           onUnfollow={() => onUnfollow(userId)}
         />}
@@ -329,8 +349,8 @@ export default function ProfileScreen(props: Props) {
         />
       }
     </Box>
-    { role === "Atleta" && <Text style={editProfileStyles.favTrainings} fontSize={13}>Entrenamientos Favoritos</Text> }
-    { role === "Atleta" && <TrainingsList
+    {role === "Atleta" && <Text style={editProfileStyles.favTrainings} fontSize={13}>Entrenamientos Favoritos</Text>}
+    {role === "Atleta" && <TrainingsList
       userId={userId ? userId : globalUser.user?.id}
       onlyFavorites
       navigation={navigation}

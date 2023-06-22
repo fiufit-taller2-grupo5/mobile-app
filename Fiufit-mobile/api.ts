@@ -85,7 +85,7 @@ export class API {
         ...fetchConfig.headers,
       }
       // use localhost if running locally, otherwise use the api gateway
-      const localUrl = "https://5f0e-190-18-10-180.ngrok-free.app/" + path;
+      const localUrl = "https://2f45-190-18-10-180.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       console.log("fetching from api: ", url, fetchConfig);
@@ -219,7 +219,12 @@ export class API {
           "Authorization": "Bearer " + accessToken,
         }
       },
-      (response: userInfo) => response,
+      (response: userInfo) => {
+        if (response === null) {
+          throw new ApiError("Usuario con ese mail no encontrado", 404);
+        }
+        return response
+      },
       (error: ApiError) => {
         console.log("error getting user info by email:", error);
         throw error;
@@ -323,7 +328,7 @@ export class API {
         return [coords.lat, coords.lng];
       }
     } catch (err: any) {
-      console.log("error fetching from api: ", err);
+      console.log("error fetching coordinates from google maps: ", err);
       const error = new ApiError(err.message, err.code);
       throw error;
     }

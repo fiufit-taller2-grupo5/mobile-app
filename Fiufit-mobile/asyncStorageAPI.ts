@@ -38,7 +38,7 @@ export async function storeUserOnStorage(user: userInfo) {
 export async function getUserFromStorage(): Promise<userInfo | null> {
   try {
     const jsonValue = await AsyncStorage.getItem('@userInfo');
-    console.log("Getting user from local storage: ", jsonValue);
+    //console.log("Getting user from local storage: ", jsonValue);
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (e) {
     console.log("Error getting user from local storage: ", e);

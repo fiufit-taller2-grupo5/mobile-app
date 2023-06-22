@@ -98,7 +98,7 @@ export default function UsersList(props: Props) {
     });
     return unsubscribe;
   }, [navigation]);
-  
+
 
   const onFollow = async (userId: number) => {
     await api.followUser(userId);
@@ -107,10 +107,6 @@ export default function UsersList(props: Props) {
   const onUnfollow = async (userId: number) => {
     await api.unfollowUser(userId);
   };
-
-  console.log("users", users);
-  console.log("selected", selectedUsers);
-  console.log("filteredUsers", filteredUsers);
 
   return (
     <View flex={1} backgroundColor="#fff">

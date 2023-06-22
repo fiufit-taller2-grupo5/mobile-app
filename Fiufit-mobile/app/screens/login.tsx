@@ -127,6 +127,7 @@ export default function LoginScreen({ navigation }: any) {
               throw Error("Error al iniciar sesión. Por favor, inténtelo de nuevo más tarde.");
             }
             const userInfo = await api.getUserInfoByEmail(email.toLowerCase(), user);
+            console.log("userInfo", userInfo)
             userInfo.googleUser = user;
             userInfo.role = "Atleta";
             userInfo.UserMetadata = null;
