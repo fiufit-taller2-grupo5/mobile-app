@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "login": "npx expo login",
-    "start": "NODE_ENV=development npx expo start --dev-client",
+    "start": "EXPO_DEBUG=true NODE_ENV=development npx expo start --dev-client",
     "build": "npx expo prebuild --clean",
     "android": "npx expo run:android",
     "ios": "npx expo run:ios"
