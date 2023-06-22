@@ -181,6 +181,14 @@ export const trainingStyles = StyleSheet.create({
     fontStyle: 'normal',
     fontSize: 16,
     paddingLeft: 15
+  },
+  textDescription: {
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    fontWeight: 'normal',
+    color: "grey",
+    fontSize: 14,
+    paddingLeft: 15
   }
 });
 

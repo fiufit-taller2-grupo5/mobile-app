@@ -13,6 +13,7 @@ interface Props {
 
 interface Participant {
     name: string;
+    lastRead: string;
 }
 
 export interface ChatMetadata {
@@ -46,7 +47,6 @@ export default function InboxList(props: Props) {
         const q = query(chatsRef, where(`participants.${user?.id}`, "!=", null));
         const querySnapshot = await getDocs(q);
         const chatsMetadata = querySnapshot.docs.map(doc => {
-            console.log("a veeeer el doc: ", doc.data());
             const data = doc.data();
             if (data.lastMessage) {
                 data.lastMessage.createdAt = data.lastMessage?.createdAt?.toDate()?.toLocaleDateString();
@@ -60,13 +60,17 @@ export default function InboxList(props: Props) {
         setRefreshing(false);
     }
 
-
-
     useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            try {
+                getChatsWhereUserIsParticipant();
+            } catch (error) {
+                console.log(error);
+            }
+        });
+        return unsubscribe;
 
-        getChatsWhereUserIsParticipant();
-
-    }, []);
+    }, [navigation]);
 
     return <View flex={1} backgroundColor="#fff">
         <View flex={1}>

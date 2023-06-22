@@ -5,6 +5,7 @@ import { db } from "../../../firebase";
 import { ChatMetadata } from './inboxList';
 import { View, Text } from 'native-base';
 import { ActivityIndicator } from 'react-native';
+import globalUser from '../../../userStorage';
 
 
 interface Props {
@@ -42,6 +43,14 @@ export default function InboxCard(props: Props) {
       getMessagesFromDB();
     });
 
+    const updateLastRead = async () => {
+      const docRef = doc(db, 'chats', chatMetadata._id);
+      await updateDoc(docRef, {
+        [`participants.${globalUser.user?.id}.lastRead`]: new Date(),
+      });
+    }
+
+    updateLastRead();
     getMessagesFromDB();
     return () => unsubscribe();
   }, []);
@@ -57,7 +66,7 @@ export default function InboxCard(props: Props) {
       await addDoc(collection(db, "chats", chatMetadata._id, "messages"), newMessages[0]);
       const docRef = doc(db, 'chats', chatMetadata._id);
       await updateDoc(docRef, {
-        lastMessage: newMessages[0]
+        lastMessage: newMessages[0],
       });
     } catch (e) {
       console.log("error: ", e);

@@ -1,4 +1,4 @@
-import { HStack, Text, View, Spacer } from 'native-base';
+import { HStack, Text, View, Spacer, Image } from 'native-base';
 import { trainingStyles } from "../../styles";
 import { API } from '../../../api';
 import { userInfo } from '../../../asyncStorageAPI';
@@ -23,32 +23,51 @@ export const UserInfoCard = ({
   onUnfollow,
 }: UserInfoCardProps) => {
 
-  const api = new API(navigation);
-
   return (
-    <View style={{ height: 80, width: "100%", paddingHorizontal: 10 }} justifyContent="center" alignItems={"center"}>
+    <View
 
-      <HStack>
+      style={{ width: "100%", paddingHorizontal: 15, paddingVertical: 10 }} flexDirection="row" >
+
+      <View
+        alignItems={"center"}
+        justifyContent="space-between"
+        onTouchEnd={async () => {
+          navigation.navigate(navigateToScreen, { userId: userData.id, isFollowed: isFollowed });
+        }}
+      >
+        <Image
+          source={{ uri: "https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg" }}
+          alt="Alternate Text"
+          size="sm"
+          borderRadius={10}
+        />
+      </View>
+      <View
+        onTouchEnd={async () => {
+          navigation.navigate(navigateToScreen, { userId: userData.id, isFollowed: isFollowed });
+        }}
+        flexDirection="column" justifyItems={"flex-start"} justifyContent="flex-start" alignItems="flex-start" marginTop={-2}>
         <Text
           style={trainingStyles.textTitle}
-          text-align="left"
           bold
-
-          onPress={async () => {
-            console.log("xd")
-            navigation.navigate(navigateToScreen, { userId: userData.id, isFollowed: isFollowed });
-          }}
+          height={8}
         >
           {userData.name}
         </Text>
-        <Spacer />
-        <FollowButton
-          userId={userData.id}
-          following={isFollowed}
-          onFollow={() => onFollow()}
-          onUnfollow={() => onUnfollow()}
-        />
-      </HStack>
+        <Text
+          height={8}
+          style={trainingStyles.textDescription}
+        >
+          54 Trainings
+        </Text>
+      </View>
+      <Spacer />
+      <FollowButton
+        userId={userData.id}
+        following={isFollowed}
+        onFollow={() => onFollow()}
+        onUnfollow={() => onUnfollow()}
+      />
     </View>
   );
 };

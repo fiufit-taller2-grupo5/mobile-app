@@ -216,8 +216,8 @@ export default function ProfileScreen(props: Props) {
         navigation.navigate("InboxInfoScreen", { chatMetadata: chatsMetadata[0] });
       } else {
         const participants: any = {};
-        participants[user!.id] = { name: user!.name };
-        participants[userId] = { name: name };
+        participants[user!.id] = { name: user!.name, lastRead: new Date() };
+        participants[userId] = { name: name, lastRead: new Date() };
 
         const chat = {
           participants: participants,
