@@ -10,7 +10,7 @@ import { LoadableButton } from '../components/commons/buttons';
 const screens = ['ChangeNameScreen', 'ChangeHeightScreen', 'ChangeWeightScreen', 'ChangeDateScreen', 'ChangeInterestsScreen', 'ChangeLocationScreen', 'ChangeRoleScreen']
 
 const fields = [
-  { name: "Nombre completo", id: 0 }, // no hay endpoint para cambiar esto
+  { name: "Nombre completo", id: 0 }, // TODO: no hay endpoint para cambiar esto
   { name: "Altura", id: 1 },
   { name: "Peso", id: 2 },
   { name: "Fecha de nacimiento", id: 3 },
@@ -26,8 +26,6 @@ interface Props {
 export default function SettingsScreen(props: Props) {
   const { navigation } = props;
 
-
-
   const [userInformation, setUserInformation] = useState(["", "", "", "", "", "", ""]);
 
   useEffect(() => {
@@ -39,10 +37,13 @@ export default function SettingsScreen(props: Props) {
           return;
         }
 
+        console.log('ABOUT TO ASK FOR DETAILS');
         const details = await globalUser.getUserMetadata();
 
+        console.log("DETAILS:", details, "userInfoStored:", userInfoStored);
         if (details === null || details === undefined) { // if the user has skipped the registration form
           setUserInformation([userInfoStored.name, "", "", "", "", "", userInfoStored!.role]);
+          console.log("NO INFO");
           return;
         }
 

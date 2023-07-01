@@ -3,6 +3,7 @@ import BirthDateForm from "../metadata/birthdateForm";
 import WeightForm from "../metadata/weightForm";
 import HeightForm from "../metadata/heightForm";
 import InterestsForm from "../metadata/interestsForm";
+import ImageInput from "../trainingInfo/inputImage";
 
 interface Props {
   date: Date;
@@ -13,6 +14,8 @@ interface Props {
   setHeight: (height: number) => void;
   interests: string[];
   setInterests: React.Dispatch<React.SetStateAction<string[]>>;
+  image: any;
+  setImage: (image: any) => void;
 }
 
 export default function ExtraInformationForm(props: Props) {
@@ -25,6 +28,8 @@ export default function ExtraInformationForm(props: Props) {
     setHeight,
     interests,
     setInterests,
+    image,
+    setImage
   } = props;
 
   return (
@@ -33,6 +38,7 @@ export default function ExtraInformationForm(props: Props) {
       <WeightForm top={"0%"} weight={weight} setWeight={setWeight} />
       <HeightForm top={"5%"} height={height} setHeight={setHeight} />
       <InterestsForm top={"10%"} interests={interests} setInterests={setInterests} navigation />
+      <ImageInput image={image} setImage={setImage} customStyles={{top: "20%", backgroundColor: "#ffffff"}}/>
     </VStack>
   );
 }

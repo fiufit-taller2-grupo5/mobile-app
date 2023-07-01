@@ -47,13 +47,13 @@ export default function TrainingsList(props: Props) {
     if (userLatitude && userLatitude !== 0 || userLongitude && userLongitude !== 0) {
       return [userLatitude, userLongitude];
     }
-    if (!globalUser.user || !props.userId) {
+    if (!globalUser.user && !props.userId) {
       return;
     }
     let user;
     if (props.userId) {
       user = await api.getUserInfoById(props.userId);
-    } else {
+    } else if (globalUser.user) {
       user = await api.getUserInfoById(globalUser.user.id);
     }
 
@@ -73,6 +73,9 @@ export default function TrainingsList(props: Props) {
   };
 
   const getDistanceFromLatLonInKm = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    if (lat1 == 0 || lon1 == 0) {
+      getUserLocation();
+    }
     if (lat1 === 0 || lon1 === 0 || lat2 === 0 || lon2 === 0) {
       return selectedDistance + 1;
     }
@@ -130,7 +133,11 @@ export default function TrainingsList(props: Props) {
   const getTrainingsList = async () => {
     setRefreshing(true);
     try {
-      await getUserLocation();
+      const coordinates = await getUserLocation();
+      if (coordinates !== undefined && coordinates[0] !== 0 && coordinates[1] !== 0) {
+        setUserLatitude(coordinates[0]);
+        setUserLongitude(coordinates[1]);
+      }
       if (props.onlyFavorites) {
         const favoritesTrainingsResponse = await api.getFavoriteTrainings(props.userId);
         let trainings = updateFavoriteStatus(favoritesTrainingsResponse, favoritesTrainingsResponse);
@@ -295,14 +302,15 @@ export default function TrainingsList(props: Props) {
             trainingData={training.item}
             canSetFavorite
             userRole={role}
+            userLatitude={userLatitude}
+            userLongitude={userLongitude}
             navigation={navigation}
             navigateToScreen="TrainingInfoScreen"
           />
         )}
         keyExtractor={(training) => training.id.toString()}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { getTrainingsList() }} />}
-      >
-      </FlatList>
+      />
     </>
   );
 }

@@ -27,6 +27,7 @@ export default function ExtraInformationScreen({ navigation, route }: any) {
   const [weight, setWeight] = useState(50);
   const [height, setHeight] = useState(150);
   const [interests, setInterests] = useState<string[]>([]);
+  const [image, setImage] = useState(null);
 
   const api = new API(navigation);
 
@@ -54,6 +55,8 @@ export default function ExtraInformationScreen({ navigation, route }: any) {
         setHeight={setHeight}
         interests={interests}
         setInterests={setInterests}
+        image={image}
+        setImage={setImage}
       />
       <LoadableButton
         text="Continuar"
@@ -95,6 +98,7 @@ export default function ExtraInformationScreen({ navigation, route }: any) {
           }
 
           api.updateUserMetadata({ location: streetName + ' ' + streetNumber.toString(10), birthDate: date.toISOString(), weight: weight, height: height, interests: interests });
+          // TODO ver si agregas la imagen en el endpoint de arriba o en uno nuevo, depende del back
           navigation.navigate('HomeScreen');
         }}
       />

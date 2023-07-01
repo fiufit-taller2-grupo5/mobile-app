@@ -26,16 +26,21 @@ import { ShareButton } from "./shareButton";
 interface Props {
   navigation: any;
   trainingData: Training;
+  userLatitude: number;
+  userLongitude: number;
 }
 
 export default function TrainingCard(props: Props) {
-  const { navigation, trainingData } = props;
+  const { navigation, trainingData, userLatitude, userLongitude } = props;
 
   const api = new API(navigation);
 
   const [reviews, setReviews] = useState<trainingReview[]>([]);
   const [userReview, setUserReview] = useState<any[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [distance, setDistance] = useState("No disponible");
+  const [userLatitudeSet, setUserLatitude] = useState(0);
+  const [userLongitudeSet, setUserLongitude] = useState(0);
 
   const shareTitle = "Entrenamiento: " + trainingData.title;
   const shareMessage =
@@ -73,7 +78,67 @@ export default function TrainingCard(props: Props) {
     return users;
   };
 
+  const getUserLocation = async () => {
+    if (userLatitude && userLatitude !== 0 || userLongitude && userLongitude !== 0) {
+      return [userLatitude, userLongitude];
+    }
+    if (!globalUser.user) {
+      return;
+    }
+    const user = await api.getUserInfoById(globalUser.user.id);
+
+    if (user) {
+      const userLocation = user.location;
+      if (userLocation) {
+        const coordinates = await api.getCoordinates(userLocation);
+        console.log("USER COORS: ", coordinates);
+        setUserLatitude(coordinates[0]);
+        setUserLongitude(coordinates[1]);
+        return coordinates;
+      }
+    }
+  }
+
+  const deg2rad = (degrees: number): number => {
+    return degrees * (Math.PI / 180);
+  };
+
+  const getDistanceFromLatLonInKm = async (lat: number, lon: number) => {
+    if (userLatitude === 0 || userLongitude === 0) {
+      const coordinates = await getUserLocation();
+      setUserLatitude(coordinates[0]);
+      setUserLongitude(coordinates[1]);
+      if (!coordinates) {
+        return "No disponible";
+      }
+    } else {
+      setUserLatitude(userLatitude);
+      setUserLongitude(userLongitude);
+    }
+    if (lat === 0 || lon === 0) {
+      return "No disponible";
+    }
+    const R = 6371;
+    const dLat = deg2rad(lat - userLatitude);
+    const dLon = deg2rad(lon - userLongitude);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(userLatitude)) * Math.cos(deg2rad(lat)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distanceCalc = (R * c) / 1000;
+    setDistance(distanceCalc.toPrecision(5).toString());
+    return distanceCalc.toPrecision(5).toString();
+  }
+
   useEffect(() => {
+    if (trainingData.latitude && trainingData.longitude) {
+      const coordinates = [parseFloat(trainingData.latitude), parseFloat(trainingData.longitude)];
+      const distance = getDistanceFromLatLonInKm(coordinates[0], coordinates[1]);
+      distance.then((distance) => {
+        setDistance(distance);
+      });
+    }
     retrieveTrainingReviews();
   }, []);
 
@@ -174,6 +239,10 @@ export default function TrainingCard(props: Props) {
                 <Text>{trainingData.difficulty}</Text>
               </HStack>
             </HStack>
+            <HStack alignItems="center">
+                <Text fontWeight={"bold"}>Distance in km: </Text>
+                <Text>{distance}</Text>
+            </HStack>
             <Text fontWeight={"bold"}>Descripción: </Text>
             <Text>{trainingData.description}</Text>
             <Text fontWeight={"bold"}>Horarios: </Text>
@@ -201,10 +270,23 @@ export default function TrainingCard(props: Props) {
           />}
           <ShareButton title={shareTitle} message={shareMessage} />
         </Box>
-        <Divider my={2} mx={0} />
-        <Heading size="sm" color={"gray.500"} marginLeft={3} marginY={2}>
-          Valoraciones
-        </Heading>
+        <Divider my={1} />
+        <HStack>
+          <Heading marginTop={"2%"} size="sm" color={"gray.500"} marginLeft={3}>
+            Valoraciones
+          </Heading>
+          {isAthlete && <Button style={{
+            backgroundColor: "#FF6060",
+            width: "50%",
+            borderRadius: 30,
+            left: "22%",
+            bottom: "5%"
+          }}
+            onPress={() => navigation.navigate("RateTrainingScreen", { trainingId: trainingData.id })}
+          >
+            Agregar valoración
+          </Button>}
+        </HStack>
         {reviews.map(review => (
           <Box
             key={review.id}
@@ -214,8 +296,9 @@ export default function TrainingCard(props: Props) {
             borderWidth="1"
             marginLeft={3}
             marginRight={3}
-            margin={1}
+            margin={2}
             paddingX={2}
+            paddingY={2}
           >
             <Stack p="4" space={0}>
               <Link
@@ -240,23 +323,10 @@ export default function TrainingCard(props: Props) {
                   </View>
                 </View>
               </View>
-
             </Stack>
           </Box>
         ))}
-
       </ScrollView>
-      {isAthlete && <Button style={{
-        backgroundColor: "#FF6060",
-        width: "50%",
-        borderRadius: 30,
-        left: "22%",
-        bottom: "5%"
-      }}
-        onPress={() => navigation.navigate("RateTrainingScreen", { trainingId: trainingData.id })}
-      >
-        Agregar valoración
-      </Button>}
       {!isAthlete && <Button style={{
         backgroundColor: "#FF6060",
         width: "50%",

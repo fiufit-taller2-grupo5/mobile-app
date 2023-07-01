@@ -31,13 +31,14 @@ export const TrainingInfoCard = ({
   trainingData,
   canSetFavorite = false,
   userRole,
+  userLatitude,
+  userLongitude,
   onRemoveFavorite = () => { },
   navigation,
   navigateToScreen,
 }: any) => {
 
   const api = new API(navigation);
-
 
   const [isFavorite, setTrainingFavorite] = useState<Boolean>(
     trainingData.isFavorite || false
@@ -67,7 +68,7 @@ export const TrainingInfoCard = ({
         py="10"
         backgroundColor="#fff"
         onPress={async () => {
-          navigation.navigate(navigateToScreen, { trainingData });
+          navigation.navigate(navigateToScreen, { trainingData, userLatitude, userLongitude });
         }}
       >
         <HStack
