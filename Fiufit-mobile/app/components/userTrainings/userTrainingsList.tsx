@@ -99,7 +99,7 @@ export default function UserTrainingsList(props: Props) {
         <VStack alignSelf="center" paddingY={2}
           paddingX={0}>
           <Input
-            placeholder="Search trainings by title"
+            placeholder="Busque por título"
             onChangeText={handleFilterByTitle}
             value={selectedTitle}
             width="100%"
@@ -122,26 +122,26 @@ export default function UserTrainingsList(props: Props) {
           alignItems={"center"}
           width={"100%"}>
           <View flex={0.8} paddingRight={2}>
-            <Select selectedValue={selectedType} accessibilityLabel="Choose Type" placeholder="Choose Type"
+            <Select selectedValue={selectedType} accessibilityLabel="Elija un tipo" placeholder="Elija un tipo"
               dropdownIcon={<View paddingRight={2}><ChevronDownIcon /></View>}
               mt={1} onValueChange={handleFilterByType}>
-              <Select.Item label="All types" value="" />
-              <Select.Item label="Running" value="Running" />
-              <Select.Item label="Swimming" value="Swimming" />
-              <Select.Item label="Biking" value="Biking" />
+              <Select.Item label="Todos los tipos" value="" />
+              <Select.Item label="Correr" value="Running" />
+              <Select.Item label="Natación" value="Swimming" />
+              <Select.Item label="Ciclismo" value="Biking" />
               <Select.Item label="Yoga" value="Yoga" />
               <Select.Item label="Basketball" value="Basketball" />
               <Select.Item label="Football" value="Football" />
-              <Select.Item label="Walking" value="Walking" />
-              <Select.Item label="Gymnastics" value="Gymnastics" />
-              <Select.Item label="Dancing" value="Dancing" />
-              <Select.Item label="Hiking" value="Hiking" />
+              <Select.Item label="Caminata" value="Walking" />
+              <Select.Item label="Gimnasia" value="Gymnastics" />
+              <Select.Item label="Danza" value="Dancing" />
+              <Select.Item label="Escalar" value="Hiking" />
             </Select>
           </View>
           <View flex={1} paddingRight={2}>
             <Select selectedValue={selectedDifficulty} dropdownIcon={<View paddingRight={2}><ChevronDownIcon /></View>}
-              accessibilityLabel="Choose Difficulty" placeholder="Choose Difficulty" mt={1} onValueChange={handleFilterByDifficulty}>
-              <Select.Item label="All difficulties" value="" />
+              accessibilityLabel="Elija dificultad" placeholder="Elija dificultad" mt={1} onValueChange={handleFilterByDifficulty}>
+              <Select.Item label="Todas " value="" />
               <Select.Item label="1" value="1" />
               <Select.Item label="2" value="2" />
               <Select.Item label="3" value="3" />

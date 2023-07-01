@@ -85,9 +85,10 @@ export class API {
         ...fetchConfig.headers,
       }
       // use localhost if running locally, otherwise use the api gateway
-      const localUrl = "https://2f45-190-18-10-180.ngrok-free.app/" + path;
-      const prod = "https://api-gateway-prod-szwtomas.cloud.okteto.net/" + path;
+      const localUrl = "https://06c5-2800-810-54f-547-b9ec-958a-3d1b-f755.ngrok-free.app/" + path;
+      const prod = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
+      // const url = prod;
       console.log("fetching from api: ", url, fetchConfig);
       const response = await fetch(url, fetchConfig);
       const responseJson = await response.json();
@@ -322,6 +323,7 @@ export class API {
           address
         )}&key=${key}`
       );
+      console.log("GET coordinates response ",  await response.json());
       if (response.ok) {
         const data = await response.json();
         const coords = data.results[0].geometry.location;

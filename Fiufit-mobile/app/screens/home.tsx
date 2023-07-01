@@ -45,7 +45,7 @@ export default function HomeScreen({ navigation }: any) {
                 name="Users" component={UsersScreen}
                 options={
                     {
-                        tabBarLabel: 'Users', tabBarIcon: ({ color, size }) => (
+                        tabBarLabel: 'Usuarios', tabBarIcon: ({ color, size }) => (
                             <FontAwesome5 name='users' color={color} size={size} />),
                         tabBarActiveTintColor: '#FF6060'
                     }
@@ -55,7 +55,7 @@ export default function HomeScreen({ navigation }: any) {
                 name="Inbox" component={InboxScreen}
                 options={
                     {
-                        tabBarLabel: 'Inbox', tabBarIcon: ({ color, size }) => (
+                        tabBarLabel: 'Mensajes', tabBarIcon: ({ color, size }) => (
                             <FontAwesome5 name='inbox' color={color} size={size} />),
                         tabBarActiveTintColor: '#FF6060'
                     }
@@ -64,7 +64,7 @@ export default function HomeScreen({ navigation }: any) {
             {isAthlete && <Tab.Screen
                 options={
                     {
-                        tabBarLabel: 'Trainings', tabBarIcon: ({ color, size }) => (
+                        tabBarLabel: 'Entrenamientos', tabBarIcon: ({ color, size }) => (
                             <MaterialCommunityIcons name='dumbbell' color={color} size={size} />),
                         tabBarActiveTintColor: '#FF6060'
                     }
@@ -74,7 +74,7 @@ export default function HomeScreen({ navigation }: any) {
             {!isAthlete && <Tab.Screen
                 options={
                     {
-                        tabBarLabel: 'Trainings', tabBarIcon: ({ color, size }) => (
+                        tabBarLabel: 'Entrenamientos', tabBarIcon: ({ color, size }) => (
                             <MaterialCommunityIcons name='dumbbell' color={color} size={size} />),
                         tabBarActiveTintColor: '#FF6060'
                     }
@@ -84,7 +84,7 @@ export default function HomeScreen({ navigation }: any) {
             <Tab.Screen
                 options={
                     {
-                        tabBarLabel: 'Profile', tabBarIcon: ({ color, size }) => (
+                        tabBarLabel: 'Perfil', tabBarIcon: ({ color, size }) => (
                             <MaterialCommunityIcons name='account' color={color} size={size} />),
                         tabBarActiveTintColor: '#FF6060'
                     }
@@ -94,7 +94,7 @@ export default function HomeScreen({ navigation }: any) {
             <Tab.Screen
                 options={
                     {
-                        tabBarLabel: 'Settings', tabBarIcon: ({ color, size }) => (
+                        tabBarLabel: 'Ajustes', tabBarIcon: ({ color, size }) => (
                             <MaterialCommunityIcons name='cog' color={color} size={size} />),
                         tabBarActiveTintColor: '#FF6060'
                     }

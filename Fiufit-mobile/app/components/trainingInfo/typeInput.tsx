@@ -24,16 +24,16 @@ export default function TypeInput(props: Props) {
         size={"md"}
         style={styles}
         onValueChange={newType => setTrainingType(newType)}>
-        <Select.Item label="Running" value="Running"/>
-        <Select.Item label="Swimming" value="Swimming"/>
-        <Select.Item label="Biking" value="Biking"/>
+        <Select.Item label="Correr" value="Running"/>
+        <Select.Item label="Natación" value="Swimming"/>
+        <Select.Item label="Ciclismo" value="Biking"/>
         <Select.Item label="Yoga" value="Yoga"/>
         <Select.Item label="Basketball" value="Basketball"/>
         <Select.Item label="Football" value="Football"/>
-        <Select.Item label="Walking" value="Walking"/>
-        <Select.Item label="Gymnastics" value="Gymnastics"/>
-        <Select.Item label="Dancing" value="Dancing"/>
-        <Select.Item label="Hiking" value="Hiking"/>
+        <Select.Item label="Caminata" value="Walking"/>
+        <Select.Item label="Gimnasia" value="Gymnastics"/>
+        <Select.Item label="Danza" value="Dancing"/>
+        <Select.Item label="Escalar" value="Hiking"/>
       </Select>
     </View>
   )
