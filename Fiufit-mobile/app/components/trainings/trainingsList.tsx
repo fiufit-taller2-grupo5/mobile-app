@@ -295,6 +295,8 @@ export default function TrainingsList(props: Props) {
             trainingData={training.item}
             canSetFavorite
             userRole={role}
+            userLatitude={userLatitude}
+            userLongitude={userLongitude}
             navigation={navigation}
             navigateToScreen="TrainingInfoScreen"
           />

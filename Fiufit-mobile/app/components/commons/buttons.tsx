@@ -1,5 +1,5 @@
 import { Text, Spinner, Button as NativeBaseButton, View, Link } from "native-base";
-import { Component, CSSProperties, ReactElement, useState } from "react";
+import { ReactElement, useState } from "react";
 import { GestureResponderEvent, StyleProp, StyleSheet, ViewStyle } from "react-native";
 import { useToast } from 'native-base';
 

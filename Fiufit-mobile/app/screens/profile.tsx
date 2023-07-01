@@ -155,6 +155,7 @@ export default function ProfileScreen(props: Props) {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       const api = new API(navigation);
+      // TODO: here the backend should send an image too
       const getUserInfo = async () => {
         let user: userInfo | undefined | null;
         if (userId) {
@@ -236,7 +237,7 @@ export default function ProfileScreen(props: Props) {
         data._id = chatMetadata.id;
         data._currentUserId = user?.id;
 
-        console.log("chat metaadta", data);
+        console.log("chat metadata", data);
         navigation.navigate("InboxInfoScreen", { chatMetadata: data });
       }
     }

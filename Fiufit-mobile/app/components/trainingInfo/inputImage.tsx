@@ -1,14 +1,16 @@
 import * as ImagePicker from 'expo-image-picker';
 import { View, Button, Text } from 'native-base';
+import { StyleProp, ViewStyle, StyleSheet } from 'react-native';
 
 
 interface Props {
   image: string;
   setImage: (image: string) => void;
+  customStyles?: StyleProp<ViewStyle>;
 }
 
 export default function ImageInput(props: Props) {
-  const { image, setImage } = props;
+  const { image, setImage, customStyles } = props;
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -24,10 +26,13 @@ export default function ImageInput(props: Props) {
     }
   };
 
+  const styles = StyleSheet.flatten([customStyles]);
+  console.log("IMAGE ", image);
+
   return (
     <View>
-      <Button variant='ghost' onPress={pickImage}>
-        <Text>{image === "" ? "Seleccioná una imagen" : "Toca para modificar"}</Text>
+      <Button style={styles} variant='ghost' onPress={pickImage}>
+        <Text>{image === null ? "Seleccioná una imagen" : "Toca para modificar"}</Text>
       </Button>
     </View>
   );
