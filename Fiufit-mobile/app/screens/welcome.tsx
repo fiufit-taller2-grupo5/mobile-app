@@ -150,8 +150,11 @@ export default function WelcomeScreen({ navigation }: NativeStackScreenProps<any
     globalUser.setNavigation(navigation)
 
     const biometricLogin = async () => {
-      const user = await globalUser.getUser();
-      if (!user) {
+      let user;
+      try {
+        user = await globalUser.getUser();
+      } catch (e) {
+        console.log("no user stored");
         return;
       }
 
@@ -169,7 +172,7 @@ export default function WelcomeScreen({ navigation }: NativeStackScreenProps<any
         navigation.navigate('HomeScreen');
       }
     }
-    // biometricLogin();
+    biometricLogin();
 
   }, [])
 
