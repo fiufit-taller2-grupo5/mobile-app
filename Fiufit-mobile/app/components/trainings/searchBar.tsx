@@ -23,7 +23,7 @@ export const SearchBar = ({text, searchText, trainings, filterData}: any) => {
 
     return <VStack alignSelf="center">
         <Input
-        placeholder="Search trainings by name"
+        placeholder="Buscar por nombre"
         onChangeText={handleSearch}
         value={text}
         width="100%"
