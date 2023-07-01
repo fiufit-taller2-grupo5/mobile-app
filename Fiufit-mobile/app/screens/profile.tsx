@@ -12,6 +12,8 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { collection, query, where, getDocs, addDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { FollowButton } from '../components/users/followButton';
+import { ScrollView } from 'react-native';
+import { RefreshControl } from 'react-native';
 
 interface Props {
   navigation: any;
@@ -29,6 +31,8 @@ export default function ProfileScreen(props: Props) {
   const [userTrainingsCount, setUserTrainingsCount] = useState<number | null>(null);
   const [userFollowersCount, setUserFollowersCount] = useState<number | null>(null);
   const [userFollowingCount, setUserFollowingCount] = useState<number | null>(null);
+
+  const [refreshTrainingList, setRefreshTrainingList] = useState(false);
 
   const [following, setFollowing] = useState(false);
 
@@ -254,108 +258,117 @@ export default function ProfileScreen(props: Props) {
     await api.unfollowUser(userId);
   };
 
-  console.log(userId, globalUser.user?.id);
-
+  console.log(refreshTrainingList)
 
   return <NativeBaseProvider><View style={{ flex: 1 }} backgroundColor="#fff">
-    <Box style={editProfileStyles.nameBox}>
-      <Text style={editProfileStyles.text}>{name}</Text>
-      <View
-        alignItems={"center"}
-        justifyContent="space-between"
-        height={100}
-        margin={2}
-      >
-        <Image
-          source={{ uri: "https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg" }}
-          alt="Alternate Text"
-          size="lg"
-          borderRadius={10}
-        />
-      </View>
-      <View flexDirection={"row"} width={'100%'} justifyContent={"space-evenly"}>
-        {userId != undefined && <FollowButton
-          customStyles={{
-            borderColor: "#FF6060",
-            borderWidth: 1,
-          }}
-          forceLoading={userFollowersCount === null}
-          userId={userId}
-          following={following}
-          onFollow={() => onFollow(userId)}
-          onUnfollow={() => onUnfollow(userId)}
-        />}
-      </View>
-      <View height={20} flexDirection="row" alignItems="center" justifyContent="space-evenly">
-        {userId === undefined && <LoadableButton
-          customStyles={{
-            width: 130,
-          }}
-          hideTextWhileLoading
-          overrideLoading={userTrainingsCount === null}
-          onPress={async () => { navigation.navigate("UserTrainingsScreen"); }}
-          text={
-            <>
-              <Text fontWeight={"bold"}>{userTrainingsCount} Sesiones</Text>
-            </>
-          }
-        />}
-        <LoadableButton
-          hideTextWhileLoading
-          customStyles={{ width: 130 }}
-          overrideLoading={userFollowersCount === null}
-          onPress={async () => { onPressFollowers() }}
-          text={
-            <>
-              <Text fontWeight={"bold"}>{userFollowersCount} Seguidores</Text>
-            </>
-          }
-        />
-        <LoadableButton
-          hideTextWhileLoading
-          customStyles={{ width: 130 }}
-          overrideLoading={userFollowingCount === null}
-          onPress={async () => { onPressFollowing() }}
-          text={
-            <>
-              <Text fontWeight={"bold"}>{userFollowingCount} Siguiendo</Text>
-            </>
-          }
-        />
-        {userId !== undefined && <Button
-          style={{
-            bottom: 0,
-            right: '2%',
-            borderRadius: 50,
-            backgroundColor: "#ffffff",
-            margin: '2%',
-          }}
-          onPress={async () => { onPressInbox() }}
+    <ScrollView
+      refreshControl={<RefreshControl refreshing={false} onRefresh={
+         () => {
+          setRefreshTrainingList(oldRefreshing => !oldRefreshing);
+        }
+      } />}
+    >
+      <Box style={editProfileStyles.nameBox}>
+        <Text style={editProfileStyles.text}>{name}</Text>
+        <View
+          alignItems={"center"}
+          justifyContent="space-between"
+          height={100}
+          margin={2}
         >
-          <MaterialIcons name="inbox" size={30} color="#000000" />
-        </Button>}
-      </View>
+          <Image
+            source={{ uri: "https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg" }}
+            alt="Alternate Text"
+            size="lg"
+            borderRadius={10}
+          />
+        </View>
+        <View flexDirection={"row"} width={'100%'} justifyContent={"space-evenly"}>
+          {userId != undefined && <FollowButton
+            customStyles={{
+              borderColor: "#FF6060",
+              borderWidth: 1,
+            }}
+            forceLoading={userFollowersCount === null}
+            userId={userId}
+            following={following}
+            onFollow={() => onFollow(userId)}
+            onUnfollow={() => onUnfollow(userId)}
+          />}
+        </View>
+        <View height={20} flexDirection="row" alignItems="center" justifyContent="space-evenly">
+          {userId === undefined && <LoadableButton
+            customStyles={{
+              width: 130,
+            }}
+            hideTextWhileLoading
+            overrideLoading={userTrainingsCount === null}
+            onPress={async () => { navigation.navigate("UserTrainingsScreen"); }}
+            text={
+              <>
+                <Text fontWeight={"bold"}>{userTrainingsCount} Sesiones</Text>
+              </>
+            }
+          />}
+          <LoadableButton
+            hideTextWhileLoading
+            customStyles={{ width: 130 }}
+            overrideLoading={userFollowersCount === null}
+            onPress={async () => { onPressFollowers() }}
+            text={
+              <>
+                <Text fontWeight={"bold"}>{userFollowersCount} Seguidores</Text>
+              </>
+            }
+          />
+          <LoadableButton
+            hideTextWhileLoading
+            customStyles={{ width: 130 }}
+            overrideLoading={userFollowingCount === null}
+            onPress={async () => { onPressFollowing() }}
+            text={
+              <>
+                <Text fontWeight={"bold"}>{userFollowingCount} Siguiendo</Text>
+              </>
+            }
+          />
+          {userId !== undefined && <Button
+            style={{
+              bottom: 0,
+              right: '2%',
+              borderRadius: 50,
+              backgroundColor: "#ffffff",
+              margin: '2%',
+            }}
+            onPress={async () => { onPressInbox() }}
+          >
+            <MaterialIcons name="inbox" size={30} color="#000000" />
+          </Button>}
+        </View>
 
-      {
-        (!userId || userId === globalUser.user?.id) &&
-        <ProgressChart
-          absolute
-          data={data}
-          width={380}
-          height={260}
-          strokeWidth={25}
-          radius={25}
-          chartConfig={chartConfig}
-          hideLegend={false}
-        />
+        {
+          (!userId || userId === globalUser.user?.id) &&
+          <ProgressChart
+            absolute
+            data={data}
+            width={380}
+            height={260}
+            strokeWidth={25}
+            radius={25}
+            chartConfig={chartConfig}
+            hideLegend={false}
+          />
+        }
+      </Box>
+      {role === "Atleta" && <Text style={editProfileStyles.favTrainings} fontSize={13}>Entrenamientos Favoritos</Text>}
+      {role === "Atleta" && <TrainingsList
+        usingScrollView={true}
+        forceRefresh={refreshTrainingList}
+        userId={userId ? userId : globalUser.user?.id}
+        onlyFavorites
+        navigation={navigation}
+      />
       }
-    </Box>
-    {role === "Atleta" && <Text style={editProfileStyles.favTrainings} fontSize={13}>Entrenamientos Favoritos</Text>}
-    {role === "Atleta" && <TrainingsList
-      userId={userId ? userId : globalUser.user?.id}
-      onlyFavorites
-      navigation={navigation}
-    />
-    }
+    </ScrollView>
   </View></NativeBaseProvider>;
 }

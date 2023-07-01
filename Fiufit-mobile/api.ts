@@ -85,7 +85,7 @@ export class API {
         ...fetchConfig.headers,
       }
       // use localhost if running locally, otherwise use the api gateway
-      const localUrl = "https://c4e5-2800-810-430-8182-e9bf-7a5-8a37-111e.ngrok-free.app/" + path;
+      const localUrl = "https://265c-190-18-10-180.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       // const url = prod;

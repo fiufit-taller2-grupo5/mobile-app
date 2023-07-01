@@ -25,6 +25,8 @@ interface Props {
   navigation: any;
   onlyFavorites?: boolean;
   userId?: number;
+  forceRefresh?: boolean;
+  usingScrollView?: boolean;
 }
 
 export default function TrainingsList(props: Props) {
@@ -39,6 +41,18 @@ export default function TrainingsList(props: Props) {
   const [userLongitude, setUserLongitude] = useState(0);
   const [resetFilters, setResetFilters] = useState(false);
   const [role, setRole] = useState("Atleta");
+
+  const updateData = async () => {
+    await getUserRole();
+    await getTrainingsList();
+  }
+
+  useEffect(() => {
+    if(props.usingScrollView) {
+      updateData();
+      console.log("force refreshando")
+    }
+  }, [props.forceRefresh])
 
 
   const api = new API(navigation);
@@ -170,15 +184,14 @@ export default function TrainingsList(props: Props) {
     getTrainingsList();
   }, [selectedTitle, selectedType, selectedDifficulty, selectedDistance])
 
-  const getUserRule = async () => {
+  const getUserRole = async () => {
     const userRole = await globalUser.getRole();
     setRole(userRole);
   }
 
 
   useEffect(() => {
-    getUserRule();
-    getTrainingsList();
+    updateData();
   }, [])
 
 
@@ -248,7 +261,7 @@ export default function TrainingsList(props: Props) {
             </Select>
           </View>
           <View flex={1}>
-            
+
             <Select selectedValue={selectedDistance.toString()} dropdownIcon={<View paddingRight={2}><ChevronDownIcon /></View>}
               accessibilityLabel="Elija distancia" placeholder="Elija distancia" mt={1} onValueChange={handleFilterByDistance}>
               <Select.Item label="Todas las distancias" value="0" />
@@ -259,7 +272,7 @@ export default function TrainingsList(props: Props) {
               <Select.Item label="15km" value="15" />
               <Select.Item label="20km" value="20" />
             </Select>
-            
+
           </View>
           <Button
             backgroundColor="#fff"
@@ -274,10 +287,10 @@ export default function TrainingsList(props: Props) {
             ml={2}
           >
             <Icon
-                as={<MaterialCommunityIcons name={ "undo" } />}
-                size={6}
-                color="#000000"
-                alignSelf="center"
+              as={<MaterialCommunityIcons name={"undo"} />}
+              size={6}
+              color="#000000"
+              alignSelf="center"
             />
           </Button>
         </View>
@@ -292,7 +305,19 @@ export default function TrainingsList(props: Props) {
           />
         </View>
       }
-      <FlatList
+      {props.usingScrollView && filteredData.map(training => {
+        return <TrainingInfoCard
+          key={training.id.toString()}
+          trainingData={training}
+          canSetFavorite
+          userRole={role}
+          userLatitude={userLatitude}
+          userLongitude={userLongitude}
+          navigation={navigation}
+          navigateToScreen="TrainingInfoScreen"
+        />
+      })}
+      {!props.usingScrollView && <FlatList
         contentContainerStyle={{ flexGrow: 1 }}
         data={filteredData}
         marginBottom={0}
@@ -310,7 +335,7 @@ export default function TrainingsList(props: Props) {
         )}
         keyExtractor={(training) => training.id.toString()}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { getTrainingsList() }} />}
-      />
+      />}
     </>
   );
 }

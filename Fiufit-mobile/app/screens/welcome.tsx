@@ -89,8 +89,6 @@ export const BackgroundFetchData = () => {
 
   }, []);
 
-  //console.log(process.env.GOOGLE_MAPS_API_KEY)
-
   return (
     <View>
       <Text>
