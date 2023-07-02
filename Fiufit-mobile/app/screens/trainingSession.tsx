@@ -1,4 +1,4 @@
-import { NativeBaseProvider, Text, VStack, Icon, useToast } from "native-base";
+import { NativeBaseProvider, Text, VStack, Icon, useToast, Button } from "native-base";
 import { useCallback, useState } from "react";
 import { StyleSheet, View } from 'react-native';
 import { Box } from 'native-base';
@@ -10,6 +10,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import { API } from "../../api";
 import { Alert } from 'react-native';
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
+import Dialog from "react-native-dialog";
+import { ShareButton } from "../components/trainings/shareButton";
 
 export type trainingSession = {
     id?: number;
@@ -36,6 +38,18 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
     const toast = useToast();
     const [tickers, setTickers] = useState<NodeJS.Timer[]>([]);
 
+    const [showTrainingData, setShowTrainingData] = useState(false);
+    const [updateTrainingInfo, setUpdateTrainingInfo] = useState(true);
+
+    const shareTitle = "Entrenamiento: " + trainingInfo.title;
+    const shareMessage =
+      "¡Hola! Te comparto este entrenamiento de Fiufit: *" + trainingInfo.title + "*\n\n" +
+      "*Descripción*: " +
+      trainingInfo.description + "\n\n" +
+      "*Horarios*: " + trainingInfo.days + " a las " + trainingInfo.start + "-" + trainingInfo.end +
+      "\n\n*Ubicación*: " + trainingInfo.location + "\n\n" + 
+      "El dia " + date + " logre realizar una distancia de" + distance + " m " + " en un tiempo de " + duration + " hs" + "!"
+      + "\n\n¡Descarga Fiufit y entrena conmigo!";
 
     const getGoogleFitData = async (startTime: string, endTime: string) => {
         const today = new Date();
@@ -66,8 +80,8 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
         }
 
         const updateStepCount = () => {
-
-            GoogleFit.getDailyStepCountSamples(options)
+            if(updateTrainingInfo) { 
+                GoogleFit.getDailyStepCountSamples(options)
                 .then(res => {
                     console.log("step data:", res);
                     let estimated = res.find(results => results.source === "com.google.android.gms:estimated_steps");
@@ -79,40 +93,45 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
                 .catch(err => {
                     console.error("error updating step count: ", err);
                 });
+            }
         };
         const stepInterval = setInterval(updateStepCount, 1000);
         setTickers(prev => [...prev, stepInterval]);
 
         const updateCaloriesCount = () => {
-            GoogleFit.getDailyCalorieSamples(options)
-                .then(caloriesData => {
-                    console.log("calories data", caloriesData)
-                    if (caloriesData.length > 0) {
-                        console.log("current calories: ", caloriesData[0].calorie)
-                        console.log("initial calories: ", initialCalories);
-                        setCalories(caloriesData[0].calorie - initialCalories);
-                    }
-                })
-                .catch(err => {
-                    console.error("error updating calorie count: ", err);
-                });
+            if(updateTrainingInfo) { 
+                GoogleFit.getDailyCalorieSamples(options)
+                    .then(caloriesData => {
+                        console.log("calories data", caloriesData)
+                        if (caloriesData.length > 0) {
+                            console.log("current calories: ", caloriesData[0].calorie)
+                            console.log("initial calories: ", initialCalories);
+                            setCalories(caloriesData[0].calorie - initialCalories);
+                        }
+                    })
+                    .catch(err => {
+                        console.error("error updating calorie count: ", err);
+                    });
+            }
         };
         const caloriesInterval = setInterval(updateCaloriesCount, 1000);
         setTickers(prev => [...prev, caloriesInterval]);
 
         const updateDistanceCount = () => {
-            GoogleFit.getDailyDistanceSamples(options)
-                .then(res => {
-                    console.log("distance data", res)
-                    if (res.length > 0) {
-                        let estimated = res[0].distance / 1000;
-                        console.log(estimated);
-                        setDistance(estimated || 0);
-                    }
-                })
-                .catch(err => {
-                    console.error("error updating distance count: ", err);
-                });
+            if(updateTrainingInfo) { 
+                GoogleFit.getDailyDistanceSamples(options)
+                    .then(res => {
+                        console.log("distance data", res)
+                        if (res.length > 0) {
+                            let estimated = res[0].distance / 1000;
+                            console.log(estimated);
+                            setDistance(estimated || 0);
+                        }
+                    })
+                    .catch(err => {
+                        console.error("error updating distance count: ", err);
+                    });
+            }
         };
         const distanceInterval = setInterval(updateDistanceCount, 1000);
         setTickers(prev => [...prev, distanceInterval]);
@@ -170,13 +189,14 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
                                     duration: duration,
                                     steps: steps,
                                     calories: calories,
-                                    date: date.toISOString(), // cehquear esto
+                                    date: date.toISOString(),
                                     trainingPlanId: trainingInfo.trainingPlanId,
                                 })
                                 tickers.forEach(ticker => {
                                     clearInterval(ticker);
-                                });
-                                navigation.navigate('HomeScreen');
+                                })
+                                setUpdateTrainingInfo(false)
+                                setShowTrainingData(true)
                             } catch (err: any) {
                                 tickers.forEach(ticker => {
                                     clearInterval(ticker);
@@ -208,7 +228,7 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
                     <Text style={styles.description}>{trainingInfo.description}</Text>
                 </View>
                 <View style={styles.timeContainer}>
-                    <Stopwatch onTimeChange={updateTime} />
+                    <Stopwatch onTimeChange={updateTime} updateDuration={updateTrainingInfo} />
                 </View>
                 <View style={styles.descriptionContainer}>
                     <Text style={styles.date}>{date.toLocaleDateString('es-AR', options)}</Text>
@@ -259,6 +279,25 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
                         handleAddTrainingSession();
                     }}
                 />
+                {showTrainingData && (
+                    <Dialog.Container visible={true} contentStyle={{ alignItems: 'center' }}>
+                        <Dialog.Title>Entrenamiento finalizado.{'\n'}¡Buen trabajo! </Dialog.Title>
+                        <Dialog.Description>
+                            <Text>
+                                Distancia: {distance} {'\n'}
+                                Duracion: {duration} {'\n'}
+                                Pasos: {steps} {'\n'}
+                                Calorias: {calories} {'\n'}
+                                Fecha: {date.toString()}
+                            </Text>
+                        </Dialog.Description>
+                        <Dialog.Button label="OK" onPress={() => {
+                            setShowTrainingData(false)
+                            navigation.navigate('HomeScreen')
+                        }} />
+                        <ShareButton title={shareTitle} message={shareMessage} />
+                    </Dialog.Container>
+                )}
             </VStack>
         </NativeBaseProvider>
     );

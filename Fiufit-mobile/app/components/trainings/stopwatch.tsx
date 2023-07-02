@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Text } from "native-base";
 import { StyleSheet } from 'react-native';
 
-const Stopwatch = ({ onTimeChange }: any) => {
+const Stopwatch = ({ onTimeChange, updateDuration }: any) => {
     const [time, setTime] = useState(0);
     const [running, setRunning] = useState(false);
     const formatTime = (ms: number) => {
@@ -14,7 +14,12 @@ const Stopwatch = ({ onTimeChange }: any) => {
     };
 
     useEffect(() => {
-        setRunning(true)
+        if(!updateDuration) {
+            setRunning(false)
+        }
+        else {
+            setRunning(true)
+        }
         let interval: string | number | NodeJS.Timeout | undefined;
         if (running) {
             interval = setInterval(() => {
@@ -27,8 +32,11 @@ const Stopwatch = ({ onTimeChange }: any) => {
     }, [running]);
 
     useEffect(() => {
+        if(!updateDuration) {
+            setRunning(false)
+        }
         onTimeChange(formatTime(time));
-      }, [time, onTimeChange]);
+    }, [time, onTimeChange]);
 
     return (
         <Text style={styles.elapsedTime}>{formatTime(time)}</Text>
