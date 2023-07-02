@@ -85,7 +85,7 @@ export class API {
         ...fetchConfig.headers,
       }
       // use localhost if running locally, otherwise use the api gateway
-      const localUrl = "https://265c-190-18-10-180.ngrok-free.app/" + path;
+      const localUrl = "https://80b0-2800-810-54f-547-9b1c-bffe-1ad5-879c.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       // const url = prod;
@@ -317,6 +317,7 @@ export class API {
     const address = streetNumber.toString() + ' ' + streetName + ", Buenos Aires" + ", Argentina";
 
     const key = process.env.GOOGLE_MAPS_API_KEY;
+    console.log("envío api:", key);
     try {
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
@@ -329,7 +330,7 @@ export class API {
         return [coords.lat, coords.lng];
       }
     } catch (err: any) {
-      console.log("error fetching coordinates from google maps: ", err);
+      console.error("error fetching coordinates from google maps: ", err);
       const error = new ApiError(err.message, err.code);
       throw error;
     }

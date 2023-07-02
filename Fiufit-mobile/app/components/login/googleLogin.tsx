@@ -34,7 +34,7 @@ export default function GoogleLogin(props: Props) {
           const user = result.user;
           // we make sure user.email is not null
           if (!user?.email) {
-            props.setErrorMessage("Error al iniciar sesión con Google. Por favor, inténtelo de nuevo más tarde.");
+            props.setErrorMessage("Hubo un error. Por favor, inténtelo más tarde.");
             console.error("Error signing in with Google: user.email is null");
             return;
           }
@@ -42,7 +42,7 @@ export default function GoogleLogin(props: Props) {
 
           const userInfo = await api.getUserInfoByEmail(user.email, user);
           if (userInfo instanceof Error) {
-            props.setErrorMessage("No se encuetra actualmente registrado en Fiufit. Por favor, regístrese primero.");
+            props.setErrorMessage("No se encuetra registrado, debe registrarse primero.");
             // logout from firebase
             auth.signOut();
             return;
@@ -58,7 +58,8 @@ export default function GoogleLogin(props: Props) {
           props.navigation.navigate('HomeScreen');
 
         }).catch((error) => {
-          console.error('Error signing in with Google:', error);
+          props.setErrorMessage("No se encuetra registrado, debe registrarse primero.");
+          console.log('Error signing in with Google:', error);
         });
 
       } else if (response?.type === "error") {

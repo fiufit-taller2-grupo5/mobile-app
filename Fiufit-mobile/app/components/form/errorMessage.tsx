@@ -18,7 +18,7 @@ export default function ErrorMessage( props: Props ) {
           <HStack flexShrink={1} justifyContent="space-between" backgroundColor={"red.200"}>
             <HStack height={"80%"} backgroundColor={"red.200"}>
               <Alert.Icon backgroundColor={"red.200"} size={6} top={"3.5%"}/>
-              <Text fontSize="lg" color="coolGray.800">
+              <Text fontSize="lg" color="coolGray.800" flexWrap={"wrap"}>
                 {errorMessage}
               </Text>
             </HStack>
