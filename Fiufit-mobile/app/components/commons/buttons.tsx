@@ -23,6 +23,14 @@ const baseStyles = StyleSheet.create({
     margin: 2,
     color: '#FFFFFF',
     backgroundColor: "#FF6060",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 3.84,
+    elevation: 2,
   },
 });
 

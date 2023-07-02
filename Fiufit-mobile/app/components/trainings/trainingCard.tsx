@@ -15,7 +15,7 @@ import {
 } from "native-base";
 import { API, Training } from "../../../api";
 import { useEffect, useState } from "react";
-import { RefreshControl } from "react-native";
+import { RefreshControl, ActivityIndicator } from "react-native";
 import { trainingReview } from "../../screens/rateTraining";
 import FiveStars from "../rateTraining/fiveStars";
 import globalUser from '../../../userStorage';
@@ -36,7 +36,6 @@ export default function TrainingCard(props: Props) {
   const api = new API(navigation);
 
   const [reviews, setReviews] = useState<trainingReview[]>([]);
-  const [userReview, setUserReview] = useState<any[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [distance, setDistance] = useState("No disponible");
   const [userLatitudeSet, setUserLatitude] = useState(0);
@@ -55,28 +54,17 @@ export default function TrainingCard(props: Props) {
     const trainingReviews = await api.getTrainingReviews(trainingData.id);
     // map the training reviews to add an index to each review
     const trainingReviewsWithIndex = trainingReviews.map(
-      (review: any, index: number) => {
-        return { ...review, index: index };
+      async (review: any, index: number) => {
+        const user = await api.getUserInfoById(review.userId);
+        return { ...review, index: index, user: user };
       }
     );
-    setReviews(trainingReviewsWithIndex);
-    const users = await retrieveUsersFromReviews();
-    setUserReview(users);
+    const trainingReviewsWithIndexResolved = await Promise.all(
+      trainingReviewsWithIndex
+    );
+    setReviews(trainingReviewsWithIndexResolved);
   };
 
-  const retrieveUsersFromReviews = async () => {
-    const users = await Promise.all(
-      reviews.map(async (review) => {
-        if (!review.userId) {
-          return;
-        }
-        const user = await api.getUserInfoById(review.userId);
-        return user;
-      })
-    );
-    setUserReview(users);
-    return users;
-  };
 
   const getUserLocation = async () => {
     if (userLatitude && userLatitude !== 0 || userLongitude && userLongitude !== 0) {
@@ -85,17 +73,22 @@ export default function TrainingCard(props: Props) {
     if (!globalUser.user) {
       return;
     }
-    const user = await api.getUserInfoById(globalUser.user.id);
-
-    if (user) {
-      const userLocation = user.location;
-      if (userLocation) {
-        const coordinates = await api.getCoordinates(userLocation);
-        console.log("USER COORS: ", coordinates);
-        setUserLatitude(coordinates[0]);
-        setUserLongitude(coordinates[1]);
-        return coordinates;
+    try {
+      const user = await api.getUserInfoById(globalUser.user.id);
+      console.log("USER is: ", user);
+      if (user) {
+        const userLocation = user.location;
+        if (userLocation) {
+          const coordinates = await api.getCoordinates(userLocation);
+          console.log("USER COORS: ", coordinates);
+          setUserLatitude(coordinates[0]);
+          setUserLongitude(coordinates[1]);
+          return coordinates;
+        }
       }
+    }
+    catch (e) {
+      console.log("Error getting user location: ", e);
     }
   }
 
@@ -162,7 +155,10 @@ export default function TrainingCard(props: Props) {
     });
     return listener;
   }, [navigation]);
+
+
   const isAthlete = role === 'Atleta';
+  const isTrainer = role === 'Entrenador';
 
   return (
     <View flexGrow={1}>
@@ -181,31 +177,12 @@ export default function TrainingCard(props: Props) {
           <View>
             <AspectRatio w="100%" ratio={16 / 10}>
               <Image
-                source={(trainingData.multimedia && trainingData.multimedia.length >= 1) ? { uri: trainingData.multimedia.at(-1).fileUrl } : require("../../../assets/images/logo-color.jpg")}
+                source={(trainingData.multimedia && trainingData.multimedia.length >= 1) ? { uri: trainingData.multimedia.at(0).fileUrl } : require("../../../assets/images/logo-color.jpg")}
                 alt="image"
                 size={238}
                 width="100%"
               />
             </AspectRatio>
-            <View
-              style={{
-                backgroundColor: "#ff6060",
-                height: 40,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  fontWeight: "bold",
-                  fontSize: 14,
-                  textAlign: "center",
-                }}
-              >
-                Plan de Entrenamiento
-              </Text>
-            </View>
           </View>
           <Stack p="4" space={3}>
             <HStack space={2}>
@@ -240,8 +217,8 @@ export default function TrainingCard(props: Props) {
               </HStack>
             </HStack>
             <HStack alignItems="center">
-                <Text fontWeight={"bold"}>Distance in km: </Text>
-                <Text>{distance}</Text>
+              <Text fontWeight={"bold"}>Distance in km: </Text>
+              <Text>{distance}</Text>
             </HStack>
             <Text fontWeight={"bold"}>Descripción: </Text>
             <Text>{trainingData.description}</Text>
@@ -258,7 +235,8 @@ export default function TrainingCard(props: Props) {
             customStyles={{
               backgroundColor: "#FF6060",
               width: "30%",
-              height: "8%",
+              height: 45,
+              marginBottom: 10,
               borderRadius: 30,
               alignSelf: "center",
               top: "0%"
@@ -271,23 +249,16 @@ export default function TrainingCard(props: Props) {
           <ShareButton title={shareTitle} message={shareMessage} />
         </Box>
         <Divider my={1} />
-        <HStack>
-          <Heading marginTop={"2%"} size="sm" color={"gray.500"} marginLeft={3}>
+        <HStack flex={1} flexDirection="row" justifyContent={"space-between"}>
+          <Heading marginTop={5} size="sm" color={"gray.500"} marginLeft={3}>
             Valoraciones
           </Heading>
-          {isAthlete && <Button style={{
-            backgroundColor: "#FF6060",
-            width: "50%",
-            borderRadius: 30,
-            left: "22%",
-            bottom: "5%"
-          }}
-            onPress={() => navigation.navigate("RateTrainingScreen", { trainingId: trainingData.id })}
-          >
-            Agregar valoración
-          </Button>}
         </HStack>
-        {reviews.map(review => (
+        {isRefreshing && <ActivityIndicator
+          size="large"
+          color="#FF6060"
+        />}
+        {!isRefreshing && reviews.map(review => (
           <Box
             key={review.id}
             rounded="sm"
@@ -306,7 +277,7 @@ export default function TrainingCard(props: Props) {
                 isUnderlined={false}
                 onPress={() => navigation.navigate("ProfileScreen", { userId: review.userId })}
               >
-                {review.userId && userReview.length !== 0 ? userReview.filter((user) => user.id == review.userId)[0].name : "Cargando.."}
+                {(review as any).user.name}
               </Link>
               <View flexDirection={"row"} style={{ justifyContent: "space-between" }}>
                 <View width="80%">
@@ -327,7 +298,7 @@ export default function TrainingCard(props: Props) {
           </Box>
         ))}
       </ScrollView>
-      {!isAthlete && <Button style={{
+      {isTrainer && <Button style={{
         backgroundColor: "#FF6060",
         width: "50%",
         borderRadius: 30,
@@ -338,6 +309,36 @@ export default function TrainingCard(props: Props) {
       >
         Editar entrenamiento
       </Button>}
+      {isTrainer && <Button style={{
+        backgroundColor: "#FF6060",
+        width: "50%",
+        borderRadius: 30,
+        left: "22%",
+        bottom: "5%"
+      }}
+        onPress={() => navigation.navigate("EditTrainingScreen", { trainingData: trainingData })}
+      >
+        Editar entrenamiento
+      </Button>}
+      {isAthlete && <LoadableButton customStyles={{
+        right: -185,
+        bottom: 60,
+        width: 210,
+        // add shadows
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 3.84,
+        elevation: 5,
+
+      }}
+
+        text="Agregar valoración"
+        onPress={() => navigation.navigate("RateTrainingScreen", { trainingId: trainingData.id })}
+      />}
 
     </View>
   );

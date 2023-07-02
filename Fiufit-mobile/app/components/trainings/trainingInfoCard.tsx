@@ -77,7 +77,7 @@ export const TrainingInfoCard = ({
           height={70}
         >
           <Image
-            source={{ uri: (trainingData.multimedia && trainingData.multimedia.length >=1) ? trainingData.multimedia.at(-1).fileUrl : trainingMainImage(trainingData.type) }}
+            source={{ uri: (trainingData.multimedia && trainingData.multimedia.length >= 1) ? trainingData.multimedia?.at(0).fileUrl : trainingMainImage(trainingData.type) }}
             alt="Alternate Text"
             size="lg"
             borderRadius={10}
@@ -91,10 +91,10 @@ export const TrainingInfoCard = ({
             >
               {trainingData.title}
             </Text>
-            <Text paddingLeft = {15} fontSize="sm" color="#000000">
+            <Text paddingLeft={15} fontSize="sm" color="#000000">
               {trainingData.description}
             </Text>
-            <Text paddingLeft = {15} fontSize="xs" color="#000000">
+            <Text paddingLeft={15} fontSize="xs" color="#000000">
               Dificultad: {trainingData.difficulty}
             </Text>
           </VStack>
