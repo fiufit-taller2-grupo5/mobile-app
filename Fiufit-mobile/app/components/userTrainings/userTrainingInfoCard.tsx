@@ -55,7 +55,7 @@ export const UserTrainingInfoCard = (props: Props) => {
       py="10"
       backgroundColor="#fff"
       onPress={async () => {
-        // navigation.navigate(navigateToScreen, { userTraining.trainingData, trainingImage });
+        navigation.navigate(navigateToScreen, { trainingData: userTraining.trainingData, });
       }}
     >
       <HStack
@@ -63,12 +63,13 @@ export const UserTrainingInfoCard = (props: Props) => {
         height={100}
       >
         <Image
-          source={{ uri: trainingMainImage(userTraining.trainingData.type) }}
+          source={{ uri: userTraining.trainingData.multimedia?.at(0).fileUrl || trainingMainImage(userTraining.trainingData.type) }}
           alt="Alternate Text"
           size="lg"
+          style={{ marginTop: 10 }}
           borderRadius={10}
         />
-        <VStack width={220} >
+        <VStack width={230} >
           <Text
             style={trainingStyles.textTitle}
             color="#000000"

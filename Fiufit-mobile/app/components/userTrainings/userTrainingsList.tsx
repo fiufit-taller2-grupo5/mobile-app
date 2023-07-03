@@ -69,9 +69,9 @@ export default function UserTrainingsList(props: Props) {
     setRefreshing(true);
 
     try {
-      const userTrainingsList = await api.getCompleteUserTrainingSessions(await globalUser.getUserId());
+      const userTrainingsList = await api.getCompleteUserTrainingSessions(globalUser.user?.id || 0);
       if (userTrainingsList.length > 0) {
-        console.log("userTrainingsList: ", userTrainingsList[0].id, userTrainingsList[1].id)
+        console.log("userTrainingsList: ", userTrainingsList)
         filterData(userTrainingsList);
       }
     } catch (e: any) {

@@ -438,10 +438,12 @@ export class API {
     // get user training sessions and then for each session get training data
     const sessions = await this.getUserTrainingSessions(userId);
     const trainings = await this.getTrainings();
+
     const trainingsMap = new Map<number, Training>();
     trainings.forEach(training => {
       trainingsMap.set(training.id, training);
     });
+    console.log("1")
     const completeUserTrainings: CompleteUserTraining[] = [];
     sessions.forEach(session => {
       const training = trainingsMap.get(session.trainingPlanId);
@@ -452,6 +454,7 @@ export class API {
         });
       }
     });
+    console.log("2")
     return completeUserTrainings;
   }
 
