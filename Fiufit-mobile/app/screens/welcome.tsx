@@ -9,6 +9,7 @@ import { View, Text, Button } from 'native-base';
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 import { apiGatewayHealthCheck } from '../../api';
+import { ActivityIndicator } from 'react-native';
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
 import * as LocalAuthentication from 'expo-local-authentication';
 import globalUser from '../../userStorage';
@@ -60,7 +61,6 @@ async function unregisterBackgroundFetchAsync() {
 export const BackgroundFetchData = () => {
   const [isRegistered, setIsRegistered] = React.useState(false);
   const [status, setStatus] = React.useState<BackgroundFetch.BackgroundFetchStatus | null>(null);
-
 
 
   const checkStatusAsync = async () => {
@@ -117,6 +117,9 @@ export const BackgroundFetchData = () => {
 
 
 export default function WelcomeScreen({ navigation }: NativeStackScreenProps<any, any>) {
+
+  const [loadingAuthentication, setLoadingAuthentication] = React.useState(false);
+
   const theme = extendTheme({
     components: {
       Button: {
@@ -148,6 +151,7 @@ export default function WelcomeScreen({ navigation }: NativeStackScreenProps<any
     globalUser.setNavigation(navigation)
 
     const biometricLogin = async () => {
+      setLoadingAuthentication(true);
       let user;
       try {
         user = await globalUser.getUser();
@@ -158,16 +162,24 @@ export default function WelcomeScreen({ navigation }: NativeStackScreenProps<any
 
       const hasHardware = await LocalAuthentication.hasHardwareAsync();
       if (!hasHardware) {
+        setLoadingAuthentication(false);
         return;
       }
       const isEnrolled = await LocalAuthentication.isEnrolledAsync();
       if (!isEnrolled) {
+        setLoadingAuthentication(false);
         return;
       }
-      const { success } = await LocalAuthentication.authenticateAsync();
+      const { success } = await LocalAuthentication.authenticateAsync({
+        promptMessage: "Ingresá tu huella para seguir",
+        cancelLabel: "Cancelar",
+        fallbackLabel: "Usar contraseña",
+
+      });
       if (success) {
         console.log("biometric login success", user);
         navigation.navigate('HomeScreen');
+        setLoadingAuthentication(false);
       }
     }
     biometricLogin();
@@ -184,8 +196,14 @@ export default function WelcomeScreen({ navigation }: NativeStackScreenProps<any
         width={"full"}
         height={"full"}
       >
-        <Title />
-        <Body navigation={navigation} />
+        {loadingAuthentication ?
+          <View justifyContent={"center"} alignItems="center">
+            <Text>Ingresando con huella...</Text>
+            <ActivityIndicator color={"#ff6060"} size="large" style={{ marginTop: 20 }} />
+          </View> : <>
+            <Title />
+            <Body navigation={navigation} /></>
+        }
       </VStack>
     </NativeBaseProvider>
   </SafeAreaProvider>;
