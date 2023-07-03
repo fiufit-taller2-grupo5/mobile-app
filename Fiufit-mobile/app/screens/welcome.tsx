@@ -180,7 +180,6 @@ export default function WelcomeScreen({ navigation }: NativeStackScreenProps<any
       if (success) {
         console.log("biometric login success", user);
         navigation.navigate('HomeScreen');
-        setLoadingAuthentication(false);
       }
     }
     biometricLogin();

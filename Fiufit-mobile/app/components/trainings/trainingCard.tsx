@@ -186,12 +186,13 @@ export default function TrainingCard(props: Props) {
               />
             </AspectRatio>
           </View>
-          <Stack p="4" space={3}>
-            <HStack space={2}>
-              <Heading size="md" ml="-1">
+          <Stack p="4" space={4}>
+            <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+              <Heading size="md">
                 {trainingData.title}
               </Heading>
-            </HStack>
+              <ShareButton title={shareTitle} message={shareMessage} />
+            </View>
             <HStack alignItems="center" space={4} justifyContent="space-between">
               <HStack alignItems="center">
                 <Text fontWeight={"bold"}>Ubicación: </Text>
@@ -244,7 +245,7 @@ export default function TrainingCard(props: Props) {
               backgroundColor: "#FF6060",
               width: "30%",
               height: 45,
-              marginBottom: 10,
+              marginBottom: 15,
               borderRadius: 30,
               alignSelf: "center",
               top: "0%"
@@ -254,7 +255,6 @@ export default function TrainingCard(props: Props) {
               return;
             }}
           />}
-          <ShareButton title={shareTitle} message={shareMessage} />
         </Box>
         <Divider my={1} />
         <HStack flex={1} flexDirection="row" justifyContent={"space-between"}>
