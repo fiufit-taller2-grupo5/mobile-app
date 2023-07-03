@@ -85,7 +85,7 @@ export class API {
         ...fetchConfig.headers,
       }
       // use localhost if running locally, otherwise use the api gateway
-      const localUrl = "https://363f-181-89-16-142.ngrok-free.app/" + path;
+      const localUrl = "https://2a0c-2800-810-54f-547-1b0f-e90d-fb5-c0c0.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       // const url = prod;
@@ -631,6 +631,39 @@ export class API {
       (error: ApiError) => {
         console.log("error getting followers:", error);
         return [];
+      }
+    );
+  }
+
+  async setPushToken(pushToken: string): Promise<void> {
+    const user = await getUserFromStorage();
+    const userId = user?.id;
+    await this.fetchFromApi(
+      "user-service/api/users/" + userId + "/set-push-token",
+      {
+        method: "POST",
+        body: JSON.stringify({ token: pushToken })
+      },
+      (response: any) => {
+        console.log("push token set");
+      },
+      (error: ApiError) => {
+        console.error("error setting push token:", error);
+      }
+    );
+  }
+
+  async getPushToken(userId: number): Promise<string> {
+    return await this.fetchFromApi(
+      "user-service/api/users/" + userId + "/get-push-token",
+      { method: "GET" },
+      (response: string) => {
+        console.log("push token:", response, " for user:", userId);
+        return response
+      },
+      (error: ApiError) => {
+        console.log("error getting push token:", error);
+        return "";
       }
     );
   }

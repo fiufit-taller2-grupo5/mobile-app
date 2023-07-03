@@ -71,13 +71,16 @@ export default function InboxNotifications() {
 //Info que se muestra en la notificacion 
 
 async function schedulePushNotification() {
+  Notifications.getDevicePushTokenAsync().then((token) => {
+    console.log("TOKEN TOKEN TOKEN: ", token);
+  });
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "You've got mail! 📬",
       body: 'Here is the notification body',
       data: { data: 'goes here' },
     },
-    trigger: { seconds: 2 },
+    trigger: { seconds: 1 },
   });
 }
 

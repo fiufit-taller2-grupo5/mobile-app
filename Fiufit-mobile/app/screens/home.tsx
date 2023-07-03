@@ -9,6 +9,7 @@ import UsersScreen from './users';
 import InboxScreen from './inbox';
 import TrainerTrainingsScreen from './trainerTrainings';
 import SettingsScreen from './settings';
+import * as Notifications from 'expo-notifications';
 
 const Tab = createBottomTabNavigator();
 
@@ -36,6 +37,19 @@ export default function HomeScreen({ navigation }: any) {
         });
         return listener;
     }, [navigation]);
+
+    useEffect(() => {
+        // mando push token
+        const getToken = async () => {
+            console.warn("GETTING TOKEN");
+            const token = await Notifications.getExpoPushTokenAsync();
+            console.warn("TOKEN 1: ", token);
+            const tokenData = await token.data;
+            console.error("EXPO PUSH TOKEN: ", tokenData);
+            return tokenData;
+        }
+        const token = getToken();
+    }, []);
 
     const isAthlete = role === 'Atleta';
 
