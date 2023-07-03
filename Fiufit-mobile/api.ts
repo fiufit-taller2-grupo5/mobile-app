@@ -56,6 +56,25 @@ export interface CompleteUserTraining extends trainingSession {
   trainingData: Training,
 }
 
+export interface AthleteGoal {
+  id: number, 
+  title: string,
+  description: string,
+  type: string,
+  metric: number, 
+  athleteId: number,
+  multimedia?: Array<any>,
+}
+
+export interface Goal {
+  title: string,
+  description: string,
+  type: string,
+  metric: number, 
+  athleteId: number,
+  multimedia?: Array<any>,
+}
+
 export class API {
   navigation: any;
   constructor(navigation: any) {
@@ -510,6 +529,71 @@ export class API {
       },
       (error: ApiError) => {
         console.log("error adding favorite training:", error);
+        throw error;
+      }
+    );
+  }
+
+  async getUserGoals(userId?: number): Promise<AthleteGoal[]> {
+    const user = await getUserFromStorage();
+    if (!userId) {
+      userId = user?.id;
+    }
+    return await this.fetchFromApi(
+      "training-service/api/goals/" + userId,
+      { method: "GET" },
+      (response: AthleteGoal[]) => response,
+      (error: ApiError) => {
+        console.log("error getting user goals:", error);
+        return [];
+      }
+    );
+  }
+
+  async addGoal(goal: Goal): Promise<number> {
+    return await this.fetchFromApi(
+      "training-service/api/goals/",
+      {
+        method: "POST",
+        body: JSON.stringify(goal),
+      },
+      (response: any) => {
+        console.log("goal added");
+        return response.id;
+      },
+      (error: ApiError) => {
+        console.log("error adding goal:", error);
+        throw error;
+      }
+    );
+  }
+
+  async addImageGoal(goalId: number, image: any): Promise<void> {
+    const name = image.split('/').pop();
+    let type = image.split('.').pop();
+    if (type === "jpg") {
+      type = "jpeg";
+    }
+    const formData = new FormData();
+    formData.append('file', {
+      uri: image,
+      type: 'image/' + type,
+      name: name,
+    } as any);
+    return await this.fetchFromApi(
+      "training-service/api/goals/" + goalId + "/image",
+      {
+        method: "PUT",
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      },
+      (response: any) => {
+        console.log("image added");
+      },
+      (error: ApiError) => {
+        console.log("error adding image:", error);
         throw error;
       }
     );
