@@ -328,7 +328,8 @@ export default function ProfileScreen(props: Props) {
             hideTextWhileLoading
             customStyles={{
               width: 120,
-              marginRight: 10
+              marginRight: 5,
+              marginLeft: 5
             }}
             overrideLoading={userFollowersCount === null}
             onPress={async () => { onPressFollowers() }}

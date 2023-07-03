@@ -290,9 +290,9 @@ export default function TrainingsList(props: Props) {
             ml={2}
           >
             <Icon
-              as={<MaterialCommunityIcons name={"undo"} />}
+              as={<MaterialCommunityIcons name={"filter-off-outline"} />}
               size={6}
-              color="#000000"
+              color="grey"
               alignSelf="center"
             />
           </Button>
