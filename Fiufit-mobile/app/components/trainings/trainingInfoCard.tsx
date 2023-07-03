@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { Box, VStack, HStack, Button, Text, Image, Divider, Icon } from 'native-base';
+import React, { useEffect, useState } from 'react';
+import { Box, VStack, HStack, Button, Text, Image, Divider, Icon, useToast } from 'native-base';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { trainingStyles } from "../../styles";
 import { API } from '../../../api';
+import { LoadableButton } from '../commons/buttons';
 
 export const trainingMainImage = (training_type: any) => {
   if (training_type === "Running")
@@ -38,7 +39,14 @@ export const TrainingInfoCard = ({
   navigateToScreen,
 }: any) => {
 
+  const toast = useToast();
+
   const api = new API(navigation);
+
+  useEffect(() => {
+    console.log("que onda monoo", trainingData.isFavorite)
+    setTrainingFavorite(trainingData.isFavorite ? trainingData.isFavorite : false);
+  }, [trainingData])
 
   const [isFavorite, setTrainingFavorite] = useState<Boolean>(
     trainingData.isFavorite || false
@@ -50,16 +58,34 @@ export const TrainingInfoCard = ({
   const handleFavorite = async () => {
     if (!canSetFavorite) return;
 
-    if (isFavorite) {
-      setTrainingFavorite(false);
-      await api.quitFavoriteTraining(trainingData.id);
-      onRemoveFavorite();
-    } else {
-      setTrainingFavorite(true);
-      await api.addFavoriteTraining(trainingData.id);
+    try {
+
+      if (isFavorite) {
+        await api.quitFavoriteTraining(trainingData.id);
+        setTrainingFavorite(false);
+        onRemoveFavorite();
+      } else {
+        await api.addFavoriteTraining(trainingData.id);
+        setTrainingFavorite(true);
+      }
+    } catch (e: any) {
+      toast.show({
+        description: e.message,
+        backgroundColor: "red.700",
+        duration: 3000,
+      });
     }
   }
 
+  const [fileUrl, setFileUrl] = useState<string>();
+
+  useEffect(() => {
+    if (trainingData.multimedia && trainingData.multimedia.length >= 1) {
+      setFileUrl(trainingData.multimedia?.at(0).fileUrl)
+    }
+  }, [trainingData])
+
+  console.log("multimedia", fileUrl ? fileUrl : "xd")
   return (
     <Box backgroundColor="#fff" style={{ height: 130 }}>
       <Button
@@ -76,12 +102,14 @@ export const TrainingInfoCard = ({
           justifyContent="space-between"
           height={70}
         >
-          <Image
-            source={{ uri: (trainingData.multimedia && trainingData.multimedia.length >= 1) ? trainingData.multimedia?.at(0).fileUrl : trainingMainImage(trainingData.type) }}
-            alt="Alternate Text"
-            size="lg"
-            borderRadius={10}
-          />
+          {!fileUrl ? <Text> loading...</Text> :
+            <Image
+              source={{ uri: fileUrl || trainingMainImage(trainingData.type) }}
+              alt="Alternate Text"
+              size="lg"
+              borderRadius={10}
+            />
+          }
           <VStack my={1} width={220} height={10} mr={0} ml={1}>
             <Text
               style={trainingStyles.textTitle}
@@ -101,6 +129,7 @@ export const TrainingInfoCard = ({
           <VStack my={1} width={30} height={10} mr={0} ml={1}>
             {canSetFavorite && userRole === "Atleta" && (
               <>
+
                 <Button backgroundColor="#fff" onPress={handleFavorite}>
                   <Icon
                     as={<MaterialCommunityIcons name={isFavorite ? "heart" : "heart-outline"} />}

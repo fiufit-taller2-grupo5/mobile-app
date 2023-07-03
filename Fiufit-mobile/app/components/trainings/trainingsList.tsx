@@ -50,9 +50,8 @@ export default function TrainingsList(props: Props) {
   }
 
   useEffect(() => {
-    if (props.usingScrollView) {
+    if (props.forceRefresh !== undefined) {
       updateData();
-      console.log("force refreshando")
     }
   }, [props.forceRefresh])
 
@@ -147,7 +146,6 @@ export default function TrainingsList(props: Props) {
   }
 
   const getTrainingsList = async () => {
-    setRefreshing(true);
     try {
       const coordinates = await getUserLocation();
       if (coordinates !== undefined && coordinates[0] !== 0 && coordinates[1] !== 0) {
@@ -196,6 +194,7 @@ export default function TrainingsList(props: Props) {
     updateData();
   }, [])
 
+  console.log("filteredData", filteredData)
 
   return (
     <>
@@ -339,7 +338,7 @@ export default function TrainingsList(props: Props) {
           />
         )}
         keyExtractor={(training) => training.id.toString()}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { getTrainingsList() }} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={updateData} />}
       />}
     </>
   );
