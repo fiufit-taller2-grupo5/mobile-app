@@ -77,15 +77,6 @@ export const TrainingInfoCard = ({
     }
   }
 
-  const [fileUrl, setFileUrl] = useState<string>();
-
-  useEffect(() => {
-    if (trainingData.multimedia && trainingData.multimedia.length >= 1) {
-      setFileUrl(trainingData.multimedia?.at(0).fileUrl)
-    }
-  }, [trainingData])
-
-  console.log("multimedia", fileUrl ? fileUrl : "xd")
   return (
     <Box backgroundColor="#fff" style={{ height: 130 }}>
       <Button
@@ -102,14 +93,12 @@ export const TrainingInfoCard = ({
           justifyContent="space-between"
           height={70}
         >
-          {!fileUrl ? <Text> loading...</Text> :
-            <Image
-              source={{ uri: fileUrl || trainingMainImage(trainingData.type) }}
-              alt="Alternate Text"
-              size="lg"
-              borderRadius={10}
-            />
-          }
+          <Image
+            source={{ uri: trainingData.multimedia?.at(0).fileUrl || trainingMainImage(trainingData.type) }}
+            alt="Alternate Text"
+            size="lg"
+            borderRadius={10}
+          />
           <VStack my={1} width={220} height={10} mr={0} ml={1}>
             <Text
               style={trainingStyles.textTitle}

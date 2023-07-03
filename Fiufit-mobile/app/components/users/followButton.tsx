@@ -38,6 +38,8 @@ export const FollowButton = ({ userId, following, customStyles, forceLoading, on
       customStyles={{
         width: 130,
         backgroundColor: "#FFFFFF",
+        borderColor: "#FF6060",
+        borderWidth: 1,
         ...customStyles,
       }}
     />
