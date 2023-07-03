@@ -15,7 +15,7 @@ import {
   Training,
 } from "../../../api";
 import { MaterialIcons } from "@expo/vector-icons";
-import { RefreshControl } from 'react-native';
+import { ActivityIndicator, RefreshControl } from 'react-native';
 import { TrainingInfoCard } from "./trainingInfoCard";
 import globalUser from '../../../userStorage';
 import { LoadableButton } from "../commons/buttons";
@@ -43,12 +43,14 @@ export default function TrainingsList(props: Props) {
   const [role, setRole] = useState("Atleta");
 
   const updateData = async () => {
+    setRefreshing(true);
     await getUserRole();
     await getTrainingsList();
+    setRefreshing(false);
   }
 
   useEffect(() => {
-    if(props.usingScrollView) {
+    if (props.usingScrollView) {
       updateData();
       console.log("force refreshando")
     }
@@ -228,10 +230,10 @@ export default function TrainingsList(props: Props) {
           alignItems={"center"}
           width={"100%"}>
           <View flex={0.8} paddingRight={2}>
-            <Select selectedValue={selectedType} accessibilityLabel="Elija un tipo" placeholder="Elija un tipo"
+            <Select selectedValue={selectedType} accessibilityLabel="Elija un tipo" placeholder="Tipo"
               dropdownIcon={<View paddingRight={2}><ChevronDownIcon /></View>}
               mt={1} onValueChange={handleFilterByType}>
-              <Select.Item label="Todos los tipos" value="" />
+              <Select.Item label="Tipo" value="" />
               <Select.Item label="Correr" value="Running" />
               <Select.Item label="Natación" value="Swimming" />
               <Select.Item label="Ciclismo" value="Biking" />
@@ -246,8 +248,8 @@ export default function TrainingsList(props: Props) {
           </View>
           <View flex={1} paddingRight={2}>
             <Select selectedValue={selectedDifficulty} dropdownIcon={<View paddingRight={2}><ChevronDownIcon /></View>}
-              accessibilityLabel="Elija una dificultad" placeholder="Elija una dificultad" mt={1} onValueChange={handleFilterByDifficulty}>
-              <Select.Item label="Todas las dificultades " value="" />
+              accessibilityLabel="Elija una dificultad" placeholder="Dificultad" mt={1} onValueChange={handleFilterByDifficulty}>
+              <Select.Item label="Dificultad " value="" />
               <Select.Item label="1" value="1" />
               <Select.Item label="2" value="2" />
               <Select.Item label="3" value="3" />
@@ -263,8 +265,8 @@ export default function TrainingsList(props: Props) {
           <View flex={1}>
 
             <Select selectedValue={selectedDistance.toString()} dropdownIcon={<View paddingRight={2}><ChevronDownIcon /></View>}
-              accessibilityLabel="Elija distancia" placeholder="Elija distancia" mt={1} onValueChange={handleFilterByDistance}>
-              <Select.Item label="Todas las distancias" value="0" />
+              accessibilityLabel="Elija distancia" placeholder="Distancia" mt={1} onValueChange={handleFilterByDistance}>
+              <Select.Item label="Distancia" value="0" />
               <Select.Item label="1km" value="1" />
               <Select.Item label="3km" value="3" />
               <Select.Item label="5km" value="5" />
@@ -305,7 +307,7 @@ export default function TrainingsList(props: Props) {
           />
         </View>
       }
-      {props.usingScrollView && filteredData.map(training => {
+      {props.usingScrollView && !refreshing && filteredData.map(training => {
         return <TrainingInfoCard
           key={training.id.toString()}
           trainingData={training}
@@ -317,6 +319,9 @@ export default function TrainingsList(props: Props) {
           navigateToScreen="TrainingInfoScreen"
         />
       })}
+      {props.usingScrollView && refreshing &&
+        <ActivityIndicator color={"#ff6060"} size="large" style={{ marginTop: 20 }} />
+      }
       {!props.usingScrollView && <FlatList
         contentContainerStyle={{ flexGrow: 1 }}
         data={filteredData}

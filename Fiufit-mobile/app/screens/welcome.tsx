@@ -157,6 +157,7 @@ export default function WelcomeScreen({ navigation }: NativeStackScreenProps<any
         user = await globalUser.getUser();
       } catch (e) {
         console.log("no user stored");
+        setLoadingAuthentication(false);
         return;
       }
 
@@ -198,7 +199,7 @@ export default function WelcomeScreen({ navigation }: NativeStackScreenProps<any
       >
         {loadingAuthentication ?
           <View justifyContent={"center"} alignItems="center">
-            <Text>Ingresando con huella...</Text>
+            <Text>Ingresando...</Text>
             <ActivityIndicator color={"#ff6060"} size="large" style={{ marginTop: 20 }} />
           </View> : <>
             <Title />

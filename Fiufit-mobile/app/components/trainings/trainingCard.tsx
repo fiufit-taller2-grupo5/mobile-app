@@ -322,7 +322,7 @@ export default function TrainingCard(props: Props) {
       </Button>}
       {isAthlete && <LoadableButton customStyles={{
         right: -185,
-        bottom: 60,
+        bottom: 20,
         width: 210,
         // add shadows
         shadowColor: "#000",

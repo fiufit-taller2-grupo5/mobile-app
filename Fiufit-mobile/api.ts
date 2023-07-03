@@ -85,7 +85,7 @@ export class API {
         ...fetchConfig.headers,
       }
       // use localhost if running locally, otherwise use the api gateway
-      const localUrl = "https://ac2e-190-18-10-180.ngrok-free.app/" + path;
+      const localUrl = "https://dec6-190-18-10-180.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       // const url = prod;
@@ -510,7 +510,7 @@ export class API {
       },
       (error: ApiError) => {
         console.log("error adding favorite training:", error);
-        return false;
+        throw error;
       }
     );
   }
@@ -560,7 +560,7 @@ export class API {
       },
       (error: ApiError) => {
         console.log("error deleting favorite training:", error);
-        return false;
+        throw error;
       }
     );
   }
