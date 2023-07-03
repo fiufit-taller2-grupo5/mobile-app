@@ -54,7 +54,7 @@ export class StoredUser {
         if (this.user === null) {
             this.user = await getUserFromStorage();
             if (this.user === null) {
-                throw new Error("User is not logged in");
+                throw new Error("Logueate antes de usar huella digital");
             }
         }
     }

@@ -15,6 +15,7 @@ import { ActivityIndicator, RefreshControl } from "react-native";
 import { userInfo } from "../../../asyncStorageAPI";
 import { UserInfoCard } from "./userInfoCard";
 import globalUser from "../../../userStorage";
+import { EmptyListComponent } from "../trainings/trainingsList";
 
 interface Props {
   navigation: any;
@@ -156,6 +157,7 @@ export default function UsersList(props: Props) {
           data={filteredUsers}
           marginBottom={0}
           marginTop={0}
+          ListEmptyComponent={!refreshing ? <EmptyListComponent text={"No se encontraron usuarios"} /> : null}
           renderItem={(user) => (
             <HStack>
               <UserInfoCard

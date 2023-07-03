@@ -25,6 +25,7 @@ import { RefreshControl } from 'react-native';
 import { UserTrainingInfoCard } from "./userTrainingInfoCard";
 import globalUser from '../../../userStorage';
 import { LoadableButton } from "../commons/buttons";
+import { EmptyListComponent } from "../trainings/trainingsList";
 
 
 interface Props {
@@ -68,9 +69,9 @@ export default function UserTrainingsList(props: Props) {
     setRefreshing(true);
 
     try {
-      const userTrainingsList = await api.getCompleteUserTrainingSessions(await globalUser.getUserId());
+      const userTrainingsList = await api.getCompleteUserTrainingSessions(globalUser.user?.id || 0);
       if (userTrainingsList.length > 0) {
-        console.log("userTrainingsList: ", userTrainingsList[0].id, userTrainingsList[1].id)
+        console.log("userTrainingsList: ", userTrainingsList)
         filterData(userTrainingsList);
       }
     } catch (e: any) {
@@ -125,7 +126,7 @@ export default function UserTrainingsList(props: Props) {
             <Select selectedValue={selectedType} accessibilityLabel="Elija un tipo" placeholder="Elija un tipo"
               dropdownIcon={<View paddingRight={2}><ChevronDownIcon /></View>}
               mt={1} onValueChange={handleFilterByType}>
-              <Select.Item label="Todos los tipos" value="" />
+              <Select.Item label="Tipo" value="" />
               <Select.Item label="Correr" value="Running" />
               <Select.Item label="Natación" value="Swimming" />
               <Select.Item label="Ciclismo" value="Biking" />
@@ -141,7 +142,7 @@ export default function UserTrainingsList(props: Props) {
           <View flex={1} paddingRight={2}>
             <Select selectedValue={selectedDifficulty} dropdownIcon={<View paddingRight={2}><ChevronDownIcon /></View>}
               accessibilityLabel="Elija dificultad" placeholder="Elija dificultad" mt={1} onValueChange={handleFilterByDifficulty}>
-              <Select.Item label="Todas " value="" />
+              <Select.Item label="Dificultad " value="" />
               <Select.Item label="1" value="1" />
               <Select.Item label="2" value="2" />
               <Select.Item label="3" value="3" />
@@ -162,6 +163,7 @@ export default function UserTrainingsList(props: Props) {
         data={filteredData}
         marginBottom={0}
         marginTop={0}
+        ListEmptyComponent={!refreshing ? <EmptyListComponent text={"No se encontraron sesiones de entrenamientos"} /> : null}
         renderItem={(userTraining) => (
           <UserTrainingInfoCard
             userTraining={userTraining.item}

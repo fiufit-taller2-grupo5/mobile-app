@@ -19,8 +19,10 @@ import { RefreshControl, ActivityIndicator } from "react-native";
 import { trainingReview } from "../../screens/rateTraining";
 import FiveStars from "../rateTraining/fiveStars";
 import globalUser from '../../../userStorage';
-import { LoadableButton } from "../commons/buttons";
+import { LoadableButton, LoadableLink } from "../commons/buttons";
 import { ShareButton } from "./shareButton";
+import { trainingMainImage } from "./trainingInfoCard";
+import { EmptyListComponent } from "./trainingsList";
 
 
 interface Props {
@@ -120,8 +122,8 @@ export default function TrainingCard(props: Props) {
       Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distanceCalc = (R * c) / 1000;
-    setDistance(distanceCalc.toPrecision(5).toString());
-    return distanceCalc.toPrecision(5).toString();
+    setDistance(distanceCalc.toPrecision(2).toString());
+    return distanceCalc.toPrecision(2).toString();
   }
 
   useEffect(() => {
@@ -177,32 +179,39 @@ export default function TrainingCard(props: Props) {
           <View>
             <AspectRatio w="100%" ratio={16 / 10}>
               <Image
-                source={(trainingData.multimedia && trainingData.multimedia.length >= 1) ? { uri: trainingData.multimedia.at(0).fileUrl } : require("../../../assets/images/logo-color.jpg")}
+                source={{ uri: trainingData.multimedia?.at(0).fileUrl || trainingMainImage(trainingData.type) }}
                 alt="image"
                 size={238}
                 width="100%"
               />
             </AspectRatio>
           </View>
-          <Stack p="4" space={3}>
-            <HStack space={2}>
-              <Heading size="md" ml="-1">
+          <Stack p="4" space={4}>
+            <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+              <Heading size="md">
                 {trainingData.title}
               </Heading>
-              <Link
-                style={{ top: "3%" }}
-                onPress={async () => {
-                  let coordinates = [];
-                  if (!trainingData.latitude || !trainingData.longitude) {
-                    coordinates = await api.getCoordinates(trainingData.location);
-                  } else {
-                    coordinates = [parseFloat(trainingData.latitude), parseFloat(trainingData.longitude)];
-                  }
-                  navigation.navigate("MapScreen", { marker_longitude: coordinates[1], marker_latitude: coordinates[0] });
-                }}
-              >
-                Ver en mapa
-              </Link>
+              <ShareButton title={shareTitle} message={shareMessage} />
+            </View>
+            <HStack alignItems="center" space={4} justifyContent="space-between">
+              <HStack alignItems="center">
+                <Text fontWeight={"bold"}>Ubicación: </Text>
+                <Text style={{ marginRight: 10 }}>{trainingData.location}</Text>
+                <LoadableLink
+                  text={"Ver en mapa"}
+
+                  onPress={async () => {
+                    let coordinates = [];
+                    if (!trainingData.latitude || !trainingData.longitude) {
+                      coordinates = await api.getCoordinates(trainingData.location);
+                    } else {
+                      coordinates = [parseFloat(trainingData.latitude), parseFloat(trainingData.longitude)];
+                    }
+                    navigation.navigate("MapScreen", { marker_longitude: coordinates[1], marker_latitude: coordinates[0] });
+                  }}
+
+                />
+              </HStack>
             </HStack>
             <HStack alignItems="center" space={4} justifyContent="space-between">
               <HStack alignItems="center">
@@ -217,8 +226,8 @@ export default function TrainingCard(props: Props) {
               </HStack>
             </HStack>
             <HStack alignItems="center">
-              <Text fontWeight={"bold"}>Distance in km: </Text>
-              <Text>{distance}</Text>
+              <Text fontWeight={"bold"}>Distancia de tí: </Text>
+              <Text>{distance} km</Text>
             </HStack>
             <Text fontWeight={"bold"}>Descripción: </Text>
             <Text>{trainingData.description}</Text>
@@ -236,7 +245,7 @@ export default function TrainingCard(props: Props) {
               backgroundColor: "#FF6060",
               width: "30%",
               height: 45,
-              marginBottom: 10,
+              marginBottom: 15,
               borderRadius: 30,
               alignSelf: "center",
               top: "0%"
@@ -246,7 +255,6 @@ export default function TrainingCard(props: Props) {
               return;
             }}
           />}
-          <ShareButton title={shareTitle} message={shareMessage} />
         </Box>
         <Divider my={1} />
         <HStack flex={1} flexDirection="row" justifyContent={"space-between"}>
@@ -258,6 +266,7 @@ export default function TrainingCard(props: Props) {
           size="large"
           color="#FF6060"
         />}
+        {!isRefreshing && reviews.length === 0 && <EmptyListComponent text={"no hay valoraciones todavía. Agrega la tuya!"} />}
         {!isRefreshing && reviews.map(review => (
           <Box
             key={review.id}
@@ -309,32 +318,27 @@ export default function TrainingCard(props: Props) {
       >
         Editar entrenamiento
       </Button>}
-      {isTrainer && <Button style={{
-        backgroundColor: "#FF6060",
-        width: "50%",
-        borderRadius: 30,
-        left: "22%",
-        bottom: "5%"
-      }}
-        onPress={() => navigation.navigate("EditTrainingScreen", { trainingData: trainingData })}
-      >
-        Editar entrenamiento
-      </Button>}
-      {isAthlete && <LoadableButton customStyles={{
-        right: -185,
-        bottom: 60,
-        width: 210,
-        // add shadows
-        shadowColor: "#000",
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.5,
-        shadowRadius: 3.84,
-        elevation: 5,
+      {isAthlete && <LoadableButton
+        textColor={"#FF6060"}
+        customStyles={{
+          right: 10,
+          bottom: 20,
+          width: 210,
+          position: "absolute",
+          // add shadows
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          borderColor: "#FF6060",
+          borderWidth: 1,
+          backgroundColor: "#FFFFFF",
+          shadowOpacity: 0.5,
+          shadowRadius: 3.84,
+          elevation: 5,
 
-      }}
+        }}
 
         text="Agregar valoración"
         onPress={() => navigation.navigate("RateTrainingScreen", { trainingId: trainingData.id })}

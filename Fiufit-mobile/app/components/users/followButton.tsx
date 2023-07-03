@@ -33,11 +33,13 @@ export const FollowButton = ({ userId, following, customStyles, forceLoading, on
       overrideLoading={forceLoading}
       hideTextWhileLoading={forceLoading !== undefined}
       onPress={isFollowing ? unfollow : follow}
-      text={isFollowing ? "Unfollow" : "Follow"}
+      text={isFollowing ? "Dejar de seguir" : "Seguir"}
       textColor={isFollowing ? "#c2c0c0" : "#FF6060"}
       customStyles={{
-        width: 130,
+        width: isFollowing ? 160 : 130,
         backgroundColor: "#FFFFFF",
+        borderColor: "#FF6060",
+        borderWidth: 1,
         ...customStyles,
       }}
     />

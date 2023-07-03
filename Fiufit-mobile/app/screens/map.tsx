@@ -22,9 +22,7 @@ export default function MapScreen(props: Props) {
     };
   }
 
-  function onRegionChange(region: any) {
-    setRegion(region);
-  }
+
 
   const theme = extendTheme({
     components: {
@@ -42,14 +40,13 @@ export default function MapScreen(props: Props) {
         <MapView
           style={mapStyles.map}
           region={region}
-          onRegionChange={onRegionChange}
           provider={PROVIDER_GOOGLE}
         >
           <Marker
             coordinate={{
               longitude: marker_longitude,
               latitude: marker_latitude
-            }}  
+            }}
           />
         </MapView>
       </View>

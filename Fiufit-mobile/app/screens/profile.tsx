@@ -180,10 +180,10 @@ export default function ProfileScreen(props: Props) {
           setUserFollowingCount(following.length);
         }
       }
-      if (user) {
-        setRole(user.role);
-        console.log("role: ", role);
-      }
+      // if (user) {
+      //   setRole(user.role);
+      //   console.log("role: ", role);
+      // }
       getUserInfo();
     });
     return unsubscribe;
@@ -203,10 +203,13 @@ export default function ProfileScreen(props: Props) {
       const chatsRef = collection(db, "chats");
       const q = query(
         chatsRef,
-        where("participantIds", "array-contains", [user!.id, userId].sort().join("_")),
+        where("participantIds", "==", [user!.id, userId].sort().join("_")),
       );
 
       const querySnapshot = await getDocs(q);
+
+      console.log("the query", q, querySnapshot.docs);
+
       const chatsMetadata = querySnapshot.docs.map(doc => {
         console.log("doc data: ", doc.data());
         console.log("doc id: ", doc.id);
@@ -226,7 +229,7 @@ export default function ProfileScreen(props: Props) {
 
         const chat = {
           participants: participants,
-          parcitipantIds: [user!.id, userId].sort().join("_"),
+          participantIds: [user!.id, userId].sort().join("_"),
           lastMessage: {
             _id: "",
             text: "Inicia la conversación!",
@@ -258,12 +261,12 @@ export default function ProfileScreen(props: Props) {
     await api.unfollowUser(userId);
   };
 
-  console.log(refreshTrainingList)
+  console.log("the role", role);
 
   return <NativeBaseProvider><View style={{ flex: 1 }} backgroundColor="#fff">
     <ScrollView
       refreshControl={<RefreshControl refreshing={false} onRefresh={
-         () => {
+        () => {
           setRefreshTrainingList(oldRefreshing => !oldRefreshing);
         }
       } />}
@@ -274,7 +277,7 @@ export default function ProfileScreen(props: Props) {
           alignItems={"center"}
           justifyContent="space-between"
           height={100}
-          margin={2}
+          margin={5}
         >
           <Image
             source={{ uri: "https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg" }}
@@ -283,7 +286,7 @@ export default function ProfileScreen(props: Props) {
             borderRadius={10}
           />
         </View>
-        <View flexDirection={"row"} width={'100%'} justifyContent={"space-evenly"}>
+        <View flexDirection={"row"} width={'100%'} justifyContent={"center"}>
           {userId != undefined && <FollowButton
             customStyles={{
               borderColor: "#FF6060",
@@ -295,11 +298,22 @@ export default function ProfileScreen(props: Props) {
             onFollow={() => onFollow(userId)}
             onUnfollow={() => onUnfollow(userId)}
           />}
+          {userId !== undefined && <Button
+            style={{
+              bottom: 0,
+              backgroundColor: "#fff",
+              padding: 0,
+              paddingTop: 8,
+            }}
+            onPress={async () => { onPressInbox() }}
+          >
+            <MaterialIcons name="inbox" style={{ margin: 0, padding: 0 }} size={30} color="#000000" />
+          </Button>}
         </View>
-        <View height={20} flexDirection="row" alignItems="center" justifyContent="space-evenly">
+        <View height={20} flexDirection="row" alignItems="center" justifyContent="center">
           {userId === undefined && <LoadableButton
             customStyles={{
-              width: 130,
+              width: 120,
             }}
             hideTextWhileLoading
             overrideLoading={userTrainingsCount === null}
@@ -312,7 +326,11 @@ export default function ProfileScreen(props: Props) {
           />}
           <LoadableButton
             hideTextWhileLoading
-            customStyles={{ width: 130 }}
+            customStyles={{
+              width: 120,
+              marginRight: 5,
+              marginLeft: 5
+            }}
             overrideLoading={userFollowersCount === null}
             onPress={async () => { onPressFollowers() }}
             text={
@@ -323,7 +341,7 @@ export default function ProfileScreen(props: Props) {
           />
           <LoadableButton
             hideTextWhileLoading
-            customStyles={{ width: 130 }}
+            customStyles={{ width: 120 }}
             overrideLoading={userFollowingCount === null}
             onPress={async () => { onPressFollowing() }}
             text={
@@ -332,18 +350,6 @@ export default function ProfileScreen(props: Props) {
               </>
             }
           />
-          {userId !== undefined && <Button
-            style={{
-              bottom: 0,
-              right: '2%',
-              borderRadius: 50,
-              backgroundColor: "#ffffff",
-              margin: '2%',
-            }}
-            onPress={async () => { onPressInbox() }}
-          >
-            <MaterialIcons name="inbox" size={30} color="#000000" />
-          </Button>}
         </View>
 
         {

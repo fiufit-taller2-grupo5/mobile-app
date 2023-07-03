@@ -5,9 +5,9 @@ import { User } from 'firebase/auth';
 
 export type UserMetadata = {
   id?: number | null,
-  weight: number | null,
-  height: number | null,
-  birthDate: string | null,
+  weight?: number | null,
+  height?: number | null,
+  birthDate?: string | null,
   location: string | null,
   interests: string[]
 }

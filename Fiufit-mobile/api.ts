@@ -85,7 +85,7 @@ export class API {
         ...fetchConfig.headers,
       }
       // use localhost if running locally, otherwise use the api gateway
-      const localUrl = "https://2a0c-2800-810-54f-547-1b0f-e90d-fb5-c0c0.ngrok-free.app/" + path;
+      const localUrl = "https://dec6-190-18-10-180.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       // const url = prod;
@@ -438,10 +438,12 @@ export class API {
     // get user training sessions and then for each session get training data
     const sessions = await this.getUserTrainingSessions(userId);
     const trainings = await this.getTrainings();
+
     const trainingsMap = new Map<number, Training>();
     trainings.forEach(training => {
       trainingsMap.set(training.id, training);
     });
+    console.log("1")
     const completeUserTrainings: CompleteUserTraining[] = [];
     sessions.forEach(session => {
       const training = trainingsMap.get(session.trainingPlanId);
@@ -452,6 +454,7 @@ export class API {
         });
       }
     });
+    console.log("2")
     return completeUserTrainings;
   }
 
@@ -510,7 +513,7 @@ export class API {
       },
       (error: ApiError) => {
         console.log("error adding favorite training:", error);
-        return false;
+        throw error;
       }
     );
   }
@@ -560,7 +563,7 @@ export class API {
       },
       (error: ApiError) => {
         console.log("error deleting favorite training:", error);
-        return false;
+        throw error;
       }
     );
   }

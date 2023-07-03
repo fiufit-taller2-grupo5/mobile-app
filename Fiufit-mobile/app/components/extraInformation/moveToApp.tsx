@@ -1,6 +1,7 @@
 import { Box, Link } from "native-base";
 import { loginAndRegisterStyles } from "../../styles";
 import globalUser from "../../../userStorage";
+import { API } from "../../../api";
 
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
 
 export default function MoveToApp(props: Props) {
   const { navigation, streetName, streetNumber, clearFields } = props;
+  const api = new API(navigation);
 
   return (
     <Box alignItems="center">
@@ -19,7 +21,7 @@ export default function MoveToApp(props: Props) {
         style={[loginAndRegisterStyles.link, loginAndRegisterStyles.extraInfoLink]}
         isUnderlined={false}
         onPress={async () => {
-          await globalUser.updateUserMetadata({ location: streetName + ' ' + streetNumber.toString(10), birthDate: null, weight: null, height: null, interests: [] })
+          await api.updateUserMetadata({ location: streetName + ' ' + streetNumber.toString(10), interests: [] });
           navigation.navigate('HomeScreen');
           clearFields();
         }}

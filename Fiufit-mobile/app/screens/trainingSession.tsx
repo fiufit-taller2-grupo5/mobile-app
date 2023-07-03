@@ -43,13 +43,13 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
 
     const shareTitle = "Entrenamiento: " + trainingInfo.title;
     const shareMessage =
-      "¡Hola! Te comparto este entrenamiento de Fiufit: *" + trainingInfo.title + "*\n\n" +
-      "*Descripción*: " +
-      trainingInfo.description + "\n\n" +
-      "*Horarios*: " + trainingInfo.days + " a las " + trainingInfo.start + "-" + trainingInfo.end +
-      "\n\n*Ubicación*: " + trainingInfo.location + "\n\n" + 
-      "El dia " + date + " logre realizar una distancia de" + distance + " m " + " en un tiempo de " + duration + " hs" + "!"
-      + "\n\n¡Descarga Fiufit y entrena conmigo!";
+        "¡Hola! Te comparto este entrenamiento de Fiufit: *" + trainingInfo.title + "*\n\n" +
+        "*Descripción*: " +
+        trainingInfo.description + "\n\n" +
+        "*Horarios*: " + trainingInfo.days + " a las " + trainingInfo.start + "-" + trainingInfo.end +
+        "\n\n*Ubicación*: " + trainingInfo.location + "\n\n" +
+        "El dia " + date + " logre realizar una distancia de " + distance + "m " + " en un tiempo de " + duration + " hs" + "!"
+        + "\n\n¡Descarga Fiufit y entrena conmigo!";
 
     const getGoogleFitData = async (startTime: string, endTime: string) => {
         const today = new Date();
@@ -80,26 +80,26 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
         }
 
         const updateStepCount = () => {
-            if(updateTrainingInfo) { 
+            if (updateTrainingInfo) {
                 GoogleFit.getDailyStepCountSamples(options)
-                .then(res => {
-                    console.log("step data:", res);
-                    let estimated = res.find(results => results.source === "com.google.android.gms:estimated_steps");
-                    if (estimated?.steps[0] !== undefined) {
-                        console.log("daily steps:", estimated?.steps[0]);
-                        setSteps(estimated?.steps[0]?.value || 0);
-                    }
-                })
-                .catch(err => {
-                    console.error("error updating step count: ", err);
-                });
+                    .then(res => {
+                        console.log("step data:", res);
+                        let estimated = res.find(results => results.source === "com.google.android.gms:estimated_steps");
+                        if (estimated?.steps[0] !== undefined) {
+                            console.log("daily steps:", estimated?.steps[0]);
+                            setSteps(estimated?.steps[0]?.value || 0);
+                        }
+                    })
+                    .catch(err => {
+                        console.error("error updating step count: ", err);
+                    });
             }
         };
         const stepInterval = setInterval(updateStepCount, 1000);
         setTickers(prev => [...prev, stepInterval]);
 
         const updateCaloriesCount = () => {
-            if(updateTrainingInfo) { 
+            if (updateTrainingInfo) {
                 GoogleFit.getDailyCalorieSamples(options)
                     .then(caloriesData => {
                         console.log("calories data", caloriesData)
@@ -118,7 +118,7 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
         setTickers(prev => [...prev, caloriesInterval]);
 
         const updateDistanceCount = () => {
-            if(updateTrainingInfo) { 
+            if (updateTrainingInfo) {
                 GoogleFit.getDailyDistanceSamples(options)
                     .then(res => {
                         console.log("distance data", res)
@@ -398,7 +398,7 @@ const styles = StyleSheet.create({
     },
     timeContainer: {
         alignItems: 'center', // Centra verticalmente el tiempo y su etiqueta
-        marginTop: -80,
+        marginTop: -60,
     },
     descriptionContainer: {
         alignItems: 'flex-start', // Centra verticalmente el tiempo y su etiqueta
