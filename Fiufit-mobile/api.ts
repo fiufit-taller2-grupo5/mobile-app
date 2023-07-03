@@ -638,6 +638,39 @@ export class API {
     );
   }
 
+  async setPushToken(pushToken: string): Promise<void> {
+    const user = await getUserFromStorage();
+    const userId = user?.id;
+    await this.fetchFromApi(
+      "user-service/api/users/" + userId + "/set-push-token",
+      {
+        method: "POST",
+        body: JSON.stringify({ token: pushToken })
+      },
+      (response: any) => {
+        console.log("push token set");
+      },
+      (error: ApiError) => {
+        console.error("error setting push token:", error);
+      }
+    );
+  }
+
+  async getPushToken(userId: number): Promise<string> {
+    return await this.fetchFromApi(
+      "user-service/api/users/" + userId + "/get-push-token",
+      { method: "GET" },
+      (response: string) => {
+        console.log("push token:", response, " for user:", userId);
+        return response
+      },
+      (error: ApiError) => {
+        console.log("error getting push token:", error);
+        return "";
+      }
+    );
+  }
+
 }
 
 

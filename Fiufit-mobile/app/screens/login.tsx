@@ -70,8 +70,6 @@ export default function LoginScreen({ navigation }: any) {
       // maybe trigger a loading screen
       return;
     }
-    // if (user) navigation.navigate('HomeScreen');
-
     if (error) {
       console.log(error);
       return;

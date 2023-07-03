@@ -6,6 +6,7 @@ import { InboxInfoCard } from "./inboxInfoCard";
 import globalUser from "../../../userStorage";
 import { db } from "../../../firebase";
 import { addDoc, collection, query, where, onSnapshot, getDocs } from "firebase/firestore";
+import InboxNotifications from './inboxNotifications';
 import { EmptyListComponent } from '../trainings/trainingsList';
 
 interface Props {
@@ -91,6 +92,7 @@ export default function InboxList(props: Props) {
                 )}
                 keyExtractor={(chat, i) => i.toString()}
             ></FlatList>
+            <InboxNotifications />
         </View>
     </View>
 }
