@@ -16,9 +16,10 @@ const baseStyles = StyleSheet.create({
   base: {
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 30,
-    height: 50,
+    borderRadius: 25,
+    height: 40,
     width: 300,
     margin: 2,
     color: '#FFFFFF',
@@ -69,8 +70,8 @@ export const LoadableButton = ({ text, customStyles, textColor, overrideLoading,
     <>
       <NativeBaseButton onPress={(e) => handleClick(e)} style={styles}>
         <View flexGrow={1} justifyContent={"space-around"} flexDirection={"row"} >
-          <View width={"100%"} flexGrow={1} justifyContent={"center"} flexDirection={"row"} >
-            <Text color={textColor ? textColor : "#FFFFFF"} bold fontSize={"md"} marginRight={isLoading ? 3 : 0} alignItems="center" justifyContent="center">{(isLoading || overrideLoading) && hideTextWhileLoading ? "" : text}</Text>
+          <View width={"100%"} flexGrow={1} justifyContent={"center"} flexDirection={"row"}  >
+            <Text color={textColor ? textColor : "#FFFFFF"} paddingTop={0} marginTop={-1} bold fontSize={"md"} marginRight={isLoading ? 3 : 0}>{(isLoading || overrideLoading) && hideTextWhileLoading ? "" : text}</Text>
             {(isLoading || overrideLoading) && <Spinner color={textColor ? textColor : "#FFFFFF"} />}
           </View>
         </View>

@@ -62,12 +62,15 @@ export const UserInfoCard = ({
         </Text>
       </View>
       <Spacer />
-      <FollowButton
-        userId={userData.id}
-        following={isFollowed}
-        onFollow={() => onFollow()}
-        onUnfollow={() => onUnfollow()}
-      />
+      <View flex={1} justifyContent="center" alignItems={"center"} style={{ marginRight: 30 }}>
+
+        <FollowButton
+          userId={userData.id}
+          following={isFollowed}
+          onFollow={() => onFollow()}
+          onUnfollow={() => onUnfollow()}
+        />
+      </View>
     </View>
   );
 };

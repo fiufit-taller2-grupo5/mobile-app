@@ -263,7 +263,7 @@ export default function ProfileScreen(props: Props) {
   return <NativeBaseProvider><View style={{ flex: 1 }} backgroundColor="#fff">
     <ScrollView
       refreshControl={<RefreshControl refreshing={false} onRefresh={
-         () => {
+        () => {
           setRefreshTrainingList(oldRefreshing => !oldRefreshing);
         }
       } />}
@@ -299,7 +299,7 @@ export default function ProfileScreen(props: Props) {
         <View height={20} flexDirection="row" alignItems="center" justifyContent="space-evenly">
           {userId === undefined && <LoadableButton
             customStyles={{
-              width: 130,
+              width: 120,
             }}
             hideTextWhileLoading
             overrideLoading={userTrainingsCount === null}
@@ -312,7 +312,7 @@ export default function ProfileScreen(props: Props) {
           />}
           <LoadableButton
             hideTextWhileLoading
-            customStyles={{ width: 130 }}
+            customStyles={{ width: 120 }}
             overrideLoading={userFollowersCount === null}
             onPress={async () => { onPressFollowers() }}
             text={
@@ -323,7 +323,7 @@ export default function ProfileScreen(props: Props) {
           />
           <LoadableButton
             hideTextWhileLoading
-            customStyles={{ width: 130 }}
+            customStyles={{ width: 120 }}
             overrideLoading={userFollowingCount === null}
             onPress={async () => { onPressFollowing() }}
             text={

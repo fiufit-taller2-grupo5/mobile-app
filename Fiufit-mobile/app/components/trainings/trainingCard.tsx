@@ -22,6 +22,7 @@ import globalUser from '../../../userStorage';
 import { LoadableButton, LoadableLink } from "../commons/buttons";
 import { ShareButton } from "./shareButton";
 import { trainingMainImage } from "./trainingInfoCard";
+import { EmptyListComponent } from "./trainingsList";
 
 
 interface Props {
@@ -265,6 +266,7 @@ export default function TrainingCard(props: Props) {
           size="large"
           color="#FF6060"
         />}
+        {!isRefreshing && reviews.length === 0 && <EmptyListComponent text={"no hay valoraciones todavía. Agrega la tuya!"} />}
         {!isRefreshing && reviews.map(review => (
           <Box
             key={review.id}
@@ -305,17 +307,6 @@ export default function TrainingCard(props: Props) {
           </Box>
         ))}
       </ScrollView>
-      {isTrainer && <Button style={{
-        backgroundColor: "#FF6060",
-        width: "50%",
-        borderRadius: 30,
-        left: "22%",
-        bottom: "5%"
-      }}
-        onPress={() => navigation.navigate("EditTrainingScreen", { trainingData: trainingData })}
-      >
-        Editar entrenamiento
-      </Button>}
       {isTrainer && <Button style={{
         backgroundColor: "#FF6060",
         width: "50%",
