@@ -11,7 +11,7 @@ import { LoadableButton } from '../components/commons/buttons';
 const screens = ['ChangeNameScreen', 'ChangeHeightScreen', 'ChangeWeightScreen', 'ChangeDateScreen', 'ChangeInterestsScreen', 'ChangeLocationScreen', 'ChangeRoleScreen']
 
 const fields = [
-  { name: "Nombre completo", id: 0 }, // TODO: no hay endpoint para cambiar esto
+  { name: "Nombre completo", id: 0 },
   { name: "Altura", id: 1 },
   { name: "Peso", id: 2 },
   { name: "Fecha de nacimiento", id: 3 },

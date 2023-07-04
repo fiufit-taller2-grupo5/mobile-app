@@ -668,6 +668,26 @@ export class API {
     );
   }
 
+  async updateUserName(name: string): Promise<void> {
+    const user = await getUserFromStorage();
+    const userId = user?.id;
+    const url = "user-service/api/users/" + userId + "/name";
+    return await this.fetchFromApi(
+      url,
+      {
+        method: "PUT",
+        body: JSON.stringify({ name: name }),
+      },
+      (response: any) => {
+        console.log("user name updated");
+      },
+      (error: ApiError) => {
+        console.log("error updating user name:", error);
+        throw error;
+      }
+    );
+  }
+
   async addImageUser(image: any): Promise<void> {
     const user = await getUserFromStorage();
     const userId = user?.id;

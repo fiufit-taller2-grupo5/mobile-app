@@ -16,6 +16,8 @@ export default function SubmitButton(props: Props) {
 
   const getErrorDescription = (optionName: string) => {
     switch (optionName) {
+      case "name":
+        return "Por favor ingrese un nombre válido";
       case "weight":
         return "Por favor ingrese un peso válido";
       case "height":

@@ -82,6 +82,12 @@ export class StoredUser {
         console.log("user metadata after verifying:", this.user!.UserMetadata);
     }
 
+    async setName(name: string) {
+        this.user!.name = name;
+        await storeUserOnStorage(this.user!);
+        await this.api?.updateUserName(name);
+    }
+
     async setWeight(weight: number) {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.weight = weight;
