@@ -166,6 +166,9 @@ export default function ProfileScreen(props: Props) {
           user = await api.getUserInfoById(userId);
         } else {
           user = await globalUser.getUser();
+          if (user && user.id) {
+            user = await api.getUserInfoById(user.id);
+          }
         }
         console.log("USER -----------:", user);
         setUser(user);
@@ -178,8 +181,8 @@ export default function ProfileScreen(props: Props) {
           setUserFollowersCount(followers.length);
           const following = await api.getFollowedUsers(user.id);
           setUserFollowingCount(following.length);
-          if (user.UserMetadata && user.UserMetadata.multimedia && user.UserMetadata.multimedia.length >= 1) {
-            setImage(user.UserMetadata.multimedia.at(-1).url);
+          if (user.multimedia && user.multimedia !== null && user.multimedia !== undefined && user.multimedia.length > 0) {
+            setImage(user.multimedia);
           }
         }
       }

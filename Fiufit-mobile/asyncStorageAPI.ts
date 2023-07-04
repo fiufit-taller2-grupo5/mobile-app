@@ -22,7 +22,8 @@ export type userInfo = {
   state: string,
   role: string,
   googleUser?: User,
-  UserMetadata?: UserMetadata | null
+  UserMetadata?: UserMetadata | null,
+  multimedia?: any
 }
 
 

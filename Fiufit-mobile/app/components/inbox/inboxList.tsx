@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, View } from 'native-base';
 import { RefreshControl } from 'react-native';
-import { API } from "../../../api";
 import { InboxInfoCard } from "./inboxInfoCard";
 import globalUser from "../../../userStorage";
 import { db } from "../../../firebase";
-import { addDoc, collection, query, where, onSnapshot, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import InboxNotifications from './inboxNotifications';
 import { EmptyListComponent } from '../trainings/trainingsList';
-import InboxNotifications from './inboxNotifications';
 
 interface Props {
     navigation: any;
