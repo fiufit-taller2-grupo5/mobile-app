@@ -635,6 +635,39 @@ export class API {
     );
   }
 
+  async addImageUser(image: any): Promise<void> {
+    const user = await getUserFromStorage();
+    const userId = user?.id;
+    const name = image.split('/').pop();
+    let type = image.split('.').pop();
+    if (type === "jpg") {
+      type = "jpeg";
+    }
+    const formData = new FormData();
+    formData.append('file', {
+      uri: image,
+      type: 'image/' + type,
+      name: name,
+    } as any);
+    return await this.fetchFromApi(
+      "user-service/api/users/" + userId + "/profilePicture",
+      {
+        method: "POST",
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      },
+      (response: any) => {
+        console.log("image added");
+      },
+      (error: ApiError) => {
+        console.log("error adding image:", error);
+        throw error;
+      }
+    );
+  }
+
   async quitFavoriteTraining(trainingPlanId: number): Promise<boolean> {
     const user = await getUserFromStorage();
     const userId = user?.id;
@@ -718,6 +751,39 @@ export class API {
       (error: ApiError) => {
         console.log("error getting followers:", error);
         return [];
+      }
+    );
+  }
+
+  async setPushToken(pushToken: string): Promise<void> {
+    const user = await getUserFromStorage();
+    const userId = user?.id;
+    await this.fetchFromApi(
+      "user-service/api/users/" + userId + "/set-push-token",
+      {
+        method: "POST",
+        body: JSON.stringify({ token: pushToken })
+      },
+      (response: any) => {
+        console.log("push token set");
+      },
+      (error: ApiError) => {
+        console.error("error setting push token:", error);
+      }
+    );
+  }
+
+  async getPushToken(userId: number): Promise<string> {
+    return await this.fetchFromApi(
+      "user-service/api/users/" + userId + "/get-push-token",
+      { method: "GET" },
+      (response: string) => {
+        console.log("push token:", response, " for user:", userId);
+        return response
+      },
+      (error: ApiError) => {
+        console.log("error getting push token:", error);
+        return "";
       }
     );
   }
