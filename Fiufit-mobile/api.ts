@@ -675,7 +675,7 @@ export class API {
 
 
 export const apiGatewayHealthCheck = async (timestamp: string): Promise<boolean> => {
-  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/health/" + timestamp;
+  const url = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/health/" + timestamp;
   try {
     const response = await fetch(url, {
       method: "GET",
