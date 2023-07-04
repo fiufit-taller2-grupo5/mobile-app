@@ -103,7 +103,7 @@ export class API {
         "Authorization": "Bearer " + accessToken,
         ...fetchConfig.headers,
       }
-      const localUrl = "https://c075-190-18-10-180.ngrok-free.app/" + path;
+      const localUrl = "https://8ba9-2800-810-54f-547-155a-a87e-caf2-8be5.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       // const url = prod;
@@ -874,6 +874,21 @@ export class API {
       },
       (error: ApiError) => {
         console.log("Error sending push notification:", error);
+      }
+    );
+  }
+
+  async getTrainingSessionsQuantity(userId: number): Promise<number> {
+    return await this.fetchFromApi(
+      "training-service/api/trainings/user_training/" + userId + "/count",
+      { method: "GET" },
+      (response: number) => {
+        console.log("training sessions quantity:", response, "for user:", userId);
+        return response
+      },
+      (error: ApiError) => {
+        console.log("error getting training sessions quantity:", error);
+        return 0;
       }
     );
   }

@@ -2,6 +2,8 @@ import { Text, View, Spacer, Image } from 'native-base';
 import { trainingStyles } from "../../styles";
 import { userInfo } from '../../../asyncStorageAPI';
 import { FollowButton } from './followButton';
+import { useEffect, useState } from 'react';
+import { API } from '../../../api';
 
 
 interface UserInfoCardProps {
@@ -21,6 +23,15 @@ export const UserInfoCard = ({
   onFollow,
   onUnfollow,
 }: UserInfoCardProps) => {
+  const [trainingsQuantity, setTrainingsQuantity] = useState(0);
+  const api = new API(navigation);
+  useEffect(() => {
+    const getTrainingsQuantity = async () => {
+      const quantity = await api.getTrainingSessionsQuantity(userData.id);
+      setTrainingsQuantity(quantity);
+    };
+    getTrainingsQuantity();
+  }, []);
 
   return (
     <View
@@ -57,7 +68,7 @@ export const UserInfoCard = ({
           height={8}
           style={trainingStyles.textDescription}
         >
-          54 Trainings
+          {trainingsQuantity} Trainings
         </Text>
       </View>
       <Spacer />

@@ -101,7 +101,7 @@ export default function LoginScreen({ navigation }: any) {
         </Modal>
       }
       <Heading
-        marginTop={'25%'}
+        marginTop={'20%'}
         marginBottom={"10%"}
       >
         Ingresa tus datos
