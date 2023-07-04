@@ -179,7 +179,7 @@ export default function TrainingCard(props: Props) {
           <View>
             <AspectRatio w="100%" ratio={16 / 10}>
               <Image
-                source={{ uri: trainingData.multimedia?.at(0).fileUrl || trainingMainImage(trainingData.type) }}
+                source={{ uri: trainingData.multimedia && trainingData.multimedia.at(0) && trainingData.multimedia?.at(0).fileUrl || trainingMainImage(trainingData.type) }}
                 alt="image"
                 size={238}
                 width="100%"
