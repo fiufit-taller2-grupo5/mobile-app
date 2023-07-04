@@ -174,6 +174,9 @@ export default function ProfileScreen(props: Props) {
         setUser(user);
         if (user) {
           setName(user.name);
+          if (user.multimedia && user.multimedia !== null && user.multimedia !== undefined && user.multimedia.length > 0) {
+            setImage(user.multimedia);
+          }
           const trainingSessions = await api.getUserTrainingSessions(user.id);
           setUserTrainingsCount(trainingSessions.length);
           const followers = await api.getFollowers(user.id);
@@ -181,9 +184,6 @@ export default function ProfileScreen(props: Props) {
           setUserFollowersCount(followers.length);
           const following = await api.getFollowedUsers(user.id);
           setUserFollowingCount(following.length);
-          if (user.multimedia && user.multimedia !== null && user.multimedia !== undefined && user.multimedia.length > 0) {
-            setImage(user.multimedia);
-          }
         }
       }
       // if (user) {
