@@ -1,11 +1,11 @@
-import { VStack, Text, HStack } from "native-base"
+/*import { VStack, Text, HStack } from "native-base"
 import { createTrainingStyles } from "../../styles"
 import TitleInput from "../titleInput";
 import DescriptionInput from ".descriptionInput";
 import TypeInput from "./typeInput";
 import DifficultyInput from "./metricInput";
 import ImageInput from "../inputImage";
-
+*/
 interface Props {
   goalTitle: string;
   setGoalTitle: (title: string) => void;
@@ -20,7 +20,7 @@ interface Props {
 }
 
 export default function GoalForm(props: Props) {
-  const {
+  /*const {
     goalTitle, setGoalTitle, goalDescription, setGoalDescription,
     goalType, setGoalType, goalMetric, setGoalMetric, image, setImage } = props;
 
@@ -57,5 +57,5 @@ export default function GoalForm(props: Props) {
       >Imagen</Text>
       <ImageInput image={image} setImage={setImage} />
     </VStack>
-  )
+  )*/
 }

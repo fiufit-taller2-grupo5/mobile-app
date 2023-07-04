@@ -23,6 +23,36 @@ export default function GoalsList(props: Props) {
   const [refreshing, setRefreshing] = useState(false);
   const [goalsList, setGoalsList] = useState<AthleteGoal[]>([]);
 
+  //metas de prueba 
+  const goals = [{
+      id: 1,
+      title: "correr 10 km en el dia",
+      description: "correr un monton",
+      type: "Distance",
+      metric: 10,
+      athleteId: props.userId,
+      multimedia: undefined,
+    },
+    {
+      id: 2,
+      title: "llegar a 1000 pasos en el dia",
+      description: "caminar un poco mas",
+      type: "Steps",
+      metric: 1000,
+      athleteId: props.userId,
+      multimedia: undefined,
+    },
+    {
+      id: 3,
+      title: "hacer mucho deporte",
+      description: "gastar 50 calorias por dia",
+      type: "Calories",
+      metric: 50,
+      athleteId: props.userId,
+      multimedia: undefined,
+    }
+  ];
+
   const updateData = async () => {
     await getGoalsList();
   }
@@ -35,11 +65,11 @@ export default function GoalsList(props: Props) {
   }, [props.forceRefresh])
 
   const api = new API(navigation);
-
+  
   const getGoalsList = async () => {
     setRefreshing(true);
     try {
-        const goals = await api.getUserGoals(props.userId);
+        //const goals = await api.getUserGoals(props.userId);
         setGoalsList(goals)
     } catch (e: any) {
       console.error("error getting goals list", e.message);

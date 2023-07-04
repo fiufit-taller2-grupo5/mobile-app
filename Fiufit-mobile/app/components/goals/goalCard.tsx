@@ -10,12 +10,10 @@ import {
   Button,
   View,
   ScrollView,
-  Divider,
 } from "native-base";
 import { API, Goal } from "../../../api";
 import { useState } from "react";
 import { RefreshControl } from "react-native";
-import { ShareButton } from "../trainings/shareButton";
 
 interface Props {
   navigation: any;
@@ -28,13 +26,6 @@ export default function GoalCard(props: Props) {
   const api = new API(navigation);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
-
-  const shareTitle = "Entrenamiento: " + goalData.title;
-  const shareMessage =
-    "¡Hola! Te comparto esta meta de Fiufit: *" + goalData.title + "*\n\n" +
-    "*Descripción*: " +
-    goalData.description +
-    + "\n\n¡Descarga Fiufit y cumple metas al igual que yo!"
 
   return (
     <View flexGrow={1}>
@@ -78,24 +69,26 @@ export default function GoalCard(props: Props) {
                 <Text>{goalData.metric}</Text>
               </HStack>
             </HStack>
-            <Text fontWeight={"bold"}>Descripción: </Text>
-            <Text>{goalData.description}</Text>
+            <HStack alignItems="center" space={4} justifyContent="space-between">
+              <HStack alignItems="center">
+                <Text fontWeight={"bold"}>Descripción: </Text>
+                <Text>{goalData.description}</Text>
+                </HStack>
+            </HStack>
           </Stack>
-          <ShareButton title={shareTitle} message={shareMessage} />
+            <Button style={{
+              backgroundColor: "#FF6060",
+              width: "50%",
+              borderRadius: 30,
+              left: "22%",
+              bottom: "2%"
+            }}
+              onPress={() => navigation.navigate("EditGoalScreen", { goalData: goalData })}
+            >
+              Editar meta
+          </Button>
         </Box>
-        <Divider my={1} />
       </ScrollView>
-      <Button style={{
-        backgroundColor: "#FF6060",
-        width: "50%",
-        borderRadius: 30,
-        left: "22%",
-        bottom: "5%"
-      }}
-        onPress={() => navigation.navigate("EditGoalScreen", { goalData: goalData })}
-      >
-        Editar meta
-      </Button>
     </View>
   );
 }

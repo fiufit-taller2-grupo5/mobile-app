@@ -62,7 +62,7 @@ export interface AthleteGoal {
   description: string,
   type: string,
   metric: number, 
-  athleteId: number,
+  athleteId?: number,
   multimedia?: Array<any>,
 }
 
@@ -104,7 +104,7 @@ export class API {
         ...fetchConfig.headers,
       }
       // use localhost if running locally, otherwise use the api gateway
-      const localUrl = "https://1e52-190-18-10-180.ngrok-free.app/" + path;
+      const localUrl = "https://6601-181-89-16-142.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       // const url = prod;
@@ -597,6 +597,23 @@ export class API {
       },
       (error: ApiError) => {
         console.log("error adding image:", error);
+        throw error;
+      }
+    );
+  }
+
+  async deleteGoal(goalId: number): Promise<boolean> {
+    const user = await getUserFromStorage();
+    const userId = user?.id;
+    return await this.fetchFromApi(
+      "training-service/api/goals/" + goalId + '/' + userId,
+      { method: "DELETE" },
+      (response: any) => {
+        console.log("goal deleted");
+        return true;
+      },
+      (error: ApiError) => {
+        console.log("error deleting goal:", error);
         throw error;
       }
     );

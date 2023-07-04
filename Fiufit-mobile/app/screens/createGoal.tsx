@@ -21,10 +21,8 @@ export default function CreateGoalScreen({ navigation }: any) {
   const [image, setImage] = useState(null);
 
   const api = new API(navigation);
-
-  return <NativeBaseProvider>
-    <VStack height="full" style={createTrainingStyles.stack}>
-      <Heading style={createTrainingStyles.heading}>Nueva meta</Heading>
+/*
+abajo de heading va:
       <GoalForm
         goalTitle={goalTitle}
         setGoalTitle={setGoalTitle}
@@ -37,7 +35,11 @@ export default function CreateGoalScreen({ navigation }: any) {
         image={image}
         setImage={setImage}
       />
+*/
 
+  return <NativeBaseProvider>
+    <VStack height="full" style={createTrainingStyles.stack}>
+      <Heading style={createTrainingStyles.heading}>Nueva meta</Heading>
       <LoadableButton
         onPress={async () => {
           const goalId = await api.addGoal({

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Box, VStack, HStack, Button, Text, Image, Divider, Icon } from 'native-base';
+import { Box, VStack, HStack, Button, Text, Image, Divider, Icon, useToast } from 'native-base';
 import { trainingStyles } from "../../styles";
 import { API } from '../../../api';
+import { AntDesign } from '@expo/vector-icons';
 
 export const goalMainImage = (goalType: any) => {
   if (goalType === "Distance") 
@@ -18,7 +19,20 @@ export const GoalsInfoCard = ({
   navigateToScreen,
 }: any) => {
 
+  const toast = useToast();
   const api = new API(navigation);
+
+  const handleDelete = async () => {
+    try {
+      await api.deleteGoal(goalData.id);
+    } catch (e: any) {
+      toast.show({
+        description: e.message,
+        backgroundColor: "red.700",
+        duration: 3000,
+      });
+    }
+  }
 
   return (
     <Box backgroundColor="#fff" style={{ height: 130 }}>
@@ -57,6 +71,18 @@ export const GoalsInfoCard = ({
             <Text paddingLeft={15} fontSize="xs" color="#000000">
               Metrica a cumplir: {goalData.metric}
             </Text>
+          </VStack>
+          <VStack my={1} width={30} height={10} mr={0} ml={1} justifyContent="flex-end" alignItems="flex-end">
+              <>
+                <Button backgroundColor="#fff" onPress={handleDelete} my={-60}>
+                  <Icon
+                    as={<AntDesign name= "delete" />}
+                    size={5}
+                    color="#FF0000"
+                    alignSelf="center"
+                  />
+                </Button>
+              </>
           </VStack>
         </HStack>
         <Divider my={10} mx={1} />
