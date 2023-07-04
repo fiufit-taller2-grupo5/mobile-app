@@ -74,7 +74,7 @@ export default function InboxCard(props: Props) {
       const selfUser = await globalUser.getUser();
 
       const userId = Object.keys(chatMetadata.participants).find((id) => id !== selfUser!.id.toString());
-      api.sendPushNotification(parseInt(userId!), "Nuevo mensaje!", "Tienes un nuevo mensaje de " + selfUser?.name + " en tu inbox!")
+      api.sendPushNotification(parseInt(userId!), "Nuevo mensaje de selfUser?.name", newMessages[0].text)
     } catch (e) {
       console.log("error: ", e);
     }

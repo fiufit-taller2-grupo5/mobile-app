@@ -24,7 +24,7 @@ export const FollowButton = ({ userId, following, customStyles, forceLoading, on
     await onFollow(userId);
     setIsFollowing(true);
     const selfUser = await globalUser.getUser();
-    api.sendPushNotification(userId, "Tienes un nuevo seguidor!", selfUser!.name + "te ha seguido");
+    api.sendPushNotification(userId, "Tienes un nuevo seguidor!", selfUser!.name + " te ha seguido");
   };
 
   const unfollow = async () => {
