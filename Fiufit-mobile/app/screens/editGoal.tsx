@@ -1,30 +1,31 @@
-import { VStack, Heading, NativeBaseProvider } from "native-base";
-import { createGoalsStyles } from "../styles";
+import { NativeBaseProvider, VStack, Heading } from "native-base";
 import { useState } from "react";
-import GoalForm from "../components/goals/goalForm";
-import { API } from "../../api";
+import { createGoalsStyles } from "../styles";
 import { LoadableButton } from "../components/commons/buttons";
 import globalUser from "../../userStorage";
+import { API } from "../../api";
+import GoalForm from "../components/goals/goalForm";
 
-export type Goal = {
-  title: string,
-  description: string,
-  type: string,
-  metric: number,
+interface Props {
+  navigation: any;
+  route: any;
 }
 
-export default function CreateGoalScreen({ navigation }: any) {
-  const [goalTitle, setGoalTitle] = useState("");
-  const [goalDescription, setGoalDescription] = useState("");
-  const [goalType, setGoalType] = useState("");
-  const [goalMetric, setGoalMetric] = useState(0);
+export default function EditGoalScreen(props: Props) {
+  const { navigation, route } = props;
+  const { goalData } = route.params;
+
+  const [goalTitle, setGoalTitle] = useState(goalData.title);
+  const [goalDescription, setGoalDescription] = useState(goalData.description);
+  const [goalType, setGoalType] = useState(goalData.type);
+  const [goalMetric, setGoalMetric] = useState(goalData.metric);
   const [image, setImage] = useState(null);
 
   const api = new API(navigation);
 
   return <NativeBaseProvider>
     <VStack height="full" style={createGoalsStyles.stack}>
-      <Heading style={createGoalsStyles.heading}>Nueva meta</Heading>
+      <Heading style={createGoalsStyles.heading}>Editar entrenamiento</Heading>
       <GoalForm
         goalTitle={goalTitle}
         setGoalTitle={setGoalTitle}
@@ -37,23 +38,24 @@ export default function CreateGoalScreen({ navigation }: any) {
         image={image}
         setImage={setImage}
       />
+
       <LoadableButton
         onPress={async () => {
-          const goalId = await api.addGoal({
+          await api.updateGoal({
             title: goalTitle,
             description: goalDescription,
-            metric: goalMetric,
             type: goalType,
+            metric: goalMetric,
             athleteId: globalUser.user?.id || 0
-          });
+          }, goalData.id);
           if (image) {
-            await api.addImageGoal(goalId, image);
+            await api.addImageGoal(goalData.id, image);
           }
           navigation.navigate("HomeScreen");
           return;
         }}
-        text="Crear"
-        customStyles={{ alignSelf: "center", top: "2%" }}
+        text = "Guardar"
+        customStyles = {{alignSelf: "center", top: "2%"}}
       />
     </VStack>
   </NativeBaseProvider>;

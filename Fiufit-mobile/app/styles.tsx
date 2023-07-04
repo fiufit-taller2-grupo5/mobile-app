@@ -389,3 +389,53 @@ export const userProfileStyles = StyleSheet.create({
   },
 
 });
+
+export const createGoalsStyles = StyleSheet.create({
+  heading: {
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    fontWeight: '800',
+    fontSize: 30,
+    lineHeight: 35,
+    marginTop: '5%',
+    textAlign: 'center',
+    alignSelf: 'center',
+    color: '#FF6060',
+  },
+  titleText: {
+    marginTop: '5%',
+  },
+  descriptionText: {
+    marginTop: '2%',
+  },
+  text: {
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    fontSize: 18,
+    left: '10%',
+    alignSelf: 'flex-start',
+    color: '#FF6060',
+  },
+  stack: {
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: '#ffffff',
+  }
+});
+
+export const goalsStyles = StyleSheet.create({
+  textTitle: {
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    fontSize: 16,
+    paddingLeft: 15
+  },
+  textDescription: {
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    fontWeight: 'normal',
+    color: "grey",
+    fontSize: 14,
+    paddingLeft: 15
+  }
+});

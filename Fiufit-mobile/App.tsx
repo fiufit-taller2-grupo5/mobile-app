@@ -35,6 +35,7 @@ import SelectedUsersScreen from './app/screens/selectedUsers';
 import UserTrainingsScreen from './app/screens/userTrainings';
 import GoalInfoScreen from './app/screens/goalInfo';
 import CreateGoalScreen from './app/screens/createGoal';
+import EditGoalScreen from './app/screens/editGoal';
 
 const Stack = createNativeStackNavigator();
 
@@ -147,6 +148,9 @@ export default function App() {
           <Stack.Screen
             name="CreateGoalScreen"
             component={CreateGoalScreen} />
+          <Stack.Screen
+            name="EditGoalScreen"
+            component={EditGoalScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

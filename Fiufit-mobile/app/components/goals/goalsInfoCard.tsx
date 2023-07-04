@@ -1,15 +1,15 @@
 import React from 'react';
 import { Box, VStack, HStack, Button, Text, Image, Divider, Icon, useToast } from 'native-base';
-import { trainingStyles } from "../../styles";
+import { goalsStyles } from "../../styles";
 import { API } from '../../../api';
 import { AntDesign } from '@expo/vector-icons';
 
 export const goalMainImage = (goalType: any) => {
-  if (goalType === "Distance") 
+  if (goalType === "Distancia") 
     return "https://wallpaperaccess.com/thumb/2604779.jpg";
-  else if (goalType === "Steps")
+  else if (goalType === "Pasos")
     return "https://wallpaperaccess.com/thumb/8657563.jpg";
-  else if (goalType === "Calories")
+  else if (goalType === "Calorias")
     return "https://wallpaperaccess.com/thumb/2443634.jpg";
 };
 
@@ -58,7 +58,7 @@ export const GoalsInfoCard = ({
           />
           <VStack my={1} width={220} height={10} mr={0} ml={1}>
             <Text
-              style={trainingStyles.textTitle}
+              style={goalsStyles.textTitle}
               color="#000000"
               text-align="left"
               bold
