@@ -13,38 +13,42 @@ Notifications.setNotificationHandler({
 });
 
 export default function InboxNotifications() {
-    const [expoPushToken, setExpoPushToken] = useState<string | undefined>('');
-    const [notification, setNotification] = useState<Notification | any>();
-    const notificationListener = useRef<Subscription | any>();
-    const responseListener = useRef<Subscription | any>();
-  
-  useEffect(() => {
-    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+  const [expoPushToken, setExpoPushToken] = useState<string | undefined>('');
+  const [notification, setNotification] = useState<Notification | any>();
+  const notificationListener = useRef<Subscription | any>();
+  const responseListener = useRef<Subscription | any>();
 
-    if(notificationListener) {
-        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-            setNotification(notification);
-          });
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(token => {
+      console.log("TOKENNN", token);
+      setExpoPushToken(token)
     }
-    if(responseListener) {
-          responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            console.log(response);
-          });      
+    );
+
+    if (notificationListener) {
+      notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+        setNotification(notification);
+      });
+    }
+    if (responseListener) {
+      responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+        console.log(response);
+      });
     }
 
     return () => {
-        if(notificationListener) {
-            Notifications.removeNotificationSubscription(notificationListener.current);
-        }
-        if(responseListener) {
-            Notifications.removeNotificationSubscription(responseListener.current);
-        }
+      if (notificationListener) {
+        Notifications.removeNotificationSubscription(notificationListener.current);
+      }
+      if (responseListener) {
+        Notifications.removeNotificationSubscription(responseListener.current);
+      }
     };
   }, []);
 
   // Screen con boton de prueba para poder probar que funcionen 
   //las notificaciones cada vez que se apreta el boton
-  
+
   return (
     <View
       style={{
