@@ -57,11 +57,11 @@ export interface CompleteUserTraining extends trainingSession {
 }
 
 export interface AthleteGoal {
-  id: number, 
+  id: number,
   title: string,
   description: string,
   type: string,
-  metric: number, 
+  metric: number,
   athleteId?: number,
   multimedia?: Array<any>,
 }
@@ -70,7 +70,7 @@ export interface Goal {
   title: string,
   description: string,
   type: string,
-  metric: number, 
+  metric: number,
   athleteId: number,
   multimedia?: Array<any>,
 }
@@ -103,8 +103,7 @@ export class API {
         "Authorization": "Bearer " + accessToken,
         ...fetchConfig.headers,
       }
-      // use localhost if running locally, otherwise use the api gateway
-      const localUrl = "https://6601-181-89-16-142.ngrok-free.app/" + path;
+      const localUrl = "https://c075-190-18-10-180.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       // const url = prod;
@@ -818,11 +817,32 @@ export class API {
       (error: ApiError) => {
         console.log("error getting push token:", error);
         return "";
-      }
-    );
+
+      })
   }
 
-  async sendPushNotification(userId:number, title:string, body:string): Promise<void> {
+  // async getMetrics(start: string, end: string, interval: TimeInterval): Promise<MetricItem[]> {
+  //   const user = await getUserFromStorage();
+  //   const userId = user?.id;
+  //   const url = "training-service/api/trainings/user_training/" + userId + "/between_dates/group_by/" + interval;
+  //   return await this.fetchFromApi(
+  //     url,
+  //     {
+  //       method: "GET",
+  //       body: JSON.stringify({ start: start, end: end }),
+  //     },
+  //     (response: MetricItem[]) => {
+  //       console.log("metrics:", response[0]);
+  //       return response
+  //     },
+  //     (error: ApiError) => {
+  //       console.log("error getting metrics:", error);
+  //       return [];
+  //     }
+  //   );
+  // }
+
+  async sendPushNotification(userId: number, title: string, body: string): Promise<void> {
     return await this.fetchFromApi(
       "user-service/api/users/" + userId + "/notifications",
       {
@@ -837,8 +857,9 @@ export class API {
       }
     );
   }
-
 }
+
+
 
 
 export const apiGatewayHealthCheck = async (timestamp: string): Promise<boolean> => {

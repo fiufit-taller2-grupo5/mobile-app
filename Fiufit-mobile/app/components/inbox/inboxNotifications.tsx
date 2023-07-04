@@ -73,6 +73,8 @@ export default function InboxNotifications(props: any) {
   // Screen con boton de prueba para poder probar que funcionen 
   //las notificaciones cada vez que se apreta el boton
 
+  console.log("token: " + expoPushToken)
+
   return (
     <View
       style={{

@@ -61,7 +61,7 @@ export const UserInfoCard = ({
         </Text>
       </View>
       <Spacer />
-      <View flex={1} justifyContent="center" alignItems={"center"} style={{ marginRight: 30 }}>
+      <View flex={1} justifyContent="center" alignItems={"center"} style={{ marginRight: 45 }}>
 
         <FollowButton
           userId={userData.id}
