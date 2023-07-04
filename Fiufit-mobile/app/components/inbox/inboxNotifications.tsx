@@ -3,6 +3,8 @@ import { Text, View, Button, Platform } from 'react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { Subscription } from 'expo-notifications';
+import { API } from '../../../api';
+import globalUser from '../../../userStorage';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -12,39 +14,67 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export default function InboxNotifications() {
-    const [expoPushToken, setExpoPushToken] = useState<string | undefined>('');
-    const [notification, setNotification] = useState<Notification | any>();
-    const notificationListener = useRef<Subscription | any>();
-    const responseListener = useRef<Subscription | any>();
-  
+export default function InboxNotifications(props: any) {
+  const [expoPushToken, setExpoPushToken] = useState<string | undefined>('');
+  const [notification, setNotification] = useState<Notification | any>();
+  const notificationListener = useRef<Subscription | any>();
+  const responseListener = useRef<Subscription | any>();
+  const { navigation } = props;
+  const api = new API(navigation);
   useEffect(() => {
-    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-
-    if(notificationListener) {
-        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-            setNotification(notification);
-          });
+    registerForPushNotificationsAsync().then(token => {
+      setExpoPushToken(token)
     }
-    if(responseListener) {
-          responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            console.log(response);
-          });      
+    );
+
+    if (notificationListener) {
+      notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+        setNotification(notification);
+      });
+    }
+    if (responseListener) {
+      responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+        console.log(response);
+      });
     }
 
     return () => {
-        if(notificationListener) {
-            Notifications.removeNotificationSubscription(notificationListener.current);
-        }
-        if(responseListener) {
-            Notifications.removeNotificationSubscription(responseListener.current);
-        }
+      if (notificationListener) {
+        Notifications.removeNotificationSubscription(notificationListener.current);
+      }
+      if (responseListener) {
+        Notifications.removeNotificationSubscription(responseListener.current);
+      }
     };
   }, []);
 
+  const sendPushNotification = async () => {
+    // const message = {
+    //   // to: "ExponentPushToken[xMsIjsOnuKrC-ziNUUopQM]",
+    //   to: expoPushToken,
+    //   title: 'New message',
+    //   body: 'You have a new message!',
+    // };
+    const title =  'New message';
+    const body =  'You have a new message!';
+    api.sendPushNotification(await globalUser.getUserId(), title, body);
+
+
+    // await fetch('https://exp.host/--/api/v2/push/send', {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Accept-encoding': 'gzip, deflate',
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify(message)
+    // });
+  };
   // Screen con boton de prueba para poder probar que funcionen 
   //las notificaciones cada vez que se apreta el boton
-  
+
+  console.log("token: " + expoPushToken)
+
   return (
     <View
       style={{
@@ -61,14 +91,15 @@ export default function InboxNotifications() {
       <Button
         title="Press to schedule a notification"
         onPress={async () => {
-          await schedulePushNotification();
+          await sendPushNotification();
         }}
       />
     </View>
   );
 }
 
-//Info que se muestra en la notificacion 
+
+
 
 async function schedulePushNotification() {
   Notifications.getDevicePushTokenAsync().then((token) => {
@@ -82,6 +113,7 @@ async function schedulePushNotification() {
     },
     trigger: { seconds: 1 },
   });
+
 }
 
 async function registerForPushNotificationsAsync() {
@@ -108,7 +140,6 @@ async function registerForPushNotificationsAsync() {
       return;
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log(token);
   } else {
     alert('Must use physical device for Push Notifications');
   }

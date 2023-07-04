@@ -9,7 +9,8 @@ export type UserMetadata = {
   height?: number | null,
   birthDate?: string | null,
   location: string | null,
-  interests: string[]
+  interests: string[],
+  multimedia?: any,
 }
 
 export type userInfo = {
@@ -21,7 +22,10 @@ export type userInfo = {
   state: string,
   role: string,
   googleUser?: User,
-  UserMetadata?: UserMetadata | null
+  UserMetadata?: UserMetadata | null,
+  multimedia?: any
+  pushToken?: string
+  trainingSessionsCompleted?: number
 }
 
 

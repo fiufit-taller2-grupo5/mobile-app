@@ -3,7 +3,6 @@ import { Box, VStack, HStack, Button, Text, Image, Divider, Icon, useToast } fro
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { trainingStyles } from "../../styles";
 import { API } from '../../../api';
-import { LoadableButton } from '../commons/buttons';
 
 export const trainingMainImage = (training_type: any) => {
   if (training_type === "Running")
@@ -44,7 +43,6 @@ export const TrainingInfoCard = ({
   const api = new API(navigation);
 
   useEffect(() => {
-    console.log("que onda monoo", trainingData.isFavorite)
     setTrainingFavorite(trainingData.isFavorite ? trainingData.isFavorite : false);
   }, [trainingData])
 
@@ -94,7 +92,7 @@ export const TrainingInfoCard = ({
           height={70}
         >
           <Image
-            source={{ uri: trainingData.multimedia?.at(0).fileUrl || trainingMainImage(trainingData.type) }}
+            source={{ uri: trainingData.multimedia && trainingData.multimedia.at(0) ? trainingData.multimedia?.at(0).fileUrl : trainingMainImage(trainingData.type) }}
             alt="Alternate Text"
             size="lg"
             borderRadius={10}

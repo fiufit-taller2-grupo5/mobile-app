@@ -56,6 +56,25 @@ export interface CompleteUserTraining extends trainingSession {
   trainingData: Training,
 }
 
+export interface AthleteGoal {
+  id: number,
+  title: string,
+  description: string,
+  type: string,
+  metric: number,
+  athleteId?: number,
+  multimedia?: Array<any>,
+}
+
+export interface Goal {
+  title: string,
+  description: string,
+  type: string,
+  metric: number,
+  athleteId: number,
+  multimedia?: Array<any>,
+}
+
 export class API {
   navigation: any;
   constructor(navigation: any) {
@@ -84,8 +103,7 @@ export class API {
         "Authorization": "Bearer " + accessToken,
         ...fetchConfig.headers,
       }
-      // use localhost if running locally, otherwise use the api gateway
-      const localUrl = "https://dec6-190-18-10-180.ngrok-free.app/" + path;
+      const localUrl = "https://8ba9-2800-810-54f-547-155a-a87e-caf2-8be5.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       // const url = prod;
@@ -518,6 +536,105 @@ export class API {
     );
   }
 
+  async getUserGoals(userId?: number): Promise<AthleteGoal[]> {
+    const user = await getUserFromStorage();
+    if (!userId) {
+      userId = user?.id;
+    }
+    return await this.fetchFromApi(
+      "training-service/api/goals/" + userId,
+      { method: "GET" },
+      (response: AthleteGoal[]) => response,
+      (error: ApiError) => {
+        console.log("error getting user goals:", error);
+        return [];
+      }
+    );
+  }
+
+  async addGoal(goal: Goal): Promise<number> {
+    return await this.fetchFromApi(
+      "training-service/api/goals/",
+      {
+        method: "POST",
+        body: JSON.stringify(goal),
+      },
+      (response: any) => {
+        console.log("goal added");
+        return response.id;
+      },
+      (error: ApiError) => {
+        console.log("error adding goal:", error);
+        throw error;
+      }
+    );
+  }
+
+  async addImageGoal(goalId: number, image: any): Promise<void> {
+    const name = image.split('/').pop();
+    let type = image.split('.').pop();
+    if (type === "jpg") {
+      type = "jpeg";
+    }
+    const formData = new FormData();
+    formData.append('file', {
+      uri: image,
+      type: 'image/' + type,
+      name: name,
+    } as any);
+    return await this.fetchFromApi(
+      "training-service/api/goals/" + goalId + "/image",
+      {
+        method: "PUT",
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      },
+      (response: any) => {
+        console.log("image added");
+      },
+      (error: ApiError) => {
+        console.log("error adding image:", error);
+        throw error;
+      }
+    );
+  }
+
+  async deleteGoal(goalId: number): Promise<boolean> {
+    const user = await getUserFromStorage();
+    const userId = user?.id;
+    return await this.fetchFromApi(
+      "training-service/api/goals/" + goalId + '/' + userId,
+      { method: "DELETE" },
+      (response: any) => {
+        console.log("goal deleted");
+        return true;
+      },
+      (error: ApiError) => {
+        console.log("error deleting goal:", error);
+        throw error;
+      }
+    );
+  }
+
+  async updateGoal(goal: Goal, goalId: number): Promise<void> {
+    return await this.fetchFromApi(
+      "training-service/api/goals/" + goalId,
+      {
+        method: "PUT",
+        body: JSON.stringify(goal),
+      },
+      (response: any) => {
+        console.log("goal updated");
+      },
+      (error: ApiError) => {
+        console.log("error updating goal:", error);
+        throw error;
+      }
+    );
+  }
+
   async getUserMetadata(userId: number): Promise<UserMetadata> {
     const url = "user-service/api/users/" + userId + "/metadata";
     return await this.fetchFromApi(
@@ -546,6 +663,59 @@ export class API {
       },
       (error: ApiError) => {
         console.log("error updating user metadata:", error);
+        throw error;
+      }
+    );
+  }
+
+  async updateUserName(name: string): Promise<void> {
+    const user = await getUserFromStorage();
+    const userId = user?.id;
+    const url = "user-service/api/users/" + userId + "/name";
+    return await this.fetchFromApi(
+      url,
+      {
+        method: "PUT",
+        body: JSON.stringify({ name: name }),
+      },
+      (response: any) => {
+        console.log("user name updated");
+      },
+      (error: ApiError) => {
+        console.log("error updating user name:", error);
+        throw error;
+      }
+    );
+  }
+
+  async addImageUser(image: any): Promise<void> {
+    const user = await getUserFromStorage();
+    const userId = user?.id;
+    const name = image.split('/').pop();
+    let type = image.split('.').pop();
+    if (type === "jpg") {
+      type = "jpeg";
+    }
+    const formData = new FormData();
+    formData.append('file', {
+      uri: image,
+      type: 'image/' + type,
+      name: name,
+    } as any);
+    return await this.fetchFromApi(
+      "user-service/api/users/" + userId + "/profilePicture",
+      {
+        method: "POST",
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      },
+      (response: any) => {
+        console.log("image added");
+      },
+      (error: ApiError) => {
+        console.log("error adding image:", error);
         throw error;
       }
     );
@@ -667,11 +837,64 @@ export class API {
       (error: ApiError) => {
         console.log("error getting push token:", error);
         return "";
+
+      })
+  }
+
+  // async getMetrics(start: string, end: string, interval: TimeInterval): Promise<MetricItem[]> {
+  //   const user = await getUserFromStorage();
+  //   const userId = user?.id;
+  //   const url = "training-service/api/trainings/user_training/" + userId + "/between_dates/group_by/" + interval;
+  //   return await this.fetchFromApi(
+  //     url,
+  //     {
+  //       method: "GET",
+  //       body: JSON.stringify({ start: start, end: end }),
+  //     },
+  //     (response: MetricItem[]) => {
+  //       console.log("metrics:", response[0]);
+  //       return response
+  //     },
+  //     (error: ApiError) => {
+  //       console.log("error getting metrics:", error);
+  //       return [];
+  //     }
+  //   );
+  // }
+
+  async sendPushNotification(userId: number, title: string, body: string): Promise<void> {
+    return await this.fetchFromApi(
+      "user-service/api/users/" + userId + "/notifications",
+      {
+        method: "POST",
+        body: JSON.stringify({ title: title, body: body })
+      },
+      (response: string) => {
+        console.log("Push Notification sent, result:", response);
+      },
+      (error: ApiError) => {
+        console.log("Error sending push notification:", error);
       }
     );
   }
 
+  async getTrainingSessionsQuantity(userId: number): Promise<number> {
+    return await this.fetchFromApi(
+      "training-service/api/trainings/user_training/" + userId + "/count",
+      { method: "GET" },
+      (response: number) => {
+        console.log("training sessions quantity:", response, "for user:", userId);
+        return response
+      },
+      (error: ApiError) => {
+        console.log("error getting training sessions quantity:", error);
+        return 0;
+      }
+    );
+  }
 }
+
+
 
 
 export const apiGatewayHealthCheck = async (timestamp: string): Promise<boolean> => {

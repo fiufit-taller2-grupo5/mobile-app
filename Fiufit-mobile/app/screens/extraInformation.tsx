@@ -98,7 +98,7 @@ export default function ExtraInformationScreen({ navigation, route }: any) {
           }
 
           api.updateUserMetadata({ location: streetName + ' ' + streetNumber.toString(10), birthDate: date.toISOString(), weight: weight, height: height, interests: interests });
-          // TODO ver si agregas la imagen en el endpoint de arriba o en uno nuevo, depende del back
+          api.addImageUser(image);
           navigation.navigate('HomeScreen');
         }}
       />

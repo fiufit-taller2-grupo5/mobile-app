@@ -82,6 +82,12 @@ export class StoredUser {
         console.log("user metadata after verifying:", this.user!.UserMetadata);
     }
 
+    async setName(name: string) {
+        this.user!.name = name;
+        await storeUserOnStorage(this.user!);
+        await this.api?.updateUserName(name);
+    }
+
     async setWeight(weight: number) {
         await this.verifyUserMetadataExists();
         this.user!.UserMetadata!.weight = weight;
@@ -148,6 +154,12 @@ export class StoredUser {
         console.log("new token:", newToken);
         (this.user!.googleUser as any).stsTokenManager.accessToken = newToken;
         await storeUserOnStorage(this.user!);
+    }
+
+    async setPushToken(token: string) {
+        this.user!.pushToken = token;
+        await storeUserOnStorage(this.user!);
+        await this.api?.setPushToken(token);
     }
 }
 

@@ -1,16 +1,17 @@
 import { Box, Text, extendTheme, FlatList, HStack, Spacer, Button, View } from 'native-base';
 import { editProfileStyles } from '../styles';
 import { AntDesign } from '@expo/vector-icons';
-import { ProgressChart } from "react-native-chart-kit";
+import { BarChart } from "react-native-chart-kit";
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
 import React, { useEffect, useState } from 'react';
+import { Dimensions } from "react-native";
 import globalUser from '../../userStorage';
 import { LoadableButton } from '../components/commons/buttons';
 
 const screens = ['ChangeNameScreen', 'ChangeHeightScreen', 'ChangeWeightScreen', 'ChangeDateScreen', 'ChangeInterestsScreen', 'ChangeLocationScreen', 'ChangeRoleScreen']
 
 const fields = [
-  { name: "Nombre completo", id: 0 }, // TODO: no hay endpoint para cambiar esto
+  { name: "Nombre completo", id: 0 },
   { name: "Altura", id: 1 },
   { name: "Peso", id: 2 },
   { name: "Fecha de nacimiento", id: 3 },
@@ -51,7 +52,7 @@ export default function SettingsScreen(props: Props) {
 
         let birthdate = details!.birthDate; // from "2000-09-22T17:43:38.879Z" to "22/09/2000"
         if (birthdate !== null) {
-          birthdate = birthdate.split('T')[0].split('-').reverse().join('/');
+          birthdate = birthdate?.split('T')[0].split('-').reverse().join('/');
         }
 
         console.log("there is user info stored:", userInfoStored, "details:", details, "interests:", interests);
@@ -63,6 +64,8 @@ export default function SettingsScreen(props: Props) {
     });
     return unsubscribe;
   }, [navigation]);
+
+
 
   return <View style={{ flex: 1 }} backgroundColor="#fff">
     <View flex={1} style={{ borderTopWidth: 1, borderTopColor: '#e06666', padding: 5 }}>

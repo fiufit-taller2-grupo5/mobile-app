@@ -69,9 +69,9 @@ export default function TrainingsList(props: Props) {
     }
     let user;
     if (props.userId) {
-      user = await api.getUserInfoById(props.userId);
+      user = await api.getUserMetadata(props.userId);
     } else if (globalUser.user) {
-      user = await api.getUserInfoById(globalUser.user.id);
+      user = await api.getUserMetadata(globalUser.user.id);
     }
 
     if (user) {

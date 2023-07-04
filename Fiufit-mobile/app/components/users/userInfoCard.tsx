@@ -1,8 +1,9 @@
-import { HStack, Text, View, Spacer, Image } from 'native-base';
+import { Text, View, Spacer, Image } from 'native-base';
 import { trainingStyles } from "../../styles";
-import { API } from '../../../api';
 import { userInfo } from '../../../asyncStorageAPI';
 import { FollowButton } from './followButton';
+import { useEffect, useState } from 'react';
+import { API } from '../../../api';
 
 
 interface UserInfoCardProps {
@@ -22,6 +23,15 @@ export const UserInfoCard = ({
   onFollow,
   onUnfollow,
 }: UserInfoCardProps) => {
+  const [trainingsQuantity, setTrainingsQuantity] = useState(0);
+  const api = new API(navigation);
+  useEffect(() => {
+    const getTrainingsQuantity = async () => {
+      const quantity = await api.getTrainingSessionsQuantity(userData.id);
+      setTrainingsQuantity(quantity);
+    };
+    getTrainingsQuantity();
+  }, []);
 
   return (
     <View
@@ -36,8 +46,8 @@ export const UserInfoCard = ({
         }}
       >
         <Image
-          source={{ uri: "https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg" }}
-          alt="Alternate Text"
+          source={(userData.UserMetadata && userData.UserMetadata.multimedia && userData.UserMetadata.multimedia.length >= 1) ? { uri: userData.UserMetadata.multimedia.at(-1).url } : require("../../../assets/images/user_logo.jpg")}
+          alt="image"
           size="sm"
           borderRadius={10}
         />
@@ -58,17 +68,18 @@ export const UserInfoCard = ({
           height={8}
           style={trainingStyles.textDescription}
         >
-          54 Trainings
+          {trainingsQuantity} Trainings
         </Text>
       </View>
       <Spacer />
-      <View flex={1} justifyContent="center" alignItems={"center"} style={{ marginRight: 30 }}>
+      <View flex={1} justifyContent="center" alignItems={"center"} style={{ marginRight: 45 }}>
 
         <FollowButton
           userId={userData.id}
           following={isFollowed}
           onFollow={() => onFollow()}
           onUnfollow={() => onUnfollow()}
+          navigation={navigation}
         />
       </View>
     </View>

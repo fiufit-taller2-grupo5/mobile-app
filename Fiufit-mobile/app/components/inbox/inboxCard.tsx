@@ -6,6 +6,7 @@ import { ChatMetadata } from './inboxList';
 import { View, Text } from 'native-base';
 import { ActivityIndicator } from 'react-native';
 import globalUser from '../../../userStorage';
+import { API } from '../../../api';
 
 
 interface Props {
@@ -20,6 +21,7 @@ export default function InboxCard(props: Props) {
   const [loading, setLoading] = useState(true);
   const messagesCollectionRef = collection(db, "chats", chatMetadata._id, "messages")
   const [messages, setMessages] = useState<IMessage[]>([]);
+  const api = new API(navigation);
 
   useEffect(() => {
 
@@ -68,6 +70,11 @@ export default function InboxCard(props: Props) {
       await updateDoc(docRef, {
         lastMessage: newMessages[0],
       });
+      // TODO check if it works
+      const selfUser = await globalUser.getUser();
+
+      const userId = Object.keys(chatMetadata.participants).find((id) => id !== selfUser!.id.toString());
+      api.sendPushNotification(parseInt(userId!), "Nuevo mensaje de "+ selfUser?.name, newMessages[0].text)
     } catch (e) {
       console.log("error: ", e);
     }

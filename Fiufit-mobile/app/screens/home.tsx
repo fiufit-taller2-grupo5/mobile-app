@@ -5,11 +5,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import globalUser from '../../userStorage';
 import TrainingsScreen from './trainings';
 import ProfileScreen from './profile';
+import MetricsScreen from './metrics';
+import RecommendationsScreen from './recommendationsScreen';
 import UsersScreen from './users';
 import InboxScreen from './inbox';
 import TrainerTrainingsScreen from './trainerTrainings';
 import SettingsScreen from './settings';
 import * as Notifications from 'expo-notifications';
+import GoalsScreen from './goals';
 
 const Tab = createBottomTabNavigator();
 
@@ -39,22 +42,29 @@ export default function HomeScreen({ navigation }: any) {
     }, [navigation]);
 
     useEffect(() => {
-        // mando push token
         const getToken = async () => {
-            console.warn("GETTING TOKEN");
             const token = await Notifications.getExpoPushTokenAsync();
-            console.warn("TOKEN 1: ", token);
             const tokenData = await token.data;
-            console.error("EXPO PUSH TOKEN: ", tokenData);
-            return tokenData;
+            globalUser.setPushToken(tokenData);
+            console.log("PUSH TOKEN:", tokenData);
         }
-        const token = getToken();
+        getToken();
     }, []);
 
     const isAthlete = role === 'Atleta';
 
     return <NativeBaseProvider>
         <Tab.Navigator screenOptions={screenOptions} initialRouteName='Trainings'>
+            <Tab.Screen
+                options={
+                    {
+                        tabBarLabel: 'Descubrir', tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons name='shimmer' color={color} size={size} />),
+                        tabBarActiveTintColor: '#FF6060'
+                    }
+                }
+                name="Descubrir" component={RecommendationsScreen}
+            />
             <Tab.Screen
                 name="Users" component={UsersScreen}
                 options={
@@ -95,6 +105,16 @@ export default function HomeScreen({ navigation }: any) {
                 }
                 name="Trainings" component={TrainerTrainingsScreen}
             />}
+            {isAthlete && <Tab.Screen
+                options={
+                    {
+                        tabBarLabel: 'Metas', tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons name='arm-flex-outline' color={color} size={size} />),
+                        tabBarActiveTintColor: '#FF6060'
+                    }
+                }
+                name="Goals" component={GoalsScreen}
+            />}
             <Tab.Screen
                 options={
                     {
@@ -104,6 +124,16 @@ export default function HomeScreen({ navigation }: any) {
                     }
                 }
                 name="Profile" component={ProfileScreen}
+            />
+            <Tab.Screen
+                options={
+                    {
+                        tabBarLabel: 'Métricas', tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons name='chart-timeline-variant' color={color} size={size} />),
+                        tabBarActiveTintColor: '#FF6060'
+                    }
+                }
+                name="Metrics" component={MetricsScreen}
             />
             <Tab.Screen
                 options={
