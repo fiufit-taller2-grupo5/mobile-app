@@ -13,38 +13,62 @@ Notifications.setNotificationHandler({
 });
 
 export default function InboxNotifications() {
-    const [expoPushToken, setExpoPushToken] = useState<string | undefined>('');
-    const [notification, setNotification] = useState<Notification | any>();
-    const notificationListener = useRef<Subscription | any>();
-    const responseListener = useRef<Subscription | any>();
-  
-  useEffect(() => {
-    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+  const [expoPushToken, setExpoPushToken] = useState<string | undefined>('');
+  const [notification, setNotification] = useState<Notification | any>();
+  const notificationListener = useRef<Subscription | any>();
+  const responseListener = useRef<Subscription | any>();
 
-    if(notificationListener) {
-        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-            setNotification(notification);
-          });
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(token => {
+      setExpoPushToken(token)
     }
-    if(responseListener) {
-          responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            console.log(response);
-          });      
+    );
+
+    if (notificationListener) {
+      notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+        setNotification(notification);
+      });
+    }
+    if (responseListener) {
+      responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+        console.log(response);
+      });
     }
 
     return () => {
-        if(notificationListener) {
-            Notifications.removeNotificationSubscription(notificationListener.current);
-        }
-        if(responseListener) {
-            Notifications.removeNotificationSubscription(responseListener.current);
-        }
+      if (notificationListener) {
+        Notifications.removeNotificationSubscription(notificationListener.current);
+      }
+      if (responseListener) {
+        Notifications.removeNotificationSubscription(responseListener.current);
+      }
     };
   }, []);
 
+  const sendPushNotification = async () => {
+    const message = {
+      to: expoPushToken,
+      sound: 'default',
+      title: 'New message',
+      body: 'You have a new message!',
+      data: {
+        data: 'goes here',
+      }
+    };
+
+    await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(message)
+    });
+  };
   // Screen con boton de prueba para poder probar que funcionen 
   //las notificaciones cada vez que se apreta el boton
-  
+
   return (
     <View
       style={{
@@ -61,14 +85,15 @@ export default function InboxNotifications() {
       <Button
         title="Press to schedule a notification"
         onPress={async () => {
-          await schedulePushNotification();
+          await sendPushNotification();
         }}
       />
     </View>
   );
 }
 
-//Info que se muestra en la notificacion 
+
+
 
 async function schedulePushNotification() {
   Notifications.getDevicePushTokenAsync().then((token) => {
@@ -82,6 +107,7 @@ async function schedulePushNotification() {
     },
     trigger: { seconds: 1 },
   });
+
 }
 
 async function registerForPushNotificationsAsync() {
@@ -108,7 +134,6 @@ async function registerForPushNotificationsAsync() {
       return;
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log(token);
   } else {
     alert('Must use physical device for Push Notifications');
   }
