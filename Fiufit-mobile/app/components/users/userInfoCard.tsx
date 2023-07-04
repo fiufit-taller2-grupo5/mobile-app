@@ -1,6 +1,5 @@
-import { HStack, Text, View, Spacer, Image } from 'native-base';
+import { Text, View, Spacer, Image } from 'native-base';
 import { trainingStyles } from "../../styles";
-import { API } from '../../../api';
 import { userInfo } from '../../../asyncStorageAPI';
 import { FollowButton } from './followButton';
 
@@ -36,8 +35,8 @@ export const UserInfoCard = ({
         }}
       >
         <Image
-          source={{ uri: "https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg" }}
-          alt="Alternate Text"
+          source={(userData.UserMetadata && userData.UserMetadata.multimedia && userData.UserMetadata.multimedia.length >= 1) ? { uri: userData.UserMetadata.multimedia.at(-1).url } : require("../../../assets/images/user_logo.jpg")}
+          alt="image"
           size="sm"
           borderRadius={10}
         />

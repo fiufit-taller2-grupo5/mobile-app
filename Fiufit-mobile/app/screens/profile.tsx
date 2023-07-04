@@ -32,6 +32,7 @@ export default function ProfileScreen(props: Props) {
   const [userFollowersCount, setUserFollowersCount] = useState<number | null>(null);
   const [userFollowingCount, setUserFollowingCount] = useState<number | null>(null);
 
+  const [image, setImage] = useState(null);
   const [refreshTrainingList, setRefreshTrainingList] = useState(false);
 
   const [following, setFollowing] = useState(false);
@@ -159,7 +160,6 @@ export default function ProfileScreen(props: Props) {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       const api = new API(navigation);
-      // TODO: here the backend should send an image too
       const getUserInfo = async () => {
         let user: userInfo | undefined | null;
         if (userId) {
@@ -178,6 +178,9 @@ export default function ProfileScreen(props: Props) {
           setUserFollowersCount(followers.length);
           const following = await api.getFollowedUsers(user.id);
           setUserFollowingCount(following.length);
+          if (user.UserMetadata && user.UserMetadata.multimedia && user.UserMetadata.multimedia.length >= 1) {
+            setImage(user.UserMetadata.multimedia.at(-1).url);
+          }
         }
       }
       // if (user) {
@@ -280,8 +283,8 @@ export default function ProfileScreen(props: Props) {
           margin={5}
         >
           <Image
-            source={{ uri: "https://sm.ign.com/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg" }}
-            alt="Alternate Text"
+            source={(image !== null) ? { uri: image } : require("../../assets/images/user_logo.jpg")}
+            alt="image"
             size="lg"
             borderRadius={10}
           />

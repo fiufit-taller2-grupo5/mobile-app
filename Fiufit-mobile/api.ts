@@ -551,6 +551,39 @@ export class API {
     );
   }
 
+  async addImageUser(image: any): Promise<void> {
+    const user = await getUserFromStorage();
+    const userId = user?.id;
+    const name = image.split('/').pop();
+    let type = image.split('.').pop();
+    if (type === "jpg") {
+      type = "jpeg";
+    }
+    const formData = new FormData();
+    formData.append('file', {
+      uri: image,
+      type: 'image/' + type,
+      name: name,
+    } as any);
+    return await this.fetchFromApi(
+      "user-service/api/users/" + userId + "/profilePicture",
+      {
+        method: "POST",
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      },
+      (response: any) => {
+        console.log("image added");
+      },
+      (error: ApiError) => {
+        console.log("error adding image:", error);
+        throw error;
+      }
+    );
+  }
+
   async quitFavoriteTraining(trainingPlanId: number): Promise<boolean> {
     const user = await getUserFromStorage();
     const userId = user?.id;
