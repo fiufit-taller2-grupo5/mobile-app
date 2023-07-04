@@ -3,6 +3,8 @@ import { Text, View, Button, Platform } from 'react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { Subscription } from 'expo-notifications';
+import { API } from '../../../api';
+import globalUser from '../../../userStorage';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -12,12 +14,13 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export default function InboxNotifications() {
+export default function InboxNotifications(props: any) {
   const [expoPushToken, setExpoPushToken] = useState<string | undefined>('');
   const [notification, setNotification] = useState<Notification | any>();
   const notificationListener = useRef<Subscription | any>();
   const responseListener = useRef<Subscription | any>();
-
+  const { navigation } = props;
+  const api = new API(navigation);
   useEffect(() => {
     registerForPushNotificationsAsync().then(token => {
       setExpoPushToken(token)
@@ -46,25 +49,26 @@ export default function InboxNotifications() {
   }, []);
 
   const sendPushNotification = async () => {
-    const message = {
-      to: expoPushToken,
-      sound: 'default',
-      title: 'New message',
-      body: 'You have a new message!',
-      data: {
-        data: 'goes here',
-      }
-    };
+    // const message = {
+    //   // to: "ExponentPushToken[xMsIjsOnuKrC-ziNUUopQM]",
+    //   to: expoPushToken,
+    //   title: 'New message',
+    //   body: 'You have a new message!',
+    // };
+    const title =  'New message';
+    const body =  'You have a new message!';
+    api.sendPushNotification(await globalUser.getUserId(), title, body);
 
-    await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(message)
-    });
+
+    // await fetch('https://exp.host/--/api/v2/push/send', {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Accept-encoding': 'gzip, deflate',
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify(message)
+    // });
   };
   // Screen con boton de prueba para poder probar que funcionen 
   //las notificaciones cada vez que se apreta el boton

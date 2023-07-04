@@ -303,6 +303,7 @@ export default function ProfileScreen(props: Props) {
             following={following}
             onFollow={() => onFollow(userId)}
             onUnfollow={() => onUnfollow(userId)}
+            navigation={navigation}
           />}
           {userId !== undefined && <Button
             style={{

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { LoadableButton } from "../commons/buttons";
+import { API } from "../../../api";
+import globalUser from "../../../userStorage";
 
 type FollowButtonProps = {
   userId: number;
@@ -8,11 +10,12 @@ type FollowButtonProps = {
   onUnfollow: (userId: number) => Promise<void>;
   customStyles?: any;
   forceLoading?: boolean;
+  navigation: any;
 };
 
-export const FollowButton = ({ userId, following, customStyles, forceLoading, onFollow, onUnfollow }: FollowButtonProps) => {
+export const FollowButton = ({ userId, following, customStyles, forceLoading, onFollow, onUnfollow, navigation }: FollowButtonProps) => {
   const [isFollowing, setIsFollowing] = useState(false);
-
+  const api = new API(navigation);
   useEffect(() => {
     setIsFollowing(following);
   }, [following]);
@@ -20,6 +23,8 @@ export const FollowButton = ({ userId, following, customStyles, forceLoading, on
   const follow = async () => {
     await onFollow(userId);
     setIsFollowing(true);
+    const selfUser = await globalUser.getUser();
+    api.sendPushNotification(userId, "Tienes un nuevo seguidor!", selfUser!.name + "te ha seguido");
   };
 
   const unfollow = async () => {

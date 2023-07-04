@@ -75,7 +75,7 @@ export default function InboxList(props: Props) {
 
     return <View flex={1} backgroundColor="#fff">
         <View flex={1}>
-            <InboxNotifications />
+            <InboxNotifications navigation={navigation}/>
 
             <FlatList
                 ListEmptyComponent={!refreshing ? <EmptyListComponent text={"no tienes ningún chat todavía. Ve al perfil de alguien para iniciar una conversación"} /> : null}
@@ -93,7 +93,6 @@ export default function InboxList(props: Props) {
                 )}
                 keyExtractor={(chat, i) => i.toString()}
             ></FlatList>
-            <InboxNotifications />
         </View>
     </View>
 }

@@ -85,7 +85,7 @@ export class API {
         ...fetchConfig.headers,
       }
       // use localhost if running locally, otherwise use the api gateway
-      const localUrl = "https://1e52-190-18-10-180.ngrok-free.app/" + path;
+      const localUrl = "https://c388-2800-810-54f-547-e276-6a4c-94b6-bdfa.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       // const url = prod;
@@ -700,6 +700,22 @@ export class API {
       (error: ApiError) => {
         console.log("error getting push token:", error);
         return "";
+      }
+    );
+  }
+
+  async sendPushNotification(userId:number, title:string, body:string): Promise<void> {
+    return await this.fetchFromApi(
+      "user-service/api/users/" + userId + "/notifications",
+      {
+        method: "POST",
+        body: JSON.stringify({ title: title, body: body })
+      },
+      (response: string) => {
+        console.log("Push Notification sent, result:", response);
+      },
+      (error: ApiError) => {
+        console.log("Error sending push notification:", error);
       }
     );
   }

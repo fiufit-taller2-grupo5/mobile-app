@@ -68,6 +68,7 @@ export const UserInfoCard = ({
           following={isFollowed}
           onFollow={() => onFollow()}
           onUnfollow={() => onUnfollow()}
+          navigation={navigation}
         />
       </View>
     </View>

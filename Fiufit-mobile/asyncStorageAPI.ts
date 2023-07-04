@@ -24,6 +24,7 @@ export type userInfo = {
   googleUser?: User,
   UserMetadata?: UserMetadata | null,
   multimedia?: any
+  pushToken?: string
 }
 
 

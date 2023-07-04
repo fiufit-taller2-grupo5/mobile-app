@@ -41,16 +41,13 @@ export default function HomeScreen({ navigation }: any) {
     }, [navigation]);
 
     useEffect(() => {
-        // mando push token
         const getToken = async () => {
-            console.warn("GETTING TOKEN");
             const token = await Notifications.getExpoPushTokenAsync();
-            console.warn("TOKEN 1: ", token);
             const tokenData = await token.data;
-            console.error("EXPO PUSH TOKEN: ", tokenData);
-            return tokenData;
+            globalUser.setPushToken(tokenData);
+            console.log("PUSH TOKEN:", tokenData);
         }
-        const token = getToken();
+        getToken();
     }, []);
 
     const isAthlete = role === 'Atleta';
@@ -65,7 +62,7 @@ export default function HomeScreen({ navigation }: any) {
                         tabBarActiveTintColor: '#FF6060'
                     }
                 }
-                name="Descrubrir" component={RecommendationsScreen}
+                name="Descubrir" component={RecommendationsScreen}
             />
             <Tab.Screen
                 name="Users" component={UsersScreen}

@@ -149,6 +149,12 @@ export class StoredUser {
         (this.user!.googleUser as any).stsTokenManager.accessToken = newToken;
         await storeUserOnStorage(this.user!);
     }
+
+    async setPushToken(token: string) {
+        this.user!.pushToken = token;
+        await storeUserOnStorage(this.user!);
+        await this.api?.setPushToken(token);
+    }
 }
 
 const globalUser = new StoredUser();
