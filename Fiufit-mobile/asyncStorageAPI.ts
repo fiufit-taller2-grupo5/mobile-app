@@ -10,6 +10,7 @@ export type UserMetadata = {
   birthDate?: string | null,
   location: string | null,
   interests: string[],
+  multimedia?: any,
 }
 
 export type userInfo = {

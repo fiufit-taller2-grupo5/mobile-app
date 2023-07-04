@@ -78,8 +78,12 @@ export default function TrainingCard(props: Props) {
     try {
       const user = await api.getUserInfoById(globalUser.user.id);
       console.log("USER is: ", user);
+      let metadata;
+      if (user && !user.location) {
+        metadata = await api.getUserMetadata(globalUser.user.id);
+      }
       if (user) {
-        const userLocation = user.location;
+        const userLocation = user.location ? user.location : metadata?.location;
         if (userLocation) {
           const coordinates = await api.getCoordinates(userLocation);
           console.log("USER COORS: ", coordinates);
@@ -227,7 +231,7 @@ export default function TrainingCard(props: Props) {
             </HStack>
             <HStack alignItems="center">
               <Text fontWeight={"bold"}>Distancia de tí: </Text>
-              <Text>{distance} km</Text>
+              <Text>{distance}{distance !== "No disponible" ? " km" : ""}</Text>
             </HStack>
             <Text fontWeight={"bold"}>Descripción: </Text>
             <Text>{trainingData.description}</Text>
