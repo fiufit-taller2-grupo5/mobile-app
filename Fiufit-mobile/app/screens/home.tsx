@@ -12,6 +12,7 @@ import InboxScreen from './inbox';
 import TrainerTrainingsScreen from './trainerTrainings';
 import SettingsScreen from './settings';
 import * as Notifications from 'expo-notifications';
+import GoalsScreen from './goals';
 
 const Tab = createBottomTabNavigator();
 
@@ -103,6 +104,16 @@ export default function HomeScreen({ navigation }: any) {
                     }
                 }
                 name="Trainings" component={TrainerTrainingsScreen}
+            />}
+            {isAthlete && <Tab.Screen
+                options={
+                    {
+                        tabBarLabel: 'Metas', tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons name='arm-flex-outline' color={color} size={size} />),
+                        tabBarActiveTintColor: '#FF6060'
+                    }
+                }
+                name="Goals" component={GoalsScreen}
             />}
             <Tab.Screen
                 options={
