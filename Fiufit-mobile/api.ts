@@ -103,7 +103,7 @@ export class API {
         "Authorization": "Bearer " + accessToken,
         ...fetchConfig.headers,
       }
-      const localUrl = "https://8ba9-2800-810-54f-547-155a-a87e-caf2-8be5.ngrok-free.app/" + path;
+      const localUrl = "https://0d4e-190-18-10-180.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       // const url = prod;
@@ -841,26 +841,31 @@ export class API {
       })
   }
 
-  // async getMetrics(start: string, end: string, interval: TimeInterval): Promise<MetricItem[]> {
-  //   const user = await getUserFromStorage();
-  //   const userId = user?.id;
-  //   const url = "training-service/api/trainings/user_training/" + userId + "/between_dates/group_by/" + interval;
-  //   return await this.fetchFromApi(
-  //     url,
-  //     {
-  //       method: "GET",
-  //       body: JSON.stringify({ start: start, end: end }),
-  //     },
-  //     (response: MetricItem[]) => {
-  //       console.log("metrics:", response[0]);
-  //       return response
-  //     },
-  //     (error: ApiError) => {
-  //       console.log("error getting metrics:", error);
-  //       return [];
-  //     }
-  //   );
-  // }
+  async getMetrics(start: string, end: string, interval: TimeInterval): Promise<Metrics> {
+
+    const user = await getUserFromStorage();
+    const userId = user?.id;
+    const url = "training-service/api/trainings/user_training/" + userId + "/between_dates/group_by/" + interval;
+    return await this.fetchFromApi(
+      url,
+      {
+        method: "POST",
+        body: JSON.stringify({ start: start, end: end }),
+      },
+      (response: Metrics) => {
+        return response
+      },
+      (error: ApiError) => {
+        console.log("error getting metrics:", error);
+        return {
+          label: [],
+          steps: [],
+          distance: [],
+          calories: [],
+        };
+      }
+    );
+  }
 
   async sendPushNotification(userId: number, title: string, body: string): Promise<void> {
     return await this.fetchFromApi(
@@ -894,7 +899,14 @@ export class API {
   }
 }
 
+export type TimeInterval = "year" | "month" | "week" | "day";
 
+interface Metrics {
+  label: string[],
+  steps: number[],
+  distance: number[],
+  calories: number[],
+}
 
 
 export const apiGatewayHealthCheck = async (timestamp: string): Promise<boolean> => {

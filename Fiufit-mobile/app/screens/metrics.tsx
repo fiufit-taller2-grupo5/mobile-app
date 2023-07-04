@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import globalUser from '../../userStorage';
 import { LoadableButton } from '../components/commons/buttons';
 import TrainingsList, { EmptyListComponent } from '../components/trainings/trainingsList';
-import { API } from '../../api';
+import { API, TimeInterval } from '../../api';
 import { userInfo } from '../../asyncStorageAPI';
 import { MaterialIcons } from "@expo/vector-icons";
 import { collection, query, where, getDocs, addDoc, getDoc } from 'firebase/firestore';
@@ -46,15 +46,6 @@ export function MetricsScreen(props: Props) {
 
   const api = new API(props.navigation);
 
-  const data = {
-    labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun"],
-    datasets: [
-      {
-        data: [22, 45, 28, 80, 300, 43]
-      }
-    ]
-  };
-
   const [chartData, setChartData] = useState<any>({
     labels: [],
     datasets: [
@@ -64,48 +55,58 @@ export function MetricsScreen(props: Props) {
     ]
   });
 
-
-  useEffect(() => {
-
-    // setChartData(data);
-  }, []);
-
   const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [groupBy, setGroupBy] = useState<TimeInterval>("day");
+  const [metric, setMetric] = useState<"steps" | "calories" | "distance">("steps");
 
-
-  const onDateChange = (event: any, selectedDate: any) => {
-    const currentDate = selectedDate;
-    setStartDate(currentDate);
-    DateTimePickerAndroid.dismiss('date');
-  };
-
-  const showMode = (currentMode: any) => {
+  const showDatepicker = async (setNewDate: any) => {
     DateTimePickerAndroid.open({
       value: new Date(),
-      onChange: onDateChange,
-      mode: currentMode,
+      onChange: (event, selectedDate) => {
+        setNewDate(selectedDate);
+        DateTimePickerAndroid.dismiss('date');
+      },
+      mode: "date",
       is24Hour: true,
     });
   };
 
-  const showDatepicker = async () => {
-    showMode('date');
-  };
-
   useEffect(() => {
-    // const getMetrics = async () => {
-    //   const start = new Date();
-    //   start.setMonth(start.getMonth() - 1);
-    //   const metrics = await api.getMetrics(start.toISOString(), (new Date()).toISOString(), "day");
-    //   console.log(metrics);
-    // }
+    const getMetrics = async () => {
+      const start = new Date();
+      start.setMonth(start.getMonth() - 1);
+      console.log("fetching metrics:", startDate, endDate, groupBy);
+      const metrics = await api.getMetrics(start.toISOString(), (new Date()).toISOString(), groupBy);
+      console.log("metrics retrieved", metrics);
+      setChartData({
+        labels: metrics.label,
+        datasets: [
+          {
+            data: metrics[metric].map((m: number) => m.toFixed(1))
+          }
+        ]
+      });
+    }
 
-    // getMetrics();
-  }, []);
+    getMetrics();
+  }, [startDate, endDate, groupBy, metric]);
+
+  const metricSuffix = (metric: string): string => {
+    switch (metric) {
+      case "steps":
+        return "pasos";
+      case "distance":
+        return "km";
+      case "calories":
+        return "kcal";
+    }
+    return "";
+  }
 
   return <NativeBaseProvider><View style={{ flex: 1 }} backgroundColor="#fff">
     <View flex={1} justifyContent="center">
-      <View flex={1} justifyContent="space-evenly">
+      <View flex={1} justifyContent="space-evenly" marginTop={2}>
         <View flexDirection="row" alignItems={"center"} justifyContent="center">
           <Text bold fontSize={15} width={100}>Fecha inicio</Text>
           <LoadableButton
@@ -115,8 +116,8 @@ export function MetricsScreen(props: Props) {
               borderWidth: 1,
             }}
             textColor={"#FF6060"}
-            text={"elegir fecha inicio"}
-            onPress={showDatepicker}
+            text={!startDate ? "elegir fecha inicio" : startDate.toDateString()}
+            onPress={async () => { await showDatepicker(setStartDate) }}
           />
         </View>
         <View flexDirection="row" alignItems={"center"} justifyContent="center">
@@ -128,30 +129,48 @@ export function MetricsScreen(props: Props) {
               borderWidth: 1,
             }}
             textColor={"#FF6060"}
-            text={"elegir fecha inicio"}
-            onPress={showDatepicker}
+            text={!endDate ? "elegir fecha fin" : endDate.toDateString()}
+            onPress={async () => { await showDatepicker(setEndDate) }}
           />
         </View>
         <View flexDirection="row" alignItems={"center"} justifyContent="center">
           <Text bold fontSize={15} width={100}>Agrupar por </Text>
           <Select
             fontSize={15}
-            selectedValue={"Día"}
+            selectedValue={groupBy}
             marginLeft={5}
             minWidth={200}
-            accessibilityLabel="año / mes / semana / día"
-            placeholder="Día"
-            defaultValue='day'
+            accessibilityLabel="pasos / distancia / calorías"
+            placeholder="Año"
+            defaultValue='year'
             _selectedItem={{ bg: "#FF6060" }}
-            onValueChange={newRole => null}>
+            onValueChange={(itemValue: any) => setGroupBy(itemValue)}>
             <Select.Item label="Año" value="year" />
             <Select.Item label="Mes" value="month" />
             <Select.Item label="Semana" value="week" />
             <Select.Item label="Día" value="day" />
           </Select>
         </View>
+        <View flexDirection="row" alignItems={"center"} justifyContent="center">
+          <Text bold fontSize={15} width={100}>Métrica</Text>
+          <Select
+            fontSize={15}
+            selectedValue={metric}
+            marginLeft={5}
+            minWidth={200}
+            accessibilityLabel="pasos / distancia / calorías"
+            placeholder="Pasos"
+            defaultValue='steps'
+            _selectedItem={{ bg: "#FF6060" }}
+            onValueChange={(itemValue: any) => setMetric(itemValue)}>
+            <Select.Item label="Pasos" value="steps" />
+            <Select.Item label="Distancia" value="distance" />
+            <Select.Item label="Calorías" value="calories" />
+          </Select>
+        </View>
+
       </View>
-      <View flex={2} justifyContent="flex-end" >
+      <View flex={2} justifyContent="flex-end">
         {chartData.datasets[0].data.length === 0 &&
           <View height={450} borderColor="#FF6060" borderWidth={2} margin={10} borderRadius={15} justifyContent="center">
             <EmptyListComponent text='No hay métricas disponibles todavía' />
@@ -162,7 +181,6 @@ export function MetricsScreen(props: Props) {
             style={{
               marginVertical: 8,
               marginLeft: 10,
-              marginRight: 8,
               borderRadius: 15,
               paddingTop: 60,
               paddingBottom: 5,
@@ -171,13 +189,13 @@ export function MetricsScreen(props: Props) {
             showValuesOnTopOfBars
             withInnerLines
             data={chartData}
-            xLabelsOffset={10}
-            yLabelsOffset={10}
+            xLabelsOffset={5}
+            yLabelsOffset={-6}
             showBarTops={true}
             width={Dimensions.get("window").width - 20}
             height={450}
             yAxisLabel=""
-            yAxisSuffix=' km'
+            yAxisSuffix={` ${metricSuffix(metric)}`}
             chartConfig={{
               backgroundColor: "#ff6060",
               backgroundGradientFrom: "#ff8080",
