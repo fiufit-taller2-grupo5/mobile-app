@@ -20,7 +20,6 @@ export default function InboxNotifications() {
 
   useEffect(() => {
     registerForPushNotificationsAsync().then(token => {
-      console.log("TOKENNN", token);
       setExpoPushToken(token)
     }
     );
@@ -46,6 +45,27 @@ export default function InboxNotifications() {
     };
   }, []);
 
+  const sendPushNotification = async () => {
+    const message = {
+      to: expoPushToken,
+      sound: 'default',
+      title: 'New message',
+      body: 'You have a new message!',
+      data: {
+        data: 'goes here',
+      }
+    };
+
+    await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(message)
+    });
+  };
   // Screen con boton de prueba para poder probar que funcionen 
   //las notificaciones cada vez que se apreta el boton
 
@@ -65,14 +85,15 @@ export default function InboxNotifications() {
       <Button
         title="Press to schedule a notification"
         onPress={async () => {
-          await schedulePushNotification();
+          await sendPushNotification();
         }}
       />
     </View>
   );
 }
 
-//Info que se muestra en la notificacion 
+
+
 
 async function schedulePushNotification() {
   await Notifications.scheduleNotificationAsync({
@@ -83,6 +104,7 @@ async function schedulePushNotification() {
     },
     trigger: { seconds: 2 },
   });
+
 }
 
 async function registerForPushNotificationsAsync() {
@@ -109,7 +131,6 @@ async function registerForPushNotificationsAsync() {
       return;
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log(token);
   } else {
     alert('Must use physical device for Push Notifications');
   }
