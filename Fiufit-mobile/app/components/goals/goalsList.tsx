@@ -52,6 +52,15 @@ export default function GoalsList(props: Props) {
     updateData();
   }, [])
 
+  // trigger update when screen is focused
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      updateData();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+
   return (
     <>
       <View style={{ display: "flex", alignItems: 'flex-end', paddingHorizontal: 15 }}>

@@ -144,7 +144,7 @@ export default function RegisterScreen({ navigation }: any) {
             password,
             async (user, name) => {
               await api.createUser(user, name)
-              navigation.navigate('LocationScreen');
+              navigation.navigate('LocationScreen', { key: Math.random().toString() });
             });
         }}
       />

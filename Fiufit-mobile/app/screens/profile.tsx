@@ -294,6 +294,14 @@ export default function ProfileScreen(props: Props) {
     await api.unfollowUser(userId);
   };
 
+  // re fetch data when user navigates to this screen
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      getUserInfo();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
   console.log("the role", role);
 
   return <NativeBaseProvider><View style={{ flex: 1 }} backgroundColor="#fff">
@@ -308,7 +316,7 @@ export default function ProfileScreen(props: Props) {
       <Box style={editProfileStyles.nameBox}>
         <View flexDirection={"row"} justifyContent="center">
           {userId === undefined && <View flex={0.2} />}
-          <Text flex={1} style={editProfileStyles.text}>{name}</Text>
+          <Text flex={1} style={editProfileStyles.text}>{!refreshing ? name : "Cargando..."}</Text>
           {userId === undefined && <View paddingRight={4}><LoadableButton
             customStyles={{
               borderRadius: 50,
@@ -337,7 +345,7 @@ export default function ProfileScreen(props: Props) {
           margin={0}
         >
           <Image
-            source={(image !== null) ? { uri: image } : require("../../assets/images/user_logo.jpg")}
+            source={(!refreshing && image !== null) ? { uri: image } : require("../../assets/images/user_logo.jpg")}
             alt="image"
             size="lg"
             borderRadius={10}
