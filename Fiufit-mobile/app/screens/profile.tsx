@@ -15,6 +15,111 @@ import { FollowButton } from '../components/users/followButton';
 import { ScrollView } from 'react-native';
 import { RefreshControl } from 'react-native';
 
+export const authorizeAndGetGoogleFitStepsCaloriesAndDistance = async () => {
+
+  const dailyCalories = async (): Promise<number> => {
+    try {
+      const today = new Date(); // Current date and time
+      today.setHours(0, 0, 0, 0); // Set time to 00:00:00
+      const todayISOString = today.toISOString(); // Convert to ISO string
+      const opts = {
+        startDate: todayISOString,
+        endDate: new Date().toISOString(), // required ISO8601Timestamp
+        basalCalculation: true, // optional, to calculate or not basalAVG over the week
+      }
+      let res = await GoogleFit.getDailyCalorieSamples(opts);
+      if (res.length > 0) {
+        let estimated = res[0].calorie;
+        console.log(estimated);
+        return (estimated || 0);
+      }
+    } catch (err) {
+      console.log(err);
+      return 0;
+    }
+    return 0;
+  }
+
+  const dailyDistance = async (): Promise<number> => {
+    try {
+      const today = new Date(); // Current date and time
+      today.setHours(0, 0, 0, 0); // Set time to 00:00:00
+      const todayISOString = today.toISOString(); // Convert to ISO string
+
+      const opts = {
+        // today at 00:00:00 AM is startDAte
+        startDate: todayISOString,
+        endDate: new Date().toISOString(), // required ISO8601Timestamp
+        bucketUnit: BucketUnit.DAY, // required, DAY or HOUR
+        bucketInterval: 1, // required, 1 or 2 for HOUR bucketUnit or 1 - 24 for DAY bucketUnit
+      }
+      let res = await GoogleFit.getDailyDistanceSamples(opts);
+      if (res.length > 0) {
+        let estimated = res[0].distance
+        console.log(estimated);
+        return (estimated || 0);
+      }
+    } catch (err) {
+      console.log(err);
+      return 0;
+    }
+    return 0;
+  }
+
+  const dailySteps = async (): Promise<number> => {
+    try {
+      let res = await GoogleFit.getDailySteps();
+      let estimated = res.find(results => results.source === "com.google.android.gms:estimated_steps");
+      if (estimated?.steps[0] !== undefined) {
+        console.log(estimated?.steps[0].value);
+        return (estimated?.steps[0].value || 0);
+      }
+    } catch (err) {
+      console.log(err);
+      return 0;
+    }
+    return 0;
+  }
+
+
+  const getGoogleFitStepsCaloresAndDistance = async () => {
+    const steps = await dailySteps();
+    const calories = await dailyCalories();
+    const distance = await dailyDistance();
+    return { steps, calories, distance };
+  }
+
+  await GoogleFit.checkIsAuthorized();
+  console.log(GoogleFit.isAuthorized);
+
+  if (!GoogleFit.isAuthorized) {
+    const allScopes: string[] = Object.values(Scopes);
+    const options = {
+      scopes: allScopes as Scopes[],
+    }
+    GoogleFit.authorize(options)
+      .then(async authResult => {
+        if (authResult.success) {
+          console.log("AUTH_SUCCESS");
+          return await getGoogleFitStepsCaloresAndDistance();
+        } else {
+          console.log("AUTH_DENIED", authResult.message);
+        }
+      })
+      .catch(() => {
+        console.log("AUTH_ERROR");
+      })
+  } else {
+    return await getGoogleFitStepsCaloresAndDistance();
+  }
+
+  return {
+    steps: 0,
+    calories: 0,
+    distance: 0,
+  }
+}
+
 interface Props {
   navigation: any;
   route: any;
@@ -58,100 +163,17 @@ export default function ProfileScreen(props: Props) {
     data: [dailySteps / dailyStepsTarget, dailyDistance / dailyDistanceTarget, dailyCalories / dailyCaloriesTarget]
   };
 
+  const setGoogleFitData = async () => {
+    const { steps, calories, distance } = await authorizeAndGetGoogleFitStepsCaloriesAndDistance();
+    console.log("steps", steps, "calories", calories, "distance", distance);
+    setDailySteps(steps);
+    setDailyCalories(calories);
+    setDailyDistance(distance);
+  }
+
   useEffect(() => {
-    const updateDailyActivity = async () => {
-      updateDailySteps();
-      updateDailyDistance();
-      updateDailyCalories();
-    }
-
-    const updateDailyCalories = async () => {
-      try {
-        const today = new Date(); // Current date and time
-        today.setHours(0, 0, 0, 0); // Set time to 00:00:00
-        const todayISOString = today.toISOString(); // Convert to ISO string
-        const opts = {
-          startDate: todayISOString,
-          endDate: new Date().toISOString(), // required ISO8601Timestamp
-          basalCalculation: true, // optional, to calculate or not basalAVG over the week
-        }
-        let res = await GoogleFit.getDailyCalorieSamples(opts);
-        if (res.length > 0) {
-          let estimated = res[0].calorie;
-          console.log(estimated);
-          setDailyCalories(estimated || 0);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
-    const updateDailyDistance = async () => {
-      try {
-        const today = new Date(); // Current date and time
-        today.setHours(0, 0, 0, 0); // Set time to 00:00:00
-        const todayISOString = today.toISOString(); // Convert to ISO string
-
-        const opts = {
-          // today at 00:00:00 AM is startDAte
-          startDate: todayISOString,
-          endDate: new Date().toISOString(), // required ISO8601Timestamp
-          bucketUnit: BucketUnit.DAY, // required, DAY or HOUR
-          bucketInterval: 1, // required, 1 or 2 for HOUR bucketUnit or 1 - 24 for DAY bucketUnit
-        }
-        let res = await GoogleFit.getDailyDistanceSamples(opts);
-        if (res.length > 0) {
-          let estimated = res[0].distance
-          console.log(estimated);
-          setDailyDistance(estimated || 0);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
-    const updateDailySteps = async () => {
-      try {
-        let res = await GoogleFit.getDailySteps();
-        let estimated = res.find(results => results.source === "com.google.android.gms:estimated_steps");
-        if (estimated?.steps[0] !== undefined) {
-          console.log(estimated?.steps[0].value);
-          setDailySteps(estimated?.steps[0].value || 0);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
-    const testGoogleFit = async () => {
-      await GoogleFit.checkIsAuthorized();
-      console.log(GoogleFit.isAuthorized);
-
-      if (!GoogleFit.isAuthorized) {
-        const allScopes: string[] = Object.values(Scopes);
-        const options = {
-          scopes: allScopes as Scopes[],
-        }
-        GoogleFit.authorize(options)
-          .then(authResult => {
-            if (authResult.success) {
-
-              console.log("AUTH_SUCCESS");
-              updateDailyActivity();
-            } else {
-              console.log("AUTH_DENIED", authResult.message);
-            }
-          })
-          .catch(() => {
-            console.log("AUTH_ERROR");
-          })
-      } else {
-        updateDailyActivity();
-      }
-    }
-
     if (!userId) {
-      testGoogleFit();
+      setGoogleFitData();
     }
 
   }, []);
@@ -184,6 +206,7 @@ export default function ProfileScreen(props: Props) {
         setUserFollowersCount(followers.length);
         const following = await api.getFollowedUsers(user.id);
         setUserFollowingCount(following.length);
+        setGoogleFitData();
       }
     } catch (e) {
       console.error(e);
@@ -311,7 +334,7 @@ export default function ProfileScreen(props: Props) {
           alignItems={"center"}
           justifyContent="space-between"
           height={100}
-          margin={5}
+          margin={0}
         >
           <Image
             source={(image !== null) ? { uri: image } : require("../../assets/images/user_logo.jpg")}

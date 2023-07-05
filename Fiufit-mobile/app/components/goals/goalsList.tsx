@@ -70,10 +70,9 @@ export default function GoalsList(props: Props) {
         />
       })}
       {!props.usingScrollView && <FlatList
-        contentContainerStyle={{ flexGrow: 1 }}
         data={goalsList}
         marginBottom={0}
-        marginTop={0}
+        marginTop={2}
         ListEmptyComponent={!refreshing ? <EmptyListComponent text={"no tienes ninguna meta todavía. Crea una nueva!"} /> : null}
         renderItem={(goal) => (
           <GoalsInfoCard
