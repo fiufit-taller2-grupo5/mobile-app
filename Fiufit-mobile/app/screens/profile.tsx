@@ -39,6 +39,7 @@ export default function ProfileScreen(props: Props) {
 
   const [user, setUser] = useState<userInfo | null>();
   const [role, setRole] = useState("Atleta");
+  const [refreshing, setRefreshing] = useState(false);
   const api = new API(navigation);
 
   const chartConfig = {
@@ -157,43 +158,46 @@ export default function ProfileScreen(props: Props) {
 
   const [name, setName] = useState("");
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      const api = new API(navigation);
-      const getUserInfo = async () => {
-        let user: userInfo | undefined | null;
-        if (userId) {
-          user = await api.getUserInfoById(userId);
-        } else {
-          user = await globalUser.getUser();
-          if (user && user.id) {
-            user = await api.getUserInfoById(user.id);
-          }
-        }
-        console.log("USER -----------:", user);
-        setUser(user);
-        if (user) {
-          setName(user.name);
-          if (user.multimedia && user.multimedia !== null && user.multimedia !== undefined && user.multimedia.length > 0) {
-            setImage(user.multimedia);
-          }
-          const trainingSessions = await api.getUserTrainingSessions(user.id);
-          setUserTrainingsCount(trainingSessions.length);
-          const followers = await api.getFollowers(user.id);
-          setFollowing(followers.find((follower) => follower.id === globalUser.user?.id) !== undefined);
-          setUserFollowersCount(followers.length);
-          const following = await api.getFollowedUsers(user.id);
-          setUserFollowingCount(following.length);
+  const getUserInfo = async () => {
+    setRefreshing(true);
+    try {
+      let user: userInfo | undefined | null;
+      if (userId) {
+        user = await api.getUserInfoById(userId);
+      } else {
+        user = await globalUser.getUser();
+        if (user && user.id) {
+          user = await api.getUserInfoById(user.id);
         }
       }
-      // if (user) {
-      //   setRole(user.role);
-      //   console.log("role: ", role);
-      // }
-      getUserInfo();
-    });
-    return unsubscribe;
-  }, [navigation]);
+      console.log("USER -----------:", user);
+      setUser(user);
+      if (user) {
+        setName(user.name);
+        if (user.multimedia && user.multimedia !== null && user.multimedia !== undefined && user.multimedia.length > 0) {
+          setImage(user.multimedia);
+        }
+        const trainingSessions = await api.getUserTrainingSessions(user.id);
+        setUserTrainingsCount(trainingSessions.length);
+        const followers = await api.getFollowers(user.id);
+        setFollowing(followers.find((follower) => follower.id === globalUser.user?.id) !== undefined);
+        setUserFollowersCount(followers.length);
+        const following = await api.getFollowedUsers(user.id);
+        setUserFollowingCount(following.length);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setRefreshing(false);
+    }
+
+  }
+
+  useEffect(() => {
+
+    getUserInfo();
+
+  }, []);
 
   const onPressFollowers = () => {
     navigation.navigate("SelectedUsersScreen", { isFollowers: true, userId: user!.id });
@@ -274,11 +278,35 @@ export default function ProfileScreen(props: Props) {
       refreshControl={<RefreshControl refreshing={false} onRefresh={
         () => {
           setRefreshTrainingList(oldRefreshing => !oldRefreshing);
+          getUserInfo();
         }
       } />}
     >
       <Box style={editProfileStyles.nameBox}>
-        <Text style={editProfileStyles.text}>{name}</Text>
+        <View flexDirection={"row"} justifyContent="center">
+          {userId === undefined && <View flex={0.2} />}
+          <Text flex={1} style={editProfileStyles.text}>{name}</Text>
+          {userId === undefined && <View paddingRight={4}><LoadableButton
+            customStyles={{
+              borderRadius: 50,
+              backgroundColor: "#ffffff",
+              width: 40,
+              height: 40,
+              justifyContent: "center",
+              alignItems: "center",
+              paddingLeft: 5,
+              paddingBottom: 0,
+            }}
+            text={
+              <View >
+                <MaterialIcons name="settings" size={30} color="#ff6060" />
+              </View>
+            }
+            hideTextWhileLoading
+            onPress={async () => { navigation.navigate("Settings"); }}
+          /></View>}
+        </View>
+
         <View
           alignItems={"center"}
           justifyContent="space-between"
@@ -323,7 +351,7 @@ export default function ProfileScreen(props: Props) {
               width: 120,
             }}
             hideTextWhileLoading
-            overrideLoading={userTrainingsCount === null}
+            overrideLoading={refreshing}
             onPress={async () => { navigation.navigate("UserTrainingsScreen"); }}
             text={
               <>
@@ -338,7 +366,7 @@ export default function ProfileScreen(props: Props) {
               marginRight: 5,
               marginLeft: 5
             }}
-            overrideLoading={userFollowersCount === null}
+            overrideLoading={refreshing}
             onPress={async () => { onPressFollowers() }}
             text={
               <>
@@ -349,7 +377,7 @@ export default function ProfileScreen(props: Props) {
           <LoadableButton
             hideTextWhileLoading
             customStyles={{ width: 120 }}
-            overrideLoading={userFollowingCount === null}
+            overrideLoading={refreshing}
             onPress={async () => { onPressFollowing() }}
             text={
               <>
@@ -383,5 +411,5 @@ export default function ProfileScreen(props: Props) {
       />
       }
     </ScrollView>
-  </View></NativeBaseProvider>;
+  </View></NativeBaseProvider >;
 }

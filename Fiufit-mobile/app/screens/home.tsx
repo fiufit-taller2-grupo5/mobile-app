@@ -61,42 +61,12 @@ export default function HomeScreen({ navigation }: any) {
                 options={
                     {
                         tabBarLabel: 'Descubrir', tabBarIcon: ({ color, size }) => (
-                            <MaterialCommunityIcons name='shimmer' color={color} size={size} />),
+                            <MaterialCommunityIcons name='magnify' color={color} size={size} />),
                         tabBarActiveTintColor: '#FF6060'
                     }
                 }
                 name="Descubrir" component={RecommendationsScreen}
             />
-            <Tab.Screen
-                name="Users" component={UsersScreen}
-                options={
-                    {
-                        tabBarLabel: 'Usuarios', tabBarIcon: ({ color, size }) => (
-                            <FontAwesome5 name='users' color={color} size={size} />),
-                        tabBarActiveTintColor: '#FF6060'
-                    }
-                }
-            />
-            <Tab.Screen
-                name="Inbox" component={InboxScreen}
-                options={
-                    {
-                        tabBarLabel: 'Mensajes', tabBarIcon: ({ color, size }) => (
-                            <FontAwesome5 name='inbox' color={color} size={size} />),
-                        tabBarActiveTintColor: '#FF6060'
-                    }
-                }
-            />
-            {isAthlete && <Tab.Screen
-                options={
-                    {
-                        tabBarLabel: 'Entrenamientos', tabBarIcon: ({ color, size }) => (
-                            <MaterialCommunityIcons name='dumbbell' color={color} size={size} />),
-                        tabBarActiveTintColor: '#FF6060'
-                    }
-                }
-                name="Trainings" component={TrainingsScreen}
-            />}
             {!isAthlete && <Tab.Screen
                 options={
                     {
@@ -138,14 +108,14 @@ export default function HomeScreen({ navigation }: any) {
                 name="Metrics" component={MetricsScreen}
             />
             <Tab.Screen
+                name="Inbox" component={InboxScreen}
                 options={
                     {
-                        tabBarLabel: 'Ajustes', tabBarIcon: ({ color, size }) => (
-                            <MaterialCommunityIcons name='cog' color={color} size={size} />),
+                        tabBarLabel: 'Mensajes', tabBarIcon: ({ color, size }) => (
+                            <FontAwesome5 name='inbox' color={color} size={size} />),
                         tabBarActiveTintColor: '#FF6060'
                     }
                 }
-                name="Settings" component={SettingsScreen}
             />
         </Tab.Navigator>
     </NativeBaseProvider>;

@@ -1,4 +1,4 @@
-import { Box, Text, extendTheme, FlatList, HStack, Spacer, Button, View } from 'native-base';
+import { Box, Text, extendTheme, FlatList, HStack, Spacer, Button, View, NativeBaseProvider } from 'native-base';
 import { editProfileStyles } from '../styles';
 import { AntDesign } from '@expo/vector-icons';
 import { BarChart } from "react-native-chart-kit";
@@ -67,7 +67,7 @@ export default function SettingsScreen(props: Props) {
 
 
 
-  return <View style={{ flex: 1 }} backgroundColor="#fff">
+  return <NativeBaseProvider><View style={{ flex: 1 }} backgroundColor="#fff">
     <View flex={1} style={{ borderTopWidth: 1, borderTopColor: '#e06666', padding: 5 }}>
       <FlatList
         contentContainerStyle={{ flexGrow: 1 }}
@@ -119,5 +119,5 @@ export default function SettingsScreen(props: Props) {
         text={"Cerrar sesión"}
       />
     </View>
-  </View>;
+  </View></NativeBaseProvider>;
 }

@@ -89,16 +89,16 @@ export default function UsersList(props: Props) {
     };
   }, [props]);
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      try {
-        getUsersList();
-      } catch (error) {
-        console.log(error);
-      }
-    });
-    return unsubscribe;
-  }, [navigation]);
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener("focus", () => {
+  //     try {
+  //       getUsersList();
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   });
+  //   return unsubscribe;
+  // }, [navigation]);
 
 
   const onFollow = async (userId: number) => {
@@ -110,7 +110,7 @@ export default function UsersList(props: Props) {
   };
 
   return (
-    <View flex={1} backgroundColor="#fff">
+    <View flex={1} backgroundColor="#fff" marginTop={2}>
       <VStack
         paddingY={2}
         paddingX={4}

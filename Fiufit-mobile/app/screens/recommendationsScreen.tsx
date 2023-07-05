@@ -15,15 +15,31 @@ import { FollowButton } from '../components/users/followButton';
 import { ScrollView } from 'react-native';
 import { RefreshControl } from 'react-native';
 
+
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import TrainingsScreen from './trainings';
+import UsersScreen from './users';
+
+const Tab = createMaterialTopTabNavigator();
+
+export default function RecommnedationTabs() {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        tabBarIndicatorStyle: { backgroundColor: '#ff6060' },
+      }}>
+      <Tab.Screen name="Entrenamientos" component={TrainingsScreen} />
+      <Tab.Screen name="Usuarios" component={UsersScreen} />
+    </Tab.Navigator>
+  );
+}
+
 interface Props {
   navigation: any;
   route: any;
 }
 
-export default function RecommendationsScreen(props: Props) {
-
-
-
+export function RecommendationsScreen(props: Props) {
   return <NativeBaseProvider><View style={{ flex: 1 }} backgroundColor="#fff">
   </View></NativeBaseProvider>;
 }

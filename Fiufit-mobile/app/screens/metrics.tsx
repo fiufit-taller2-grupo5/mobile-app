@@ -7,21 +7,6 @@ import { API, TimeInterval } from '../../api';
 import { Dimensions } from 'react-native';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { MaterialIcons } from "@expo/vector-icons";
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-
-const Tab = createMaterialTopTabNavigator();
-
-export default function MyTabs() {
-  return (
-    <Tab.Navigator
-      screenOptions={{
-        tabBarIndicatorStyle: { backgroundColor: '#ff6060' },
-      }}>
-      <Tab.Screen name="Home" component={MetricsScreen} />
-      <Tab.Screen name="Settings" component={GoalsScreen} />
-    </Tab.Navigator>
-  );
-}
 
 
 interface Props {
@@ -29,11 +14,7 @@ interface Props {
   route: any;
 }
 
-export function GoalsScreen(props: Props) {
-  return <View><Text>hola</Text></View>;
-}
-
-export function MetricsScreen(props: Props) {
+export default function MetricsScreen(props: Props) {
 
   const api = new API(props.navigation);
 
