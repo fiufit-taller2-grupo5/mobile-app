@@ -71,7 +71,7 @@ export default function HomeScreen({ navigation }: any) {
             {!isAthlete && <Tab.Screen
                 options={
                     {
-                        tabBarLabel: 'Mis Entrenamientos', tabBarIcon: ({ color, size }) => (
+                        tabBarLabel: 'Entrenamientos', tabBarIcon: ({ color, size }) => (
                             <MaterialCommunityIcons name='dumbbell' color={color} size={size} />),
                         tabBarActiveTintColor: '#FF6060'
                     }

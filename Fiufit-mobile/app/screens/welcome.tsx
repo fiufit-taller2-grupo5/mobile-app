@@ -113,6 +113,11 @@ export default function WelcomeScreen({ navigation }: NativeStackScreenProps<any
       let user;
       try {
         user = await globalUser.getUser();
+        if (!user) {
+          setLoadingAuthentication(false);
+          return;
+        }
+        console.log("globl user issss:", user)
       } catch (e) {
         console.log("no user stored");
         setLoadingAuthentication(false);
