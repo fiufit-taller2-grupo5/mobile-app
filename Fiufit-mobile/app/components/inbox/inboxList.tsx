@@ -75,7 +75,7 @@ export default function InboxList(props: Props) {
     return <View flex={1} backgroundColor="#fff">
         <View flex={1}>
             <FlatList
-                ListEmptyComponent={!refreshing ? <EmptyListComponent text={"no tienes ningún chat todavía. Ve al perfil de alguien para iniciar una conversación"} /> : null}
+                ListEmptyComponent={!refreshing ? <EmptyListComponent text={"no tienes ningún chat todavía. Ve al perfil de alguien para iniciar una conversación."} /> : null}
                 contentContainerStyle={{ flexGrow: 1 }}
                 data={chatsMetadata}
                 marginBottom={0}

@@ -10,6 +10,7 @@ interface Props {
   textColor?: string;
   overrideLoading?: boolean;
   hideTextWhileLoading?: boolean;
+  spinnerProps?: any;
 }
 
 const baseStyles = StyleSheet.create({
@@ -35,7 +36,7 @@ const baseStyles = StyleSheet.create({
   },
 });
 
-export const LoadableButton = ({ text, customStyles, textColor, overrideLoading, hideTextWhileLoading, onPress }: Props) => {
+export const LoadableButton = ({ text, customStyles, textColor, overrideLoading, hideTextWhileLoading, spinnerProps, onPress }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
 
@@ -71,8 +72,15 @@ export const LoadableButton = ({ text, customStyles, textColor, overrideLoading,
       <NativeBaseButton onPress={(e) => handleClick(e)} style={styles}>
         <View flexGrow={1} justifyContent={"space-around"} flexDirection={"row"} >
           <View width={"100%"} flexGrow={1} justifyContent={"center"} flexDirection={"row"}  >
-            <Text color={textColor ? textColor : "#FFFFFF"} paddingTop={0} marginTop={-1} bold fontSize={"md"} marginRight={isLoading ? 3 : 0}>{(isLoading || overrideLoading) && hideTextWhileLoading ? "" : text}</Text>
-            {(isLoading || overrideLoading) && <Spinner color={textColor ? textColor : "#FFFFFF"} />}
+            {(isLoading || overrideLoading) && hideTextWhileLoading ? null : <Text
+              color={textColor ? textColor : "#FFFFFF"}
+              paddingTop={0}
+              marginTop={!hideTextWhileLoading ? -1 : 0}
+              bold
+              fontSize={!hideTextWhileLoading ? "md" : undefined}
+              marginRight={isLoading && !hideTextWhileLoading ? 3 : 0}
+            >{text}</Text>}
+            {(isLoading || overrideLoading) && <Spinner {...spinnerProps} color={textColor ? textColor : "#FFFFFF"} />}
           </View>
         </View>
       </NativeBaseButton>

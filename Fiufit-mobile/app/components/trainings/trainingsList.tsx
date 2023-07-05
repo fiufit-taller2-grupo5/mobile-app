@@ -343,7 +343,7 @@ export default function TrainingsList(props: Props) {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={updateData} />}
       />}
       {
-        filteredData.length === 0 && !refreshing && <EmptyListComponent text={"No se encontraron entrenamientos para la búsqueda"} />
+        filteredData.length === 0 && !refreshing && <EmptyListComponent text={"No se encontraron entrenamientos para la búsqueda."} />
       }
     </>
   );

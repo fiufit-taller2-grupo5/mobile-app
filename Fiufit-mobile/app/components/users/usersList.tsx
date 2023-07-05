@@ -157,7 +157,7 @@ export default function UsersList(props: Props) {
           data={filteredUsers}
           marginBottom={0}
           marginTop={0}
-          ListEmptyComponent={!refreshing ? <EmptyListComponent text={"No se encontraron usuarios"} /> : null}
+          ListEmptyComponent={!refreshing ? <EmptyListComponent text={"No se encontraron usuarios."} /> : null}
           renderItem={(user) => (
             <HStack>
               <UserInfoCard

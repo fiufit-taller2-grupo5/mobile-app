@@ -163,7 +163,7 @@ export default function UserTrainingsList(props: Props) {
         data={filteredData}
         marginBottom={0}
         marginTop={0}
-        ListEmptyComponent={!refreshing ? <EmptyListComponent text={"No se encontraron sesiones de entrenamientos"} /> : null}
+        ListEmptyComponent={!refreshing ? <EmptyListComponent text={"No se encontraron sesiones de entrenamientos."} /> : null}
         renderItem={(userTraining) => (
           <UserTrainingInfoCard
             userTraining={userTraining.item}
