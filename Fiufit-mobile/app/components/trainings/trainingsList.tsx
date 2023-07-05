@@ -166,17 +166,23 @@ export default function TrainingsList(props: Props) {
         }
       } else {
         const trainingList = await api.getTrainings();
+        const recommendedTrainingsList = await api.getRecommendedTrainings();
         if (trainingList.length > 0) {
           const favoritesTrainingsResponse = await api.getFavoriteTrainings(props.userId);
           let trainings = updateFavoriteStatus(trainingList, favoritesTrainingsResponse);
+          let recommendedTrainings = updateFavoriteStatus(recommendedTrainingsList, favoritesTrainingsResponse);
           if (resetFilters) {
-            setFilteredData(trainings);
+            setFilteredData(recommendedTrainings);
             setResetFilters(false);
           } else {
             if (role === "Entrenador") {
               trainings = trainings.filter(training => training.trainerId === globalUser.user?.id);
             }
-            filterData(trainings);
+            if (selectedDifficulty === '' && selectedType === '' && selectedTitle === '' && selectedDistance === 0 && role === "Atleta") {
+              filterData(recommendedTrainings);
+            } else {
+              filterData(trainings);
+            }
           }
         }
       }

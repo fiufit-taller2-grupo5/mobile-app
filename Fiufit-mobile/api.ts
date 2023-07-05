@@ -506,6 +506,20 @@ export class API {
     );
   }
 
+  async getRecommendedTrainings(): Promise<Training[]> {
+    const user = await getUserFromStorage();
+    const userId = user?.id;
+    return await this.fetchFromApi(
+      "training-service/api/trainings/recommendation/" + userId,
+      { method: "GET" },
+      (response: Training[]) => response,
+      (error: ApiError) => {
+        console.log("error getting recommended trainings:", error);
+        return [];
+      }
+    );
+  }
+
   async getFavoriteTrainings(userId?: number): Promise<Training[]> {
     const user = await getUserFromStorage();
     if (!userId) {

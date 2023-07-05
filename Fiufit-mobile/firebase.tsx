@@ -88,11 +88,6 @@ const logout = async () => {
   }
 };
 
-// TODO fix and use to retrieve image from firebase storage
-// const getImage = (imageUrl: string) => {
-//   return firebase.storage().refFromURL(imageUrl).getDownloadURL();
-// }
-
 const getErrorMessage = (error: AuthError): string => {
   switch (getCauseFromErrorMessage(error.code)) {
     case "invalid-email":
