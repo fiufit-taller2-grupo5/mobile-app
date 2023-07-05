@@ -80,6 +80,7 @@ export default function GoalsList(props: Props) {
             goalData={goal.item}
             navigation={navigation}
             navigateToScreen="GoalInfoScreen"
+            updateList={updateData}
           />
         )}
         keyExtractor={(goal) => goal.id.toString()}
