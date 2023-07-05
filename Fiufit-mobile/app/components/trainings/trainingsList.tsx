@@ -179,7 +179,11 @@ export default function TrainingsList(props: Props) {
               trainings = trainings.filter(training => training.trainerId === globalUser.user?.id);
             }
             if (selectedDifficulty === '' && selectedType === '' && selectedTitle === '' && selectedDistance === 0 && role === "Atleta") {
-              setFilteredData(recommendedTrainings);
+              if (recommendedTrainings.length > 0) {
+                setFilteredData(recommendedTrainings);
+              } else {
+                setFilteredData(trainings);
+              }
             } else {
               filterData(trainings);
             }
