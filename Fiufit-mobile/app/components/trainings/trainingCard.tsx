@@ -209,13 +209,16 @@ export default function TrainingCard(props: Props) {
         setRole(role);
       }
       getCurrentRole();
+      onRefresh();
     });
     return listener;
   }, [navigation]);
 
 
+
   const isAthlete = role === 'Atleta';
   const isTrainer = role === 'Entrenador';
+  console.log("training multimedia", reviews && reviews.length > 0 && (reviews[0] as any).user.multimedia)
 
   return (
     <View flexGrow={1}>
@@ -251,21 +254,26 @@ export default function TrainingCard(props: Props) {
             <HStack alignItems="center" space={4} justifyContent="space-between">
               <HStack alignItems="center">
                 <Text fontWeight={"bold"}>Ubicación: </Text>
-                <Text style={{ marginRight: 10 }}>{trainingData.location}</Text>
-                <LoadableLink
-                  text={"Ver en mapa"}
+                {
+                  trainingData.latitude && trainingData.longitude &&
+                  <>
+                    <Text style={{ marginRight: 10 }}>{trainingData.location.trim() !== "0" ? trainingData.location : "No especifíca"}</Text>
+                    <LoadableLink
+                      text={"Ver en mapa"}
 
-                  onPress={async () => {
-                    let coordinates = [];
-                    if (!trainingData.latitude || !trainingData.longitude) {
-                      coordinates = await api.getCoordinates(trainingData.location);
-                    } else {
-                      coordinates = [parseFloat(trainingData.latitude), parseFloat(trainingData.longitude)];
-                    }
-                    navigation.navigate("MapScreen", { marker_longitude: coordinates[1], marker_latitude: coordinates[0] });
-                  }}
+                      onPress={async () => {
+                        let coordinates = [];
+                        if (!trainingData.latitude || !trainingData.longitude) {
+                          coordinates = await api.getCoordinates(trainingData.location);
+                        } else {
+                          coordinates = [parseFloat(trainingData.latitude), parseFloat(trainingData.longitude)];
+                        }
+                        navigation.navigate("MapScreen", { marker_longitude: coordinates[1], marker_latitude: coordinates[0] });
+                      }}
 
-                />
+                    />
+                  </>
+                }
               </HStack>
             </HStack>
             <HStack alignItems="center" space={4} justifyContent="space-between">
@@ -322,45 +330,56 @@ export default function TrainingCard(props: Props) {
           color="#FF6060"
         />}
         {!isRefreshing && reviews.length === 0 && <EmptyListComponent text={"no hay valoraciones todavía. Agrega la tuya!"} />}
-        {!isRefreshing && reviews.map(review => (
-          <Box
-            key={review.id}
-            rounded="sm"
-            overflow="hidden"
-            borderColor="coolGray.200"
-            borderWidth="1"
-            marginLeft={3}
-            marginRight={3}
-            margin={2}
-            paddingX={2}
-            paddingY={2}
-          >
-            <Stack p="4" space={0}>
-              <Link
-                _text={{ fontWeight: "bold" }}
-                isUnderlined={false}
-                onPress={() => navigation.navigate("ProfileScreen", { userId: review.userId })}
-              >
-                {(review as any).user.name}
-              </Link>
-              <View flexDirection={"row"} style={{ justifyContent: "space-between" }}>
-                <View width="80%">
+        <View marginBottom={70}>
+          {!isRefreshing && reviews.map(review => (
+            <View
+              key={review.id}
+              rounded="sm"
+              overflow="hidden"
+              borderColor="coolGray.200"
+              borderWidth="1"
+              marginLeft={3}
+              marginRight={3}
+              margin={2}
+              paddingX={2}
+              paddingY={2}
+              flexDirection={"row"}
+              alignItems={"center"}
+            >
+              <View flexDirection={"column"} justifyContent="center">
+                <Image
+                  source={{ uri: (review as any).user.multimedia || "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png" }}
+                  alt="image"
+                  size={12}
+                  marginRight={3}
+                  rounded="full"
+                />
+              </View>
+              <View>
+                <Link
+                  _text={{ fontWeight: "bold" }}
+                  isUnderlined={false}
+                  onPress={() => navigation.navigate("ProfileScreen", { userId: review.userId })}
+                >
+                  {(review as any).user.name}
+                </Link>
+                <View >
                   <Text marginRight={0}>{review.comment}</Text>
                 </View>
-                <View flexDirection={"column"} justifyContent="center">
-                  <View flexDirection={"row"}>
-                    <FiveStars
-                      starClicked={review.score}
-                      setStarClicked={undefined} // stars not clickable
-                      areButtons={false}
-                      size={15}
-                    />
-                  </View>
+              </View>
+              <View flex={1} alignItems="flex-end">
+                <View flexDirection={"row"}>
+                  <FiveStars
+                    starClicked={review.score}
+                    setStarClicked={undefined} // stars not clickable
+                    areButtons={false}
+                    size={15}
+                  />
                 </View>
               </View>
-            </Stack>
-          </Box>
-        ))}
+            </View>
+          ))}
+        </View>
       </ScrollView>
       {isTrainer && <LoadableButton
         textColor={"#FF6060"}
