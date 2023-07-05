@@ -1,4 +1,4 @@
-import { Box, Text, View, NativeBaseProvider, Button, Image, HStack } from 'native-base';
+import { Box, Text, View, NativeBaseProvider, Button, Image } from 'native-base';
 import { editProfileStyles } from '../styles';
 import { ProgressChart } from "react-native-chart-kit";
 import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'

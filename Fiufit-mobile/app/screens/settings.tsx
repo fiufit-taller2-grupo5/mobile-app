@@ -1,14 +1,10 @@
-import { Box, Text, extendTheme, FlatList, HStack, Spacer, Button, View, NativeBaseProvider } from 'native-base';
-import { editProfileStyles } from '../styles';
+import { Box, Text, FlatList, HStack, Spacer, Button, View, NativeBaseProvider } from 'native-base';
 import { AntDesign } from '@expo/vector-icons';
-import { BarChart } from "react-native-chart-kit";
-import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
 import React, { useEffect, useState } from 'react';
-import { Dimensions } from "react-native";
 import globalUser from '../../userStorage';
 import { LoadableButton } from '../components/commons/buttons';
 
-const screens = ['ChangeNameScreen', 'ChangeHeightScreen', 'ChangeWeightScreen', 'ChangeDateScreen', 'ChangeInterestsScreen', 'ChangeLocationScreen', 'ChangeRoleScreen']
+const screens = ['ChangeNameScreen', 'ChangeHeightScreen', 'ChangeWeightScreen', 'ChangeDateScreen', 'ChangeInterestsScreen', 'ChangeLocationScreen', 'ChangeRoleScreen', 'ChangeImageScreen'];
 
 const fields = [
   { name: "Nombre completo", id: 0 },
@@ -18,6 +14,7 @@ const fields = [
   { name: "Intereses", id: 4 },
   { name: "Dirección", id: 5 },
   { name: "Rol", id: 6 }, // se guarda en el contexto
+  { name: "Imagen de perfil", id: 7 }
 ];
 
 interface Props {
@@ -27,7 +24,7 @@ interface Props {
 export default function SettingsScreen(props: Props) {
   const { navigation } = props;
 
-  const [userInformation, setUserInformation] = useState(["", "", "", "", "", "", ""]);
+  const [userInformation, setUserInformation] = useState(["", "", "", "", "", "", "", ""]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -90,7 +87,7 @@ export default function SettingsScreen(props: Props) {
               <Spacer />
               <HStack space={2}>
                 <Text fontSize="md" _dark={{ color: "warmGray.50" }} color="coolGray.800" alignSelf="flex-start">
-                  {userInformation[item.id] ? userInformation[item.id] : "No especificado"}
+                  {item.name !== "Imagen de perfil" ? userInformation[item.id] ? userInformation[item.id] : "No especificado" : ""}
                 </Text>
                 <Button backgroundColor="#ffffff" size={5} alignSelf="center">
                   <AntDesign name="arrowright" size={15} color="#707070" />

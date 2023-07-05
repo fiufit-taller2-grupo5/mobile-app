@@ -24,6 +24,7 @@ import ChangeWeightScreen from './app/screens/editProfile/changeWeight';
 import ChangeDateScreen from './app/screens/editProfile/changeBirthDate';
 import ChangeInterestsScreen from './app/screens/editProfile/changeInterests';
 import ChangeRoleScreen from './app/screens/editProfile/changeRole';
+import ChangeImageScreen from './app/screens/editProfile/changeImage';
 import CreateTrainingScreen from './app/screens/createTraining';
 import ChangeLocationScreen from './app/screens/editProfile/changeLocation';
 import FavoritesScreen from './app/screens/favorites';
@@ -116,6 +117,10 @@ export default function App() {
           <Stack.Screen
             name="ChangeRoleScreen"
             component={ChangeRoleScreen} />
+          <Stack.Screen
+            name="ChangeImageScreen"
+            component={ChangeImageScreen}
+          />
           <Stack.Screen
             name="CreateTrainingScreen"
             component={CreateTrainingScreen} />
