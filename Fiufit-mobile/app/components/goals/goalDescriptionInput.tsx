@@ -14,7 +14,7 @@ export default function GoalDescriptionInput(props: Props) {
     <View>
       <TextArea
         autoCompleteType="off"
-        placeholder="Descripción del entrenamiento"
+        placeholder="Descripción de la meta"
         width="75%"
         height="200%"
         fontSize={14}

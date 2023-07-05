@@ -21,6 +21,7 @@ import { ActivityIndicator, RefreshControl, StyleSheet } from 'react-native';
 import { TrainingInfoCard } from "./trainingInfoCard";
 import globalUser from '../../../userStorage';
 import { LoadableButton } from "../commons/buttons";
+import { EmptyListComponent } from "./emptyListComponent";
 
 
 interface Props {
@@ -172,6 +173,9 @@ export default function TrainingsList(props: Props) {
             setFilteredData(trainings);
             setResetFilters(false);
           } else {
+            if (role === "Entrenador") {
+              trainings = trainings.filter(training => training.trainerId === globalUser.user?.id);
+            }
             filterData(trainings);
           }
         }
@@ -196,7 +200,6 @@ export default function TrainingsList(props: Props) {
     updateData();
   }, [])
 
-  console.log("filteredData", filteredData)
 
   return (
     <>
@@ -302,7 +305,7 @@ export default function TrainingsList(props: Props) {
         role === "Entrenador" &&
         <View style={{ display: "flex", alignItems: 'flex-end', paddingHorizontal: 15 }}>
           <LoadableButton
-            customStyles={{ width: "100%" }}
+            customStyles={{ width: "100%", marginBottom: 15 }}
             text="Crear nuevo"
             onPress={async () => { navigation.navigate('CreateTrainingScreen'); }}
           />
@@ -343,41 +346,11 @@ export default function TrainingsList(props: Props) {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={updateData} />}
       />}
       {
-        filteredData.length === 0 && !refreshing && <EmptyListComponent text={"No se encontraron entrenamientos para la búsqueda"} />
+        filteredData.length === 0 && !refreshing && <EmptyListComponent text={"No se encontraron entrenamientos para la búsqueda."} />
       }
     </>
   );
 }
 
 
-export const EmptyListComponent = ({ text }: { text: string }) => {
-  return (
-    <View style={styles.container}>
-      <Image
-        alt="no trainings available"
-        source={require('../../../assets/images/empty.png')} // replace with the path to your image
-        style={styles.image}
-      />
-      <Text style={styles.text}>{text ? text : "No se encontraron resultados"}</Text>
-    </View>
-  );
-};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-    marginBottom: 100
-  },
-  image: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
-  },
-  text: {
-    fontSize: 18,
-    color: 'grey',
-  },
-});

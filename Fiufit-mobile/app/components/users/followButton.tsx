@@ -8,12 +8,11 @@ type FollowButtonProps = {
   following: boolean;
   onFollow: (userId: number) => Promise<void>;
   onUnfollow: (userId: number) => Promise<void>;
-  customStyles?: any;
   forceLoading?: boolean;
   navigation: any;
 };
 
-export const FollowButton = ({ userId, following, customStyles, forceLoading, onFollow, onUnfollow, navigation }: FollowButtonProps) => {
+export const FollowButton = ({ userId, following, forceLoading, onFollow, onUnfollow, navigation }: FollowButtonProps) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const api = new API(navigation);
   useEffect(() => {
@@ -45,7 +44,6 @@ export const FollowButton = ({ userId, following, customStyles, forceLoading, on
         backgroundColor: "#FFFFFF",
         borderColor: "#FF6060",
         borderWidth: 1,
-        ...customStyles,
       }}
     />
   );

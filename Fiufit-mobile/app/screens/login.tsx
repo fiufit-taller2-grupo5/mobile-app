@@ -61,7 +61,7 @@ export default function LoginScreen({ navigation }: any) {
       } else {
         console.log("biometric login success", user);
       }
-      navigation.navigate('HomeScreen');
+      navigation.navigate('HomeScreen', { key: Math.random().toString() });
     }
   }
 
@@ -101,7 +101,7 @@ export default function LoginScreen({ navigation }: any) {
         </Modal>
       }
       <Heading
-        marginTop={'25%'}
+        marginTop={'20%'}
         marginBottom={"10%"}
       >
         Ingresa tus datos
@@ -130,7 +130,7 @@ export default function LoginScreen({ navigation }: any) {
             userInfo.role = "Atleta";
             userInfo.UserMetadata = null;
             globalUser.setUser(userInfo);
-            navigation.navigate('HomeScreen');
+            navigation.navigate('HomeScreen', { key: Math.random().toString() });
           } else {
             throw Error(errorMessage);
           }

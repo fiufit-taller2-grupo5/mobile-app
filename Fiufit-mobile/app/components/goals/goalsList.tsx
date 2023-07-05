@@ -10,6 +10,7 @@ import {
 import { RefreshControl } from 'react-native';
 import { GoalsInfoCard } from "./goalsInfoCard";
 import { LoadableButton } from "../commons/buttons";
+import { EmptyListComponent } from "../trainings/emptyListComponent";
 
 interface Props {
   navigation: any;
@@ -23,54 +24,24 @@ export default function GoalsList(props: Props) {
   const [refreshing, setRefreshing] = useState(false);
   const [goalsList, setGoalsList] = useState<AthleteGoal[]>([]);
 
-  //metas de prueba 
-  const goals = [{
-      id: 1,
-      title: "correr 10 km en el dia",
-      description: "correr un monton",
-      type: "Distancia",
-      metric: 10,
-      athleteId: props.userId,
-      multimedia: undefined,
-    },
-    {
-      id: 2,
-      title: "llegar a 100 pasos en el dia",
-      description: "caminar un poco mas",
-      type: "Pasos",
-      metric: 100,
-      athleteId: props.userId,
-      multimedia: undefined,
-    },
-    {
-      id: 3,
-      title: "hacer mucho deporte",
-      description: "gastar 50 calorias por dia",
-      type: "Calorias",
-      metric: 50,
-      athleteId: props.userId,
-      multimedia: undefined,
-    }
-  ];
-
   const updateData = async () => {
     await getGoalsList();
   }
 
   useEffect(() => {
-    if(props.usingScrollView) {
+    if (props.usingScrollView) {
       updateData();
       console.log("force refreshando")
     }
   }, [props.forceRefresh])
 
   const api = new API(navigation);
-  
+
   const getGoalsList = async () => {
     setRefreshing(true);
     try {
-        //const goals = await api.getUserGoals(props.userId);
-        setGoalsList(goals)
+      const goals = await api.getUserGoals(props.userId);
+      setGoalsList(goals)
     } catch (e: any) {
       console.error("error getting goals list", e.message);
     }
@@ -81,15 +52,24 @@ export default function GoalsList(props: Props) {
     updateData();
   }, [])
 
+  // trigger update when screen is focused
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      updateData();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+
   return (
     <>
-        <View style={{ display: "flex", alignItems: 'flex-end', paddingHorizontal: 15 }}>
-          <LoadableButton
-            customStyles={{ width: "100%" }}
-            text="Crear nueva meta"
-            onPress={async () => { navigation.navigate('CreateGoalScreen'); }}
-          />
-        </View>
+      <View style={{ display: "flex", alignItems: 'flex-end', paddingHorizontal: 15 }}>
+        <LoadableButton
+          customStyles={{ width: "100%" }}
+          text="Crear nueva meta"
+          onPress={async () => { navigation.navigate('CreateGoalScreen'); }}
+        />
+      </View>
       {props.usingScrollView && goalsList.map(goal => {
         return <GoalsInfoCard
           key={goal.id.toString()}
@@ -99,15 +79,16 @@ export default function GoalsList(props: Props) {
         />
       })}
       {!props.usingScrollView && <FlatList
-        contentContainerStyle={{ flexGrow: 1 }}
         data={goalsList}
         marginBottom={0}
-        marginTop={0}
+        marginTop={2}
+        ListEmptyComponent={!refreshing ? <EmptyListComponent text={"no tienes ninguna meta todavía. Crea una nueva!"} /> : null}
         renderItem={(goal) => (
           <GoalsInfoCard
             goalData={goal.item}
             navigation={navigation}
             navigateToScreen="GoalInfoScreen"
+            updateList={updateData}
           />
         )}
         keyExtractor={(goal) => goal.id.toString()}

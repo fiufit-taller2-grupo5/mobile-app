@@ -9,10 +9,12 @@ import MetricsScreen from './metrics';
 import RecommendationsScreen from './recommendationsScreen';
 import UsersScreen from './users';
 import InboxScreen from './inbox';
+import NotificationsScreen from './notifications';
 import TrainerTrainingsScreen from './trainerTrainings';
 import SettingsScreen from './settings';
 import * as Notifications from 'expo-notifications';
 import GoalsScreen from './goals';
+import { registerForPushNotificationsAsync } from '../../notificationsUtils';
 
 const Tab = createBottomTabNavigator();
 
@@ -43,6 +45,7 @@ export default function HomeScreen({ navigation }: any) {
 
     useEffect(() => {
         const getToken = async () => {
+            registerForPushNotificationsAsync();
             const token = await Notifications.getExpoPushTokenAsync();
             const tokenData = await token.data;
             globalUser.setPushToken(tokenData);
@@ -55,50 +58,20 @@ export default function HomeScreen({ navigation }: any) {
 
     return <NativeBaseProvider>
         <Tab.Navigator screenOptions={screenOptions} initialRouteName='Trainings'>
-            <Tab.Screen
+            {isAthlete && <Tab.Screen
                 options={
                     {
                         tabBarLabel: 'Descubrir', tabBarIcon: ({ color, size }) => (
-                            <MaterialCommunityIcons name='shimmer' color={color} size={size} />),
+                            <MaterialCommunityIcons name='magnify' color={color} size={size} />),
                         tabBarActiveTintColor: '#FF6060'
                     }
                 }
                 name="Descubrir" component={RecommendationsScreen}
-            />
-            <Tab.Screen
-                name="Users" component={UsersScreen}
-                options={
-                    {
-                        tabBarLabel: 'Usuarios', tabBarIcon: ({ color, size }) => (
-                            <FontAwesome5 name='users' color={color} size={size} />),
-                        tabBarActiveTintColor: '#FF6060'
-                    }
-                }
-            />
-            <Tab.Screen
-                name="Inbox" component={InboxScreen}
-                options={
-                    {
-                        tabBarLabel: 'Mensajes', tabBarIcon: ({ color, size }) => (
-                            <FontAwesome5 name='inbox' color={color} size={size} />),
-                        tabBarActiveTintColor: '#FF6060'
-                    }
-                }
-            />
-            {isAthlete && <Tab.Screen
-                options={
-                    {
-                        tabBarLabel: 'Entrenamientos', tabBarIcon: ({ color, size }) => (
-                            <MaterialCommunityIcons name='dumbbell' color={color} size={size} />),
-                        tabBarActiveTintColor: '#FF6060'
-                    }
-                }
-                name="Trainings" component={TrainingsScreen}
             />}
             {!isAthlete && <Tab.Screen
                 options={
                     {
-                        tabBarLabel: 'Entrenamientos', tabBarIcon: ({ color, size }) => (
+                        tabBarLabel: 'Mis Entrenamientos', tabBarIcon: ({ color, size }) => (
                             <MaterialCommunityIcons name='dumbbell' color={color} size={size} />),
                         tabBarActiveTintColor: '#FF6060'
                     }
@@ -125,7 +98,7 @@ export default function HomeScreen({ navigation }: any) {
                 }
                 name="Profile" component={ProfileScreen}
             />
-            <Tab.Screen
+            {isAthlete && <Tab.Screen
                 options={
                     {
                         tabBarLabel: 'Métricas', tabBarIcon: ({ color, size }) => (
@@ -134,16 +107,26 @@ export default function HomeScreen({ navigation }: any) {
                     }
                 }
                 name="Metrics" component={MetricsScreen}
-            />
+            />}
             <Tab.Screen
+                name="NotificationsScreen" component={NotificationsScreen}
                 options={
                     {
-                        tabBarLabel: 'Ajustes', tabBarIcon: ({ color, size }) => (
-                            <MaterialCommunityIcons name='cog' color={color} size={size} />),
+                        tabBarLabel: 'Notifs', tabBarIcon: ({ color, size }) => (
+                            <FontAwesome5 name="bell" color={color} size={size} />),
                         tabBarActiveTintColor: '#FF6060'
                     }
                 }
-                name="Settings" component={SettingsScreen}
+            />
+            <Tab.Screen
+                name="Inbox" component={InboxScreen}
+                options={
+                    {
+                        tabBarLabel: 'Mensajes', tabBarIcon: ({ color, size }) => (
+                            <FontAwesome5 name='inbox' color={color} size={size} />),
+                        tabBarActiveTintColor: '#FF6060'
+                    }
+                }
             />
         </Tab.Navigator>
     </NativeBaseProvider>;

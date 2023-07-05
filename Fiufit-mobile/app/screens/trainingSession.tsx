@@ -1,7 +1,7 @@
 import { NativeBaseProvider, Text, VStack, Icon, useToast, Button } from "native-base";
 import { useCallback, useState } from "react";
-import { StyleSheet, View } from 'react-native';
-import { Box } from 'native-base';
+import { StyleSheet } from 'react-native';
+import { Box, View } from 'native-base';
 import { MaterialCommunityIcons, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import Stopwatch from "../components/trainings/stopwatch"
 import { LoadableButton } from "../components/commons/buttons";
@@ -180,7 +180,9 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
                         style: 'cancel',
                     },
                     {
+                        style: "destructive",
                         text: 'Terminar',
+                        isPreferred: true,
                         onPress: async () => {
                             console.log(trainingInfo.id, distance, duration, steps, calories, date);
                             try {
@@ -208,7 +210,9 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
                             }
                         },
                     },
-                ]
+                ], {
+                cancelable: true,
+            }
             );
         }
         else {
@@ -269,18 +273,21 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
                     text="Finalizar entrenamiento"
                     customStyles={{
                         backgroundColor: "#FF6060",
-                        width: "70%",
-                        height: "8%",
-                        borderRadius: 30,
+                        width: 300,
+                        height: 80,
                         alignSelf: "center",
-                        top: "0%"
+                        top: "0%",
                     }}
+
                     onPress={async () => {
                         handleAddTrainingSession();
                     }}
                 />
                 {showTrainingData && (
-                    <Dialog.Container visible={true} contentStyle={{ alignItems: 'center' }}>
+                    <Dialog.Container visible={true} onBackdropPress={() => {
+                        setShowTrainingData(false)
+                        navigation.navigate('HomeScreen')
+                    }} contentStyle={{ alignItems: 'center' }}>
                         <Dialog.Title>Entrenamiento finalizado.{'\n'}¡Buen trabajo! </Dialog.Title>
                         <Dialog.Description>
                             <Text>
@@ -291,11 +298,17 @@ export default function TrainingSessionScreen({ route, navigation }: any) {
                                 Fecha: {date.toString()}
                             </Text>
                         </Dialog.Description>
-                        <Dialog.Button label="OK" onPress={() => {
-                            setShowTrainingData(false)
-                            navigation.navigate('HomeScreen')
-                        }} />
-                        <ShareButton title={shareTitle} message={shareMessage} />
+                        <View flexDirection={"row"} alignItems="center" justifyContent={"space-between"}>
+                            <LoadableButton
+                                customStyles={{ width: 200, marginRight: 20 }}
+                                text={"Volver"}
+                                onPress={async () => {
+                                    setShowTrainingData(false)
+                                    navigation.navigate('HomeScreen')
+                                }}
+                            />
+                            <ShareButton title={shareTitle} message={shareMessage} />
+                        </View>
                     </Dialog.Container>
                 )}
             </VStack>

@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Box, VStack, HStack, Button, Text, Image, Divider, Icon, useToast } from 'native-base';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { trainingStyles } from "../../styles";
+import { TouchableOpacity } from 'react-native';
 import { API } from '../../../api';
+import { trainingTypeFromEnglishToSpanish } from './trainingCard';
 
 export const trainingMainImage = (training_type: any) => {
   if (training_type === "Running")
@@ -76,70 +78,66 @@ export const TrainingInfoCard = ({
   }
 
   return (
-    <Box backgroundColor="#fff" style={{ height: 130 }}>
-      <Button
-        height={170}
-        px="10"
-        py="10"
-        backgroundColor="#fff"
-        onPress={async () => {
-          navigation.navigate(navigateToScreen, { trainingData, userLatitude, userLongitude });
-        }}
-      >
-        <HStack
-          space={[2, 3]}
-          justifyContent="space-between"
-          height={70}
-        >
-          <Image
-            source={{ uri: trainingData.multimedia && trainingData.multimedia.at(0) ? trainingData.multimedia?.at(0).fileUrl : trainingMainImage(trainingData.type) }}
-            alt="Alternate Text"
-            size="lg"
-            borderRadius={10}
-          />
-          <VStack my={1} width={220} height={10} mr={0} ml={1}>
-            <Text
-              style={trainingStyles.textTitle}
-              color="#000000"
-              text-align="left"
-              bold
-            >
-              {trainingData.title}
-            </Text>
-            <Text paddingLeft={15} fontSize="sm" color="#000000">
-              {trainingData.description}
-            </Text>
-            <Text paddingLeft={15} fontSize="xs" color="#000000">
-              Dificultad: {trainingData.difficulty}
-            </Text>
-          </VStack>
-          <VStack my={1} width={30} height={10} mr={0} ml={1}>
-            {canSetFavorite && userRole === "Atleta" && (
-              <>
+    <TouchableOpacity style={{ height: 130, backgroundColor: "#fff", paddingHorizontal: 15 }} onPress={async () => {
+      navigation.navigate(navigateToScreen, { trainingData, userLatitude, userLongitude });
+    }}>
 
-                <Button backgroundColor="#fff" onPress={handleFavorite}>
-                  <Icon
-                    as={<MaterialCommunityIcons name={isFavorite ? "heart" : "heart-outline"} />}
-                    size={6}
-                    color="#FF6060"
-                    alignSelf="center"
-                  />
-                </Button>
-                <Button backgroundColor="#fff" onPress={async () => { console.log("click"); }}>
+      <HStack
+        space={[2, 3]}
+        justifyContent="space-between"
+        height={70}
+      >
+        <Image
+          source={{ uri: trainingData.multimedia && trainingData.multimedia.at(0) ? trainingData.multimedia?.at(0).fileUrl : trainingMainImage(trainingData.type) }}
+          alt="Alternate Text"
+          size="lg"
+          borderRadius={10}
+        />
+        <VStack my={1} width={220} height={10} mr={0} ml={1}>
+          <Text
+            style={trainingStyles.textTitle}
+            color="#000000"
+            text-align="left"
+            bold
+          >
+            {trainingData.title}
+          </Text>
+          <Text paddingLeft={15} fontSize="sm" color="#000000">
+            {trainingData.description}
+          </Text>
+          <Text paddingLeft={15} fontSize="sm" color="#000000">
+            {trainingTypeFromEnglishToSpanish(trainingData.type)}
+          </Text>
+          <Text paddingLeft={15} fontSize="sm" color="#000000">
+            Dificultad: {trainingData.difficulty}
+          </Text>
+        </VStack>
+        <VStack my={5} width={30} height={10} mr={0} ml={1} alignItems={"center"}>
+          {canSetFavorite && userRole === "Atleta" && (
+            <>
+
+              <Button backgroundColor="#fff" onPress={handleFavorite}>
+                <Icon
+                  as={<MaterialCommunityIcons name={isFavorite ? "heart" : "heart-outline"} />}
+                  size={6}
+                  color="#FF6060"
+                  alignSelf="center"
+                />
+              </Button>
+              {/* <Button backgroundColor="#fff" onPress={async () => { console.log("click"); }}>
                   <Icon
                     as={<MaterialCommunityIcons name={isRated ? "star" : "star-outline"} />}
                     size={6}
                     color="#FFD27D"
                     alignSelf="center"
                   />
-                </Button>
-              </>
-            )}
-          </VStack>
-        </HStack>
-        <Divider my={10} mx={1} />
-      </Button>
-    </Box>
+                </Button> */}
+            </>
+          )}
+        </VStack>
+      </HStack>
+      <Divider my={10} mx={1} />
+    </TouchableOpacity>
   );
 };
 

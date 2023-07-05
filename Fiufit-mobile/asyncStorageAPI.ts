@@ -25,6 +25,7 @@ export type userInfo = {
   UserMetadata?: UserMetadata | null,
   multimedia?: any
   pushToken?: string
+  trainingSessionsCompleted?: number
 }
 
 

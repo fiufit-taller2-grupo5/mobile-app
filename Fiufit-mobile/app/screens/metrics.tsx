@@ -1,36 +1,12 @@
-import { Box, Text, View, NativeBaseProvider, Button, Image, Select } from 'native-base';
-import { editProfileStyles } from '../styles';
-import { BarChart, ProgressChart } from "react-native-chart-kit";
-import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
+import { Text, View, NativeBaseProvider, Select } from 'native-base';
+import { BarChart } from "react-native-chart-kit";
 import React, { useEffect, useState } from 'react';
-import globalUser from '../../userStorage';
 import { LoadableButton } from '../components/commons/buttons';
-import TrainingsList, { EmptyListComponent } from '../components/trainings/trainingsList';
-import { API } from '../../api';
-import { userInfo } from '../../asyncStorageAPI';
-import { MaterialIcons } from "@expo/vector-icons";
-import { collection, query, where, getDocs, addDoc, getDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
-import { FollowButton } from '../components/users/followButton';
-import { ScrollView } from 'react-native';
-import { RefreshControl, Dimensions } from 'react-native';
+import { API, TimeInterval } from '../../api';
+import { Dimensions } from 'react-native';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-
-const Tab = createMaterialTopTabNavigator();
-
-export default function MyTabs() {
-  return (
-    <Tab.Navigator
-      screenOptions={{
-        tabBarIndicatorStyle: { backgroundColor: '#ff6060' },
-      }}>
-      <Tab.Screen name="Home" component={MetricsScreen} />
-      <Tab.Screen name="Settings" component={GoalsScreen} />
-    </Tab.Navigator>
-  );
-}
+import { MaterialIcons } from "@expo/vector-icons";
+import { EmptyListComponent } from '../components/trainings/emptyListComponent';
 
 
 interface Props {
@@ -38,22 +14,19 @@ interface Props {
   route: any;
 }
 
-export function GoalsScreen(props: Props) {
-  return <View><Text>hola</Text></View>;
-}
-
-export function MetricsScreen(props: Props) {
+export default function MetricsScreen(props: Props) {
 
   const api = new API(props.navigation);
 
-  const data = {
-    labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun"],
+  const [dataIndex, setDataIndex] = useState(0);
+  const [allData, setAllData] = useState<any>({
+    labels: [],
     datasets: [
       {
-        data: [22, 45, 28, 80, 300, 43]
+        data: []
       }
     ]
-  };
+  });
 
   const [chartData, setChartData] = useState<any>({
     labels: [],
@@ -64,48 +37,102 @@ export function MetricsScreen(props: Props) {
     ]
   });
 
+  const aWeekAgo = new Date();
+  aWeekAgo.setDate(aWeekAgo.getDate() - 7);
+  const [startDate, setStartDate] = useState(aWeekAgo);
+  const [endDate, setEndDate] = useState(new Date());
+  const [groupBy, setGroupBy] = useState<TimeInterval>("day");
+  const [metric, setMetric] = useState<"steps" | "calories" | "distance">("steps");
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-
-    // setChartData(data);
-  }, []);
-
-  const [startDate, setStartDate] = useState(new Date());
-
-
-  const onDateChange = (event: any, selectedDate: any) => {
-    const currentDate = selectedDate;
-    setStartDate(currentDate);
-    DateTimePickerAndroid.dismiss('date');
-  };
-
-  const showMode = (currentMode: any) => {
+  const showDatepicker = async (current: Date, setNewDate: any) => {
     DateTimePickerAndroid.open({
-      value: new Date(),
-      onChange: onDateChange,
-      mode: currentMode,
+      value: current,
+      onChange: (event, selectedDate) => {
+        setNewDate(selectedDate);
+        DateTimePickerAndroid.dismiss('date');
+      },
+      mode: "date",
       is24Hour: true,
     });
   };
 
-  const showDatepicker = async () => {
-    showMode('date');
-  };
+  const getMetrics = async () => {
+    setRefreshing(true);
+    startDate.setHours(0, 0, 0, 0);
+    endDate.setHours(23, 59, 59, 999);
+    const metrics = await api.getMetrics(startDate.toISOString(), endDate.toISOString(), groupBy);
+    setAllData({
+      labels: metrics.label,
+      datasets: [
+        {
+          data: metrics[metric].map((m: number) => m.toFixed(1))
+        }
+      ]
+    });
+    let initialData = {
+      labels: metrics.label.slice(0, 5),
+      datasets: [
+        {
+          data: metrics[metric].map((m: number) => m.toFixed(1)).slice(0, 5)
+        }
+      ]
+    }
+
+    setDataIndex(0);
+    setChartData(initialData);
+    setRefreshing(false);
+  }
 
   useEffect(() => {
-    // const getMetrics = async () => {
-    //   const start = new Date();
-    //   start.setMonth(start.getMonth() - 1);
-    //   const metrics = await api.getMetrics(start.toISOString(), (new Date()).toISOString(), "day");
-    //   console.log(metrics);
-    // }
+    getMetrics();
+  }, [startDate, endDate, groupBy, metric]);
 
-    // getMetrics();
-  }, []);
+  const nextData = async () => {
+    if (dataIndex + 5 < allData.labels.length) {
+      setDataIndex(dataIndex + 5);
+      let newData = {
+        labels: allData.labels.slice(dataIndex + 5, dataIndex + 10),
+        datasets: [
+          {
+            data: allData.datasets[0].data.slice(dataIndex + 5, dataIndex + 10)
+          }
+        ]
+      }
+      setChartData(newData);
+    }
+  }
+
+  const prevData = async () => {
+    if (dataIndex - 5 >= 0) {
+      setDataIndex(dataIndex - 5);
+      let newData = {
+        labels: allData.labels.slice(dataIndex - 5, dataIndex),
+        datasets: [
+          {
+            data: allData.datasets[0].data.slice(dataIndex - 5, dataIndex)
+          }
+        ]
+      }
+      setChartData(newData);
+    }
+  }
+
+  const metricSuffix = (metric: string): string => {
+    switch (metric) {
+      case "steps":
+        return "pasos";
+      case "distance":
+        return "km";
+      case "calories":
+        return "kcal";
+    }
+    return "";
+  }
 
   return <NativeBaseProvider><View style={{ flex: 1 }} backgroundColor="#fff">
     <View flex={1} justifyContent="center">
-      <View flex={1} justifyContent="space-evenly">
+      <View flex={1} justifyContent="space-evenly" marginTop={8}>
         <View flexDirection="row" alignItems={"center"} justifyContent="center">
           <Text bold fontSize={15} width={100}>Fecha inicio</Text>
           <LoadableButton
@@ -115,8 +142,8 @@ export function MetricsScreen(props: Props) {
               borderWidth: 1,
             }}
             textColor={"#FF6060"}
-            text={"elegir fecha inicio"}
-            onPress={showDatepicker}
+            text={!startDate ? "elegir fecha inicio" : startDate.toLocaleDateString('es-ES')}
+            onPress={async () => { await showDatepicker(startDate, setStartDate) }}
           />
         </View>
         <View flexDirection="row" alignItems={"center"} justifyContent="center">
@@ -128,56 +155,144 @@ export function MetricsScreen(props: Props) {
               borderWidth: 1,
             }}
             textColor={"#FF6060"}
-            text={"elegir fecha inicio"}
-            onPress={showDatepicker}
+            text={!endDate ? "elegir fecha fin" : endDate.toLocaleDateString('es-ES')}
+            onPress={async () => { await showDatepicker(endDate, setEndDate) }}
           />
         </View>
         <View flexDirection="row" alignItems={"center"} justifyContent="center">
           <Text bold fontSize={15} width={100}>Agrupar por </Text>
           <Select
             fontSize={15}
-            selectedValue={"Día"}
+            selectedValue={groupBy}
             marginLeft={5}
             minWidth={200}
-            accessibilityLabel="año / mes / semana / día"
-            placeholder="Día"
-            defaultValue='day'
+            accessibilityLabel="pasos / distancia / calorías"
+            placeholder="Año"
+            defaultValue='year'
             _selectedItem={{ bg: "#FF6060" }}
-            onValueChange={newRole => null}>
+            onValueChange={(itemValue: any) => setGroupBy(itemValue)}>
             <Select.Item label="Año" value="year" />
             <Select.Item label="Mes" value="month" />
             <Select.Item label="Semana" value="week" />
             <Select.Item label="Día" value="day" />
           </Select>
         </View>
+        <View flexDirection="row" alignItems={"center"} justifyContent="center">
+          <Text bold fontSize={15} width={100}>Métrica</Text>
+          <Select
+            fontSize={15}
+            selectedValue={metric}
+            marginLeft={5}
+            minWidth={200}
+            accessibilityLabel="pasos / distancia / calorías"
+            placeholder="Pasos"
+            defaultValue='steps'
+            _selectedItem={{ bg: "#FF6060" }}
+            onValueChange={(itemValue: any) => setMetric(itemValue)}>
+            <Select.Item label="Pasos" value="steps" />
+            <Select.Item label="Distancia" value="distance" />
+            <Select.Item label="Calorías" value="calories" />
+          </Select>
+        </View>
+        <View flexDirection="row" justifyContent="space-between" marginX={12} marginTop={2}>
+          <View flexDirection="row" >
+            <LoadableButton
+              customStyles={{
+                borderRadius: 50,
+                backgroundColor: "#ffffff",
+                width: 40,
+                height: 40,
+                justifyContent: "center",
+                alignItems: "center",
+                paddingLeft: 5,
+                paddingBottom: 0,
+                marginRight: 5
+              }}
+              text={
+                <View >
+                  <MaterialIcons name="arrow-back" size={30} color="#ff6060" />
+                </View>
+              }
+              hideTextWhileLoading
+
+              onPress={prevData}
+            />
+            <LoadableButton
+              customStyles={{
+                borderRadius: 50,
+                backgroundColor: "#ffffff",
+                width: 40,
+                height: 40,
+                justifyContent: "center",
+                alignItems: "center",
+                paddingLeft: 5,
+                paddingBottom: 0,
+              }}
+              text={
+                <View >
+                  <MaterialIcons name="arrow-forward" size={30} color="#ff6060" />
+                </View>
+              }
+              hideTextWhileLoading
+
+              onPress={nextData}
+            />
+          </View>
+          <LoadableButton
+            customStyles={{
+              width: 40,
+              height: 40,
+              justifyContent: "center",
+              alignItems: "center",
+              margin: 0,
+              padding: 0,
+              paddingBottom: 0,
+              paddingLeft: 5,
+
+            }}
+            spinnerProps={{
+              paddingLeft: 2,
+              paddingBottom: 2,
+              size: 30
+            }}
+            text={
+              <View flex={1} justifyContent="center" alignItems={"center"}>
+                <MaterialIcons name="refresh" size={30} color="#fff" />
+              </View>
+            }
+            hideTextWhileLoading
+            overrideLoading={refreshing}
+            onPress={getMetrics}
+          />
+        </View>
       </View>
-      <View flex={2} justifyContent="flex-end" >
+      <View height={430} justifyContent="flex-end" >
         {chartData.datasets[0].data.length === 0 &&
-          <View height={450} borderColor="#FF6060" borderWidth={2} margin={10} borderRadius={15} justifyContent="center">
-            <EmptyListComponent text='No hay métricas disponibles todavía' />
+          <View height={380} borderColor="#FF6060" borderWidth={2} margin={10} borderRadius={15} justifyContent="center">
+            <EmptyListComponent text='No hay métricas disponibles todavía.' />
           </View>
         }
         {chartData.datasets[0].data.length > 0 &&
+
           <BarChart
             style={{
               marginVertical: 8,
               marginLeft: 10,
-              marginRight: 8,
               borderRadius: 15,
-              paddingTop: 60,
+              paddingTop: 30,
               paddingBottom: 5,
             }}
             fromZero
             showValuesOnTopOfBars
             withInnerLines
             data={chartData}
-            xLabelsOffset={10}
-            yLabelsOffset={10}
+            xLabelsOffset={5}
+            yLabelsOffset={-6}
             showBarTops={true}
             width={Dimensions.get("window").width - 20}
-            height={450}
+            height={400}
             yAxisLabel=""
-            yAxisSuffix=' km'
+            yAxisSuffix={` ${metricSuffix(metric)}`}
             chartConfig={{
               backgroundColor: "#ff6060",
               backgroundGradientFrom: "#ff8080",

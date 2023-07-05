@@ -41,13 +41,13 @@ export default function GoalForm(props: Props) {
         setGoalDescription={setGoalDescription} />
       <Text
         style={[createGoalsStyles.text, createGoalsStyles.descriptionText]}
-      >Tipo</Text>
+      >Métrica</Text>
       <GoalTypeInput
         goalType={goalType}
         setGoalType={setGoalType} />
       <Text
         style={[createGoalsStyles.text, createGoalsStyles.descriptionText]}
-      >Metrica</Text>
+      >Objetivo</Text>
       <GoalMetricInput
         goalMetric={goalMetric}
         setGoalMetric={setGoalMetric}

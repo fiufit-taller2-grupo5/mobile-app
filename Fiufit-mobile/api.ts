@@ -103,7 +103,7 @@ export class API {
         "Authorization": "Bearer " + accessToken,
         ...fetchConfig.headers,
       }
-      const localUrl = "https://c075-190-18-10-180.ngrok-free.app/" + path;
+      const localUrl = "https://1c3d-190-18-10-180.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       // const url = prod;
@@ -130,10 +130,13 @@ export class API {
           return await this.fetchFromApi(path, newFetchConfig, onSuccess, onError);
         } else {
           console.error("error in request: ", responseJson);
-          if (response.status === 403) {
+          if (response.status === 403 && this.navigation) {
             this.navigation.navigate("WelcomeScreen");
           }
-          const error = new ApiError(responseJson.message, response.status);
+          let error = new ApiError(responseJson.message, response.status);
+          if (!responseJson.message && responseJson.detail) {
+            error = new ApiError(responseJson.detail, 400);
+          }
           return onError(error);
         }
       }
@@ -536,13 +539,26 @@ export class API {
     );
   }
 
+  async achieveGoal(goalId: number): Promise<void> {
+    return await this.fetchFromApi(
+      "training-service/api/trainings/goals/" + goalId + "/achieve",
+      { method: "POST" },
+      (response: any) => {
+        console.log("goal achieved");
+      },
+      (error: ApiError) => {
+        console.log("error achieving goal:", error);
+      }
+    );
+  }
+
   async getUserGoals(userId?: number): Promise<AthleteGoal[]> {
     const user = await getUserFromStorage();
     if (!userId) {
       userId = user?.id;
     }
     return await this.fetchFromApi(
-      "training-service/api/goals/" + userId,
+      "training-service/api/trainings/goals/" + userId,
       { method: "GET" },
       (response: AthleteGoal[]) => response,
       (error: ApiError) => {
@@ -553,8 +569,10 @@ export class API {
   }
 
   async addGoal(goal: Goal): Promise<number> {
+    const user = await getUserFromStorage();
+    const userId = user?.id;
     return await this.fetchFromApi(
-      "training-service/api/goals/",
+      "training-service/api/trainings/goals/" + userId,
       {
         method: "POST",
         body: JSON.stringify(goal),
@@ -583,15 +601,16 @@ export class API {
       name: name,
     } as any);
     return await this.fetchFromApi(
-      "training-service/api/goals/" + goalId + "/image",
+      "training-service/api/trainings/goals/" + goalId + "/multimedia",
       {
-        method: "PUT",
+        method: "POST",
         body: formData,
         headers: {
           'Content-Type': 'multipart/form-data',
         }
       },
       (response: any) => {
+        console.log("la url de multimedia es: ", image)
         console.log("image added");
       },
       (error: ApiError) => {
@@ -602,10 +621,8 @@ export class API {
   }
 
   async deleteGoal(goalId: number): Promise<boolean> {
-    const user = await getUserFromStorage();
-    const userId = user?.id;
     return await this.fetchFromApi(
-      "training-service/api/goals/" + goalId + '/' + userId,
+      "training-service/api/trainings/goals/" + goalId,
       { method: "DELETE" },
       (response: any) => {
         console.log("goal deleted");
@@ -620,7 +637,7 @@ export class API {
 
   async updateGoal(goal: Goal, goalId: number): Promise<void> {
     return await this.fetchFromApi(
-      "training-service/api/goals/" + goalId,
+      "training-service/api/trainings/goals/" + goalId,
       {
         method: "PUT",
         body: JSON.stringify(goal),
@@ -841,26 +858,31 @@ export class API {
       })
   }
 
-  // async getMetrics(start: string, end: string, interval: TimeInterval): Promise<MetricItem[]> {
-  //   const user = await getUserFromStorage();
-  //   const userId = user?.id;
-  //   const url = "training-service/api/trainings/user_training/" + userId + "/between_dates/group_by/" + interval;
-  //   return await this.fetchFromApi(
-  //     url,
-  //     {
-  //       method: "GET",
-  //       body: JSON.stringify({ start: start, end: end }),
-  //     },
-  //     (response: MetricItem[]) => {
-  //       console.log("metrics:", response[0]);
-  //       return response
-  //     },
-  //     (error: ApiError) => {
-  //       console.log("error getting metrics:", error);
-  //       return [];
-  //     }
-  //   );
-  // }
+  async getMetrics(start: string, end: string, interval: TimeInterval): Promise<Metrics> {
+
+    const user = await getUserFromStorage();
+    const userId = user?.id;
+    const url = "training-service/api/trainings/user_training/" + userId + "/between_dates/group_by/" + interval;
+    return await this.fetchFromApi(
+      url,
+      {
+        method: "POST",
+        body: JSON.stringify({ start: start, end: end }),
+      },
+      (response: Metrics) => {
+        return response
+      },
+      (error: ApiError) => {
+        console.log("error getting metrics:", error);
+        return {
+          label: [],
+          steps: [],
+          distance: [],
+          calories: [],
+        };
+      }
+    );
+  }
 
   async sendPushNotification(userId: number, title: string, body: string): Promise<void> {
     return await this.fetchFromApi(
@@ -877,13 +899,58 @@ export class API {
       }
     );
   }
+
+  async getUserNotifications(userId: number): Promise<Notification[]> {
+    return await this.fetchFromApi(
+      "user-service/api/users/" + userId + "/notifications",
+      { method: "GET" },
+      (response: Notification[]) => {
+        console.log("notifications:", response);
+        return response
+      },
+      (error: ApiError) => {
+        console.log("error getting notifications:", error);
+        return [];
+      }
+    );
+  }
+
+  async getTrainingSessionsQuantity(userId: number): Promise<number> {
+    return await this.fetchFromApi(
+      "training-service/api/trainings/user_training/" + userId + "/count",
+      { method: "GET" },
+      (response: number) => {
+        console.log("training sessions quantity:", response, "for user:", userId);
+        return response
+      },
+      (error: ApiError) => {
+        console.log("error getting training sessions quantity:", error);
+        return 0;
+      }
+    );
+  }
+}
+
+export type TimeInterval = "year" | "month" | "week" | "day";
+
+interface Metrics {
+  label: string[],
+  steps: number[],
+  distance: number[],
+  calories: number[],
+}
+
+export interface Notification {
+  id: number,
+  title: string,
+  body: string,
+  userId: number,
+  date: string,
 }
 
 
-
-
 export const apiGatewayHealthCheck = async (timestamp: string): Promise<boolean> => {
-  const url = "https://api-gateway-prod-szwtomas.cloud.okteto.net/health/" + timestamp;
+  const url = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/health/" + timestamp;
   try {
     const response = await fetch(url, {
       method: "GET",
@@ -900,3 +967,4 @@ export const apiGatewayHealthCheck = async (timestamp: string): Promise<boolean>
   }
   return false;
 }
+

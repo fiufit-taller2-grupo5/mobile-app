@@ -6,7 +6,6 @@ import { View } from "native-base";
 import { LoadableButton } from "../commons/buttons";
 
 export const ShareButton = (props: { title: string, message: string, styles?: StyleProp<ViewStyle> }) => {
-    // this circular red button calls share() function with the given title and message and uses native-base library
     const styles = StyleSheet.flatten(props.styles);
     return <LoadableButton
         customStyles={{

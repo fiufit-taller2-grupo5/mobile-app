@@ -8,42 +8,42 @@ import Body from '../components/welcome/body';
 import { View, Text, Button } from 'native-base';
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
-import { apiGatewayHealthCheck } from '../../api';
+import { API, apiGatewayHealthCheck } from '../../api';
 import { ActivityIndicator } from 'react-native';
-import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
+import GoogleFit, { Scopes } from 'react-native-google-fit'
 import * as LocalAuthentication from 'expo-local-authentication';
 import globalUser from '../../userStorage';
-import InboxNotifications from '../components/inbox/inboxNotifications';
+import { authorizeAndGetGoogleFitStepsCaloriesAndDistance } from './profile';
 export const BACKGROUND_FETCH_TASK = 'background-fetch';
 
 
 TaskManager.defineTask(BACKGROUND_FETCH_TASK, async (data) => {
-  console.log(data)
-  const now = Date.now();
-  console.log(`Got background fetch call at date: ${new Date(now).toISOString()}`);
-  //apiGatewayHealthCheck(new Date(now).toISOString())
-  if (!GoogleFit.isAuthorized) {
-    const allScopes: string[] = Object.values(Scopes);
-    const options = {
-      scopes: allScopes as Scopes[],
+  const api = new API(null);
+  console.log(`Got background fetch call at: ${new Date().toISOString()}`);
+
+  const { steps, calories, distance } = await authorizeAndGetGoogleFitStepsCaloriesAndDistance();
+  const userGoals = await api.getUserGoals();
+
+  userGoals.forEach(async (goal) => {
+    // falta checquear si ya fue achieved hoy
+    if (goal.type === "Pasos") {
+      if (goal.metric <= steps) {
+        // await api.sendPushNotification(globalUser.user?.id || 0, `¡Felicitaciones! Alcanzaste tu meta ${goal.title}`, `Llegaste a la meta de ${goal.metric} pasos diarios`);
+        // await api.achieveGoal(goal.id);
+      }
+    } else if (goal.type === "Calorias") {
+      if (goal.metric <= calories) {
+        // await api.sendPushNotification(globalUser.user?.id || 0, `¡Felicitaciones! Alcanzaste tu meta ${goal.title}`, `Llegaste a la meta de ${goal.metric} calorías diarias`);
+        // await api.achieveGoal(goal.id);
+      }
+    } else if (goal.type === "Distancia") {
+      if (goal.metric <= distance) {
+        // await api.sendPushNotification(globalUser.user?.id || 0, `¡Felicitaciones! Alcanzaste tu meta ${goal.title}`, `Llegaste a la meta de ${goal.metric} metros diarios`);
+        // await api.achieveGoal(goal.id);
+      }
     }
-    GoogleFit.authorize(options)
-      .then(async authResult => {
-        if (authResult.success) {
-          console.log("AUTH_SUCCESS");
-          let res = await GoogleFit.getDailySteps();
-          console.log(res);
-        } else {
-          console.log("AUTH_DENIED", authResult.message);
-        }
-      })
-      .catch(() => {
-        console.log("AUTH_ERROR");
-      })
-  } else {
-    let res = await GoogleFit.getDailySteps();
-    console.log(res);
-  }
+  })
+
   return BackgroundFetch.BackgroundFetchResult.NewData;
 });
 
@@ -58,28 +58,7 @@ async function unregisterBackgroundFetchAsync() {
   return BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
 }
 
-export const BackgroundFetchData = () => {
-  const [isRegistered, setIsRegistered] = React.useState(false);
-  const [status, setStatus] = React.useState<BackgroundFetch.BackgroundFetchStatus | null>(null);
-
-
-  const checkStatusAsync = async () => {
-    const status = await BackgroundFetch.getStatusAsync();
-    const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_FETCH_TASK);
-    setStatus(status);
-    setIsRegistered(isRegistered);
-  };
-
-  const toggleFetchTask = async () => {
-    if (isRegistered) {
-      await unregisterBackgroundFetchAsync();
-    } else {
-      await registerBackgroundFetchAsync();
-    }
-
-    checkStatusAsync();
-  };
-
+export const BackgroundFetchData = ({ navigation }: any) => {
   React.useEffect(() => {
     try {
       registerBackgroundFetchAsync();
@@ -90,28 +69,7 @@ export const BackgroundFetchData = () => {
   }, []);
 
   return (
-    <View>
-      <Text>
-        Background fetch status:{' '}
-        <Text>
-          {status && BackgroundFetch.BackgroundFetchStatus[status]}
-        </Text>
-      </Text>
-      <Text>
-        Background fetch task name:{' '}
-        <Text>
-          {isRegistered ? BACKGROUND_FETCH_TASK : 'Not registered yet!'}
-        </Text>
-      </Text>
-      <View></View>
-      <Button
-        onPress={toggleFetchTask}
-      >
-        <Text>
-          {isRegistered ? 'Unregister BackgroundFetch task' : 'Register BackgroundFetch task'}
-        </Text>
-      </Button>
-    </View>
+    null
   );
 }
 
@@ -189,7 +147,7 @@ export default function WelcomeScreen({ navigation }: NativeStackScreenProps<any
 
   return <SafeAreaProvider>
     <NativeBaseProvider theme={theme}>
-      <BackgroundFetchData />
+      <BackgroundFetchData navigation={navigation} />
       <VStack
         space={6}
         style={[welcomeStyles.mainVerticalStack]}

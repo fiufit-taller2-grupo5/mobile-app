@@ -36,6 +36,7 @@ import UserTrainingsScreen from './app/screens/userTrainings';
 import GoalInfoScreen from './app/screens/goalInfo';
 import CreateGoalScreen from './app/screens/createGoal';
 import EditGoalScreen from './app/screens/editGoal';
+import SettingsScreen from './app/screens/settings';
 
 const Stack = createNativeStackNavigator();
 
@@ -131,11 +132,14 @@ export default function App() {
             name="TrainingSessionScreen"
             component={TrainingSessionScreen} />
           <Stack.Screen
+            name="Settings"
+            component={SettingsScreen} />
+          <Stack.Screen
             name="CountdownTimerScreen"
             component={CountdownTimerScreen} />
           <Stack.Screen
             name="MapScreen"
-            component={MapScreen}/>
+            component={MapScreen} />
           <Stack.Screen
             name="UserTrainingsScreen"
             component={UserTrainingsScreen} />

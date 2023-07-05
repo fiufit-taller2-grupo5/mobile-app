@@ -10,6 +10,8 @@ interface Props {
   textColor?: string;
   overrideLoading?: boolean;
   hideTextWhileLoading?: boolean;
+  spinnerProps?: any;
+  loaderColor?: string;
 }
 
 const baseStyles = StyleSheet.create({
@@ -35,7 +37,7 @@ const baseStyles = StyleSheet.create({
   },
 });
 
-export const LoadableButton = ({ text, customStyles, textColor, overrideLoading, hideTextWhileLoading, onPress }: Props) => {
+export const LoadableButton = ({ text, customStyles, textColor, overrideLoading, loaderColor, hideTextWhileLoading, spinnerProps, onPress }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
 
@@ -68,11 +70,18 @@ export const LoadableButton = ({ text, customStyles, textColor, overrideLoading,
 
   return (
     <>
-      <NativeBaseButton onPress={(e) => handleClick(e)} style={styles}>
+      <NativeBaseButton disabled={isLoading} onPress={(e) => handleClick(e)} style={styles}>
         <View flexGrow={1} justifyContent={"space-around"} flexDirection={"row"} >
-          <View width={"100%"} flexGrow={1} justifyContent={"center"} flexDirection={"row"}  >
-            <Text color={textColor ? textColor : "#FFFFFF"} paddingTop={0} marginTop={-1} bold fontSize={"md"} marginRight={isLoading ? 3 : 0}>{(isLoading || overrideLoading) && hideTextWhileLoading ? "" : text}</Text>
-            {(isLoading || overrideLoading) && <Spinner color={textColor ? textColor : "#FFFFFF"} />}
+          <View width={"100%"} flexGrow={1} justifyContent={"center"} flexDirection={"row"} >
+            {(isLoading || overrideLoading) && hideTextWhileLoading ? null : <Text
+              color={textColor ? textColor : "#FFFFFF"}
+              paddingTop={0}
+              marginTop={-1}
+              bold
+              fontSize={!hideTextWhileLoading ? "md" : undefined}
+              marginRight={isLoading && !hideTextWhileLoading ? 3 : 0}
+            >{text}</Text>}
+            {(isLoading || overrideLoading) && <Spinner {...spinnerProps} color={loaderColor ? loaderColor : textColor ? textColor : "#FFFFFF"} />}
           </View>
         </View>
       </NativeBaseButton>

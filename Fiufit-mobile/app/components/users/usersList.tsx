@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   FlatList,
@@ -15,7 +15,7 @@ import { ActivityIndicator, RefreshControl } from "react-native";
 import { userInfo } from "../../../asyncStorageAPI";
 import { UserInfoCard } from "./userInfoCard";
 import globalUser from "../../../userStorage";
-import { EmptyListComponent } from "../trainings/trainingsList";
+import { EmptyListComponent } from "../trainings/emptyListComponent";
 
 interface Props {
   navigation: any;
@@ -39,23 +39,19 @@ export default function UsersList(props: Props) {
     setRefreshing(true);
     const user = await globalUser.getUser();
     if (useSelectedUsers && selectedUsers) {
-      console.log("SHOWING ONLY SELECTED USERS", selectedUsers);
-      console.log("china", user?.id);
       let followedUsers = await api.getFollowedUsers(user!.id);
       setUsers(selectedUsers);
       setFollowedUsers(followedUsers);
       setFilteredUsers(selectedUsers);
-      setRefreshing(false);
     } else if (!useSelectedUsers) {
       let allUsers = await api.getUsers();
       allUsers = allUsers.filter((item) => item.id !== user?.id);
       let followedUsers = await api.getFollowedUsers(user!.id);
-      console.log("SHOWING ALL USERS", allUsers)
       setUsers(allUsers);
       setFollowedUsers(followedUsers);
       setFilteredUsers(allUsers);
-      setRefreshing(false);
     }
+    setRefreshing(false);
   };
 
   useEffect(() => {
@@ -89,16 +85,16 @@ export default function UsersList(props: Props) {
     };
   }, [props]);
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      try {
-        getUsersList();
-      } catch (error) {
-        console.log(error);
-      }
-    });
-    return unsubscribe;
-  }, [navigation]);
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener("focus", () => {
+  //     try {
+  //       getUsersList();
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   });
+  //   return unsubscribe;
+  // }, [navigation]);
 
 
   const onFollow = async (userId: number) => {
@@ -110,7 +106,7 @@ export default function UsersList(props: Props) {
   };
 
   return (
-    <View flex={1} backgroundColor="#fff">
+    <View flex={1} backgroundColor="#fff" marginTop={2}>
       <VStack
         paddingY={2}
         paddingX={4}
@@ -157,7 +153,7 @@ export default function UsersList(props: Props) {
           data={filteredUsers}
           marginBottom={0}
           marginTop={0}
-          ListEmptyComponent={!refreshing ? <EmptyListComponent text={"No se encontraron usuarios"} /> : null}
+          ListEmptyComponent={!refreshing ? <EmptyListComponent text={"No se encontraron usuarios."} /> : null}
           renderItem={(user) => (
             <HStack>
               <UserInfoCard

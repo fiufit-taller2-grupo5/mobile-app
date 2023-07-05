@@ -25,7 +25,7 @@ import { RefreshControl } from 'react-native';
 import { UserTrainingInfoCard } from "./userTrainingInfoCard";
 import globalUser from '../../../userStorage';
 import { LoadableButton } from "../commons/buttons";
-import { EmptyListComponent } from "../trainings/trainingsList";
+import { EmptyListComponent } from "../trainings/emptyListComponent";
 
 
 interface Props {
@@ -86,7 +86,6 @@ export default function UserTrainingsList(props: Props) {
 
   useEffect(() => {
     getUserTrainingsList();
-    console.log("DATA:", filteredData);
   }, [])
 
 
@@ -159,11 +158,10 @@ export default function UserTrainingsList(props: Props) {
         </View>
       </VStack>
       {<FlatList
-        contentContainerStyle={{ flexGrow: 1 }}
         data={filteredData}
-        marginBottom={0}
-        marginTop={0}
-        ListEmptyComponent={!refreshing ? <EmptyListComponent text={"No se encontraron sesiones de entrenamientos"} /> : null}
+        // marginBottom={0}
+        // marginTop={0}
+        ListEmptyComponent={!refreshing ? <EmptyListComponent text={"No se encontraron sesiones de entrenamientos."} /> : null}
         renderItem={(userTraining) => (
           <UserTrainingInfoCard
             userTraining={userTraining.item}

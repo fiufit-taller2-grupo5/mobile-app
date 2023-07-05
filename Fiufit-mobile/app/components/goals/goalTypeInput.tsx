@@ -15,18 +15,18 @@ export default function GoalTypeInput(props: Props) {
       <Select
         selectedValue={goalType}
         minWidth="280"
-        accessibilityLabel="Elige un tipo"
-        placeholder="Elige un tipo" 
-        _selectedItem={{bg: "#FF6060"}}
+        accessibilityLabel="Elige una métrica"
+        placeholder="Elige un tipo de métrica"
+        _selectedItem={{ bg: "#FF6060" }}
         colorScheme={"red"}
         variant="underlined"
         placeholderTextColor={"#707070"}
         size={"md"}
         style={styles}
         onValueChange={newType => setGoalType(newType)}>
-        <Select.Item label="Pasos" value="Pasos"/>
-        <Select.Item label="Distancia" value="Distancia"/>
-        <Select.Item label="Calorias" value="Calorias"/>
+        <Select.Item label="Pasos" value="Pasos" />
+        <Select.Item label="Distancia" value="Distancia" />
+        <Select.Item label="Calorias" value="Calorias" />
       </Select>
     </View>
   )

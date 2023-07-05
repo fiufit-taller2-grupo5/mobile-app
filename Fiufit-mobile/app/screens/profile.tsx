@@ -15,6 +15,111 @@ import { FollowButton } from '../components/users/followButton';
 import { ScrollView } from 'react-native';
 import { RefreshControl } from 'react-native';
 
+export const authorizeAndGetGoogleFitStepsCaloriesAndDistance = async () => {
+
+  const dailyCalories = async (): Promise<number> => {
+    try {
+      const today = new Date(); // Current date and time
+      today.setHours(0, 0, 0, 0); // Set time to 00:00:00
+      const todayISOString = today.toISOString(); // Convert to ISO string
+      const opts = {
+        startDate: todayISOString,
+        endDate: new Date().toISOString(), // required ISO8601Timestamp
+        basalCalculation: true, // optional, to calculate or not basalAVG over the week
+      }
+      let res = await GoogleFit.getDailyCalorieSamples(opts);
+      if (res.length > 0) {
+        let estimated = res[0].calorie;
+        console.log(estimated);
+        return (estimated || 0);
+      }
+    } catch (err) {
+      console.log(err);
+      return 0;
+    }
+    return 0;
+  }
+
+  const dailyDistance = async (): Promise<number> => {
+    try {
+      const today = new Date(); // Current date and time
+      today.setHours(0, 0, 0, 0); // Set time to 00:00:00
+      const todayISOString = today.toISOString(); // Convert to ISO string
+
+      const opts = {
+        // today at 00:00:00 AM is startDAte
+        startDate: todayISOString,
+        endDate: new Date().toISOString(), // required ISO8601Timestamp
+        bucketUnit: BucketUnit.DAY, // required, DAY or HOUR
+        bucketInterval: 1, // required, 1 or 2 for HOUR bucketUnit or 1 - 24 for DAY bucketUnit
+      }
+      let res = await GoogleFit.getDailyDistanceSamples(opts);
+      if (res.length > 0) {
+        let estimated = res[0].distance
+        console.log(estimated);
+        return (estimated || 0);
+      }
+    } catch (err) {
+      console.log(err);
+      return 0;
+    }
+    return 0;
+  }
+
+  const dailySteps = async (): Promise<number> => {
+    try {
+      let res = await GoogleFit.getDailySteps();
+      let estimated = res.find(results => results.source === "com.google.android.gms:estimated_steps");
+      if (estimated?.steps[0] !== undefined) {
+        console.log(estimated?.steps[0].value);
+        return (estimated?.steps[0].value || 0);
+      }
+    } catch (err) {
+      console.log(err);
+      return 0;
+    }
+    return 0;
+  }
+
+
+  const getGoogleFitStepsCaloresAndDistance = async () => {
+    const steps = await dailySteps();
+    const calories = await dailyCalories();
+    const distance = await dailyDistance();
+    return { steps, calories, distance };
+  }
+
+  await GoogleFit.checkIsAuthorized();
+  console.log(GoogleFit.isAuthorized);
+
+  if (!GoogleFit.isAuthorized) {
+    const allScopes: string[] = Object.values(Scopes);
+    const options = {
+      scopes: allScopes as Scopes[],
+    }
+    GoogleFit.authorize(options)
+      .then(async authResult => {
+        if (authResult.success) {
+          console.log("AUTH_SUCCESS");
+          return await getGoogleFitStepsCaloresAndDistance();
+        } else {
+          console.log("AUTH_DENIED", authResult.message);
+        }
+      })
+      .catch(() => {
+        console.log("AUTH_ERROR");
+      })
+  } else {
+    return await getGoogleFitStepsCaloresAndDistance();
+  }
+
+  return {
+    steps: 0,
+    calories: 0,
+    distance: 0,
+  }
+}
+
 interface Props {
   navigation: any;
   route: any;
@@ -39,6 +144,7 @@ export default function ProfileScreen(props: Props) {
 
   const [user, setUser] = useState<userInfo | null>();
   const [role, setRole] = useState("Atleta");
+  const [refreshing, setRefreshing] = useState(false);
   const api = new API(navigation);
 
   const chartConfig = {
@@ -57,143 +163,64 @@ export default function ProfileScreen(props: Props) {
     data: [dailySteps / dailyStepsTarget, dailyDistance / dailyDistanceTarget, dailyCalories / dailyCaloriesTarget]
   };
 
+  const setGoogleFitData = async () => {
+    const { steps, calories, distance } = await authorizeAndGetGoogleFitStepsCaloriesAndDistance();
+    console.log("steps", steps, "calories", calories, "distance", distance);
+    setDailySteps(steps);
+    setDailyCalories(calories);
+    setDailyDistance(distance);
+  }
+
   useEffect(() => {
-    const updateDailyActivity = async () => {
-      updateDailySteps();
-      updateDailyDistance();
-      updateDailyCalories();
-    }
-
-    const updateDailyCalories = async () => {
-      try {
-        const today = new Date(); // Current date and time
-        today.setHours(0, 0, 0, 0); // Set time to 00:00:00
-        const todayISOString = today.toISOString(); // Convert to ISO string
-        const opts = {
-          startDate: todayISOString,
-          endDate: new Date().toISOString(), // required ISO8601Timestamp
-          basalCalculation: true, // optional, to calculate or not basalAVG over the week
-        }
-        let res = await GoogleFit.getDailyCalorieSamples(opts);
-        if (res.length > 0) {
-          let estimated = res[0].calorie;
-          console.log(estimated);
-          setDailyCalories(estimated || 0);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
-    const updateDailyDistance = async () => {
-      try {
-        const today = new Date(); // Current date and time
-        today.setHours(0, 0, 0, 0); // Set time to 00:00:00
-        const todayISOString = today.toISOString(); // Convert to ISO string
-
-        const opts = {
-          // today at 00:00:00 AM is startDAte
-          startDate: todayISOString,
-          endDate: new Date().toISOString(), // required ISO8601Timestamp
-          bucketUnit: BucketUnit.DAY, // required, DAY or HOUR
-          bucketInterval: 1, // required, 1 or 2 for HOUR bucketUnit or 1 - 24 for DAY bucketUnit
-        }
-        let res = await GoogleFit.getDailyDistanceSamples(opts);
-        if (res.length > 0) {
-          let estimated = res[0].distance
-          console.log(estimated);
-          setDailyDistance(estimated || 0);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
-    const updateDailySteps = async () => {
-      try {
-        let res = await GoogleFit.getDailySteps();
-        let estimated = res.find(results => results.source === "com.google.android.gms:estimated_steps");
-        if (estimated?.steps[0] !== undefined) {
-          console.log(estimated?.steps[0].value);
-          setDailySteps(estimated?.steps[0].value || 0);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
-    const testGoogleFit = async () => {
-      await GoogleFit.checkIsAuthorized();
-      console.log(GoogleFit.isAuthorized);
-
-      if (!GoogleFit.isAuthorized) {
-        const allScopes: string[] = Object.values(Scopes);
-        const options = {
-          scopes: allScopes as Scopes[],
-        }
-        GoogleFit.authorize(options)
-          .then(authResult => {
-            if (authResult.success) {
-
-              console.log("AUTH_SUCCESS");
-              updateDailyActivity();
-            } else {
-              console.log("AUTH_DENIED", authResult.message);
-            }
-          })
-          .catch(() => {
-            console.log("AUTH_ERROR");
-          })
-      } else {
-        updateDailyActivity();
-      }
-    }
-
     if (!userId) {
-      testGoogleFit();
+      setGoogleFitData();
     }
 
   }, []);
 
   const [name, setName] = useState("");
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      const api = new API(navigation);
-      const getUserInfo = async () => {
-        let user: userInfo | undefined | null;
-        if (userId) {
-          user = await api.getUserInfoById(userId);
-        } else {
-          user = await globalUser.getUser();
-          if (user && user.id) {
-            user = await api.getUserInfoById(user.id);
-          }
-        }
-        console.log("USER -----------:", user);
-        setUser(user);
-        if (user) {
-          setName(user.name);
-          if (user.multimedia && user.multimedia !== null && user.multimedia !== undefined && user.multimedia.length > 0) {
-            setImage(user.multimedia);
-          }
-          const trainingSessions = await api.getUserTrainingSessions(user.id);
-          setUserTrainingsCount(trainingSessions.length);
-          const followers = await api.getFollowers(user.id);
-          setFollowing(followers.find((follower) => follower.id === globalUser.user?.id) !== undefined);
-          setUserFollowersCount(followers.length);
-          const following = await api.getFollowedUsers(user.id);
-          setUserFollowingCount(following.length);
+  const getUserInfo = async () => {
+    setRefreshing(true);
+    try {
+      let user: userInfo | undefined | null;
+      if (userId) {
+        user = await api.getUserInfoById(userId);
+      } else {
+        user = await globalUser.getUser();
+        if (user && user.id) {
+          user = await api.getUserInfoById(user.id);
         }
       }
-      // if (user) {
-      //   setRole(user.role);
-      //   console.log("role: ", role);
-      // }
-      getUserInfo();
-    });
-    return unsubscribe;
-  }, [navigation]);
+      console.log("USER -----------:", user);
+      setUser(user);
+      if (user) {
+        setName(user.name);
+        if (user.multimedia && user.multimedia !== null && user.multimedia !== undefined && user.multimedia.length > 0) {
+          setImage(user.multimedia);
+        }
+        const trainingSessions = await api.getUserTrainingSessions(user.id);
+        setUserTrainingsCount(trainingSessions.length);
+        const followers = await api.getFollowers(user.id);
+        setFollowing(followers.find((follower) => follower.id === globalUser.user?.id) !== undefined);
+        setUserFollowersCount(followers.length);
+        const following = await api.getFollowedUsers(user.id);
+        setUserFollowingCount(following.length);
+        setGoogleFitData();
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setRefreshing(false);
+    }
+
+  }
+
+  useEffect(() => {
+
+    getUserInfo();
+
+  }, []);
 
   const onPressFollowers = () => {
     navigation.navigate("SelectedUsersScreen", { isFollowers: true, userId: user!.id });
@@ -267,6 +294,14 @@ export default function ProfileScreen(props: Props) {
     await api.unfollowUser(userId);
   };
 
+  // re fetch data when user navigates to this screen
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      getUserInfo();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
   console.log("the role", role);
 
   return <NativeBaseProvider><View style={{ flex: 1 }} backgroundColor="#fff">
@@ -274,30 +309,50 @@ export default function ProfileScreen(props: Props) {
       refreshControl={<RefreshControl refreshing={false} onRefresh={
         () => {
           setRefreshTrainingList(oldRefreshing => !oldRefreshing);
+          getUserInfo();
         }
       } />}
     >
       <Box style={editProfileStyles.nameBox}>
-        <Text style={editProfileStyles.text}>{name}</Text>
+        <View flexDirection={"row"} justifyContent="center">
+          {userId === undefined && <View flex={0.2} />}
+          <Text flex={1} style={editProfileStyles.text}>{!refreshing ? name : "Cargando..."}</Text>
+          {userId === undefined && <View paddingRight={4}><LoadableButton
+            customStyles={{
+              borderRadius: 50,
+              backgroundColor: "#ffffff",
+              width: 40,
+              height: 40,
+              justifyContent: "center",
+              alignItems: "center",
+              paddingLeft: 5,
+              paddingBottom: 0,
+            }}
+            text={
+              <View >
+                <MaterialIcons name="settings" size={30} color="#ff6060" />
+              </View>
+            }
+            hideTextWhileLoading
+            onPress={async () => { navigation.navigate("Settings"); }}
+          /></View>}
+        </View>
+
         <View
           alignItems={"center"}
           justifyContent="space-between"
           height={100}
-          margin={5}
+          margin={0}
         >
           <Image
-            source={(image !== null) ? { uri: image } : require("../../assets/images/user_logo.jpg")}
+            source={(!refreshing && image !== null) ? { uri: image } : require("../../assets/images/user_logo.jpg")}
             alt="image"
             size="lg"
             borderRadius={10}
           />
         </View>
         <View flexDirection={"row"} width={'100%'} justifyContent={"center"}>
-          {userId != undefined && <FollowButton
-            customStyles={{
-              borderColor: "#FF6060",
-              borderWidth: 1,
-            }}
+          {userId !== globalUser.user?.id && <FollowButton
             forceLoading={userFollowersCount === null}
             userId={userId}
             following={following}
@@ -305,7 +360,7 @@ export default function ProfileScreen(props: Props) {
             onUnfollow={() => onUnfollow(userId)}
             navigation={navigation}
           />}
-          {userId !== undefined && <Button
+          {userId !== globalUser.user?.id && <Button
             style={{
               bottom: 0,
               backgroundColor: "#fff",
@@ -323,7 +378,7 @@ export default function ProfileScreen(props: Props) {
               width: 120,
             }}
             hideTextWhileLoading
-            overrideLoading={userTrainingsCount === null}
+            overrideLoading={refreshing}
             onPress={async () => { navigation.navigate("UserTrainingsScreen"); }}
             text={
               <>
@@ -338,7 +393,7 @@ export default function ProfileScreen(props: Props) {
               marginRight: 5,
               marginLeft: 5
             }}
-            overrideLoading={userFollowersCount === null}
+            overrideLoading={refreshing}
             onPress={async () => { onPressFollowers() }}
             text={
               <>
@@ -349,7 +404,7 @@ export default function ProfileScreen(props: Props) {
           <LoadableButton
             hideTextWhileLoading
             customStyles={{ width: 120 }}
-            overrideLoading={userFollowingCount === null}
+            overrideLoading={refreshing}
             onPress={async () => { onPressFollowing() }}
             text={
               <>
@@ -383,5 +438,5 @@ export default function ProfileScreen(props: Props) {
       />
       }
     </ScrollView>
-  </View></NativeBaseProvider>;
+  </View></NativeBaseProvider >;
 }

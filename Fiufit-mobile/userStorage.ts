@@ -23,9 +23,17 @@ export class StoredUser {
     }
 
     async getUser() {
-        await this.verifyUserExists();
-        console.log("user stored:", this.user);
-        return this.user;
+        try {
+
+            await this.verifyUserExists();
+            console.log("user stored:", this.user);
+            return this.user;
+        } catch (e) {
+            console.log("error getting user:", e);
+            await auth.signOut();
+            await AsyncStorage.removeItem('@userInfo');
+            this.navigation.navigate("Welcome");
+        }
     }
 
     async getUserId() {
