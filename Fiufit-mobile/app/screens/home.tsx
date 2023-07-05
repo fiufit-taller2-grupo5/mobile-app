@@ -9,6 +9,7 @@ import MetricsScreen from './metrics';
 import RecommendationsScreen from './recommendationsScreen';
 import UsersScreen from './users';
 import InboxScreen from './inbox';
+import NotificationsScreen from './notifications';
 import TrainerTrainingsScreen from './trainerTrainings';
 import SettingsScreen from './settings';
 import * as Notifications from 'expo-notifications';
@@ -107,6 +108,16 @@ export default function HomeScreen({ navigation }: any) {
                 }
                 name="Metrics" component={MetricsScreen}
             />}
+            <Tab.Screen
+                name="NotificationsScreen" component={NotificationsScreen}
+                options={
+                    {
+                        tabBarLabel: 'Notifs', tabBarIcon: ({ color, size }) => (
+                            <FontAwesome5 name="bell" color={color} size={size} />),
+                        tabBarActiveTintColor: '#FF6060'
+                    }
+                }
+            />
             <Tab.Screen
                 name="Inbox" component={InboxScreen}
                 options={

@@ -900,6 +900,21 @@ export class API {
     );
   }
 
+  async getUserNotifications(userId: number): Promise<Notification[]> {
+    return await this.fetchFromApi(
+      "user-service/api/users/" + userId + "/notifications",
+      { method: "GET" },
+      (response: Notification[]) => {
+        console.log("notifications:", response);
+        return response
+      },
+      (error: ApiError) => {
+        console.log("error getting notifications:", error);
+        return [];
+      }
+    );
+  }
+
   async getTrainingSessionsQuantity(userId: number): Promise<number> {
     return await this.fetchFromApi(
       "training-service/api/trainings/user_training/" + userId + "/count",
@@ -923,6 +938,14 @@ interface Metrics {
   steps: number[],
   distance: number[],
   calories: number[],
+}
+
+export interface Notification {
+  id: number,
+  title: string,
+  body: string,
+  userId: number,
+  date: string,
 }
 
 
