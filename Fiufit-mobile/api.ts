@@ -130,7 +130,7 @@ export class API {
           return await this.fetchFromApi(path, newFetchConfig, onSuccess, onError);
         } else {
           console.error("error in request: ", responseJson);
-          if (response.status === 403) {
+          if (response.status === 403 && this.navigation) {
             this.navigation.navigate("WelcomeScreen");
           }
           const error = new ApiError(responseJson.message, response.status);
@@ -928,3 +928,4 @@ export const apiGatewayHealthCheck = async (timestamp: string): Promise<boolean>
   }
   return false;
 }
+

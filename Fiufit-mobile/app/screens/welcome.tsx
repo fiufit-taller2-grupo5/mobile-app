@@ -8,7 +8,7 @@ import Body from '../components/welcome/body';
 import { View, Text, Button } from 'native-base';
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
-import { apiGatewayHealthCheck } from '../../api';
+import { API, apiGatewayHealthCheck } from '../../api';
 import { ActivityIndicator } from 'react-native';
 import GoogleFit, { Scopes } from 'react-native-google-fit'
 import * as LocalAuthentication from 'expo-local-authentication';
@@ -18,8 +18,10 @@ export const BACKGROUND_FETCH_TASK = 'background-fetch';
 
 TaskManager.defineTask(BACKGROUND_FETCH_TASK, async (data) => {
   console.log(data)
+  const api = new API(null);
   const now = Date.now();
   console.log(`Got background fetch call at date: ${new Date(now).toISOString()}`);
+
   //apiGatewayHealthCheck(new Date(now).toISOString())
   if (!GoogleFit.isAuthorized) {
     const allScopes: string[] = Object.values(Scopes);
@@ -40,8 +42,40 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async (data) => {
         console.log("AUTH_ERROR");
       })
   } else {
-    let res = await GoogleFit.getDailySteps();
-    console.log(res);
+    try {
+      const userGoals = await api.getUserGoals();
+      let res = await GoogleFit.getDailySteps();
+      let steps = 0;
+      let estimated = res.find(results => results.source === "com.google.android.gms:estimated_steps");
+      if (estimated?.steps[0] !== undefined) {
+        console.log("actual steps:", estimated?.steps[0].value);
+        steps = estimated?.steps[0].value || 0;
+      }
+      let stepGoals = userGoals.find(goal => goal.type === "Pasos");
+      console.log("steps goals", stepGoals);
+      if (stepGoals) {
+        if (stepGoals.metric <= steps) {
+          console.log("sending");
+
+          await api.sendPushNotification(globalUser.user?.id || 0, "¡Felicitaciones! Has alcanzado tu meta de pasos diarios", `Llegaste a la meta de ${stepGoals.metric} pasos diarios`);
+          console.log("sent");
+          // await api.updateGoal({
+          //   title: stepGoals.title,
+          //   description: stepGoals.description,
+          //   type: stepGoals.type,
+          //   metric: stepGoals.metric,
+          //   achieved: true,
+          //   athleteId: stepGoals.athleteId,
+          // }, stepGoals.id);
+        }
+      }
+
+      console.log(res);
+
+    } catch (e) {
+      console.log("no user stored");
+      return;
+    }
   }
   return BackgroundFetch.BackgroundFetchResult.NewData;
 });
@@ -57,7 +91,7 @@ async function unregisterBackgroundFetchAsync() {
   return BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
 }
 
-export const BackgroundFetchData = () => {
+export const BackgroundFetchData = ({ navigation }: any) => {
   const [isRegistered, setIsRegistered] = React.useState(false);
   const [status, setStatus] = React.useState<BackgroundFetch.BackgroundFetchStatus | null>(null);
 
@@ -188,7 +222,7 @@ export default function WelcomeScreen({ navigation }: NativeStackScreenProps<any
 
   return <SafeAreaProvider>
     <NativeBaseProvider theme={theme}>
-      <BackgroundFetchData />
+      <BackgroundFetchData navigation={navigation} />
       <VStack
         space={6}
         style={[welcomeStyles.mainVerticalStack]}
