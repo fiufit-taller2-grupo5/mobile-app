@@ -558,7 +558,7 @@ export class API {
   async achieveGoal(goalId: number): Promise<void> {
     return await this.fetchFromApi(
       "training-service/api/trainings/goals/" + goalId + "/achieve",
-      { method: "POST" },
+      { method: "PUT" },
       (response: any) => {
         console.log("goal achieved");
       },
@@ -901,11 +901,12 @@ export class API {
   }
 
   async sendPushNotification(userId: number, title: string, body: string): Promise<void> {
+    const selfUserId = (await getUserFromStorage())!.id;
     return await this.fetchFromApi(
       "user-service/api/users/" + userId + "/notifications",
       {
         method: "POST",
-        body: JSON.stringify({ title: title, body: body })
+        body: JSON.stringify({ title: title, body: body, fromUserId: selfUserId })
       },
       (response: string) => {
         console.log("Push Notification sent, result:", response);
@@ -962,8 +963,23 @@ export interface Notification {
   body: string,
   userId: number,
   date: string,
+  fromUserId?: number,
+  sender?: {
+    id: number,
+    email: string,
+    name: string,
+    UserMetadata: {
+      multimedia: [
+        {
+          id: number,
+          url: string,
+          type: string,
+          userId: number,
+        }
+      ]
+    }
+  }
 }
-
 
 export const apiGatewayHealthCheck = async (timestamp: string): Promise<boolean> => {
   const url = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/health/" + timestamp;

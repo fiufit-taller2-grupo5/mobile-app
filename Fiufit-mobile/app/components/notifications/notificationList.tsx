@@ -2,17 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, View } from 'native-base';
 import { RefreshControl } from 'react-native';
 import globalUser from "../../../userStorage";
-import { db } from "../../../firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
 import { EmptyListComponent } from '../trainings/emptyListComponent';
 import { API, Notification } from '../../../api';
-import { NotificationInfoCard } from './inboxInfoCard';
+import { NotificationInfoCard } from './notificationInfoCard';
 
 interface Props {
     navigation: any;
 }
-
-
 
 export default function NotificationList(props: Props) {
     const { navigation } = props;
@@ -52,7 +48,7 @@ export default function NotificationList(props: Props) {
     return <View flex={1} backgroundColor="#fff">
         <View flex={1}>
             <FlatList
-                ListEmptyComponent={!refreshing ? <EmptyListComponent text={"no tienes ninguna notificación todavía."} /> : null}
+                ListEmptyComponent={!refreshing ? <EmptyListComponent text={"No tienes ninguna notificación."} /> : null}
                 contentContainerStyle={{ flexGrow: 1 }}
                 data={notifications}
                 marginBottom={0}
