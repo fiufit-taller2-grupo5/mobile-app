@@ -2,11 +2,11 @@ import { Text, View, NativeBaseProvider, Select } from 'native-base';
 import { BarChart } from "react-native-chart-kit";
 import React, { useEffect, useState } from 'react';
 import { LoadableButton } from '../components/commons/buttons';
-import { EmptyListComponent } from '../components/trainings/trainingsList';
 import { API, TimeInterval } from '../../api';
 import { Dimensions } from 'react-native';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { MaterialIcons } from "@expo/vector-icons";
+import { EmptyListComponent } from '../components/trainings/emptyListComponent';
 
 
 interface Props {

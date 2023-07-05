@@ -21,7 +21,7 @@ import FiveStars from "../rateTraining/fiveStars";
 import globalUser from '../../../userStorage';
 import { LoadableButton, LoadableLink } from "../commons/buttons";
 import { ShareButton } from "./shareButton";
-import { EmptyListComponent } from "./trainingsList";
+import { EmptyListComponent } from "./emptyListComponent";
 
 
 export const trainingMainImage = (training_type: any) => {

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   FlatList,
@@ -15,7 +15,7 @@ import { ActivityIndicator, RefreshControl } from "react-native";
 import { userInfo } from "../../../asyncStorageAPI";
 import { UserInfoCard } from "./userInfoCard";
 import globalUser from "../../../userStorage";
-import { EmptyListComponent } from "../trainings/trainingsList";
+import { EmptyListComponent } from "../trainings/emptyListComponent";
 
 interface Props {
   navigation: any;

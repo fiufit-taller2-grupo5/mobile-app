@@ -25,7 +25,7 @@ import { RefreshControl } from 'react-native';
 import { UserTrainingInfoCard } from "./userTrainingInfoCard";
 import globalUser from '../../../userStorage';
 import { LoadableButton } from "../commons/buttons";
-import { EmptyListComponent } from "../trainings/trainingsList";
+import { EmptyListComponent } from "../trainings/emptyListComponent";
 
 
 interface Props {

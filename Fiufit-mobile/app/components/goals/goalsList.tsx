@@ -10,7 +10,7 @@ import {
 import { RefreshControl } from 'react-native';
 import { GoalsInfoCard } from "./goalsInfoCard";
 import { LoadableButton } from "../commons/buttons";
-import { EmptyListComponent } from "../trainings/trainingsList";
+import { EmptyListComponent } from "../trainings/emptyListComponent";
 
 interface Props {
   navigation: any;

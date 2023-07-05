@@ -539,6 +539,19 @@ export class API {
     );
   }
 
+  async achieveGoal(goalId: number): Promise<void> {
+    return await this.fetchFromApi(
+      "training-service/api/trainings/goals/" + goalId + "/achieve",
+      { method: "POST" },
+      (response: any) => {
+        console.log("goal achieved");
+      },
+      (error: ApiError) => {
+        console.log("error achieving goal:", error);
+      }
+    );
+  }
+
   async getUserGoals(userId?: number): Promise<AthleteGoal[]> {
     const user = await getUserFromStorage();
     if (!userId) {

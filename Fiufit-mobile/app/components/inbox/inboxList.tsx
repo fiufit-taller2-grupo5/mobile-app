@@ -5,7 +5,7 @@ import { InboxInfoCard } from "./inboxInfoCard";
 import globalUser from "../../../userStorage";
 import { db } from "../../../firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { EmptyListComponent } from '../trainings/trainingsList';
+import { EmptyListComponent } from '../trainings/emptyListComponent';
 
 interface Props {
     navigation: any;
