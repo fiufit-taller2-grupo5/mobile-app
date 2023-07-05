@@ -59,13 +59,13 @@ export default function GoalCard(props: Props) {
             </HStack>
             <HStack alignItems="center" space={4} justifyContent="space-between">
               <HStack alignItems="center">
-                <Text fontWeight={"bold"}>Tipo: </Text>
+                <Text fontWeight={"bold"}>Métrica: </Text>
                 <Text>{goalData.type}</Text>
               </HStack>
             </HStack>
             <HStack alignItems="center" space={4} justifyContent="space-between">
               <HStack alignItems="center">
-                <Text fontWeight={"bold"}>Metrica: </Text>
+                <Text fontWeight={"bold"}>Objetivo: </Text>
                 <Text>{goalData.metric}</Text>
               </HStack>
             </HStack>
@@ -73,19 +73,20 @@ export default function GoalCard(props: Props) {
               <HStack alignItems="center">
                 <Text fontWeight={"bold"}>Descripción: </Text>
                 <Text>{goalData.description}</Text>
-                </HStack>
+              </HStack>
             </HStack>
           </Stack>
-            <Button style={{
-              backgroundColor: "#FF6060",
-              width: "50%",
-              borderRadius: 30,
-              left: "22%",
-              bottom: "2%"
-            }}
-              onPress={() => navigation.navigate("EditGoalScreen", { goalData: goalData })}
-            >
-              Editar meta
+          <Button style={{
+            backgroundColor: "#FF6060",
+            width: "50%",
+            borderRadius: 30,
+            left: "22%",
+            bottom: "2%",
+            marginTop: 10,
+          }}
+            onPress={() => navigation.navigate("EditGoalScreen", { goalData: goalData })}
+          >
+            Editar meta
           </Button>
         </Box>
       </ScrollView>

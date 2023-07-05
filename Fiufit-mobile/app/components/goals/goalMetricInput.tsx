@@ -1,4 +1,4 @@
-import { View, Select } from "native-base";
+import { View, Select, Input } from "native-base";
 import { StyleProp, ViewStyle } from "react-native";
 
 
@@ -10,24 +10,25 @@ interface Props {
 
 export default function GoalMetricInput(props: Props) {
   const { goalMetric, setGoalMetric, styles } = props;
+
+  const onChange = (text: string) => {
+    if (text !== undefined && text !== null && parseInt(text) !== NaN && parseInt(text) >= 0) {
+      setGoalMetric(parseInt(text));
+    } else {
+      setGoalMetric(0);
+    }
+  }
+
   return (
     <View>
-      <Select
-        selectedValue={goalMetric.toString()}
-        minWidth="280"
-        accessibilityLabel="Elige una metrica"
-        placeholder="Elige una metrica" 
-        _selectedItem={{bg: "#FF6060"}}
+      <Input
+        width={300}
         variant="underlined"
-        placeholderTextColor={"#707070"}
-        size={"md"}
-        style={styles}
-        onValueChange={newMetric => setGoalMetric(parseInt(newMetric))}>
-        {[5, 10, 50, 100, 200, 300, 400, 500].map((metric) => (
-            <Select.Item key={metric.toString()} label={metric.toString()} value={metric.toString()}/>
-            ))
-        }
-      </Select>
+        placeholder="Objetivo"
+        placeholderTextColor={"#000000"}
+        onChangeText={onChange}
+        value={goalMetric.toString()}
+      />
     </View>
   )
 }

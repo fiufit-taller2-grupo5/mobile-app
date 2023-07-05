@@ -10,6 +10,7 @@ import {
 import { RefreshControl } from 'react-native';
 import { GoalsInfoCard } from "./goalsInfoCard";
 import { LoadableButton } from "../commons/buttons";
+import { EmptyListComponent } from "../trainings/trainingsList";
 
 interface Props {
   navigation: any;
@@ -28,19 +29,19 @@ export default function GoalsList(props: Props) {
   }
 
   useEffect(() => {
-    if(props.usingScrollView) {
+    if (props.usingScrollView) {
       updateData();
       console.log("force refreshando")
     }
   }, [props.forceRefresh])
 
   const api = new API(navigation);
-  
+
   const getGoalsList = async () => {
     setRefreshing(true);
     try {
-        const goals = await api.getUserGoals(props.userId);
-        setGoalsList(goals)
+      const goals = await api.getUserGoals(props.userId);
+      setGoalsList(goals)
     } catch (e: any) {
       console.error("error getting goals list", e.message);
     }
@@ -53,13 +54,13 @@ export default function GoalsList(props: Props) {
 
   return (
     <>
-        <View style={{ display: "flex", alignItems: 'flex-end', paddingHorizontal: 15 }}>
-          <LoadableButton
-            customStyles={{ width: "100%" }}
-            text="Crear nueva meta"
-            onPress={async () => { navigation.navigate('CreateGoalScreen'); }}
-          />
-        </View>
+      <View style={{ display: "flex", alignItems: 'flex-end', paddingHorizontal: 15 }}>
+        <LoadableButton
+          customStyles={{ width: "100%" }}
+          text="Crear nueva meta"
+          onPress={async () => { navigation.navigate('CreateGoalScreen'); }}
+        />
+      </View>
       {props.usingScrollView && goalsList.map(goal => {
         return <GoalsInfoCard
           key={goal.id.toString()}
@@ -73,6 +74,7 @@ export default function GoalsList(props: Props) {
         data={goalsList}
         marginBottom={0}
         marginTop={0}
+        ListEmptyComponent={!refreshing ? <EmptyListComponent text={"no tienes ninguna meta todavía. Crea una nueva!"} /> : null}
         renderItem={(goal) => (
           <GoalsInfoCard
             goalData={goal.item}
