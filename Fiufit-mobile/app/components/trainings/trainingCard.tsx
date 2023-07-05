@@ -316,7 +316,7 @@ export default function TrainingCard(props: Props) {
         width: "50%",
         borderRadius: 30,
         left: "22%",
-        bottom: "5%"
+        bottom: "15%"
       }}
         onPress={() => navigation.navigate("EditTrainingScreen", { trainingData: trainingData })}
       >
