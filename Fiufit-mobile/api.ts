@@ -103,7 +103,7 @@ export class API {
         "Authorization": "Bearer " + accessToken,
         ...fetchConfig.headers,
       }
-      const localUrl = "https://6704-190-18-10-180.ngrok-free.app/" + path;
+      const localUrl = "https://1c3d-190-18-10-180.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       // const url = prod;
@@ -133,7 +133,10 @@ export class API {
           if (response.status === 403 && this.navigation) {
             this.navigation.navigate("WelcomeScreen");
           }
-          const error = new ApiError(responseJson.message, response.status);
+          let error = new ApiError(responseJson.message, response.status);
+          if (!responseJson.message && responseJson.detail) {
+            error = new ApiError(responseJson.detail, 400);
+          }
           return onError(error);
         }
       }

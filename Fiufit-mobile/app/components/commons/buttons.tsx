@@ -70,7 +70,7 @@ export const LoadableButton = ({ text, customStyles, textColor, overrideLoading,
 
   return (
     <>
-      <NativeBaseButton onPress={(e) => handleClick(e)} style={styles}>
+      <NativeBaseButton disabled={isLoading} onPress={(e) => handleClick(e)} style={styles}>
         <View flexGrow={1} justifyContent={"space-around"} flexDirection={"row"} >
           <View width={"100%"} flexGrow={1} justifyContent={"center"} flexDirection={"row"} >
             {(isLoading || overrideLoading) && hideTextWhileLoading ? null : <Text

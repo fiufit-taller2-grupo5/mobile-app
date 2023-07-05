@@ -57,7 +57,7 @@ export default function HomeScreen({ navigation }: any) {
 
     return <NativeBaseProvider>
         <Tab.Navigator screenOptions={screenOptions} initialRouteName='Trainings'>
-            <Tab.Screen
+            {isAthlete && <Tab.Screen
                 options={
                     {
                         tabBarLabel: 'Descubrir', tabBarIcon: ({ color, size }) => (
@@ -66,11 +66,11 @@ export default function HomeScreen({ navigation }: any) {
                     }
                 }
                 name="Descubrir" component={RecommendationsScreen}
-            />
+            />}
             {!isAthlete && <Tab.Screen
                 options={
                     {
-                        tabBarLabel: 'Entrenamientos', tabBarIcon: ({ color, size }) => (
+                        tabBarLabel: 'Mis Entrenamientos', tabBarIcon: ({ color, size }) => (
                             <MaterialCommunityIcons name='dumbbell' color={color} size={size} />),
                         tabBarActiveTintColor: '#FF6060'
                     }
@@ -97,7 +97,7 @@ export default function HomeScreen({ navigation }: any) {
                 }
                 name="Profile" component={ProfileScreen}
             />
-            <Tab.Screen
+            {isAthlete && <Tab.Screen
                 options={
                     {
                         tabBarLabel: 'Métricas', tabBarIcon: ({ color, size }) => (
@@ -106,7 +106,7 @@ export default function HomeScreen({ navigation }: any) {
                     }
                 }
                 name="Metrics" component={MetricsScreen}
-            />
+            />}
             <Tab.Screen
                 name="Inbox" component={InboxScreen}
                 options={

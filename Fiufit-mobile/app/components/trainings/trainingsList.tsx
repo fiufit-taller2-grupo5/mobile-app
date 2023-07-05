@@ -172,6 +172,9 @@ export default function TrainingsList(props: Props) {
             setFilteredData(trainings);
             setResetFilters(false);
           } else {
+            if (role === "Entrenador") {
+              trainings = trainings.filter(training => training.trainerId === globalUser.user?.id);
+            }
             filterData(trainings);
           }
         }
@@ -301,7 +304,7 @@ export default function TrainingsList(props: Props) {
         role === "Entrenador" &&
         <View style={{ display: "flex", alignItems: 'flex-end', paddingHorizontal: 15 }}>
           <LoadableButton
-            customStyles={{ width: "100%" }}
+            customStyles={{ width: "100%", marginBottom: 15 }}
             text="Crear nuevo"
             onPress={async () => { navigation.navigate('CreateTrainingScreen'); }}
           />
