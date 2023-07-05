@@ -352,8 +352,7 @@ export default function ProfileScreen(props: Props) {
           />
         </View>
         <View flexDirection={"row"} width={'100%'} justifyContent={"center"}>
-          {userId != undefined && <FollowButton
-
+          {userId !== globalUser.user?.id && <FollowButton
             forceLoading={userFollowersCount === null}
             userId={userId}
             following={following}
@@ -361,7 +360,7 @@ export default function ProfileScreen(props: Props) {
             onUnfollow={() => onUnfollow(userId)}
             navigation={navigation}
           />}
-          {userId !== undefined && <Button
+          {userId !== globalUser.user?.id && <Button
             style={{
               bottom: 0,
               backgroundColor: "#fff",
