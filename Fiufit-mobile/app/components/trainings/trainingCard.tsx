@@ -21,8 +21,59 @@ import FiveStars from "../rateTraining/fiveStars";
 import globalUser from '../../../userStorage';
 import { LoadableButton, LoadableLink } from "../commons/buttons";
 import { ShareButton } from "./shareButton";
-import { trainingMainImage } from "./trainingInfoCard";
 import { EmptyListComponent } from "./trainingsList";
+
+
+export const trainingMainImage = (training_type: any) => {
+  if (training_type === "Running")
+    return "https://wallpaperaccess.com/thumb/2604922.jpg";
+  else if (training_type === "Swimming")
+    return "https://wallpaperaccess.com/thumb/1634055.jpg";
+  else if (training_type === "Walking")
+    return "https://wallpaperaccess.com/thumb/654835.jpg";
+  else if (training_type === "Biking")
+    return "https://wallpaperaccess.com/thumb/4431599.jpg";
+  else if (training_type === "Yoga")
+    return "https://wallpaperaccess.com/thumb/2532294.jpg";
+  else if (training_type === "Basketball")
+    return "https://wallpaperaccess.com/thumb/798750.jpg";
+  else if (training_type === "Football")
+    return "https://wallpaperaccess.com/thumb/1813065.jpg";
+  else if (training_type === "Gymnastics")
+    return "https://wallpaperaccess.com/thumb/2236559.jpg";
+  else if (training_type === "Dancing")
+    return "https://wallpaperaccess.com/thumb/1315981.jpg";
+  else if (training_type === "Hiking")
+    return "https://wallpaperaccess.com/thumb/7309738.jpg";
+};
+
+
+export const trainingTypeFromEnglishToSpanish = (type: string) => {
+  switch (type) {
+    case "Running":
+      return "Correr";
+    case "Swimming":
+      return "Natación";
+    case "Biking":
+      return "Ciclismo";
+    case "Yoga":
+      return "Yoga";
+    case "Basketball":
+      return "Basket";
+    case "Football":
+      return "Fútbol";
+    case "Walking":
+      return "Caminata";
+    case "Gymnastics":
+      return "Gimnasia";
+    case "Dancing":
+      return "Danza";
+    case "Hiking":
+      return "Escalar";
+
+      return "No disponible"
+  }
+}
 
 
 interface Props {
@@ -220,7 +271,7 @@ export default function TrainingCard(props: Props) {
             <HStack alignItems="center" space={4} justifyContent="space-between">
               <HStack alignItems="center">
                 <Text fontWeight={"bold"}>Tipo: </Text>
-                <Text>{trainingData.type}</Text>
+                <Text>{trainingTypeFromEnglishToSpanish(trainingData.type)}</Text>
               </HStack>
             </HStack>
             <HStack alignItems="center" space={4} justifyContent="space-between">
@@ -311,17 +362,30 @@ export default function TrainingCard(props: Props) {
           </Box>
         ))}
       </ScrollView>
-      {isTrainer && <Button style={{
-        backgroundColor: "#FF6060",
-        width: "50%",
-        borderRadius: 30,
-        left: "22%",
-        bottom: "5%"
-      }}
+      {isTrainer && <LoadableButton
+        textColor={"#FF6060"}
+        customStyles={{
+          right: 10,
+          bottom: 20,
+          width: 210,
+          position: "absolute",
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          borderColor: "#FF6060",
+          borderWidth: 1,
+          backgroundColor: "#FFFFFF",
+          shadowOpacity: 0.5,
+          shadowRadius: 3.84,
+          elevation: 5,
+
+        }}
+
+        text="Editar Entrenamiento"
         onPress={() => navigation.navigate("EditTrainingScreen", { trainingData: trainingData })}
-      >
-        Editar entrenamiento
-      </Button>}
+      />}
       {isAthlete && <LoadableButton
         textColor={"#FF6060"}
         customStyles={{
@@ -329,7 +393,6 @@ export default function TrainingCard(props: Props) {
           bottom: 20,
           width: 210,
           position: "absolute",
-          // add shadows
           shadowColor: "#000",
           shadowOffset: {
             width: 0,

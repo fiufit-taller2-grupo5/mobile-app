@@ -4,6 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { trainingStyles } from "../../styles";
 import { TouchableOpacity } from 'react-native';
 import { API } from '../../../api';
+import { trainingTypeFromEnglishToSpanish } from './trainingCard';
 
 export const trainingMainImage = (training_type: any) => {
   if (training_type === "Running")
@@ -105,7 +106,7 @@ export const TrainingInfoCard = ({
             {trainingData.description}
           </Text>
           <Text paddingLeft={15} fontSize="sm" color="#000000">
-            {trainingData.type}
+            {trainingTypeFromEnglishToSpanish(trainingData.type)}
           </Text>
           <Text paddingLeft={15} fontSize="sm" color="#000000">
             Dificultad: {trainingData.difficulty}
