@@ -24,7 +24,6 @@ export class StoredUser {
 
     async getUser() {
         try {
-
             await this.verifyUserExists();
             console.log("user stored:", this.user);
             return this.user;
@@ -32,7 +31,7 @@ export class StoredUser {
             console.log("error getting user:", e);
             await auth.signOut();
             await AsyncStorage.removeItem('@userInfo');
-            this.navigation.navigate("Welcome");
+            this.navigation.navigate("WelcomeScreen");
         }
     }
 
@@ -61,8 +60,8 @@ export class StoredUser {
     async verifyUserExists() {
         if (this.user === null) {
             this.user = await getUserFromStorage();
-            if (this.user === null) {
-                throw new Error("Logueate antes de usar huella digital");
+            if (!this.user) {
+                throw Error("Logueate antes de usar huella digital");
             }
         }
     }

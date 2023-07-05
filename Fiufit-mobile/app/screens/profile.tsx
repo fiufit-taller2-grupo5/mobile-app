@@ -302,7 +302,8 @@ export default function ProfileScreen(props: Props) {
     return unsubscribe;
   }, [navigation]);
 
-  console.log("the role", role);
+
+  console.log("user", userId, globalUser.user?.id);
 
   return <NativeBaseProvider><View style={{ flex: 1 }} backgroundColor="#fff">
     <ScrollView
@@ -352,7 +353,7 @@ export default function ProfileScreen(props: Props) {
           />
         </View>
         <View flexDirection={"row"} width={'100%'} justifyContent={"center"}>
-          {userId !== globalUser.user?.id && <FollowButton
+          {userId && userId !== globalUser.user?.id && <FollowButton
             forceLoading={userFollowersCount === null}
             userId={userId}
             following={following}
@@ -360,7 +361,7 @@ export default function ProfileScreen(props: Props) {
             onUnfollow={() => onUnfollow(userId)}
             navigation={navigation}
           />}
-          {userId !== globalUser.user?.id && <Button
+          {userId && userId !== globalUser.user?.id && <Button
             style={{
               bottom: 0,
               backgroundColor: "#fff",

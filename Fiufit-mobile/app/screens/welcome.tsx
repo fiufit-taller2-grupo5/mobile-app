@@ -25,21 +25,20 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async (data) => {
   const userGoals = await api.getUserGoals();
 
   userGoals.forEach(async (goal) => {
-    // falta checquear si ya fue achieved hoy
     if (goal.type === "Pasos") {
-      if (goal.metric <= steps) {
-        // await api.sendPushNotification(globalUser.user?.id || 0, `¡Felicitaciones! Alcanzaste tu meta ${goal.title}`, `Llegaste a la meta de ${goal.metric} pasos diarios`);
-        // await api.achieveGoal(goal.id);
+      if (goal.metric <= steps && goal.lastAchieved !== new Date().toISOString().slice(0, 10)) {
+        await api.sendPushNotification(globalUser.user?.id || 0, `¡Felicitaciones! Alcanzaste tu meta ${goal.title}`, `Llegaste a la meta de ${goal.metric} pasos diarios`);
+        await api.achieveGoal(goal.id);
       }
-    } else if (goal.type === "Calorias") {
+    } else if (goal.type === "Calorias" && goal.lastAchieved !== new Date().toISOString().slice(0, 10)) {
       if (goal.metric <= calories) {
-        // await api.sendPushNotification(globalUser.user?.id || 0, `¡Felicitaciones! Alcanzaste tu meta ${goal.title}`, `Llegaste a la meta de ${goal.metric} calorías diarias`);
-        // await api.achieveGoal(goal.id);
+        await api.sendPushNotification(globalUser.user?.id || 0, `¡Felicitaciones! Alcanzaste tu meta ${goal.title}`, `Llegaste a la meta de ${goal.metric} calorías diarias`);
+        await api.achieveGoal(goal.id);
       }
-    } else if (goal.type === "Distancia") {
+    } else if (goal.type === "Distancia" && goal.lastAchieved !== new Date().toISOString().slice(0, 10)) {
       if (goal.metric <= distance) {
-        // await api.sendPushNotification(globalUser.user?.id || 0, `¡Felicitaciones! Alcanzaste tu meta ${goal.title}`, `Llegaste a la meta de ${goal.metric} metros diarios`);
-        // await api.achieveGoal(goal.id);
+        await api.sendPushNotification(globalUser.user?.id || 0, `¡Felicitaciones! Alcanzaste tu meta ${goal.title}`, `Llegaste a la meta de ${goal.metric} metros diarios`);
+        await api.achieveGoal(goal.id);
       }
     }
   })
@@ -113,6 +112,11 @@ export default function WelcomeScreen({ navigation }: NativeStackScreenProps<any
       let user;
       try {
         user = await globalUser.getUser();
+        if (!user) {
+          setLoadingAuthentication(false);
+          return;
+        }
+        console.log("globl user issss:", user)
       } catch (e) {
         console.log("no user stored");
         setLoadingAuthentication(false);

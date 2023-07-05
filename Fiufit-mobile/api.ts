@@ -64,6 +64,8 @@ export interface AthleteGoal {
   metric: number,
   athleteId?: number,
   multimedia?: Array<any>,
+  achieved?: boolean,
+  lastAchieved?: string,
 }
 
 export interface Goal {
@@ -103,7 +105,7 @@ export class API {
         "Authorization": "Bearer " + accessToken,
         ...fetchConfig.headers,
       }
-      const localUrl = "https://1c3d-190-18-10-180.ngrok-free.app/" + path;
+      const localUrl = "https://ae9a-200-127-33-115.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       // const url = prod;
