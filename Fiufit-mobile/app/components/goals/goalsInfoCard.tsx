@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, VStack, HStack, Button, Text, Image, Divider, Icon, useToast } from 'native-base';
+import { Box, VStack, HStack, Button, Text, Image, Divider, Icon, useToast, View } from 'native-base';
 import { goalsStyles } from "../../styles";
 import { API } from '../../../api';
 import { AntDesign } from '@expo/vector-icons';
@@ -77,22 +77,24 @@ export const GoalsInfoCard = ({
               Objetivo a cumplir: {goalData.metric}
             </Text>
           </VStack>
-          <VStack my={1} width={30} height={10} mr={0} ml={1} justifyContent="flex-end" alignItems="flex-end">
-            <>
-              <Button backgroundColor="#fff" onPress={handleDelete} my={-60}>
-                <Icon
-                  as={<AntDesign name="delete" />}
-                  size={5}
-                  color="#FF0000"
-                  alignSelf="center"
-                />
-              </Button>
-            </>
-          </VStack>
+          <View justifyContent="flex-end">
+            <VStack my={1} width={30} height={10} mr={0} ml={1} justifyContent="flex-end">
+              <View>
+                <Button onPress={handleDelete} backgroundColor="red.100">
+                  <Icon
+                    as={<AntDesign name="delete" />}
+                    size={5}
+                    color="#FF0000"
+                    alignSelf="center"
+                  />
+                </Button>
+              </View>
+            </VStack>
+          </View>
         </HStack>
         <Divider my={10} mx={1} />
       </Button>
-    </Box>
+    </Box >
   );
 };
 

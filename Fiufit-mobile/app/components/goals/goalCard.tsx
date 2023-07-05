@@ -27,6 +27,17 @@ export default function GoalCard(props: Props) {
 
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  console.log("goalData", goalData)
+
+  const goalMainImage = (goalType: any) => {
+    if (goalType === "Distancia")
+      return "https://wallpaperaccess.com/thumb/2604779.jpg";
+    else if (goalType === "Pasos")
+      return "https://wallpaperaccess.com/thumb/8657563.jpg";
+    else if (goalType === "Calorias")
+      return "https://wallpaperaccess.com/thumb/2443634.jpg";
+  };
+
   return (
     <View flexGrow={1}>
       <ScrollView
@@ -44,7 +55,7 @@ export default function GoalCard(props: Props) {
           <View>
             <AspectRatio w="100%" ratio={16 / 10}>
               <Image
-                source={(goalData.multimedia && goalData.multimedia.length >= 1) ? { uri: goalData.multimedia.at(0) } : require("../../../assets/images/logo-color.jpg")}
+                source={(goalData.multimedia && goalData.multimedia.length >= 1) ? { uri: goalData.multimedia.at(0) } : { uri: goalMainImage(goalData.type) }}
                 alt="image"
                 size={238}
                 width="100%"
