@@ -43,7 +43,7 @@ export default function SettingsScreen(props: Props) {
 
         console.log("DETAILS:", details, "userInfoStored:", userInfoStored);
         if (details === null || details === undefined) { // if the user has skipped the registration form
-          setUserInformation([userInfoStored.name, "", "", "", "", "", userInfoStored!.role]);
+          setUserInformation([userInfoStored?.name || "", "", "", "", "", "", userInfoStored!.role]);
           console.log("NO INFO");
           return;
         }

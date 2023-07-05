@@ -142,7 +142,7 @@ export default function MetricsScreen(props: Props) {
               borderWidth: 1,
             }}
             textColor={"#FF6060"}
-            text={!startDate ? "elegir fecha inicio" : startDate.toDateString()}
+            text={!startDate ? "elegir fecha inicio" : startDate.toLocaleDateString('es-ES')}
             onPress={async () => { await showDatepicker(startDate, setStartDate) }}
           />
         </View>
@@ -155,7 +155,7 @@ export default function MetricsScreen(props: Props) {
               borderWidth: 1,
             }}
             textColor={"#FF6060"}
-            text={!endDate ? "elegir fecha fin" : endDate.toDateString()}
+            text={!endDate ? "elegir fecha fin" : endDate.toLocaleDateString('es-ES')}
             onPress={async () => { await showDatepicker(endDate, setEndDate) }}
           />
         </View>

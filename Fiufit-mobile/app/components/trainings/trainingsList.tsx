@@ -196,7 +196,6 @@ export default function TrainingsList(props: Props) {
     updateData();
   }, [])
 
-  console.log("filteredData", filteredData)
 
   return (
     <>

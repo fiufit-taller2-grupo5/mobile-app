@@ -11,7 +11,6 @@ import { userInfo } from '../../asyncStorageAPI';
 import { MaterialIcons } from "@expo/vector-icons";
 import { collection, query, where, getDocs, addDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
-import { FollowButton } from '../components/users/followButton';
 import { ScrollView } from 'react-native';
 import { RefreshControl } from 'react-native';
 

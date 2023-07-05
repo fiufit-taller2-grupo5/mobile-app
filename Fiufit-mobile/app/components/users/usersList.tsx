@@ -39,23 +39,19 @@ export default function UsersList(props: Props) {
     setRefreshing(true);
     const user = await globalUser.getUser();
     if (useSelectedUsers && selectedUsers) {
-      console.log("SHOWING ONLY SELECTED USERS", selectedUsers);
-      console.log("china", user?.id);
       let followedUsers = await api.getFollowedUsers(user!.id);
       setUsers(selectedUsers);
       setFollowedUsers(followedUsers);
       setFilteredUsers(selectedUsers);
-      setRefreshing(false);
     } else if (!useSelectedUsers) {
       let allUsers = await api.getUsers();
       allUsers = allUsers.filter((item) => item.id !== user?.id);
       let followedUsers = await api.getFollowedUsers(user!.id);
-      console.log("SHOWING ALL USERS", allUsers)
       setUsers(allUsers);
       setFollowedUsers(followedUsers);
       setFilteredUsers(allUsers);
-      setRefreshing(false);
     }
+    setRefreshing(false);
   };
 
   useEffect(() => {

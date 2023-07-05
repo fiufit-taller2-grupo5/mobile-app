@@ -46,57 +46,80 @@ interface Props {
 export const UserTrainingInfoCard = (props: Props) => {
   const { userTraining, navigation, navigateToScreen } = props;
 
-  const api = new API(navigation);
+  return <View onTouchEnd={async () => {
+    navigation.navigate(navigateToScreen, { trainingData: userTraining.trainingData, });
+  }}>
+    <View flexDirection={"row"} marginY={2} marginX={2}>
+      <Image
+        source={{ uri: userTraining.trainingData.multimedia?.at(0).fileUrl || trainingMainImage(userTraining.trainingData.type) }}
+        alt="Alternate Text"
+        size="lg"
+        style={{ marginTop: 0 }}
+        borderRadius={10}
+      />
+      <View width={230} >
+        <Text
+          style={trainingStyles.textTitle}
+          color="#000000"
+          text-align="left"
+          bold
+        >
+          {new Date(userTraining.date).toLocaleDateString('es-ES')}
+        </Text>
+        <Text paddingLeft={15} fontSize="md" color="#000000">
+          {userTraining.trainingData.title}
+        </Text>
+        <View flexDirection={"row"} alignItems="center">
+          <View flexDirection={"row"} alignItems="center" flex={1}>
+            <Text paddingLeft={15} fontSize="sm" color="#000000" bold marginRight={1}>
+              {userTraining.calories} calorías
+            </Text>
+            <Icon
+              as={<MaterialCommunityIcons name="fire-circle" />}
+              size={5}
+              color="#ff6060"
+              alignSelf="center"
+            />
+          </View>
+          <View flexDirection={"row"} alignItems="center" flex={1}>
+            <Text paddingLeft={15} fontSize="sm" color="#000000" bold marginRight={1}>
+              {userTraining.steps} pasos
+            </Text>
+            <Icon
+              as={<MaterialCommunityIcons name="run-fast" />}
+              size={5}
+              color="#ff6060"
+              alignSelf="center"
+            />
+          </View>
+        </View>
+        <View flexDirection={"row"} alignItems="center">
+          <View flexDirection={"row"} alignItems="center" flex={1}>
+            <Text paddingLeft={15} fontSize="sm" color="#000000" bold marginRight={1}>
+              {userTraining.steps} m
+            </Text>
+            <Icon
+              as={<MaterialCommunityIcons name="navigation-variant-outline" />}
+              size={5}
+              color="#ff6060"
+              alignSelf="center"
+            />
+          </View>
+          <View flexDirection={"row"} alignItems="center" flex={1}>
+            <Text paddingLeft={15} fontSize="sm" color="#000000" bold marginRight={1}>
+              {userTraining.duration}
+            </Text>
+            <Icon
+              as={<MaterialCommunityIcons name="clock-outline" />}
+              size={5}
+              color="#ff6060"
+              alignSelf="center"
+            />
+          </View>
+        </View>
+      </View>
+    </View>
 
-  return <Box backgroundColor="#fff" style={{ height: 160 }}>
-    <Button
-      height={190}
-      px="10"
-      py="10"
-      backgroundColor="#fff"
-      onPress={async () => {
-        navigation.navigate(navigateToScreen, { trainingData: userTraining.trainingData, });
-      }}
-    >
-      <HStack
-        justifyContent="space-between"
-        height={100}
-      >
-        <Image
-          source={{ uri: userTraining.trainingData.multimedia?.at(0).fileUrl || trainingMainImage(userTraining.trainingData.type) }}
-          alt="Alternate Text"
-          size="lg"
-          style={{ marginTop: 10 }}
-          borderRadius={10}
-        />
-        <VStack width={230} >
-          <Text
-            style={trainingStyles.textTitle}
-            color="#000000"
-            text-align="left"
-            bold
-          >
-            {userTraining.trainingData.title}
-          </Text>
-          <Text paddingLeft={15} fontSize="sm" color="#000000">
-            {userTraining.trainingData.description}
-          </Text>
-          <Text paddingLeft={15} fontSize="xs" color="#000000">
-            Calorías: {userTraining.calories}
-          </Text>
-          <Text paddingLeft={15} fontSize="xs" color="#000000">
-            Distancia: {userTraining.distance}
-          </Text>
-          <Text paddingLeft={15} fontSize="xs" color="#000000">
-            Duración: {userTraining.duration}
-          </Text>
-          <Text paddingLeft={15} fontSize="xs" color="#000000">
-            Fecha: {userTraining.date}
-          </Text>
-
-        </VStack>
-      </HStack>
-      <Divider my={10} mx={1} />
-    </Button>
-  </Box>
+    <Divider my={2} mx={1} />
+  </View>
 };

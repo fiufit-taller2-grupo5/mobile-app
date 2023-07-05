@@ -322,10 +322,7 @@ export default function ProfileScreen(props: Props) {
         </View>
         <View flexDirection={"row"} width={'100%'} justifyContent={"center"}>
           {userId != undefined && <FollowButton
-            customStyles={{
-              borderColor: "#FF6060",
-              borderWidth: 1,
-            }}
+
             forceLoading={userFollowersCount === null}
             userId={userId}
             following={following}

@@ -86,7 +86,6 @@ export default function UserTrainingsList(props: Props) {
 
   useEffect(() => {
     getUserTrainingsList();
-    console.log("DATA:", filteredData);
   }, [])
 
 
@@ -159,10 +158,9 @@ export default function UserTrainingsList(props: Props) {
         </View>
       </VStack>
       {<FlatList
-        contentContainerStyle={{ flexGrow: 1 }}
         data={filteredData}
-        marginBottom={0}
-        marginTop={0}
+        // marginBottom={0}
+        // marginTop={0}
         ListEmptyComponent={!refreshing ? <EmptyListComponent text={"No se encontraron sesiones de entrenamientos."} /> : null}
         renderItem={(userTraining) => (
           <UserTrainingInfoCard
