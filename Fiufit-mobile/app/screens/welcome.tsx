@@ -57,7 +57,8 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async (data) => {
         if (stepGoals.metric <= steps) {
           console.log("sending");
 
-          await api.sendPushNotification(globalUser.user?.id || 0, "¡Felicitaciones! Has alcanzado tu meta de pasos diarios", `Llegaste a la meta de ${stepGoals.metric} pasos diarios`);
+          // LO COMENTO PARA NO GASTARNOS TODOS LOS CRÉDITOS DE NOTIFICACIONES
+          //await api.sendPushNotification(globalUser.user?.id || 0, "¡Felicitaciones! Has alcanzado tu meta de pasos diarios", `Llegaste a la meta de ${stepGoals.metric} pasos diarios`);
           console.log("sent");
           // await api.updateGoal({
           //   title: stepGoals.title,
