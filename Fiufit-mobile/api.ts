@@ -103,7 +103,7 @@ export class API {
         "Authorization": "Bearer " + accessToken,
         ...fetchConfig.headers,
       }
-      const localUrl = "https://0d4e-190-18-10-180.ngrok-free.app/" + path;
+      const localUrl = "https://6601-181-89-16-142.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/" + path;
       const url = process.env.NODE_ENV === "development" ? localUrl : prod;
       // const url = prod;
@@ -542,7 +542,7 @@ export class API {
       userId = user?.id;
     }
     return await this.fetchFromApi(
-      "training-service/api/goals/" + userId,
+      "training-service/api/trainings/goals/" + userId,
       { method: "GET" },
       (response: AthleteGoal[]) => response,
       (error: ApiError) => {
@@ -553,8 +553,10 @@ export class API {
   }
 
   async addGoal(goal: Goal): Promise<number> {
+    const user = await getUserFromStorage();
+    const userId = user?.id;
     return await this.fetchFromApi(
-      "training-service/api/goals/",
+      "training-service/api/trainings/goals/" + userId,
       {
         method: "POST",
         body: JSON.stringify(goal),
@@ -583,15 +585,16 @@ export class API {
       name: name,
     } as any);
     return await this.fetchFromApi(
-      "training-service/api/goals/" + goalId + "/image",
+      "training-service/api/trainings/goals/" + goalId + "/multimedia",
       {
-        method: "PUT",
+        method: "POST",
         body: formData,
         headers: {
           'Content-Type': 'multipart/form-data',
         }
       },
       (response: any) => {
+        console.log("la url de multimedia es: ", image)
         console.log("image added");
       },
       (error: ApiError) => {
@@ -602,10 +605,8 @@ export class API {
   }
 
   async deleteGoal(goalId: number): Promise<boolean> {
-    const user = await getUserFromStorage();
-    const userId = user?.id;
     return await this.fetchFromApi(
-      "training-service/api/goals/" + goalId + '/' + userId,
+      "training-service/api/trainings/goals/" + goalId,
       { method: "DELETE" },
       (response: any) => {
         console.log("goal deleted");
@@ -620,7 +621,7 @@ export class API {
 
   async updateGoal(goal: Goal, goalId: number): Promise<void> {
     return await this.fetchFromApi(
-      "training-service/api/goals/" + goalId,
+      "training-service/api/trainings/goals/" + goalId,
       {
         method: "PUT",
         body: JSON.stringify(goal),

@@ -44,7 +44,7 @@ export default function GoalCard(props: Props) {
           <View>
             <AspectRatio w="100%" ratio={16 / 10}>
               <Image
-                source={(goalData.multimedia && goalData.multimedia.length >= 1) ? { uri: goalData.multimedia.at(0).fileUrl } : require("../../../assets/images/logo-color.jpg")}
+                source={(goalData.multimedia && goalData.multimedia.length >= 1) ? { uri: goalData.multimedia.at(0) } : require("../../../assets/images/logo-color.jpg")}
                 alt="image"
                 size={238}
                 width="100%"

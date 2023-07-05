@@ -51,7 +51,7 @@ export const GoalsInfoCard = ({
           height={70}
         >
           <Image
-            source={{ uri: (goalData.multimedia && goalData.multimedia.length >= 1) ? goalData.multimedia?.at(0).fileUrl : goalMainImage(goalData.type) }}
+            source={{ uri: (goalData.multimedia && goalData.multimedia.length >= 1) ? goalData.multimedia?.at(0) : goalMainImage(goalData.type) }}
             alt="Alternate Text"
             size="lg"
             borderRadius={10}
