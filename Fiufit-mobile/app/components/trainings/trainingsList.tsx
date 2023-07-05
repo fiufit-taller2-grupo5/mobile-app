@@ -172,7 +172,12 @@ export default function TrainingsList(props: Props) {
           let trainings = updateFavoriteStatus(trainingList, favoritesTrainingsResponse);
           let recommendedTrainings = updateFavoriteStatus(recommendedTrainingsList, favoritesTrainingsResponse);
           if (resetFilters) {
-            setFilteredData(recommendedTrainings);
+            setFilteredData([]);
+            if (recommendedTrainings.length > 0) {
+              setFilteredData(recommendedTrainings);
+            } else {
+              setFilteredData(trainings);
+            }
             setResetFilters(false);
           } else {
             if (role === "Entrenador") {
@@ -209,6 +214,17 @@ export default function TrainingsList(props: Props) {
   useEffect(() => {
     updateData();
   }, [])
+
+
+  const filteredUniqueData = (trainings: Training[]) => {
+    const uniqueTrainings = new Map();
+    trainings.forEach(training => {
+      if (!uniqueTrainings.has(training.id)) {
+        uniqueTrainings.set(training.id, training);
+      }
+    });
+    return Array.from(uniqueTrainings.values());
+  }
 
 
   return (
@@ -338,7 +354,7 @@ export default function TrainingsList(props: Props) {
       }
       {!props.usingScrollView && <FlatList
         contentContainerStyle={{ flexGrow: 1 }}
-        data={filteredData}
+        data={filteredUniqueData(filteredData)}
         marginBottom={0}
         marginTop={0}
         renderItem={(training) => (
