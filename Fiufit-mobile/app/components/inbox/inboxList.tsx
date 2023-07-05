@@ -5,7 +5,6 @@ import { InboxInfoCard } from "./inboxInfoCard";
 import globalUser from "../../../userStorage";
 import { db } from "../../../firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import InboxNotifications from './inboxNotifications';
 import { EmptyListComponent } from '../trainings/trainingsList';
 
 interface Props {
@@ -75,8 +74,6 @@ export default function InboxList(props: Props) {
 
     return <View flex={1} backgroundColor="#fff">
         <View flex={1}>
-            <InboxNotifications navigation={navigation}/>
-
             <FlatList
                 ListEmptyComponent={!refreshing ? <EmptyListComponent text={"no tienes ningún chat todavía. Ve al perfil de alguien para iniciar una conversación"} /> : null}
                 contentContainerStyle={{ flexGrow: 1 }}

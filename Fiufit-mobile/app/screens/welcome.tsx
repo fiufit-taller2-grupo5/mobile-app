@@ -10,10 +10,9 @@ import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 import { apiGatewayHealthCheck } from '../../api';
 import { ActivityIndicator } from 'react-native';
-import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
+import GoogleFit, { Scopes } from 'react-native-google-fit'
 import * as LocalAuthentication from 'expo-local-authentication';
 import globalUser from '../../userStorage';
-import InboxNotifications from '../components/inbox/inboxNotifications';
 export const BACKGROUND_FETCH_TASK = 'background-fetch';
 
 

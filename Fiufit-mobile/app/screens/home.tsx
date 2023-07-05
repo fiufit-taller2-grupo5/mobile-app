@@ -13,6 +13,7 @@ import TrainerTrainingsScreen from './trainerTrainings';
 import SettingsScreen from './settings';
 import * as Notifications from 'expo-notifications';
 import GoalsScreen from './goals';
+import { registerForPushNotificationsAsync } from '../../notificationsUtils';
 
 const Tab = createBottomTabNavigator();
 
@@ -43,6 +44,7 @@ export default function HomeScreen({ navigation }: any) {
 
     useEffect(() => {
         const getToken = async () => {
+            registerForPushNotificationsAsync();
             const token = await Notifications.getExpoPushTokenAsync();
             const tokenData = await token.data;
             globalUser.setPushToken(tokenData);

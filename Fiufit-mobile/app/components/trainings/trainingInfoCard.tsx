@@ -106,14 +106,14 @@ export const TrainingInfoCard = ({
             >
               {trainingData.title}
             </Text>
-            <Text paddingLeft={15} fontSize="sm" color="#000000">
+            <Text paddingLeft={15} fontSize="sm" color="#000000" height={"110%"}>
               {trainingData.description}
             </Text>
             <Text paddingLeft={15} fontSize="xs" color="#000000">
               Dificultad: {trainingData.difficulty}
             </Text>
           </VStack>
-          <VStack my={1} width={30} height={10} mr={0} ml={1}>
+          <VStack my={5} width={30} height={10} mr={0} ml={1} alignItems={"center"}>
             {canSetFavorite && userRole === "Atleta" && (
               <>
 
@@ -125,14 +125,14 @@ export const TrainingInfoCard = ({
                     alignSelf="center"
                   />
                 </Button>
-                <Button backgroundColor="#fff" onPress={async () => { console.log("click"); }}>
+                {/* <Button backgroundColor="#fff" onPress={async () => { console.log("click"); }}>
                   <Icon
                     as={<MaterialCommunityIcons name={isRated ? "star" : "star-outline"} />}
                     size={6}
                     color="#FFD27D"
                     alignSelf="center"
                   />
-                </Button>
+                </Button> */}
               </>
             )}
           </VStack>
