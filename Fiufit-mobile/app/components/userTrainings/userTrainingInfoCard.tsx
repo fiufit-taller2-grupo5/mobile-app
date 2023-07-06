@@ -51,7 +51,7 @@ export const UserTrainingInfoCard = (props: Props) => {
   }}>
     <View flexDirection={"row"} marginY={2} marginX={2}>
       <Image
-        source={{ uri: userTraining.trainingData.multimedia?.at(0).fileUrl || trainingMainImage(userTraining.trainingData.type) }}
+        source={{ uri: userTraining.trainingData && userTraining.trainingData.multimedia && userTraining.trainingData.multimedia?.at(0) && userTraining.trainingData.multimedia?.at(0).fileUrl || trainingMainImage(userTraining.trainingData.type) }}
         alt="Alternate Text"
         size="lg"
         style={{ marginTop: 0 }}
