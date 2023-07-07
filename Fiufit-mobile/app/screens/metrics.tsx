@@ -62,19 +62,52 @@ export default function MetricsScreen(props: Props) {
     startDate.setHours(0, 0, 0, 0);
     endDate.setHours(23, 59, 59, 999);
     const metrics = await api.getMetrics(startDate.toISOString(), endDate.toISOString(), groupBy);
+    const labelsAsDates = metrics.label.map(label => {
+      switch (groupBy) {
+        case 'day':
+          return new Date(label.split('-').reverse().join('-'));
+        case 'month':
+          const [month, year] = label.split('-');
+          return new Date(`${year}-${month}`);
+        case 'year':
+          return new Date(label);
+      }
+      return new Date();
+    });
+
+    // Get sorting order
+    const sortIndices = labelsAsDates.map((date, index) => index).sort((a, b) => labelsAsDates[a].getTime() - labelsAsDates[b].getTime());
+    const dataToDisplay = metrics[metric].map((m: number) => m.toFixed(1))
+    const sortedLabels = sortIndices.map(index => metrics.label[index]);
+    const sortedData = sortIndices.map(index => dataToDisplay[index]);
+
+    // Format sorted labels for display
+
+    // Format sorted labels for display
+    const displayLabels = sortedLabels.map(label => {
+      switch (groupBy) {
+        case 'day':
+        case 'month':
+          return label;
+        case 'year':
+          return new Date(label).getFullYear().toString();
+      }
+    });
+
     setAllData({
-      labels: metrics.label,
+      labels: displayLabels,
       datasets: [
         {
-          data: metrics[metric].map((m: number) => m.toFixed(1))
+          data: sortedData
         }
       ]
     });
+
     let initialData = {
-      labels: metrics.label.slice(0, 5),
+      labels: displayLabels.slice(-5),
       datasets: [
         {
-          data: metrics[metric].map((m: number) => m.toFixed(1)).slice(0, 5)
+          data: sortedData.slice(-5)
         }
       ]
     }
@@ -129,6 +162,7 @@ export default function MetricsScreen(props: Props) {
     }
     return "";
   }
+
 
   return <NativeBaseProvider><View style={{ flex: 1 }} backgroundColor="#fff">
     <View flex={1} justifyContent="center">

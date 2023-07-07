@@ -33,7 +33,9 @@ export const InboxInfoCard = ({
         const unsubscribe = navigation.addListener('focus', () => {
             try {
                 const lastMessageIsFromOtherUser = chatMetadata.lastMessage.user._id !== globalUser!.user!.id;
-                const lastMessageIsNotRead = chatMetadata.participants[globalUser!.user!.id].lastRead < chatMetadata.lastMessage.createdAt;
+                let [day, month, year] = chatMetadata.lastMessage.createdAt.split("/").map(Number);
+                let date = new Date(year, month - 1, day);
+                const lastMessageIsNotRead = (chatMetadata.participants[globalUser!.user!.id].lastRead as any).toDate() < date;
                 if (lastMessageIsFromOtherUser && lastMessageIsNotRead) {
                     setShouldShowUnreadBadge(true);
                 } else {

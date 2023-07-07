@@ -6,29 +6,7 @@ interface NotificationProps {
 }
 
 export const NotificationInfoCard = ({ notification }: NotificationProps) => {
-  // export interface Notification {
-  //     id: number,
-  //     title: string,
-  //     body: string,
-  //     userId: number,
-  //     date: string,
-  //     fromUserId?: number,
-  //     sender?: {
-  //       id: number,
-  //       email: string,
-  //       name: string,
-  //       UserMetadata: {
-  //         multimedia: [
-  //           {
-  //             id: number,
-  //             url: string,
-  //             type: string,
-  //             userId: number,
-  //           }
-  //         ]
-  //       }
-  //     }
-  //   }
+  console.log("notification", notification.fromUserId, notification.userId)
   return (
     <Box>
       <Box pl="4" pr="5" py="2">
@@ -40,10 +18,23 @@ export const NotificationInfoCard = ({ notification }: NotificationProps) => {
               <Image
                 source={
                   notification.sender?.UserMetadata &&
-                  notification.sender?.UserMetadata.multimedia &&
-                  notification.sender?.UserMetadata.multimedia.length >= 1
+                    notification.sender?.UserMetadata.multimedia &&
+                    notification.sender?.UserMetadata.multimedia.length >= 1
                     ? { uri: notification.sender?.UserMetadata.multimedia.at(-1)?.url }
                     : require("../../../assets/images/user_logo.jpg")
+                }
+                alt="image"
+                size="sm"
+                borderRadius={10}
+              />
+            </View>
+          )}
+          {notification.userId === notification.fromUserId && (
+            <View
+              style={{ alignItems: "center", justifyContent: "space-between" }}
+            >
+              <Image
+                source={require("../../../assets/images/logo.png")
                 }
                 alt="image"
                 size="sm"
@@ -57,14 +48,14 @@ export const NotificationInfoCard = ({ notification }: NotificationProps) => {
               bold
               numberOfLines={1}
               ellipsizeMode="tail"
-              style={{ maxWidth: 200 }} // you may adjust this as needed
+              style={{ maxWidth: 230 }} // you may adjust this as needed
             >
               {notification.title}
             </Text>
             <Text
               color="coolGray.600"
               numberOfLines={2} // change this to limit the number of lines
-              style={{ width: 200 }} // setting the width to 100
+              style={{ width: 230 }} // setting the width to 100
             >
               {notification.body}
             </Text>

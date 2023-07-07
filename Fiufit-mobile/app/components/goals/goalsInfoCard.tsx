@@ -85,7 +85,8 @@ export const GoalsInfoCard = ({
     <View
       height={120}
       paddingTop={2}
-      px="8"
+      paddingLeft={8}
+      paddingRight={0}
       onTouchEnd={async () => {
         navigation.navigate(navigateToScreen, { goalData });
       }}
@@ -113,9 +114,6 @@ export const GoalsInfoCard = ({
         <Text paddingLeft={15} fontSize="sm" color="#000000">
           Métrica: {goalData.type}
         </Text>
-        <Text paddingLeft={15} fontSize="sm" color="#000000">
-          Objetivo a cumplir: {goalData.metric}
-        </Text>
         <View flexDirection={"row"} paddingLeft={15}>
           <View marginRight={2} justifyContent="center">
             <Progress.Bar progress={currentValue() / goalData.metric} color="#ff6060" width={90} height={10} borderRadius={6} />
@@ -123,7 +121,7 @@ export const GoalsInfoCard = ({
           <Text fontWeight={"bold"}> {currentValue()} / {goalData.metric} </Text>
         </View>
       </VStack>
-      <View justifyContent="center" height={"100%"}>
+      <View marginLeft={5} alignItems={"flex-end"} justifyContent="center" height={"100%"}>
         <Button onPress={handleDelete} backgroundColor="red.100">
           <Icon
             as={<AntDesign name="delete" />}

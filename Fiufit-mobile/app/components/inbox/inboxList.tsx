@@ -40,8 +40,8 @@ export default function InboxList(props: Props) {
     const [chatsMetadata, setChatsMetadata] = useState<ChatMetadata[]>([]);
     const [refreshing, setRefreshing] = useState(false);
 
-    const getChatsWhereUserIsParticipant = async () => {
-        setRefreshing(true);
+    const getChatsWhereUserIsParticipant = async (setLoading: boolean) => {
+        setLoading && setRefreshing(true);
         const user = await globalUser.getUser();
         const chatsRef = collection(db, "chats");
         const q = query(chatsRef, where(`participants.${user?.id}`, "!=", null));
@@ -56,14 +56,18 @@ export default function InboxList(props: Props) {
             return data;
 
         });
-        setChatsMetadata(chatsMetadata as ChatMetadata[]);
+        const sortedByDateChatsMetadata = chatsMetadata.sort((a, b) => {
+            return new Date(a.lastMessage.createdAt).getTime() - new Date(b.lastMessage.createdAt).getTime();
+        });
+
+        setChatsMetadata(sortedByDateChatsMetadata.reverse() as ChatMetadata[]);
         setRefreshing(false);
     }
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             try {
-                getChatsWhereUserIsParticipant();
+                getChatsWhereUserIsParticipant(false);
             } catch (error) {
                 console.log(error);
             }
@@ -71,6 +75,17 @@ export default function InboxList(props: Props) {
         return unsubscribe;
 
     }, [navigation]);
+
+    useEffect(() => {
+        try {
+            getChatsWhereUserIsParticipant(true);
+        } catch (error) {
+            console.log(error);
+        }
+    }, []);
+
+
+
 
     return <View flex={1} backgroundColor="#fff">
         <View flex={1}>
@@ -80,7 +95,7 @@ export default function InboxList(props: Props) {
                 data={chatsMetadata}
                 marginBottom={0}
                 marginTop={0}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getChatsWhereUserIsParticipant} />}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { getChatsWhereUserIsParticipant(true) }} />}
                 renderItem={(chat) => (
                     <InboxInfoCard
                         chatMetadata={chat.item}

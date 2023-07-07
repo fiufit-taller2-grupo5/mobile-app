@@ -36,6 +36,7 @@ export const UserInfoCard = ({
 
   return (
     <TouchableOpacity
+
       onPress={async () => {
         navigation.navigate(navigateToScreen, { userId: userData.id, isFollowed: isFollowed });
       }}
@@ -52,6 +53,8 @@ export const UserInfoCard = ({
         />
       </View>
       <View
+        flex={4}
+        backgroundColor="gray.50"
         flexDirection="column" justifyItems={"flex-start"} justifyContent="flex-start" alignItems="flex-start" marginTop={-2}>
         <Text
           style={trainingStyles.textTitle}
@@ -67,9 +70,7 @@ export const UserInfoCard = ({
           {trainingsQuantity} Trainings
         </Text>
       </View>
-      <Spacer />
-      <View flex={1} justifyContent="center" alignItems={"center"} style={{ marginRight: 45 }}>
-
+      <View flex={4} backgroundColor="red.100" justifyContent="center" alignItems={"center"} style={{ paddingRight: 5 }}>
         <FollowButton
           userId={userData.id}
           following={isFollowed}

@@ -88,6 +88,12 @@ export default function UserTrainingsList(props: Props) {
     getUserTrainingsList();
   }, [])
 
+  // sort by date 
+  const sortedFilterData = filteredData.sort((a, b) => {
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
+
+
 
   return (
     <>
@@ -158,9 +164,8 @@ export default function UserTrainingsList(props: Props) {
         </View>
       </VStack>
       {<FlatList
-        data={filteredData}
-        // marginBottom={0}
-        // marginTop={0}
+        data={sortedFilterData}
+        marginLeft={4}
         ListEmptyComponent={!refreshing ? <EmptyListComponent text={"No se encontraron sesiones de entrenamientos."} /> : null}
         renderItem={(userTraining) => (
           <UserTrainingInfoCard

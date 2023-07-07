@@ -107,8 +107,8 @@ export class API {
       }
       const localUrl = "https://ae9a-200-127-33-115.ngrok-free.app/" + path;
       const prod = "https://api-gateway-prod2-szwtomas.cloud.okteto.net/" + path;
-      const url = process.env.NODE_ENV === "development" ? localUrl : prod;
-      // const url = prod;
+      // const url = process.env.NODE_ENV === "development" ? localUrl : prod;
+      const url = prod;
       console.log("fetching from api: ", url, fetchConfig);
       const response = await fetch(url, fetchConfig);
       const responseJson = await response.json();

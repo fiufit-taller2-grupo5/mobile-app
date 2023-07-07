@@ -181,7 +181,6 @@ export const trainingStyles = StyleSheet.create({
     fontStyle: 'normal',
     fontSize: 16,
     paddingLeft: 15,
-    height: "auto",
   },
   textDescription: {
     fontFamily: 'Roboto',
@@ -190,7 +189,6 @@ export const trainingStyles = StyleSheet.create({
     color: "grey",
     fontSize: 14,
     paddingLeft: 15,
-    height: 35,
   }
 });
 

@@ -26,16 +26,16 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async (data) => {
 
   userGoals.forEach(async (goal) => {
     if (goal.type === "Pasos") {
-      if (goal.metric <= steps && goal.lastAchieved !== new Date().toISOString().slice(0, 10)) {
+      if (goal.metric <= steps && goal.lastAchieved?.slice(0, 10) !== new Date().toISOString().slice(0, 10)) {
         await api.sendPushNotification(globalUser.user?.id || 0, `¡Felicitaciones! Alcanzaste tu meta ${goal.title}`, `Llegaste a la meta de ${goal.metric} pasos diarios`);
         await api.achieveGoal(goal.id);
       }
-    } else if (goal.type === "Calorias" && goal.lastAchieved !== new Date().toISOString().slice(0, 10)) {
+    } else if (goal.type === "Calorias" && goal.lastAchieved?.slice(0, 10) !== new Date().toISOString().slice(0, 10)) {
       if (goal.metric <= calories) {
         await api.sendPushNotification(globalUser.user?.id || 0, `¡Felicitaciones! Alcanzaste tu meta ${goal.title}`, `Llegaste a la meta de ${goal.metric} calorías diarias`);
         await api.achieveGoal(goal.id);
       }
-    } else if (goal.type === "Distancia" && goal.lastAchieved !== new Date().toISOString().slice(0, 10)) {
+    } else if (goal.type === "Distancia" && goal.lastAchieved?.slice(0, 10) !== new Date().toISOString().slice(0, 10)) {
       if (goal.metric <= distance) {
         await api.sendPushNotification(globalUser.user?.id || 0, `¡Felicitaciones! Alcanzaste tu meta ${goal.title}`, `Llegaste a la meta de ${goal.metric} metros diarios`);
         await api.achieveGoal(goal.id);
@@ -117,6 +117,13 @@ export default function WelcomeScreen({ navigation }: NativeStackScreenProps<any
           return;
         }
         console.log("globl user issss:", user)
+        const api = new API(navigation);
+        const userFromApi = await api.getUserInfoById(user.id);
+        console.log("user from api issss:", userFromApi)
+        if (userFromApi.email !== user.email) {
+          setLoadingAuthentication(false);
+          return;
+        }
       } catch (e) {
         console.log("no user stored");
         setLoadingAuthentication(false);
@@ -170,3 +177,4 @@ export default function WelcomeScreen({ navigation }: NativeStackScreenProps<any
     </NativeBaseProvider>
   </SafeAreaProvider>;
 }
+
